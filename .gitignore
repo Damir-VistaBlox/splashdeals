@@ -1,0 +1,156 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# ──────────────────────────────────────────────
+# 🚨 SECURITY — Credentials & Secrets
+# ──────────────────────────────────────────────
+
+# Env files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# GSC / SEO credentials & data dumps
+data/seo/gsc-credentials.json
+data/seo/gsc-token.json
+data/seo/gsc-indexing-token.json
+data/seo/gsc-latest.json
+data/seo/gsc-fresh-*.json
+data/seo/gsc-week-*.json
+data/seo/gsc-url-removal-list.txt
+
+# Agent internal state
+.learnings/
+
+# ──────────────────────────────────────────────
+# Dependencies
+# ──────────────────────────────────────────────
+
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# ──────────────────────────────────────────────
+# Build output
+# ──────────────────────────────────────────────
+
+.next/
+/out/
+/build
+/coverage
+
+# ──────────────────────────────────────────────
+# Runtime / OS
+# ──────────────────────────────────────────────
+
+.DS_Store
+*.pem
+Thumbs.db
+
+# ──────────────────────────────────────────────
+# Python
+# ──────────────────────────────────────────────
+
+.venv/
+__pycache__/
+*.pyc
+
+# ──────────────────────────────────────────────
+# Debug logs
+# ──────────────────────────────────────────────
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# ──────────────────────────────────────────────
+# Platform
+# ──────────────────────────────────────────────
+
+.vercel
+
+# ──────────────────────────────────────────────
+# TypeScript
+# ──────────────────────────────────────────────
+
+*.tsbuildinfo
+next-env.d.ts
+
+# ──────────────────────────────────────────────
+# Generated
+# ──────────────────────────────────────────────
+
+/app/generated/prisma
+
+# Agent tooling
+.agent
+.aionrs/
+.gemini/
+.openclaw/
+.agentignore
+GEMINI.md
+
+# Agent memory
+memory/
+
+# ──────────────────────────────────────────────
+# Junk / Temp / Scratch
+# ──────────────────────────────────────────────
+
+# Root junk
+P
+<loc>
+_check-tickets.ts
+check_tickets.ts
+get-facility.ts
+run_generate.mjs
+quick-gsc-pull.js
+skills-lock.json
+CHAT_PATH_LINKS.json
+facility-admin-polish.md
+
+# Scratch
+scratch/
+
+# ──────────────────────────────────────────────
+# Build & Lint output
+# ──────────────────────────────────────────────
+
+eslint-errors.txt
+fresh-build.txt
+fresh-lint.txt
+lint.json
+lint-output.txt
+lint-results-detailed.txt
+lint-results-final.txt
+lint_results.json
+tsc-errors.txt
+type-check.txt
+next-fix.d.ts
+
+# ──────────────────────────────────────────────
+# Test artifacts
+# ──────────────────────────────────────────────
+
+playwright-report/
+test-results/
+
+# ──────────────────────────────────────────────
+# IDE
+# ──────────────────────────────────────────────
+
+*.code-workspace
+
+# SEO scripts & reports (agent-generated)
+scripts/seo/
+reports/seo/
+
+# Docs (agent-generated)
+docs/

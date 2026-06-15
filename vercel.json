@@ -1,0 +1,25 @@
+{
+  "version": 2,
+  "framework": "nextjs",
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/explore/:path*",
+      "destination": "/facilities/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/explore",
+      "destination": "/facilities",
+      "permanent": true
+    }
+  ],
+  "crons": [
+    {
+      "path": "/api/cron/cleanup-sessions",
+      "schedule": "0 2 * * *"
+    }
+  ],
+  "regions": ["arn1"]
+}

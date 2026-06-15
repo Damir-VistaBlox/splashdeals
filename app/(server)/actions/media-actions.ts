@@ -1,0 +1,443 @@
+"use server"
+
+import { z } from "zod";
+import { put, del } from "@vercel/blob";
+import { prisma } from "@/lib/prisma";
+import { processImageToWebP } from "@/lib/media";
+import { MediaType, MediaPurpose } from "@prisma/client";
+import { revalidatePath } from "next/cache";
+import { handleServerActionError } from "@/lib/server-action-error"
+import { validateAction } from "@/lib/actions/validator"
+import { validateFacilityAccess } from "@/lib/auth-guards"
+
+const updateMediaPurposeSchema = z.object({
+  mediaId: z.string().uuid(),
+  purpose: z.nativeEnum(MediaPurpose),
+})
+
+const toggleMediaRoleSchema = z.object({
+  mediaId: z.string().uuid(),
+  facilityId: z.string().uuid(),
+})
+
+const deleteMediaSchema = z.object({
+  mediaId: z.string().uuid(),
+  facilityId: z.string().uuid(),
+})
+
+const updateMediaOrderSchema = z.object({
+  facilityId: z.string().uuid(),
+  mediaIds: z.array(z.string().uuid()),
+})
+
+const syncMediaSchema = z.object({
+  facilityId: z.string().uuid(),
+  blobUrl: z.string(),
+  contentType: z.string(),
+})
+
+const updateMediaCaptionSchema = z.object({
+  mediaId: z.string().uuid(),
+  facilityId: z.string().uuid(),
+  caption: z.string().max(255).nullable(),
+})
+
+const updateMediaFocalPointSchema = z.object({
+  mediaId: z.string().uuid(),
+  facilityId: z.string().uuid(),
+  focalPoint: z.string().max(20).nullable(), // Format: "X,Y" e.g., "50,30"
+})
+
+const bulkUpdateMediaCaptionSchema = z.object({
+  mediaIds: z.array(z.string().uuid()),
+  facilityId: z.string().uuid(),
+  caption: z.string().max(255).nullable(),
+})
+
+/**
+ * Handles multi-file uploads with automated WebP conversion for images.
+ */
+export async function uploadMediaAction(formData: FormData) {
+  const facilityId = formData.get("facilityId") as string;
+  const files = formData.getAll("files") as File[];
+  const rawPurpose = formData.get("purpose") as string;
+  const purpose = (rawPurpose && Object.values(MediaPurpose).includes(rawPurpose as any) 
+    ? (rawPurpose as MediaPurpose) 
+    : MediaPurpose.GALLERY);
+
+  if (!facilityId || files.length === 0) {
+    return { success: false, error: "Missing facility ID or files" };
+  }
+
+  try {
+    await validateFacilityAccess(facilityId)
+    const results = [];
+    const lastMedia = await prisma.facilityMedia.findFirst({
+      where: { facilityId },
+      orderBy: { order: "desc" },
+    });
+    let currentOrder = (lastMedia?.order ?? -1) + 1;
+
+    for (const file of files) {
+      const buffer = Buffer.from(await file.arrayBuffer());
+      const isImage = file.type.startsWith("image/");
+      const isVideo = file.type.startsWith("video/");
+
+      let finalUrl = "";
+      const mediaType: MediaType = isVideo ? MediaType.VIDEO : MediaType.PHOTO;
+
+      if (isImage) {
+        const processedBuffer = await processImageToWebP(buffer);
+        const filename = `facilities/${facilityId}/photos/${Date.now()}-${file.name.split('.')[0]}.webp`;
+        
+        const blob = await put(filename, processedBuffer, {
+          access: "public",
+          contentType: "image/webp",
+        });
+        finalUrl = blob.url;
+      } else if (isVideo) {
+        throw new Error("Videos must be uploaded via the high-bandwidth direct pipeline.");
+      }
+
+      if (finalUrl) {
+        const media = await prisma.facilityMedia.create({
+          data: {
+            facilityId,
+            url: finalUrl,
+            type: mediaType,
+            order: currentOrder++,
+            purpose,
+          },
+        });
+        results.push(media);
+      }
+    }
+
+    revalidatePath(`/admin/facilities/${facilityId}/media`);
+    revalidatePath(`/facilities/[category]/[slug]`, "layout");
+    return { success: true, media: results };
+  } catch (error) {
+    return handleServerActionError(error)
+  }
+}
+
+/**
+ * Updates the purpose/gallery visibility of a media item.
+ */
+export async function updateMediaPurposeAction(mediaId: string, purpose: MediaPurpose) {
+  try {
+    const validation = await validateAction(updateMediaPurposeSchema, { mediaId, purpose });
+    if (!validation.success) throw new Error(validation.error);
+
+    const media = await prisma.facilityMedia.findUnique({
+      where: { id: mediaId },
+    });
+    if (!media) throw new Error("Media not found");
+
+    await validateFacilityAccess(media.facilityId);
+
+    let updated;
+    if (purpose === MediaPurpose.AERIAL) {
+      updated = await prisma.$transaction(async (tx) => {
+        // Demote any existing AERIAL media to GALLERY for this facility
+        await tx.facilityMedia.updateMany({
+          where: {
+            facilityId: media.facilityId,
+            purpose: MediaPurpose.AERIAL,
+          },
+          data: { purpose: MediaPurpose.GALLERY },
+        });
+
+        // Set the new media purpose to AERIAL
+        return await tx.facilityMedia.update({
+          where: { id: mediaId },
+          data: { purpose },
+        });
+      });
+    } else {
+      updated = await prisma.facilityMedia.update({
+        where: { id: mediaId },
+        data: { purpose },
+      });
+    }
+
+    revalidatePath(`/admin/facilities/${media.facilityId}/media`);
+    revalidatePath(`/facilities/[category]/[slug]`, "layout");
+
+    return { success: true, media: updated };
+  } catch (error) {
+    return handleServerActionError(error)
+  }
+}
+
+/**
+ * Deletes media from both storage and database.
+ */
+export async function deleteMediaAction(mediaId: string, facilityId: string) {
+  try {
+    const validation = await validateAction(deleteMediaSchema, { mediaId, facilityId });
+    if (!validation.success) throw new Error(validation.error);
+
+    await validateFacilityAccess(facilityId)
+    const media = await prisma.facilityMedia.findUnique({
+      where: { id: mediaId },
+    });
+
+    if (!media) throw new Error("Media not found");
+
+    await del(media.url);
+    await prisma.facilityMedia.delete({
+      where: { id: mediaId },
+    });
+
+    revalidatePath(`/admin/facilities/${facilityId}/media`);
+    return { success: true };
+  } catch (error) {
+    return handleServerActionError(error)
+  }
+}
+
+/**
+ * Updates the sort order of the media gallery items.
+ */
+export async function updateMediaOrderAction(facilityId: string, mediaIds: string[]) {
+  try {
+    const validation = await validateAction(updateMediaOrderSchema, { facilityId, mediaIds });
+    if (!validation.success) throw new Error(validation.error);
+
+    await validateFacilityAccess(facilityId)
+    await prisma.$transaction(
+      validation.data.mediaIds.map((id: string, index: number) =>
+        prisma.facilityMedia.update({
+          where: { id },
+          data: { order: index },
+        })
+      )
+    );
+
+    revalidatePath(`/admin/facilities/${facilityId}/media`);
+    return { success: true };
+  } catch (error) {
+    return handleServerActionError(error)
+  }
+}
+
+/**
+ * 🌊 High-Bandwidth Sync (LocalDev Bridge)
+ */
+export async function syncMediaAction(facilityId: string, blobUrl: string, contentType: string) {
+  try {
+    const validation = await validateAction(syncMediaSchema, { facilityId, blobUrl, contentType });
+    if (!validation.success) throw new Error(validation.error);
+
+    await validateFacilityAccess(facilityId)
+    const isVideo = validation.data.contentType.startsWith("video/");
+    const mediaType: MediaType = isVideo ? MediaType.VIDEO : MediaType.PHOTO;
+
+    const existing = await prisma.facilityMedia.findFirst({
+      where: { url: validation.data.blobUrl }
+    });
+    
+    if (existing) return { success: true, media: existing };
+
+    const lastMedia = await prisma.facilityMedia.findFirst({
+      where: { facilityId },
+      orderBy: { order: "desc" },
+    });
+    const nextOrder = (lastMedia?.order ?? -1) + 1;
+
+    const media = await prisma.facilityMedia.create({
+      data: {
+        facilityId,
+        url: validation.data.blobUrl,
+        type: mediaType,
+        order: nextOrder,
+      },
+    });
+
+    revalidatePath(`/admin/facilities/${facilityId}/media`);
+    revalidatePath(`/facilities/[category]/[slug]`, "layout");
+
+    return { success: true, media };
+  } catch (error) {
+    return handleServerActionError(error)
+  }
+}
+
+/**
+ * Toggles the Hero status of a media item, ensuring exclusivity.
+ */
+export async function toggleMediaHeroAction(mediaId: string, facilityId: string) {
+  try {
+    const validation = await validateAction(toggleMediaRoleSchema, { mediaId, facilityId });
+    if (!validation.success) throw new Error(validation.error);
+
+    await validateFacilityAccess(facilityId);
+
+    const media = await prisma.facilityMedia.findUnique({ where: { id: mediaId } });
+    if (!media) throw new Error("Media not found");
+
+    const currentHero = media.isHero;
+
+    const updated = await prisma.$transaction(async (tx) => {
+      // If we are setting this as hero, unset any other hero
+      if (!currentHero) {
+        await tx.facilityMedia.updateMany({
+          where: { facilityId, isHero: true },
+          data: { isHero: false },
+        });
+      }
+
+      return await tx.facilityMedia.update({
+        where: { id: mediaId },
+        data: { isHero: !currentHero },
+      });
+    });
+
+    revalidatePath(`/admin/facilities/${facilityId}/media`);
+    revalidatePath(`/facilities/[category]/[slug]`, "layout");
+    return { success: true, media: updated };
+  } catch (error) {
+    return handleServerActionError(error)
+  }
+}
+
+/**
+ * Toggles the Card Background status of a media item, ensuring exclusivity.
+ */
+export async function toggleMediaCardBackgroundAction(mediaId: string, facilityId: string) {
+  try {
+    const validation = await validateAction(toggleMediaRoleSchema, { mediaId, facilityId });
+    if (!validation.success) throw new Error(validation.error);
+
+    await validateFacilityAccess(facilityId);
+
+    const media = await prisma.facilityMedia.findUnique({ where: { id: mediaId } });
+    if (!media) throw new Error("Media not found");
+
+    const currentBG = media.isCardBackground;
+
+    const updated = await prisma.$transaction(async (tx) => {
+      // If we are setting this as background, unset any other
+      if (!currentBG) {
+        await tx.facilityMedia.updateMany({
+          where: { facilityId, isCardBackground: true },
+          data: { isCardBackground: false },
+        });
+      }
+
+      return await tx.facilityMedia.update({
+        where: { id: mediaId },
+        data: { isCardBackground: !currentBG },
+      });
+    });
+
+    revalidatePath(`/admin/facilities/${facilityId}/media`);
+    revalidatePath(`/facilities/[category]/[slug]`, "layout");
+    return { success: true, media: updated };
+  } catch (error) {
+    return handleServerActionError(error)
+  }
+}
+
+/**
+ * Toggles frontend gallery visibility.
+ */
+export async function toggleMediaGalleryVisibilityAction(mediaId: string, facilityId: string) {
+  try {
+    const validation = await validateAction(toggleMediaRoleSchema, { mediaId, facilityId });
+    if (!validation.success) throw new Error(validation.error);
+
+    await validateFacilityAccess(facilityId);
+
+    const media = await prisma.facilityMedia.findUnique({ where: { id: mediaId } });
+    if (!media) throw new Error("Media not found");
+
+    const updated = await prisma.facilityMedia.update({
+      where: { id: mediaId },
+      data: { isGalleryVisible: !media.isGalleryVisible },
+    });
+
+    revalidatePath(`/admin/facilities/${facilityId}/media`);
+    revalidatePath(`/facilities/[category]/[slug]`, "layout");
+    return { success: true, media: updated };
+  } catch (error) {
+    return handleServerActionError(error)
+  }
+}
+
+/**
+ * Updates the caption/alt tag description of a media item.
+ */
+export async function updateMediaCaptionAction(mediaId: string, facilityId: string, caption: string | null) {
+  try {
+    const validation = await validateAction(updateMediaCaptionSchema, { mediaId, facilityId, caption });
+    if (!validation.success) throw new Error(validation.error);
+
+    await validateFacilityAccess(facilityId);
+
+    const updated = await prisma.facilityMedia.update({
+      where: { id: mediaId },
+      data: { caption: validation.data.caption },
+    });
+
+    revalidatePath(`/admin/facilities/${facilityId}/media`);
+    revalidatePath(`/facilities/[category]/[slug]`, "layout");
+
+    return { success: true, media: updated };
+  } catch (error) {
+    return handleServerActionError(error)
+  }
+}
+
+/**
+ * Updates the focal point coordinates of a media item.
+ */
+export async function updateMediaFocalPointAction(mediaId: string, facilityId: string, focalPoint: string | null) {
+  try {
+    const validation = await validateAction(updateMediaFocalPointSchema, { mediaId, facilityId, focalPoint });
+    if (!validation.success) throw new Error(validation.error);
+
+    await validateFacilityAccess(facilityId);
+
+    const updated = await prisma.facilityMedia.update({
+      where: { id: mediaId },
+      data: { originalUrl: validation.data.focalPoint }, // Stored in originalUrl column
+    });
+
+    revalidatePath(`/admin/facilities/${facilityId}/media`);
+    revalidatePath(`/facilities/[category]/[slug]`, "layout");
+
+    return { success: true, media: updated };
+  } catch (error) {
+    return handleServerActionError(error)
+  }
+}
+
+/**
+ * Bulk updates captions/alt tags for multiple media items.
+ */
+export async function bulkUpdateMediaCaptionAction(mediaIds: string[], facilityId: string, caption: string | null) {
+  try {
+    const validation = await validateAction(bulkUpdateMediaCaptionSchema, { mediaIds, facilityId, caption });
+    if (!validation.success) throw new Error(validation.error);
+
+    await validateFacilityAccess(facilityId);
+
+    await prisma.facilityMedia.updateMany({
+      where: {
+        id: { in: validation.data.mediaIds },
+        facilityId: validation.data.facilityId,
+      },
+      data: { caption: validation.data.caption },
+    });
+
+    revalidatePath(`/admin/facilities/${facilityId}/media`);
+    revalidatePath(`/facilities/[category]/[slug]`, "layout");
+
+    return { success: true };
+  } catch (error) {
+    return handleServerActionError(error)
+  }
+}
+

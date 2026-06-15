@@ -1,0 +1,15 @@
+ 
+ 
+"use client"
+
+import { SlotError } from "../_components/slot-error"
+
+export default function MediaError({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string }
+  reset: () => void
+}) {
+  return <SlotError error={error} reset={reset} title="Media Gallery Error" />
+}

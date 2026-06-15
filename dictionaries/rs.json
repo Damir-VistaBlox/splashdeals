@@ -1,0 +1,330 @@
+{
+  "common": {
+    "welcome": "Dobrodošli na Splashdeals",
+    "search": "Pretraži..."
+  },
+  "home": {
+    "badge": "Vaš trenutni pristup najboljim akva parkovima u Srbiji",
+    "title_digital": "Leto",
+    "title_splash": "Otključano.",
+    "subtitle": "Preskočite redove, uskočite u zabavu. Nabavite karte za par sekundi i uđite pravo na bazen uz svoj Apple ili Google Wallet.",
+    "facilities_btn": "Uzmi Karte",
+    "how_it_works": "Kako funkcioniše?",
+    "checkout_title": "Brza",
+    "checkout_highlight": "Rezervacija",
+    "checkout_desc": "Kupite karte za nekoliko sekundi. Pokažite telefon na ulazu i uđite bez čekanja. Štampanje nije potrebno.",
+    "security_title": "24/7 Podrška",
+    "security_desc": "Naš tim je tu da vam pomogne oko vaših letnjih planova u bilo koje doba dana. Vaš odmor počinje bez stresa.",
+    "global_standard": "Proverene Destinacije",
+    "brand_desc": "Najlakši način da rezervišete svoj letnji beg. Napravljeno za brzu, laku rezervaciju i trenutan pristup.",
+    "offers_title": "Izdvojeni Akva Parkovi i Banje",
+    "offers_subtitle": "Izaberite destinaciju i preskočite red",
+    "rights_reserved": "Sva prava zadržana 2026",
+    "default_ticket_desc": "Doživite nezaboravne letnje trenutke u najmodernijim akva parkovima u regionu.",
+    "steps_title_base": "Leto u ",
+    "steps_title_highlight": "Tri Koraka",
+    "steps_subtitle": "Dolazak na bazen nikada nije bio lakši.",
+    "step1_title": "Izaberite Park",
+    "step1_desc": "Pretražite najbolje akva parkove u Srbiji i izaberite vašu savršenu destinaciju.",
+    "step2_title": "Uzmite Kartu",
+    "step2_desc": "Kupite momentalno i dobijte vašu digitalnu propusnicu direktno u telefonu.",
+    "step3_title": "Skeniraj i Uskoči",
+    "step3_desc": "Preskočite duge redove na ulazu. Samo skenirajte telefon i počnite sa zabavom.",
+    "experience_title_base": "Splashdeals ",
+    "experience_title_highlight": "Iskustvo",
+    "experience_desc": "Vaš odmor počinje onog trenutka kada rezervišete. Bez čekanja, bez stresa, samo čista letnja zabava.",
+    "stat1_label": "Posetilaca",
+    "stat1_sub": "Pridružite se hiljadama ljudi koji su preskočili red ovog leta.",
+    "stat2_label": "Instant Pristup",
+    "stat2_sub": "Dobijte svoje karte za nekoliko sekundi. Pokažite telefon i uđite pravo.",
+    "stat3_label": "Destinacija",
+    "stat3_sub": "Vrhunske destinacije u Srbiji. Ručno odabrane za kvalitet.",
+    "stat4_label": "Podrška",
+    "stat4_sub": "Podrška 24/7 za sve vaše letnje planove i beg."
+  },
+  "footer": {
+    "desc": "Vodeća destinacija u Srbiji za digitalne ulaznice za akva parkove i sezonske propusnice. Preskočite čekanje i uživajte u letu.",
+    "terms": "Uslovi Usluge",
+    "privacy": "Privatnost",
+    "contact": "Kontakt",
+    "powered_by": "Powered by Antigravity OS & Next.js 16",
+    "quick_access": "Brzi Pristup",
+    "featured_parks": "Izdvojeni Parkovi",
+    "top_destinations": "Najbolje Destinacije",
+    "how_it_works": "Kako Funkcioniše",
+    "support_center": "Centar za Podršku",
+    "support_legal": "Podrška i Pravne Informacije",
+    "cookie_policy": "Politika Kolačića",
+    "help_center": "Centar za Pomoć",
+    "summer_alerts": "Letnja Obaveštenja",
+    "summer_alerts_desc": "Prijavite se za najnovije akcije i ekskluzivne letnje ponude akva parkova.",
+    "email_placeholder": "Vaša E-mail adresa",
+    "join_button": "Pridruži se",
+    "copyright": "© 2026 Splashdeals Marketplace. Sva prava zadržana.",
+    "built_for": "Napravljeno za brzu i laku rezervaciju",
+    "security_first": "Sigurnost na Prvom Mestu",
+    "instant_delivery": "Trenutna Isporuka",
+    "marketplace_online": "Marketplace na Mreži"
+  },
+  "facilities": {
+    "discovery_engine": "Pretraga Destinacija",
+    "title": "Otkrijte Najbolje Destinacije",
+    "total_facilities": "Ukupno Destinacija",
+    "featured_title": "Preporučene Destinacije",
+    "category_discovery": "Otkrivanje Kategorije",
+    "offers_count": "{count} Ponuda u ovoj kategoriji",
+    "no_facilities": "Nema pronađenih destinacija",
+    "try_again": "Pokušajte ponovo kasnije ili istražite druge kategorije.",
+    "back_to_facilities": "Nazad na destinacije",
+    "from_price": "od",
+    "featured_experience": "Specijalno Premium Iskustvo",
+    "facilities_label": "Destinacija",
+    "best_label": "Najbolji",
+    "in_this_category": "Ponuda u ovoj kategoriji",
+    "location_discovery": "Strateški Regioni",
+    "best_in": "Najbolje Destinacije u",
+    "no_results_hint": "Pokušajte da prilagodite filtere ili istražite druge kategorije."
+  },
+  "nav": {
+    "home": "Početna",
+    "explore": "Istraži",
+    "cities": "Gradovi",
+    "all_regions": "Svi Regioni",
+    "facilities": "Destinacije",
+    "waterparks": "Akva Parkovi",
+    "deals": "Akcije",
+    "account": "Moj Nalog",
+    "checkout": "Kasa",
+    "offline": "Nema Mreže"
+  },
+  "terms": {
+    "title": "Uslovi Korišćenja",
+    "updated": "Poslednji put ažurirano: April 2026",
+    "intro": "Dobrodošli na internet platformu SplashDeals.rs. Ovaj pravni dokument predstavlja zvanični ugovor i definiše opšta pravila, uslove i propise koji regulišu pristup, pretragu i korišćenje sajta SplashDeals.rs, kao i kupovinu digitalnih ulaznica za akva parkove, bazene i srodne rekreacione objekte preko naše platforme. Pristupanjem ovom sajtu, registracijom korisničkog naloga ili vršenjem bilo kakve kupovine na platformi, vi izričito i bezuslovno potvrđujete da ste u potpunosti pročitali, razumeli i prihvatili ove Uslove Korišćenja. Ukoliko se ne slažete sa bilo kojim delom ovih uslova ili naših pratećih pravnih politika, molimo vas da odmah prekinete korišćenje ove platforme i svih usluga koje ona pruža.",
+    "section1_title": "1. Pružene Usluge",
+    "section1_content": "SplashDeals.rs deluje isključivo kao specijalizovana posrednička online platforma koja registrovanim i neregistrovanim korisnicima omogućava jednostavan uvid, pretragu i kupovinu digitalnih ulaznica za rekreacione i sportske objekte trećih strana (kao što su akva parkovi, termalne banje, otvoreni i zatvoreni bazeni) na teritoriji Republike Srbije. Kupovinom ulaznice preko naše platforme, vi zaključujete direktan ugovorni odnos sa pružaocem usluga koji upravlja izabranim objektom. SplashDeals.rs obezbeđuje tehničku infrastrukturu, procesuiranje plaćanja i automatsko izdavanje digitalnih vaučera sa popustima koji su posebno pregovarani sa našim partnerima.",
+    "section2_title": "2. Priroda Vaučera",
+    "section2_content": "Vremenska Validnost: Svaka kupljena digitalna karta ili vaučer izdat od strane SplashDeals.rs ima striktno definisan period važenja, lokaciju i specifične uslove korišćenja koji su jasno istaknuti na samoj karti i u trenutku kupovine. Molimo vas da obratite pažnju na ove rokove, jer nakon isteka naznačenog datuma ili letnje sezone karta trajno gubi važnost bez mogućnosti produženja.\n\nJednokratna i Isključiva Upotreba: Osim ukoliko na samoj ulaznici nije eksplicitno navedeno drugačije (kao kod sezonskih ili višednevnih propusnica), svaka kupljena karta važi isključivo za jedan ulazak jedne osobe u izabrani objekat.\n\nElektronska Dostava: Sve kupljene karte se dostavljaju elektronskim putem u vidu jedinstvenog QR koda na vaš email i korisnički profil. Korisnik snosi punu odgovornost za unošenje tačne email adrese i obezbeđivanje funkcionalnog mobilnog uređaja za prikazivanje karte na ulazu.",
+    "section3_title": "3. Cene i Plaćanja",
+    "section3_content": "Promotivne Cene i Popusti: Cene istaknute na platformi predstavljaju specijalne akcijske i snižene cene koje su dogovorene direktno sa partnerima. Ove cene i popusti se ne mogu kombinovati sa drugim aktuelnim promocijama, popustima ili povlasticama koje se nude na samim blagajnama objekata.\n\nValuta Transakcija: Sve cene na platformi su iskazane i sve transakcije se obrađuju u zvaničnoj valuti Republike Srbije – srpskim dinarima (RSD).\n\nBezbednost i Sigurnost Plaćanja: Sva plaćanja se obavljaju preko integrisanih, licenciranih i visoko zaštićenih provajdera za obradu kartičnih transakcija trećih strana koji koriste napredne 3D-Secure protokole. SplashDeals.rs ni u jednom trenutku ne prikuplja, ne čuva niti ima pristup punim podacima sa vaše platne kartice.",
+    "section4_title": "4. Povraćaj i Otkazivanje",
+    "section4_content": "Konačna Prodaja i Politika Otkazivanja: Zbog prirode prodaje karata sa popustima i ugovornih obaveza sa našim partnerima, sve kupovine obavljene preko naše platforme su generalno konačne. Povraćaj novca ili zamena karata za druge datume nisu mogući, osim u izuzetnim slučajevima predviđenim zakonom.\n\nVremenske Nepogode: S obzirom na to da su mnogi objekti na otvorenom prostoru, SplashDeals.rs ne snosi odgovornost za iznenadna zatvaranja objekta ili ograničenja rada određenih atrakcija (poput tobogana) zbog lošeg vremena. Odluka o eventualnom povraćaju sredstava ili kompenzaciji u ovim slučajevima donosi se isključivo u skladu sa zvaničnom poslovnom politikom samog partnera.\n\nOgraničenje Kapaciteta: Ulazak u objekat zavisi od trenutnog slobodnog kapaciteta. Kupovina karte ne garantuje trenutan ulazak ukoliko je objekat iz bezbednosnih razloga dostigao maksimalni dozvoljeni kapacitet u trenutku vašeg dolaska.",
+    "section5_title": "5. Odricanje od Odgovornosti",
+    "section5_content": "Nezavisnost Partnera: SplashDeals.rs ne poseduje, ne upravlja, ne kontroliše niti obavlja nadzor nad akva parkovima, bazenima ili banjama koji su izlistani na sajtu. Celokupna odgovornost za bezbednost, higijenu, kvalitet usluga i ispravnost atrakcija leži isključivo na pružaocu usluge.\n\nPonašanje i Sigurnost: Korisnici su dužni da se u potpunosti pridržavaju kućnog reda, bezbednosnih pravila i uputstava spasilaca unutar objekta. SplashDeals.rs se u potpunosti odriče bilo kakve odgovornosti za eventualne povrede, materijalnu štetu, krađu ili gubitak ličnih stvari koji nastanu tokom vašeg boravka u objektu partnera.",
+    "section6_title": "6. Ponašanje Korisnika",
+    "section6_content": "Zloupotreba i Preprodaja: Izričito je zabranjena bilo kakva preprodaja karata kupljenih preko naše platforme u komercijalne svrhe ili njihovo korišćenje za neovlašćene nagradne igre.\n\nIntegritet Platforme: Strogo je zabranjeno korišćenje automatizovanih softvera, robota, skripti ili drugih alata za masovno prikupljanje podataka sa našeg sajta, kao i bilo kakav pokušaj ugrožavanja bezbednosti sistema.\n\nTačnost Podataka: Korisnici su u obavezi da prilikom registracije ili kupovine pruže tačne, potpune i ažurne podatke. Unošenje lažnih podataka može rezultirati blokiranjem naloga i poništavanjem kupljenih karata.",
+    "section7_title": "7. Izmene Uslova",
+    "section7_content": "SplashDeals.rs zadržava pravo da prema sopstvenom nahođenju izmeni, dopuni ili ažurira ove Uslove Korišćenja u bilo kom trenutku, u skladu sa izmenama zakona ili unapređenjem naših usluga. Sve izmene stupaju na snagu odmah po njihovom objavljivanju na ovoj stranici, pri čemu će na vrhu dokumenta biti istaknut datum poslednjeg ažuriranja. Nastavak korišćenja platforme nakon objave izmena smatraće se vašim potpunim i bezuslovnim prihvatanjem novih uslova.",
+    "contact_title": "Informacije za Kontakt",
+    "contact_content": "Ukoliko imate bilo kakvih nejasnoća, pitanja ili su vam potrebna dodatna pojašnjenja u vezi sa našim Uslovima Korišćenja, slobodno kontaktirajte naš pravni tim slanjem email-a na <!--email_off-->support@splashdeals.rs<!--/email_off-->.",
+    "eyebrow": "Pravni Okvir",
+    "legal_badge": "Verifikovani Pravni Protokol"
+  },
+  "privacy": {
+    "title": "Politika Privatnosti",
+    "updated": "Poslednji put ažurirano: April 2026",
+    "intro": "Dobrodošli na platformu SplashDeals.rs. Vaša privatnost i bezbednost vaših ličnih podataka su naši apsolutni prioriteti. Ova sveobuhvatna Politika Privatnosti detaljno objašnjava koje podatke prikupljamo o vama, na koji način ih koristimo, obrađujemo i štitimo, kao i sa kim ih možemo deliti kada koristite našu platformu za pretragu, izbor i kupovinu digitalnih ulaznica za akva parkove i banje u Srbiji. Naš rad je u potpunosti usklađen sa Zakonom o zaštiti podataka o ličnosti Republike Srbije (ZZPL), kao i sa opštim evropskim standardima o zaštiti podataka (GDPR). Molimo vas da pažljivo pročitate ovaj dokument kako biste u potpunosti razumeli naša pravila i vaše zakonske mogućnosti u vezi sa upravljanjem sopstvenim informacijama.",
+    "section1_title": "1. Kontrolor Podataka",
+    "section1_content": "Rukovalac podacima odgovoran za prikupljanje, obradu i zaštitu vaših ličnih informacija na ovoj platformi je osnivački tim projekta SplashDeals.rs. Posvećeni smo primeni najviših standarda bezbednosti podataka. Ukoliko imate bilo kakvih pitanja, nedoumica ili želite da uložite zvanični prigovor u vezi sa vašim ličnim podacima ili našom praksom zaštite privatnosti, možete se u bilo kom trenutku direktno obratiti našem Službeniku za zaštitu podataka o ličnosti slanjem detaljnog upita na email adresu: <!--email_off-->support@splashdeals.rs<!--/email_off-->.",
+    "section2_title": "2. Informacije Koje Prikupljamo",
+    "section2_content": "Podaci o Korisničkom Nalogu: Prilikom registracije ili kupovine, prikupljamo vaše korisničko ime, email adresu i lozinku koja se čuva u hešovanom i enkriptovanom formatu, onemogućavajući njeno čitanje u sirovom stanju.\n\nTransakcioni Podaci: Informacije o kupljenim kartama, izabranim destinacijama, datumu i vremenu kupovine, kao i statusu uplate.\n\nTehnički Podaci o Uređaju: Vaša IP adresa, tip i verzija internet pretraživača, operativni sistem koji koristite, podešavanja vremenske zone, kao i metapodaci o vašoj poseti dobijeni putem kolačića.\n\nPodaci o Korišćenju Platforme: Detalji o tome kako pretražujete sajt, koje akva parkove najčešće pregledate, koliko se zadržavate na određenim stranicama i koje filtere najradije koristite radi personalizacije sadržaja.",
+    "section3_title": "3. Svrha i Pravni Osnov",
+    "section3_content": "Izvršenje Ugovora: Obrada je neophodna za pružanje naših usluga, uključujući kreiranje naloga, verifikaciju vašeg plaćanja i automatsko izdavanje digitalnih ulaznica.\n\nLegitimni Interes: Analiziramo anonimizovane podatke o korišćenju platforme kako bismo poboljšali brzinu rada sajta, otkrili i sprečili potencijalne prevare, zloupotrebe i sajber napade.\n\nSaglasnost Korisnika: Uz vašu izričitu saglasnost, možemo koristiti vašu email adresu za slanje letnjih obaveštenja, ekskluzivnih popusta i promotivnih ponuda koje možete otkazati u bilo kom trenutku jednostavnim klikom na link za odjavu.\n\nPravne Obaveze: Obrada određenih transakcionih podataka je neophodna radi ispunjenja naših poreskih i računovodstvenih obaveza u skladu sa zakonima Republike Srbije.",
+    "section4_title": "4. Deljenje i Otkrivanje Podataka",
+    "section4_content": "SplashDeals.rs izričito naglašava da ne prodaje, ne iznajmljuje niti na bilo koji komercijalan način deli vaše lične podatke sa trećim stranama za potrebe njihovog marketinga. Vaše podatke delimo isključivo sa:\n\nPouzdanim Podizvođačima i Partnerima: IT kompanijama koje nam pružaju usluge hostinga, održavanja cloud infrastrukture, baze podataka i napredne analitike, pod striktnim ugovorima o poverljivosti.\n\nProcesorima Plaćanja: Vaši podaci o plaćanju se prenose direktno licenciranim bankarskim institucijama radi obrade transakcije.\n\nNadležnim Državnim Organima: Podatke možemo otkriti isključivo u slučajevima kada smo na to zakonski obavezani na osnovu sudskog naloga ili zvaničnog zahteva nadležnih organa u skladu sa zakonom.",
+    "section5_title": "5. Kolačići",
+    "section5_content": "Kolačići su male tekstualne datoteke koje se čuvaju na vašem računaru ili mobilnom uređaju kada posetite naš sajt. Koristimo neophodne funkcionalne kolačiće bez kojih platforma ne bi mogla da funkcioniše (kao što su kolačići za očuvanje vaše korpe i sesije), kao i analitičke kolačiće koji nam pomažu da pratimo statistiku poseta i unapredimo performanse. Detaljna kontrola nad upotrebom kolačića, uključujući mogućnost njihovog potpunog blokiranja i brisanja, dostupna vam je u svakom trenutku unutar podešavanja vašeg internet pretraživača, pri čemu imajte na umu da onemogućavanje određenih kolačića može uticati na funkcionalnost sajta.",
+    "section6_title": "6. Bezbednost Podataka",
+    "section6_content": "Zaštita vaših informacija je naša fundamentalna obaveza. Primenjujemo rigorozne tehničke, administrativne i organizacione mere zaštite, uključujući SSL/TLS enkripciju za sve prenose podataka, hešovanje lozinki, firewall sisteme i strogo kontrolisan pristup podacima samo od strane ovlašćenog osoblja. Naš sistem se redovno testira na ranjivosti kako bismo sprečili neovlašćen pristup, curenje ili gubitak podataka.",
+    "section7_title": "7. Vaša Prava",
+    "section7_content": "Pravo na Informisanje i Pristup: Možete zatražiti detaljnu potvrdu o tome da li i na koji način obrađujemo vaše podatke, kao i kopiju tih podataka.\n\nPravo na Ispravku: Imate pravo da u svakom trenutku zahtevate ispravku ili dopunu vaših netačnih i nepotpunih podataka.\n\nPravo na Brisanje: Možete zahtevati trajno brisanje svih vaših ličnih podataka ('Pravo na zaborav'), pod uslovom da podaci više nisu neophodni za svrhe u koje su prikupljeni ili ako ne postoji druga zakonska obaveza za njihovo čuvanje.\n\nPravo na Ograničenje i Prigovor: Možete uložiti prigovor na obradu podataka zasnovanu na našem legitimnom interesu ili zahtevati privremeno ograničenje obrade tokom procesa provere podataka.",
+    "section8_title": "8. Izmene Ove Politike",
+    "section8_content": "Zadržavamo pravo da ažuriramo i izmenimo ovu Politiku Privatnosti u bilo kom trenutku, prateći razvoj naše platforme, tehnološke promene ili izmene zakonodavstva. Sve izmene će biti odmah objavljene na ovoj stranici, uz ažuriranje datuma na vrhu dokumenta. Preporučujemo da povremeno posetite ovu stranicu kako biste ostali informisani o načinima na koje štitimo vaše informacije."
+  },
+  "seo": {
+    "default_title": "Splashdeals | Najbolji Akva Parkovi i Bazeni u Srbiji",
+    "home": {
+      "title": "Karte za Akva Park Srbija | Preskočite Redove sa Digitalnim Kartama",
+      "description": "Preskočite redove, uskočite u zabavu. Nabavite karte za par sekundi i uđite pravo na bazen uz svoj Apple ili Google Wallet."
+    },
+    "facilities": {
+      "title": "Akva Parkovi i Bazeni u Srbiji | Pronađite Karte 2026",
+      "description": "Otkrijte elitnu kolekciju akva parkova, bazena i spa centara u Srbiji. Rezervišite premium digitalne ulaznice instant."
+    },
+    "search": {
+      "title": "Pretraga Akva Parkova",
+      "description": "Pronađite najbolje akva parkove, bazene i spa centre u Srbiji."
+    },
+    "ticket_modal": {
+      "title": "Detalji Ulaznice | Splashdeals",
+      "description": "Pregledajte detalje i cene ulaznica za akva park."
+    },
+    "ticket_detail": {
+      "title": "Detalji Ulaznice | Splashdeals",
+      "description": "Kupite karte za akva parkove i bazene u Srbiji."
+    }
+  },
+  "amenities": {
+    "water_slides": "Vodeni tobogani",
+    "kids_pool": "Dečiji bazen",
+    "wave_pool": "Bazen sa talasima",
+    "indoor_pool": "Zatvoreni bazen",
+    "restaurant": "Restoran",
+    "lockers": "Ormarići",
+    "changing_rooms": "Kabine",
+    "free_wifi": "Besplatan WiFi",
+    "parking": "Parking",
+    "general_features": "Opšte Karakteristike"
+  },
+  "categories": {
+    "attractions": "Atrakcije",
+    "services": "Usluge",
+    "waterpark": "Akva Park",
+    "pool": "Bazen",
+    "spa": "Spa Centar",
+    "swimming_pool": "Bazen",
+    "beach": "Plaža",
+    "waterpark_label": "Akva Park"
+  },
+  "support": {
+    "title": "Centar za Podršku",
+    "updated": "Dostupni 24/7",
+    "intro": "Dobrodošli u zvanični SplashDeals korisnički centar za podršku i pomoć. Naša primarna misija je da osiguramo da vaše letnje iskustvo i poseta najboljim akva parkovima i banjama u Srbiji proteknu potpuno bezbrižno, sigurno i bez ikakvih tehničkih ili organizacionih prepreka. Svesni smo da planiranje odmora sa porodicom ili prijateljima zahteva maksimalnu preciznost, zbog čega je naš specijalizovani tim za korisničku podršku dostupan 24 sata dnevno, 7 dana u nedelji. Bilo da imate pitanje u vezi sa procesom online kupovine, plaćanjem platnim karticama, preuzimanjem digitalnih ulaznica na telefon, ili vam je potrebna hitna asistencija na samom ulazu u partnerski objekat, ovde ćete pronaći sve potrebne odgovore i direktne kanale komunikacije sa našim operaterima. Naša podrška funkcioniše po najvišim standardima kako bismo vam obezbedili odgovor u najkraćem mogućem roku, najčešće unutar 2 sata tokom trajanja letnje sezone.",
+    "faq_title": "Često Postavljana Pitanja",
+    "faq_1_q": "Kako tačno dobijam svoje kupljene ulaznice i koliko vremena je potrebno za isporuku?",
+    "faq_1_a": "Proces isporuke je potpuno automatizovan i odvija se u realnom vremenu! Čim vaša transakcija bude uspešno procesuirana i potvrđena od strane banke, naš sistem momentalno generiše jedinstvene digitalne karte i šalje ih direktno na email adresu koju ste uneli prilikom kupovine. Pored toga, sve vaše aktivne i iskorišćene karte biće trajno sačuvane i dostupne na vašem ličnom SplashDeals korisničkom profilu u sekciji 'Moj Nalog'. Ukoliko email sa kartama ne stigne u roku od nekoliko minuta nakon završetka plaćanja, molimo vas da obavezno proverite vaše 'Spam', 'Junk' ili 'Promotions' foldere u svom email klijentu, ili se direktno ulogujete na našu platformu gde možete odmah pristupiti svojim QR kodovima.",
+    "faq_2_q": "Da li je neophodno da štampam kupljene digitalne karte pre dolaska na bazene?",
+    "faq_2_a": "Apsolutno ne! SplashDeals je u potpunosti ekološki svesna i digitalno orijentisana platforma. Sve naše ulaznice su dizajnirane za prikazivanje direktno sa ekrana vašeg mobilnog telefona ili pametnog sata. Kada stignete na ulaz akva parka ili banje, dovoljno je da otvorite PDF dokument sa kartom koji smo vam poslali na email ili da je dodate u svoj Apple Wallet ili Google Wallet i pokažete QR kod osoblju na ulazu. Oni će skenirati kod direktno sa vašeg ekrana i omogućiti vam brz prolaz. Molimo vas samo da pre dolaska na ulaz proverite da li je baterija vašeg telefona dovoljno napunjena i da pojačate osvetljenje ekrana radi lakšeg i bržeg skeniranja QR koda na čitaču.",
+    "faq_3_q": "Kakva je procedura i da li mogu dobiti povraćaj novca u slučaju loših vremenskih prilika?",
+    "faq_3_a": "S obzirom na to da je većina naših partnerskih akva parkova i bazena na otvorenom, njihovo radno vreme i dostupnost atrakcija direktno zavise od vremenskih uslova. SplashDeals kao posrednik ne može samostalno odlučivati o povraćaju sredstava u slučaju kiše, vetra ili nepogoda, već se u potpunosti pridržava zvanične poslovne politike pojedinačnog objekta za koji je karta kupljena. U slučaju da partner zvanično zatvori ceo objekat za posetioce na određeni dan zbog ekstremno lošeg vremena, obezbedićemo vam zamenu karte za drugi termin ili kompletan povraćaj novca u koordinaciji sa upravom objekta. Za sve specifične situacije, preporučujemo da nas kontaktirate pre polaska kako bismo proverili trenutni status objekta.",
+    "contact_title": "I dalje vam je potrebna pomoć?",
+    "contact_content": "Ukoliko niste pronašli odgovor na svoje pitanje u našoj bazi često postavljanih pitanja, naš posvećeni korisnički servis je tu za vas. Pišite nam direktno na zvaničnu email adresu <!--email_off-->support@splashdeals.rs<!--/email_off-->. Garantujemo da će naš tim analizirati vaš upit i odgovoriti vam sa konkretnim rešenjem u roku od maksimalno 2 sata tokom letnjih meseci, kako bismo vam omogućili nesmetano uživanje u letu.",
+    "eyebrow": "Centar za Podršku",
+    "squad": "SplashDeals Tim",
+    "contact_btn": "Kontaktirajte Nas"
+  },
+  "how_it_works_page": {
+    "title": "Kako Funkcioniše",
+    "updated": "SplashDeals Protokol v2.0",
+    "intro": "Dobrodošli na Splashdeals, najbrže rastuću platformu za rezervaciju digitalnih ulaznica za akva parkove i banje u Srbiji. Rezervacija vašeg letnjeg bega ne bi trebalo da bude obaveza niti izvor stresa sa dugim čekanjem u redovima pod vrelim suncem. Zato smo kreirali jedinstven, potpuno optimizovan i ultra brz sistem koji vam omogućava da obezbedite svoje karte za samo nekoliko sekundi. Bilo da planirate vikend beg sa porodicom, uzbudljiv dan sa prijateljima na najluđim toboganima ili opuštajući spa tretman u nekoj od naših prelepih banja, naš digitalni protokol osigurava besprekorno iskustvo od momenta pretrage do samog ulaska na bazen. Ceo proces smo pojednostavili i podelili u tri izuzetno jednostavna koraka koji u potpunosti transformišu način na koji planirate svoje slobodno vreme tokom vrelih letnjih meseci.",
+    "step1_title": "1. Otkrijte",
+    "step1_content": "Započnite svoju letnju avanturu jednostavnim istraživanjem naše baze najpopularnijih akva parkova, termalnih banja i bazena širom Srbije. Naša platforma nudi detaljne i ažurne profile svakog objekta, uključujući informacije o radnom vremenu, cenama, pratećim sadržajima (poput vodenih tobogana, bazena sa talasima, restorana, parkinga i svlačionica) kao i tačnoj geografskoj lokaciji. Bez obzira da li pretražujete po regijama, gradovima ili specifičnim atrakcijama za decu i odrasle, naši napredni i inteligentni filteri će vam pomoći da u roku od nekoliko sekundi pronađete idealno mesto koje u potpunosti odgovara vašim letnjim željama i planiranom budžetu.",
+    "step2_title": "2. Obezbedite",
+    "step2_content": "Nakon što izaberete svoju savršenu letnju destinaciju, proces kupovine i obezbeđivanja karata je neverovatno brz i potpuno siguran. Izaberite željeni broj ulaznica (bilo da su u pitanju pojedinačne, porodične ili sezonske propusnice) i nastavite ka našoj visoko obezbeđenoj kasi. Koristimo najsavremenije SSL/TLS protokole za enkripciju platnih podataka, sarađujući isključivo sa proverenim provajderima platnih usluga. Plaćanje možete izvršiti momentalno pomoću bilo koje platne kartice, bez potrebe za komplikovanim i dugotrajnim registracijama ili popunjavanjem beskonačnih formulara na sajtu. Ceo proces je dizajniran sa fokusom na brzinu i apsolutnu zaštitu vaše privatnosti.",
+    "step3_title": "3. Uživajte",
+    "step3_content": "Zaboravite na mukotrpno čekanje na blagajnama i stajanje u redovima na direktnom suncu. Odmah nakon uspešno izvršene uplate, vaša digitalna ulaznica stiže direktno na vašu email adresu, a takođe postaje dostupna i unutar vašeg korisničkog naloga na platformi. Naše ulaznice su u potpunosti prilagođene modernim uređajima i možete ih sačuvati u vaš Apple ili Google Wallet za maksimalnu praktičnost. Kada stignete na ulaz izabranog akva parka ili banje, jednostavno pokažite jedinstveni QR kod sa ekrana vašeg mobilnog telefona našem partneru na ulazu. Osoblje će skenirati vaš kod i vi možete momentalno da uskočite u bazen i započnete svoju zabavu!",
+    "cta": "Započni Istraživanje"
+  },
+  "cookies": {
+    "title": "Politika Kolačića",
+    "updated": "Poslednji put ažurirano: April 2026",
+    "intro": "Dobrodošli na stranicu o Politici Kolačića za SplashDeals.rs. Kako bismo vam obezbedili najbrže, najsigurnije i najfunkcionalnije korisničko iskustvo tokom pretrage i kupovine digitalnih ulaznica za akva parkove u Srbiji, naša platforma koristi tehnologiju poznatu pod nazivom 'kolačići' (cookies). Ova politika detaljno opisuje šta su kolačići, koje vrste kolačića koristimo, u koje svrhe ih implementiramo, kako sarađujemo sa eksternim analitičkim uslugama, kao i na koji način možete u potpunosti kontrolisati, izmeniti ili onemogućiti njihovo skladištenje na vašem uređaju. Nastavkom korišćenja naše platforme bez izmene podešavanja vašeg pretraživača, saglasni ste sa korišćenjem kolačića u skladu sa ovim pravilima.",
+    "section1_title": "1. Šta su kolačići?",
+    "section1_content": "Kolačići predstavljaju male tekstualne datoteke sastavljene od slova i brojeva koje internet sajt šalje i privremeno ili trajno skladišti na hard disku vašeg računara, pametnog telefona, tableta ili drugog uređaja preko koga pristupate mreži. Svaki put kada se vratite na naš sajt, vaš pretraživač šalje ove datoteke nazad našem serveru. To nam omogućava da prepoznamo vaš uređaj, zapamtimo vaše specifične preferencije (kao što su izabrani grad ili region), sačuvamo stanje vaše korpe tokom procesa kupovine, ubrzamo učitavanje stranica i pružimo vam personalizovan sadržaj u skladu sa vašim interesovanjima.",
+    "section2_title": "2. Kako ih koristimo",
+    "section2_content": "Neophodni Funkcionalni Kolačići: Ovi kolačići su od suštinskog značaja za pravilan rad osnovnih funkcija sajta. Oni omogućavaju bezbednu prijavu na vaš nalog, održavanje aktivne sesije, pamćenje karata koje ste dodali u korpu i bezbedan prolazak kroz proces kase. Bez ovih kolačića, rad platforme bi bio tehnički onemogućen.\n\nAnalitički Kolačići i Kolačići Performansi: Pomažu nam da u potpunosti anonimno pratimo i analiziramo saobraćaj na platformi. Saznajemo koje stranice su najpopularnije, koliko vremena korisnici provode na sajtu i da li se suočavaju sa tehničkim greškama. Ovi podaci nam služe isključivo za optimizaciju brzine, navigacije i ukupnog korisničkog iskustva.\n\nPreferencijalni Kolačići: Omogućavaju sajtu da zapamti informacije koje menjaju način na koji se sajt ponaša ili izgleda, poput vašeg izabranog jezika ili regije u Srbiji.",
+    "section3_title": "3. Upravljanje kolačićima",
+    "section3_content": "Većina savremenih internet pretraživača je fabrički podešena da automatski prihvata kolačiće. Međutim, vi imate punu kontrolu i pravo da u svakom trenutku promenite podešavanja pretraživača tako da odbija sve kolačiće, da vas obaveštava kada se novi kolačić šalje ili da ih potpuno izbriše sa vašeg uređaja. Ove opcije se obično nalaze u menijima 'Options', 'Settings' ili 'Preferences' vašeg pretraživača (kao što su Google Chrome, Mozilla Firefox, Safari ili Microsoft Edge). Molimo vas da imate na umu da ukoliko odlučite da blokirate ili obrišete neophodne kolačiće, pojedini segmenti platforme SplashDeals.rs (poput korpe i prijave) možda neće funkcionisati ispravno ili uopšte neće biti dostupni.",
+    "contact_title": "Pitanja?",
+    "contact_content": "Ukoliko imate bilo kakvih pitanja, sumnji ili su vam potrebne dodatne tehničke informacije u vezi sa upotrebom kolačića na našoj platformi, slobodno nam se obratite slanjem email-a na <!--email_off-->privacy@splashdeals.rs<!--/email_off--> i naš tim će vam sa zadovoljstvom pružiti sve detalje."
+  },
+  "errors": {
+    "title": "Neočekivane",
+    "highlight": "Turbulencije",
+    "subtitle": "Došlo je do neočekivanog talasa. Naš tim već radi na smirivanju situacije.",
+    "try_again": "Pokušaj Ponovo",
+    "back_home": "Nazad Na Početnu",
+    "cart_subtitle": "Došlo je do greške prilikom učitavanja vaše korpe ili procesa plaćanja.",
+    "how_it_works_subtitle": "Nismo uspeli da učitamo uputstvo za korišćenje digitalnih karata.",
+    "support_subtitle": "Došlo je do greške prilikom učitavanja kontakt forme ili čestih pitanja.",
+    "search_subtitle": "Došlo je do greške pri pretrazi akva parkova. Molimo pokušajte ponovo.",
+    "terms_subtitle": "Nismo uspeli da učitamo uslove korišćenja.",
+    "privacy_subtitle": "Nismo uspeli da učitamo politiku privatnosti.",
+    "cookies_subtitle": "Nismo uspeli da učitamo politiku kolačića.",
+    "success_subtitle": "Došlo je do greške prilikom verifikacije vaše kupovine.",
+    "ticket_detail_subtitle": "Nismo uspeli da učitamo detalje o ovoj ulaznici.",
+    "modal_search_subtitle": "Došlo je do greške u pretrazi.",
+    "modal_ticket_subtitle": "Došlo je do greške pri otvaranju brzog pregleda ulaznice."
+  },
+  "cart": {
+    "title": "Vaša Korpa",
+    "description": "Pregledajte izabrane karte za akva parkove i finalizujte svoje letnje planove.",
+    "terms_notice": "Klikom na 'Nastavi na Plaćanje', prihvatate naše Uslove Korišćenja i Politiku Privatnosti."
+  },
+  "success": {
+    "metadata": {
+      "title": "Plaćanje Uspešno",
+      "description": "Vaše Splashdeals karte su spremne za korišćenje."
+    },
+    "access_denied": {
+      "title": "Pristup Odbijen",
+      "description": "Nedostaje identifikacioni broj sesije. Ukoliko ste upravo završili plaćanje, proverite svoj email."
+    },
+    "processing": {
+      "title": "OBRADA PLAĆANJA...",
+      "description": "Verifikujemo Vašu transakciju i generišemo karte."
+    },
+    "header": {
+      "title": "Plaćanje",
+      "status": "Uspešno",
+      "description": "Vaše ulaznice su spremne! Iskoristite QR kodove ispod direktno sa telefona ili ih preuzmite za štampu."
+    },
+    "ticket": {
+      "valid": "Validna Ulaznica",
+      "location": "Lokacija",
+      "issue_date": "Datum Izdavanja",
+      "ref": "REF"
+    },
+    "actions": {
+      "continue": "NASTAVI KUPOVINU",
+      "download": "PREUZMI KARTE"
+    },
+    "footer": {
+      "email_notice": "Potvrda o transakciji je poslata na Vašu email adresu. Ukoliko ne vidite email, proverite Spam folder.",
+      "protocol": "Splashdeals • Safe-Gate Payment Protocol v3.0"
+    }
+  },
+  "filters": {
+    "all_cities": "Svi Gradovi",
+    "min_price": "Min Cena",
+    "max_price": "Max Cena",
+    "sort_by": "Sortiraj po",
+    "sort_price_asc": "Cena: Od Niže ka Višoj",
+    "sort_price_desc": "Cena: Od Više ka Nižoj",
+    "sort_name": "Naziv: A do Z",
+    "clear_filters": "Obriši Filtere",
+    "filters_label": "Filteri",
+    "sort_newest": "Najnoviji",
+    "filter_by_category": "Filtriraj po kategoriji"
+  },
+  "not_found": {
+    "title": "Gde ste se",
+    "highlight": "Izgubili",
+    "desc": "Ova stranica nije napravila talas. Bazen koji tražite ne postoji — ili je premešten.",
+    "sublabel": "Možda je ispario na letnjoj vrućini. ☀️",
+    "back_home": "Nazad na Početnu",
+    "browse_parks": "Pretraži Destinacije"
+  },
+  "search": {
+    "sr_label": "Pretražite akva parkove, gradove ili akcije",
+    "placeholder": "Pretražite akva parkove, gradove ili akcije...",
+    "recent_searches": "Nedavne Pretrage",
+    "recent_chips": [
+      "Petroland",
+      "Beograd",
+      "Porodične Akcije"
+    ],
+    "searching": "Pretražujemo Srpske Vode...",
+    "no_results": "Nema pronađenih iskustava",
+    "to_close": "za zatvaranje",
+    "to_select": "za odabir",
+    "brand_tag": "Splash Otkrivanje v2.0"
+  },
+  "media_gallery": {
+    "eyebrow": "Galerija",
+    "title": "Doživite Atmosferu",
+    "fallback_caption": "Letnji Užitak",
+    "play_video": "Pusti Video",
+    "expand_view": "Prikaži Veće"
+  }
+}

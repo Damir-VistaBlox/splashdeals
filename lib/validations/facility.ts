@@ -1,0 +1,96 @@
+import { z } from "zod"
+
+export const facilitySchema = z.object({
+  name: z.string().min(2, "Name is too short"),
+  slug: z.string().min(2, "Slug is too short"),
+  category: z.string().min(1, "Pick a category"),
+  city: z.string().min(2, "City is required"),
+  streetName: z.string().min(2, "Street name is required"),
+  streetNumber: z.string().min(1, "Number is required"),
+  postalCode: z.string().min(4, "Postal code is required"),
+  status: z.enum(["DRAFT", "ACTIVE"]),
+})
+
+export type FacilityFormValues = z.infer<typeof facilitySchema>
+
+export const updateFacilityGovernanceSchema = z.object({
+  facilityId: z.string().uuid(),
+  name: z.string().min(2, "Name is too short"),
+  slug: z.string().min(2, "Slug is too short"),
+  description: z.string().max(2000).refine(val => val.length === 0 || val.length >= 10, {
+    message: "Description must be at least 10 characters"
+  }),
+  descriptionSr: z.string().max(2000).refine(val => !val || val.length === 0 || val.length >= 10, {
+    message: "Description must be at least 10 characters"
+  }).nullish(),
+  city: z.string().min(2, "City is required"),
+  streetName: z.string().min(2, "Street name is required"),
+  streetNumber: z.string().min(1, "Number is required"),
+  postalCode: z.string().min(4, "Postal code is required"),
+  hours: z.array(z.object({
+    dayOfWeek: z.number().min(0).max(6),
+    openTime: z.string().regex(/^([01]\d|2[0-3]):([0-5]\d)$/, "Invalid open time format (HH:mm)"),
+    closeTime: z.string().regex(/^([01]\d|2[0-3]):([0-5]\d)$/, "Invalid close time format (HH:mm)"),
+    isClosed: z.boolean().default(false),
+  })),
+  targetCityIds: z.array(z.string()).default([]),
+  status: z.enum(["DRAFT", "ACTIVE", "CLOSED", "EMERGENCY_SHUTDOWN"]).optional(),
+  metaTitle: z.string().max(70, "SEO Title is too long (max 70 chars)").nullish(),
+  metaDescription: z.string().max(160, "SEO Description is too long").nullish(),
+  logoUrl: z.string().nullish(),
+  publicPhone: z.string().max(25, "Phone number is too long").nullish(),
+  publicEmail: z.string().email("Invalid email format").nullish().or(z.literal("")),
+  socialLinks: z.object({
+    facebook: z.string().url("Invalid Facebook URL").nullish().or(z.literal("")),
+    instagram: z.string().url("Invalid Instagram URL").nullish().or(z.literal("")),
+    website: z.string().url("Invalid Website URL").nullish().or(z.literal("")),
+  }).default({}),
+  emergencyMessage: z.string().max(500, "Message is too long").nullish(),
+  seoArticle: z.string().max(10000, "SEO Article is too long").nullish(),
+  transitGuide: z.string().max(3000, "Transit guide is too long").nullish(),
+})
+
+export type UpdateFacilityGovernanceValues = z.infer<typeof updateFacilityGovernanceSchema>
+
+export const updateFacilityAmenitiesSchema = z.object({
+  facilityId: z.string().uuid(),
+  lastUpdatedAt: z.string().nullish(),
+  amenities: z.array(z.object({
+    amenityId: z.string(),
+    name: z.string().min(1, "Name is required"),
+    category: z.string().nullish(),
+    icon: z.string(),
+    type: z.enum(["QUANTIFIABLE", "BOOLEAN", "TEXT"]),
+    checked: z.boolean(),
+    value: z.string().max(100, "Metadata is too long (max 100 chars)").nullish(),
+    displayOrder: z.number().int(),
+    isNew: z.boolean().optional(),
+    isSeeded: z.boolean().optional(),
+    coverage: z.array(z.string()).optional(),
+    totalFacilities: z.number().int().optional(),
+    isFeatured: z.boolean().default(false),
+    scheduledAt: z.string().datetime().nullish(),
+    imageUrl: z.string().nullish(),
+  })),
+})
+
+export type UpdateFacilityAmenitiesValues = z.infer<typeof updateFacilityAmenitiesSchema>
+
+export const updateFacilityStatusSchema = z.object({
+  facilityId: z.string().uuid(),
+  status: z.enum(["DRAFT", "ACTIVE", "CLOSED", "EMERGENCY_SHUTDOWN"]),
+})
+
+export type UpdateFacilityStatusValues = z.infer<typeof updateFacilityStatusSchema>
+
+export const updateFacilityOperationsSchema = z.object({
+  facilityId: z.string().uuid(),
+  hours: z.array(z.object({
+    dayOfWeek: z.number().min(0).max(6),
+    openTime: z.string().regex(/^([01]\d|2[0-3]):([0-5]\d)$/, "Invalid open time format (HH:mm)"),
+    closeTime: z.string().regex(/^([01]\d|2[0-3]):([0-5]\d)$/, "Invalid close time format (HH:mm)"),
+    isClosed: z.boolean(),
+  })),
+})
+
+export type UpdateFacilityOperationsValues = z.infer<typeof updateFacilityOperationsSchema>

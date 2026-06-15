@@ -1,0 +1,536 @@
+"use client"
+import { Icon } from "@/components/ui/Icon";
+
+import * as React from "react"
+import { useTransition, useState, useDeferredValue } from "react"
+import { toast } from "sonner"
+import { useRouter } from "next/navigation"
+import { 
+  Table, 
+  TableBody, 
+  TableCell, 
+  TableHead, 
+  TableHeader, 
+  TableRow 
+} from "@/components/ui/table"
+import { Input } from "@/components/ui/input"
+import { Switch } from "@/components/ui/switch"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+
+import { 
+  updateFacilityAmenities,
+  deleteGlobalAmenity
+} from "@/app/(server)/actions/amenity-actions"
+
+// 🎨 Icon Resolver for premium, curated visual styling
+const AMENITY_MATERIAL_ICON_MAP: Record<string, string> = {
+  Waves: "waves",
+  Droplets: "water_drop",
+  Sun: "wb_sunny",
+  Flame: "local_fire_department",
+  ShieldAlert: "verified_user",
+  Clock: "schedule",
+  Utensils: "restaurant",
+  Wifi: "wifi",
+  Coffee: "local_cafe",
+  Wind: "air",
+  wind: "air",
+  Car: "directions_car",
+  car: "directions_car",
+}
+
+function AmenityIcon({ iconName, className }: { iconName: string; className?: string }) {
+  const symbol = AMENITY_MATERIAL_ICON_MAP[iconName] || "circle"
+  return <Icon name={symbol} className={className} />
+}
+
+interface AmenityItem {
+  id: string
+  name: string
+  icon: string
+  category: string
+  type: "BOOLEAN" | "QUANTIFIABLE" | "TEXT"
+  checked: boolean
+  value: string
+  isFeatured: boolean
+  isSeeded: boolean
+  displayOrder: number
+}
+
+interface CompactAmenitiesTableProps {
+  facilityId: string
+  allAmenities: Array<{
+    id: string
+    name: string
+    icon: string
+    category: string | null
+    isSeeded: boolean
+    type: "BOOLEAN" | "QUANTIFIABLE" | "TEXT"
+  }>
+  initialFacilityAmenities: Array<{
+    facilityId: string
+    amenityId: string
+    value: string | null
+    imageUrl: string | null
+    displayOrder: number
+    isActive: boolean
+    isFeatured: boolean
+    scheduledAt: Date | null
+  }>
+}
+
+export function CompactAmenitiesTable({
+  facilityId,
+  allAmenities,
+  initialFacilityAmenities,
+}: CompactAmenitiesTableProps) {
+  const router = useRouter()
+  const [isPending, startTransition] = useTransition()
+  
+  // 🔍 Search & Filtering States
+  const [searchQuery, setSearchQuery] = useState("")
+  const deferredQuery = useDeferredValue(searchQuery)
+  
+  // 📋 Core Amenities State mapping
+  const [items, setItems] = useState<AmenityItem[]>(() => {
+    return allAmenities.map(a => {
+      const existing = initialFacilityAmenities.find(fa => fa.amenityId === a.id)
+      return {
+        id: a.id,
+        name: a.name,
+        icon: a.icon,
+        category: a.category || "General Features",
+        type: a.type,
+        checked: !!existing && existing.isActive,
+        value: existing?.value || "",
+        isFeatured: existing?.isFeatured || false,
+        isSeeded: a.isSeeded,
+        displayOrder: existing?.displayOrder ?? 999,
+      }
+    }).sort((a, b) => {
+      // Show checked first, then alphabetical or display order
+      if (a.checked !== b.checked) return a.checked ? -1 : 1
+      return a.name.localeCompare(b.name)
+    })
+  })
+
+  // 📝 New Amenity Row States
+  const [newRow, setNewRow] = useState({
+    name: "",
+    type: "BOOLEAN" as "BOOLEAN" | "QUANTIFIABLE" | "TEXT",
+    category: "General Features",
+    icon: "CircleDot",
+  })
+  const [isCreating, setIsCreating] = useState(false)
+
+  // 🔄 Save specific amenity helper (Instant background transaction)
+  const saveAmenity = async (updatedItem: AmenityItem) => {
+    startTransition(async () => {
+      try {
+        const payload = [{
+          amenityId: updatedItem.id,
+          checked: updatedItem.checked,
+          value: updatedItem.value,
+          isFeatured: updatedItem.isFeatured,
+          displayOrder: updatedItem.displayOrder,
+        }]
+        
+        const result = await updateFacilityAmenities(facilityId, payload)
+        
+        if (result && !result.success) {
+          throw new Error("Registry reject")
+        }
+        
+        toast.success(`Updated ${updatedItem.name}`, {
+          description: updatedItem.checked ? "Amenity is registered live." : "Amenity removed from registry.",
+          duration: 1500,
+        })
+        router.refresh()
+      } catch (err) {
+        toast.error("Auto-sync Failed", {
+          description: "Failed to persist changes to the infrastructure grid.",
+        })
+        // Rollback local state logic can go here if needed
+      }
+    })
+  }
+
+  // 🖱️ Event Handlers
+  const handleToggleActive = (id: string, checked: boolean) => {
+    setItems(prev => prev.map(item => {
+      if (item.id === id) {
+        const updated = { ...item, checked }
+        saveAmenity(updated)
+        return updated
+      }
+      return item
+    }))
+  }
+
+  const handleToggleFeatured = (id: string) => {
+    setItems(prev => prev.map(item => {
+      if (item.id === id) {
+        const updated = { ...item, isFeatured: !item.isFeatured }
+        saveAmenity(updated)
+        return updated
+      }
+      return item
+    }))
+  }
+
+  const handleValueChange = (id: string, value: string) => {
+    setItems(prev => prev.map(item => {
+      if (item.id === id) {
+        return { ...item, value }
+      }
+      return item
+    }))
+  }
+
+  const handleValueBlur = (id: string) => {
+    const item = items.find(i => i.id === id)
+    if (item) {
+      saveAmenity(item)
+    }
+  }
+
+  const handleValueKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, id: string) => {
+    if (e.key === "Enter") {
+      e.preventDefault()
+      e.currentTarget.blur()
+    }
+  }
+
+  // 🗑️ Delete Custom Amenity
+  const handleDeleteCustom = async (id: string, name: string) => {
+    if (!confirm(`Are you sure you want to permanently delete custom amenity "${name}" from the global registry?`)) {
+      return
+    }
+
+    startTransition(async () => {
+      try {
+        const res = await deleteGlobalAmenity(id, facilityId)
+        if (res && res.success) {
+          setItems(prev => prev.filter(item => item.id !== id))
+          toast.success("Amenity Deleted", {
+            description: `Permanently removed ${name} from registry.`,
+          })
+          router.refresh()
+        } else {
+          throw new Error("Failed to delete custom amenity")
+        }
+      } catch (err) {
+        toast.error("Deletion Rejected", {
+          description: "This custom asset is still tied to operational dependencies.",
+        })
+      }
+    })
+  }
+
+  // ➕ Inline Ingest / Row Creation
+  const handleCreateAmenity = async () => {
+    if (!newRow.name.trim()) {
+      toast.error("Validation Error", { description: "Name is required to register an asset." })
+      return
+    }
+
+    setIsCreating(true)
+    try {
+      const tempId = crypto.randomUUID()
+      const payload = [{
+        amenityId: tempId,
+        checked: true,
+        value: "",
+        displayOrder: items.length,
+        isFeatured: false,
+        isNew: true,
+        name: newRow.name.trim(),
+        category: newRow.category,
+        icon: newRow.icon,
+        type: newRow.type,
+      }]
+
+      const result = await updateFacilityAmenities(facilityId, payload)
+      
+      if (result && result.success) {
+        toast.success("Asset Created & Registered", {
+          description: `Custom infrastructure "${newRow.name}" is now live.`,
+        })
+        
+        // Refresh local state lists gracefully
+        const newItem: AmenityItem = {
+          id: tempId,
+          name: newRow.name.trim(),
+          icon: newRow.icon,
+          category: newRow.category,
+          type: newRow.type,
+          checked: true,
+          value: "",
+          isFeatured: false,
+          isSeeded: false,
+          displayOrder: items.length,
+        }
+
+        setItems(prev => [newItem, ...prev])
+        setNewRow({
+          name: "",
+          type: "BOOLEAN",
+          category: "General Features",
+          icon: "CircleDot",
+        })
+        router.refresh()
+      } else {
+        throw new Error("API rejection")
+      }
+    } catch (err) {
+      toast.error("Registration Failed", {
+        description: "Verify name uniqueness and schema limits.",
+      })
+    } finally {
+      setIsCreating(false)
+    }
+  }
+
+  // Filter items matching search
+  const filteredItems = items.filter(item => {
+    const term = deferredQuery.toLowerCase()
+    return (
+      item.name.toLowerCase().includes(term) ||
+      item.category.toLowerCase().includes(term) ||
+      item.type.toLowerCase().includes(term)
+    )
+  })
+
+  return (
+    <TooltipProvider>
+      <div className="rounded-2xl border border-white/5 bg-slate-900/40 backdrop-blur-xl p-6 space-y-6 shadow-2xl relative overflow-hidden">
+      {/* Table Action Controls */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="relative flex-1 max-w-md">
+          <Icon name="search" className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[16px] text-slate-500" />
+          <Input
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search facility infrastructure, slides, features..."
+            className="pl-10 h-10 bg-slate-950/40 border-white/5 text-slate-300 focus-visible:ring-cyan-500 rounded-xl"
+          />
+        </div>
+        
+        {isPending && (
+          <div className="flex items-center gap-2 text-cyan-400 text-xs font-bold uppercase tracking-widest px-3 py-1 bg-cyan-500/10 rounded-full border border-cyan-500/20">
+            <Icon name="progress_activity" className="text-[14px] animate-spin" />
+            Synchronizing...
+          </div>
+        )}
+      </div>
+
+      {/* Grid Container */}
+      <div className="overflow-x-auto rounded-xl border border-white/5 bg-slate-950/20 max-h-[500px] overflow-y-auto no-scrollbar">
+        <Table>
+          <TableHeader className="sticky top-0 bg-slate-950/80 backdrop-blur-md z-10 border-b border-white/5">
+            <TableRow className="hover:bg-transparent border-white/5">
+              <TableHead className="w-[80px] text-[10px] font-black uppercase tracking-widest text-slate-400">Active</TableHead>
+              <TableHead className="text-[10px] font-black uppercase tracking-widest text-slate-400">Infrastructure Asset</TableHead>
+              <TableHead className="w-[120px] text-[10px] font-black uppercase tracking-widest text-slate-400">Type</TableHead>
+              <TableHead className="w-[200px] text-[10px] font-black uppercase tracking-widest text-slate-400">Operational Value</TableHead>
+              <TableHead className="w-[80px] text-center text-[10px] font-black uppercase tracking-widest text-slate-400">Featured</TableHead>
+              <TableHead className="w-[80px] text-right text-[10px] font-black uppercase tracking-widest text-slate-400">Action</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filteredItems.length > 0 ? (
+              filteredItems.map((item) => (
+                <TableRow 
+                  key={item.id} 
+                  className="hover:bg-white/[0.02] border-white/5 transition-colors group"
+                >
+                  {/* Toggle Switch */}
+                  <TableCell>
+                    <Switch
+                      checked={item.checked}
+                      onCheckedChange={(val) => handleToggleActive(item.id, val)}
+                      className="data-[state=checked]:bg-cyan-500 cursor-pointer"
+                    />
+                  </TableCell>
+                  
+                  {/* Amenity Name with Icon Dynamic Resolver */}
+                  <TableCell className="font-medium text-slate-200">
+                    <div className="flex items-center gap-3">
+                      <div className="flex size-7 items-center justify-center rounded-lg bg-white/5 border border-white/10 text-cyan-400 shrink-0">
+                        <AmenityIcon iconName={item.icon} className="text-[14px]" />
+                      </div>
+                      <div className="flex flex-col min-w-0">
+                        <span className="text-xs font-bold truncate">{item.name}</span>
+                        <span className="text-[9px] text-slate-500 uppercase tracking-widest truncate">{item.category}</span>
+                      </div>
+                    </div>
+                  </TableCell>
+
+                  {/* Value Type Badge */}
+                  <TableCell>
+                    <Badge 
+                      variant="outline"
+                      className="text-[9px] font-black uppercase tracking-widest py-0.5 border-white/10 text-slate-400"
+                    >
+                      {item.type}
+                    </Badge>
+                  </TableCell>
+
+                  {/* Inline Value Form Editing */}
+                  <TableCell>
+                    {item.checked && (item.type === "QUANTIFIABLE" || item.type === "TEXT") ? (
+                      <Input
+                        value={item.value}
+                        onChange={(e) => handleValueChange(item.id, e.target.value)}
+                        onBlur={() => handleValueBlur(item.id)}
+                        onKeyDown={(e) => handleValueKeyDown(e, item.id)}
+                        placeholder={item.type === "QUANTIFIABLE" ? "e.g. 5 slides" : "e.g. Wi-Fi speed, extra details"}
+                        className="h-8 bg-slate-950/40 border-white/5 text-xs text-slate-200 focus-visible:ring-cyan-500 rounded-lg max-w-[180px]"
+                        aria-label={`${item.name} value`}
+                      />
+                    ) : item.checked ? (
+                      <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-400">
+                        <Icon name="check" className="text-[14px]" />
+                        <span>Enabled</span>
+                      </div>
+                    ) : (
+                      <span className="text-xs text-slate-600 font-medium">Inactive</span>
+                    )}
+                  </TableCell>
+
+                  {/* Toggle Featured Star */}
+                  <TableCell className="text-center">
+                    {item.checked ? (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <button
+                            type="button"
+                            onClick={() => handleToggleFeatured(item.id)}
+                            className="outline-none focus:ring-1 focus:ring-cyan-500 rounded p-1 group cursor-pointer"
+                            aria-label={item.isFeatured ? "Unfeature amenity" : "Feature amenity"}
+                          >
+                            <Icon name="star" className={`text-[16px] transition-all duration-200 ${
+                                item.isFeatured 
+                                  ? "text-amber-400 fill-amber-400 drop-shadow-[0_0_8px_rgba(245,158,11,0.5)] scale-110" 
+                                  : "text-slate-700 hover:text-slate-400"
+                              }`} />
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent className="bg-slate-950 border border-white/10 text-white/90 text-[10px] font-medium tracking-wide">
+                          {item.isFeatured ? "Unfeature amenity on landing" : "Feature amenity on landing"}
+                        </TooltipContent>
+                      </Tooltip>
+                    ) : (
+                      <span className="text-xs text-slate-800">-</span>
+                    )}
+                  </TableCell>
+
+                  {/* Delete Button (Only Custom Core Amenities) */}
+                  <TableCell className="text-right">
+                    {!item.isSeeded ? (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteCustom(item.id, item.name)}
+                            className="text-slate-600 hover:text-rose-500 transition-colors p-1.5 rounded-lg hover:bg-rose-500/10 cursor-pointer animate-in fade-in zoom-in-95 duration-100"
+                            aria-label="Delete custom amenity permanently"
+                          >
+                            <Icon name="delete" className="text-[14px]" />
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent className="bg-slate-950 border border-white/10 text-white/90 text-[10px] font-medium tracking-wide">
+                          Delete custom amenity permanently
+                        </TooltipContent>
+                      </Tooltip>
+                    ) : (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span className="cursor-help inline-block">
+                            <Icon name="help" className="text-[14px] text-slate-800 ml-auto mr-2" />
+                          </span>
+                        </TooltipTrigger>
+                        <TooltipContent className="bg-slate-950 border border-white/10 text-white/90 text-[10px] font-medium tracking-wide">
+                          Core Infrastructure (Cannot Delete)
+                        </TooltipContent>
+                      </Tooltip>
+                    )}
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={6} className="h-32 text-center text-slate-500 text-xs font-medium uppercase tracking-widest">
+                  No matching assets found
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
+
+      {/* ➕ Space-Efficient Table Footer Add Row */}
+      <div className="pt-4 border-t border-white/5">
+        <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-3">Add Custom Facility Infrastructure</h3>
+        <div className="flex flex-col md:flex-row items-center gap-3 bg-slate-950/40 p-4 border border-white/5 rounded-xl">
+          <Input
+            value={newRow.name}
+            onChange={(e) => setNewRow(prev => ({ ...prev, name: e.target.value }))}
+            placeholder="Infrastructure Asset Name (e.g. Wave Generator)"
+            className="flex-1 h-9 bg-slate-900 border-white/5 text-xs text-slate-300 focus-visible:ring-cyan-500 rounded-lg"
+          />
+
+          <Select
+            value={newRow.type}
+            onValueChange={(val: any) => setNewRow(prev => ({ ...prev, type: val }))}
+          >
+            <SelectTrigger className="w-[140px] h-9 bg-slate-900 border-white/5 text-xs text-slate-300 rounded-lg">
+              <SelectValue placeholder="Value Type" />
+            </SelectTrigger>
+            <SelectContent className="bg-slate-950 border-white/10 text-slate-300">
+              <SelectItem value="BOOLEAN">BOOLEAN</SelectItem>
+              <SelectItem value="QUANTIFIABLE">QUANTIFIABLE</SelectItem>
+              <SelectItem value="TEXT">TEXT</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <Input
+            value={newRow.category}
+            onChange={(e) => setNewRow(prev => ({ ...prev, category: e.target.value }))}
+            placeholder="Category (e.g. Attractions)"
+            className="w-[160px] h-9 bg-slate-900 border-white/5 text-xs text-slate-300 focus-visible:ring-cyan-500 rounded-lg"
+          />
+
+          <Button
+            type="button"
+            onClick={handleCreateAmenity}
+            disabled={isCreating || !newRow.name.trim()}
+            className="h-9 px-4 bg-cyan-500 hover:bg-cyan-400 disabled:bg-white/5 disabled:text-slate-600 text-slate-950 text-xs font-black uppercase tracking-widest rounded-lg flex items-center gap-1.5 shrink-0"
+          >
+            {isCreating ? (
+              <Icon name="progress_activity" className="text-[14px] animate-spin" />
+            ) : (
+              <Icon name="add" className="text-[14px]" />
+            )}
+            <span>Register Asset</span>
+          </Button>
+        </div>
+      </div>
+      </div>
+    </TooltipProvider>
+  )
+}

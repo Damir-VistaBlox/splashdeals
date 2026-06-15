@@ -1,0 +1,473 @@
+generator client {
+  provider        = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  schemas  = ["admin", "partners", "public", "sales"]
+}
+
+model User {
+  id            String        @id @default(cuid())
+  name          String?
+  email         String        @unique
+  emailVerified Boolean       @default(false)
+  image         String?
+  role          UserRole      @default(CUSTOMER)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  accounts      Account[]
+  sessions      Session[]
+  apiKeys       ApiKey[]
+  transactions  Transaction[]
+  amenityAuditLogs AmenityAuditLog[]
+  staffAssignments FacilityStaffAssignment[]
+
+  @@schema("admin")
+}
+
+model ApiKey {
+  id         String    @id @default(uuid())
+  name       String
+  key        String    @unique // hashed
+  prefix     String // first 8 chars for identification
+  userId     String
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt  DateTime?
+  lastUsedAt DateTime?
+  createdAt  DateTime  @default(now())
+
+  @@index([userId])
+  @@map("api_keys")
+  @@schema("admin")
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String   @unique
+  createdAt DateTime
+  updatedAt DateTime
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@schema("admin")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime
+  updatedAt             DateTime
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@schema("admin")
+}
+
+model Verification {
+  id         String    @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime?
+  updatedAt  DateTime?
+
+  @@index([identifier])
+  @@schema("admin")
+}
+
+model Facility {
+  id                String            @id @default(uuid())
+  name              String
+  slug              String            @unique
+  category          String
+  city              String
+  streetName        String
+  streetNumber      String
+  postalCode        String
+  lat               Float?
+  lng               Float?
+  status            FacilityStatus    @default(DRAFT)
+  metaTitle         String?
+  metaDescription   String?
+  logoUrl           String?
+  description       String?
+  descriptionSr     String?
+  publicPhone       String?
+  publicEmail       String?
+  socialLinks       Json?
+  emergencyMessage  String?
+  seoArticle        String?   @db.Text
+  transitGuide      String?   @db.Text
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  amenities         FacilityAmenity[]
+  marketplaceCities FacilityCity[]
+  media             FacilityMedia[]
+  policy            FacilityPolicy?
+  hours             OperatingHours[]
+  payoutProfile     PayoutProfile?
+  tickets           Ticket[]
+  ticketGroups      TicketGroup[]
+  revenue           Transaction[]
+  closures          FacilityClosure[]
+  staffAssignments  FacilityStaffAssignment[]
+
+  @@schema("partners")
+}
+
+/// 🏢 Links FACILITY_STAFF users to the specific facilities they can manage
+model FacilityStaffAssignment {
+  id         String   @id @default(cuid())
+  userId     String
+  facilityId String
+  assignedAt DateTime @default(now())
+  assignedBy String   // userId of the SUPER_ADMIN who assigned this
+
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  facility  Facility  @relation(fields: [facilityId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, facilityId])
+  @@index([facilityId])
+  @@index([userId])
+  @@map("facility_staff_assignments")
+  @@schema("partners")
+}
+
+model FacilityClosure {
+  id          String   @id @default(uuid())
+  facilityId  String
+  startDate   DateTime
+  endDate     DateTime
+  reason      String?
+  isEmergency Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  facility    Facility @relation(fields: [facilityId], references: [id], onDelete: Cascade)
+
+  @@schema("partners")
+}
+
+model Amenity {
+  id         String            @id @default(uuid())
+  name       String            @unique
+  icon       String            @default("Waves")
+  category   String?
+  isSeeded   Boolean           @default(false)
+  type       AmenityValueType  @default(BOOLEAN)
+  facilities FacilityAmenity[]
+
+  @@schema("partners")
+}
+
+model FacilityAmenity {
+  facilityId  String
+  amenityId   String
+  value       String?
+  imageUrl    String?
+  displayOrder Int      @default(0)
+  isActive    Boolean   @default(true)
+  isFeatured  Boolean   @default(false)
+  scheduledAt DateTime?
+  updatedAt   DateTime  @default(now()) @updatedAt
+  
+  amenity      Amenity  @relation(fields: [amenityId], references: [id], onDelete: Cascade)
+  facility     Facility @relation(fields: [facilityId], references: [id], onDelete: Cascade)
+
+  @@id([facilityId, amenityId])
+  @@schema("partners")
+}
+
+model AmenityAuditLog {
+  id         String   @id @default(uuid())
+  facilityId String
+  amenityId  String
+  action     String
+  oldValue   String?
+  newValue   String?
+  userId     String?
+  createdAt  DateTime @default(now())
+
+  user       User?    @relation(fields: [userId], references: [id])
+
+  @@schema("partners")
+}
+
+model FacilityMedia {
+  id           String       @id @default(uuid())
+  facilityId   String
+  url          String
+  thumbnailUrl String?
+  originalUrl  String?
+  type         MediaType    @default(PHOTO)
+  purpose      MediaPurpose @default(GALLERY)
+  caption      String?
+  order        Int          @default(0)
+  isHero            Boolean      @default(false)
+  isCardBackground  Boolean      @default(false)
+  isGalleryVisible  Boolean      @default(true)
+  createdAt    DateTime     @default(now())
+  facility     Facility     @relation(fields: [facilityId], references: [id], onDelete: Cascade)
+
+  @@schema("partners")
+}
+
+model OperatingHours {
+  id         String   @id @default(uuid())
+  facilityId String
+  dayOfWeek  Int
+  openTime   String
+  closeTime  String
+  isClosed   Boolean  @default(false)
+  facility   Facility @relation(fields: [facilityId], references: [id], onDelete: Cascade)
+
+  @@schema("partners")
+}
+
+model FacilityPolicy {
+  id         String   @id @default(uuid())
+  facilityId String   @unique
+  rules      String
+  faq        String?
+  facility   Facility @relation(fields: [facilityId], references: [id], onDelete: Cascade)
+
+  @@schema("partners")
+}
+
+model PayoutProfile {
+  id              String   @id @default(uuid())
+  facilityId      String   @unique
+  stripeAccountId String?  @unique
+  commissionRate  Decimal  @default(5.00) @db.Decimal(5, 2)
+  bankName        String?
+  iban            String?
+  facility        Facility @relation(fields: [facilityId], references: [id], onDelete: Cascade)
+
+  @@schema("partners")
+}
+
+model City {
+  id         String         @id @default(uuid())
+  name       String
+  slug       String         @unique
+  facilities FacilityCity[]
+
+  @@schema("partners")
+}
+
+model FacilityCity {
+  facilityId String
+  cityId     String
+  isPrimary  Boolean  @default(false)
+  city       City     @relation(fields: [cityId], references: [id], onDelete: Cascade)
+  facility   Facility @relation(fields: [facilityId], references: [id], onDelete: Cascade)
+
+  @@id([facilityId, cityId])
+  @@schema("partners")
+}
+
+model Ticket {
+  id               String         @id @default(uuid())
+  facilityId       String
+  groupId          String?
+  title            String
+  type             TicketType
+  price            Decimal        @db.Decimal(10, 2)
+  originalPrice    Decimal?       @db.Decimal(10, 2)
+  currency         String         @default("RSD")
+  validityType     ValidityType
+  isActive         Boolean        @default(true)
+  isFeatured       Boolean        @default(false)
+  displayOrder     Int            @default(0)
+  saleStart        DateTime?
+  saleEnd          DateTime?
+  description      String?
+  descriptionSr    String?
+  titleSr          String?
+  imageUrl         String?
+  finePrint        String?
+  requiresIdentity Boolean        @default(false)
+  requiresPhoto    Boolean        @default(false)
+  dayType          DayType?       @default(ALL)
+  timeSlot         TimeSlot?      @default(FULL_DAY)
+  isSeasonPass     Boolean        @default(false)
+  minPeople        Int            @default(1)
+  maxPeople        Int?
+  slug             String?        @unique
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  facility         Facility       @relation(fields: [facilityId], references: [id], onDelete: Cascade)
+  group            TicketGroup?   @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  issuedTickets    IssuedTicket[]
+
+  @@schema("partners")
+}
+
+model TicketGroup {
+  id            String         @id @default(uuid())
+  facilityId    String
+  title         String
+  titleSr       String?
+  description   String?
+  descriptionSr String?
+  displayOrder  Int            @default(0)
+  isActive      Boolean        @default(true)
+  slug          String?        @unique
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  facility      Facility       @relation(fields: [facilityId], references: [id], onDelete: Cascade)
+  tickets       Ticket[]
+  issuedTickets IssuedTicket[]
+
+  @@schema("partners")
+}
+
+model Transaction {
+  id               String         @id @default(uuid())
+  userId           String?
+  facilityId       String
+  stripeSession    String         @unique
+  totalAmount      Decimal        @db.Decimal(10, 2)
+  currency         String         @default("RSD")
+  status           String         @default("PENDING")
+  receiptPdfUrl    String?
+  createdAt        DateTime       @default(now())
+  fulfillmentError Json?
+  issuedTickets    IssuedTicket[]
+  facility         Facility       @relation(fields: [facilityId], references: [id])
+  user             User?          @relation(fields: [userId], references: [id])
+
+  @@schema("sales")
+}
+
+model IssuedTicket {
+  id             String       @id @default(uuid())
+  qrHash         String       @unique
+  ticketId       String?
+  transactionId  String
+  status         TicketStatus @default(ACTIVE)
+  usageCount     Int          @default(0)
+  usageLimit     Int          @default(1)
+  expiryDate     DateTime
+  holderName     String?
+  holderPhotoUrl String?
+  
+  ticket         Ticket?       @relation(fields: [ticketId], references: [id])
+  transaction    Transaction  @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+  
+  ticketGroupId  String?
+  ticketGroup    TicketGroup? @relation(fields: [ticketGroupId], references: [id])
+
+  @@schema("sales")
+}
+
+model Subscriber {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
+  active    Boolean  @default(true)
+  source    String?
+
+  @@map("subscriber")
+  @@schema("public")
+}
+
+enum UserRole {
+  CUSTOMER
+  FACILITY_STAFF
+  SUPER_ADMIN
+
+  @@schema("admin")
+}
+
+enum FacilityStatus {
+  DRAFT
+  ACTIVE
+  CLOSED
+  EMERGENCY_SHUTDOWN
+
+  @@schema("partners")
+}
+
+enum MediaType {
+  PHOTO
+  VIDEO
+
+  @@schema("partners")
+}
+
+enum MediaPurpose {
+  GALLERY
+  HERO_ONLY
+  TICKET
+  AERIAL
+
+  @@schema("partners")
+}
+
+enum TicketType {
+  ADULT
+  CHILD
+  SENIOR
+  STUDENT
+  FAMILY_BUNDLE
+  SUMMER_PASS
+
+  @@schema("partners")
+}
+
+enum ValidityType {
+  FIXED_DATE
+  FLEXIBLE_30_DAY
+  SUMMER_SEASON
+
+  @@schema("partners")
+}
+
+enum TicketStatus {
+  ACTIVE
+  USED
+  EXPIRED
+  CREDIT_ELIGIBLE
+  HOLD
+
+  @@schema("sales")
+}
+
+enum AmenityValueType {
+  QUANTIFIABLE
+  BOOLEAN
+  TEXT
+
+  @@schema("partners")
+}
+
+enum DayType {
+  WEEKDAY
+  WEEKEND
+  HOLIDAY
+  ALL
+
+  @@schema("partners")
+}
+
+enum TimeSlot {
+  FULL_DAY
+  AFTER_16H
+  THREE_HOUR
+
+  @@schema("partners")
+}

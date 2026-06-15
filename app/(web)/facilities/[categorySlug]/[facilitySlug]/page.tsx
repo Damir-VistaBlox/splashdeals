@@ -1,0 +1,776 @@
+import { Icon } from "@/components/ui/Icon";
+import { notFound, redirect, permanentRedirect } from "next/navigation"
+import { Metadata } from "next"
+import Image from "next/image"
+import { prisma } from "@/lib/prisma"
+import Link from "next/link"
+import { connection } from "next/server"
+import { cacheLife, cacheTag } from "next/cache"
+import { Suspense } from "react"
+import { getDictionary } from "@/lib/dictionaries"
+
+/**
+ * 🗑️ Permanently deleted legacy facility paths — return 410 Gone
+ * NOTE: These are handled at the proxy layer (proxy.ts) BEFORE reaching Next.js.
+ * This set is intentionally empty — do NOT add active canonical facility slugs here.
+ * The proxy returns 410 for /facilities/waterpark/[slug], /waterpark/[slug], etc.
+ * Adding a real slug here would cause the 410 branch to fire on the canonical URL.
+ */
+const DELETED_FACILITY_SLUGS = new Set<string>([]); // proxy handles all 410s
+
+function isDeletedFacility(slug: string): boolean {
+  return DELETED_FACILITY_SLUGS.has(slug);
+}
+import { 
+  Ticket, 
+  OperatingHours, 
+  FacilityCity,
+  City
+} from "@prisma/client"
+
+// 🏝️ Islands: Client Components for interactive portions
+import { ShowcaseHero, WeatherBadge } from "./_components/ShowcaseHero"
+import { OperationalPortal, CurrentOperationalStatus } from "./_components/OperationalPortal"
+import { WeatherBadgeSkeleton, OperationalStatusSkeleton, TicketGridSkeleton } from "./_components/ShowcaseSkeletons"
+import dynamic from "next/dynamic"
+
+const ShowcaseTicketGroups = dynamic(() => import("./_components/ShowcaseTicketGroups").then((mod) => mod.ShowcaseTicketGroups), {
+  loading: () => <TicketGridSkeleton />
+});
+
+const MediaGallery = dynamic(() => import("./_components/MediaGallery").then((mod) => mod.MediaGallery), {
+  ssr: true
+});
+
+const ShowcaseAmenities = dynamic(() => import("./_components/ShowcaseAmenities").then((mod) => mod.ShowcaseAmenities), {
+  ssr: true
+});
+
+const DistanceCalculator = dynamic(() => import("./_components/DistanceCalculator").then((mod) => mod.DistanceCalculator), {
+  loading: () => <div className="h-10 w-36 rounded-2xl bg-white/5 border border-white/5" />,
+});
+
+const MobileUnifiedControlPill = dynamic(() => import("./_components/MobileUnifiedControlPill").then((mod) => mod.MobileUnifiedControlPill), {
+  loading: () => <div className="h-16 w-full max-w-md mx-auto rounded-full bg-white/5 border border-white/10" />,
+});
+
+import { GlassCard } from "@/components/ui/GlassCard"
+import { Badge } from "@/components/ui/badge"
+import { Skeleton } from "@/components/ui/skeleton"
+import { PartnerBranding } from "./_components/PartnerBranding"
+import { SidebarWeatherWidget, DetailedWeather } from "./_components/WeatherWidget"
+import { ScrollManager } from "./_components/ScrollManager"
+import { BreadcrumbInjector } from "./_components/BreadcrumbInjector"
+
+import { 
+  Breadcrumb, 
+  BreadcrumbItem, 
+  BreadcrumbLink, 
+  BreadcrumbList, 
+  BreadcrumbPage, 
+  BreadcrumbSeparator 
+} from "@/components/ui/breadcrumb";
+
+import { serialize } from "@/lib/serialize"
+import { ShareButton } from "./_components/ShareButton"
+import { JsonLd } from "@/components/SEO/JsonLd"
+import { validateDiscoverySlug } from "@/lib/routing/discovery";
+import { calculateMaxDiscount } from "@/lib/utils/pricing";
+import { 
+  catLabelMap,
+  buildAttractionSchema, 
+  buildBusinessSchema, 
+  buildProductSchema, 
+  buildVideoSchema, 
+  buildBreadcrumbSchema 
+} from "./_schemas";
+
+interface FacilityPageProps {
+  params: Promise<{
+    categorySlug: string
+    facilitySlug: string
+  }>
+}
+
+/**
+ * 🔒 Reusable cached fetcher forperformance and consistency
+ */
+async function getFacility(slug: string): Promise<any> {
+  "use cache";
+  cacheLife("minutes");
+
+  const result = await prisma.facility.findUnique({
+    where: { slug },
+    include: {
+      media: { orderBy: { order: "asc" } },
+      tickets: { 
+        where: { isActive: true },
+        orderBy: { displayOrder: "asc" }
+      },
+      ticketGroups: {
+        where: { isActive: true },
+        include: {
+          tickets: {
+            where: { isActive: true },
+            orderBy: { displayOrder: "asc" }
+          }
+        },
+        orderBy: { displayOrder: "asc" }
+      },
+      policy: true,
+      hours: { orderBy: { dayOfWeek: "asc" } },
+      amenities: {
+        include: {
+          amenity: true
+        },
+        orderBy: { displayOrder: "asc" }
+      },
+      marketplaceCities: {
+        include: {
+          city: true
+        }
+      }
+    }
+  });
+
+  if (result) {
+    cacheTag(result.id);
+    return serialize(result);
+  }
+  return null;
+}
+
+/**
+ * 🕵️ Metadata Engine (Shared for native showcase page)
+ */
+export async function getFacilityMetadata(facilitySlug: string, categorySlug: string, subPath?: string): Promise<Metadata> {
+  const facility = await getFacility(facilitySlug)
+  if (!facility) {
+    notFound()
+  }
+
+  const currentYear = new Date().getFullYear();
+  const categoryLabel = catLabelMap[facility.category.toLowerCase()] ?? facility.category;
+
+  const activeTickets = (facility.tickets || []).filter((t: any) => t.isActive);
+  const ticketCount = activeTickets.length;
+  const ticketHint = ticketCount > 0 
+    ? ` | ${ticketCount} vrsta ulaznica dostupno`
+    : '';
+
+  const minPrice = activeTickets.length > 0 
+    ? Math.min(...activeTickets.map((t: any) => Number(t.price)))
+    : null;
+
+  const priceHint = minPrice 
+    ? ` Već od ${minPrice} RSD!`
+    : '';
+
+  // Prioritize metaTitle from database, fall back to dynamic formula
+  const maxDiscount = calculateMaxDiscount(facility.tickets || []);
+  
+  // Localize and normalize the facility name (e.g. "AquaPark Petroland" -> "Akva park Petroland")
+  const localizedName = facility.name
+    .replace(/\bAquaPark\b/gi, "Akva park")
+    .replace(/\bAqua Park\b/gi, "Akva park");
+
+  const fallbackTitle = maxDiscount > 0
+    ? `${localizedName} ${facility.city} Ulaznice - Uštedi do ${maxDiscount}%`
+    : `${localizedName} ${facility.city} Ulaznice ${currentYear}`;
+  
+  const rawTitle = facility.metaTitle || fallbackTitle;
+  
+  // Clean up trailing brand suffixes to prevent the root layout template from duplicating the brand name
+  const title = rawTitle
+    .replace(/\s*\|\s*Splash\s*Deals\s*$/i, "")
+    .replace(/\s*\|\s*Splashdeals\s*$/i, "");
+
+  // Prioritize metaDescription from database, fall back to dynamic formula
+  const fallbackDescription = `Kupi ulaznice za ${facility.name} u ${facility.city}.${priceHint} Najbolje cene za ${categoryLabel.toLowerCase()} u Srbiji na Splashdeals.`;
+  const baseDescription = facility.metaDescription || (facility.description?.slice(0, 140) || fallbackDescription);
+  const finalDescription = baseDescription.includes("Već od") ? baseDescription : `${baseDescription}${priceHint}${ticketHint}`;
+
+  const ogImage = facility.media.find((m: any) => m.isHero && m.type === 'PHOTO')?.url 
+    || facility.media.find((m: any) => m.isCardBackground && m.type === 'PHOTO')?.url
+    || facility.media.find((m: any) => m.type === 'PHOTO')?.url
+    || "/og-image.png";
+
+  const canonicalUrl = subPath 
+    ? `https://www.splashdeals.rs/${facilitySlug}/${subPath}`
+    : `https://www.splashdeals.rs/${facilitySlug}`;
+
+  return {
+    title,
+    description: finalDescription,
+    // Explicit index directive — must arrive in the same chunk as the canonical tag.
+    // Never rely on the loading skeleton's absence of noindex; declare it positively.
+    robots: { index: true, follow: true },
+    alternates: { 
+      canonical: canonicalUrl,
+      languages: {
+        "sr-RS": canonicalUrl,
+        "sr": canonicalUrl,
+        "x-default": canonicalUrl,
+      }
+    },
+    openGraph: {
+      title,
+      description: finalDescription,
+      url: canonicalUrl,
+      siteName: "SplashDeals",
+      images: [{ url: ogImage, width: 1200, height: 630, alt: facility.name }],
+      locale: "sr_RS",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description: finalDescription,
+      images: [ogImage],
+    }
+  }
+}
+
+/**
+ * 🕵️ Metadata Engine (For the legacy long-segment redirect)
+ */
+export async function generateMetadata({ params }: FacilityPageProps): Promise<Metadata> {
+  await connection()
+  const { facilitySlug } = await params
+
+  // Permanently deleted legacy paths — 410 Gone
+  if (isDeletedFacility(facilitySlug)) {
+    return {
+      title: "Page Deleted",
+      robots: { index: false, follow: false },
+    };
+  }
+
+  permanentRedirect(`/${facilitySlug}`)
+}
+
+async function WeatherBadgeIsland({ lat, lng }: { lat: number, lng: number }) {
+  let weather = null;
+  try {
+    const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current_weather=true`, { 
+      next: { revalidate: 3600 } 
+    })
+    const data = await res.json()
+    weather = data.current_weather
+  } catch { 
+    weather = null;
+  }
+  if (!weather) return null;
+  return <WeatherBadge weather={weather} />
+}
+
+async function SidebarWeatherIsland({ lat, lng }: { lat: number, lng: number }) {
+  let weather = null;
+  try {
+    const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current_weather=true`, { 
+      next: { revalidate: 3600 } 
+    })
+    const data = await res.json()
+    weather = data.current_weather
+  } catch { 
+    weather = null;
+  }
+  if (!weather) return null;
+  return <SidebarWeatherWidget weather={weather} />
+}
+
+/**
+ * 🌊 Showcase Template Component (Used natively by catching routes)
+ */
+export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
+  const { facilitySlug, categorySlug } = await params
+  const currentYear = new Date().getFullYear()
+  const dict = await getDictionary()
+  
+  const facility = await getFacility(facilitySlug)
+
+  if (!facility) return notFound()
+
+  // 🛡️ PRERENDER SIGNAL: Everything below this can be dynamic (PPR)
+  await connection();
+
+  // Fetch weather data for the unified mobile pill
+  let weather = null;
+  if (facility.lat && facility.lng) {
+    try {
+      const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${facility.lat}&longitude=${facility.lng}&current_weather=true`, { 
+        next: { revalidate: 3600 } 
+      });
+      const data = await res.json();
+      weather = data.current_weather;
+    } catch { 
+      weather = null;
+    }
+  }
+
+  validateDiscoverySlug(categorySlug, facility);
+  const categoryLabel = catLabelMap[facility.category.toLowerCase()] ?? facility.category;
+
+  // Find all active tickets (used in either fallback or virtual group)
+  const activeTickets = (facility.tickets || []).filter((t: any) => t.isActive)
+  const ticketCount = activeTickets.length
+
+  let mappedGroups: any[] = []
+
+  if (facility.ticketGroups && facility.ticketGroups.length > 0) {
+    mappedGroups = facility.ticketGroups.map((g: any) => ({
+      ...g,
+      tiers: g.tickets.map((t: any) => ({
+        ...t,
+        label: t.title,
+        labelSr: t.titleSr || t.title,
+        price: Number(t.price),
+        originalPrice: t.originalPrice ? Number(t.originalPrice) : null,
+        minPeople: t.minPeople || 1,
+        maxPeople: t.maxPeople || null,
+        imageUrl: t.imageUrl || facility.media?.[0]?.url || null,
+      }))
+    }))
+
+    // Fetch active tickets that have no group and bundle them into a virtual group
+    const ungroupedTickets = activeTickets.filter((t: any) => !t.groupId)
+    if (ungroupedTickets.length > 0) {
+      mappedGroups.push({
+        id: "default-group",
+        title: "Standardne Ponude",
+        titleSr: "Standardne Ponude",
+        description: "Standardne ponude i ulaznice koje nisu deo posebnih paketa.",
+        descriptionSr: "Standardne ponude i ulaznice koje nisu deo posebnih paketa.",
+        slug: "standardne-ponude",
+        tiers: ungroupedTickets.map((t: any) => ({
+          ...t,
+          label: t.title,
+          labelSr: t.titleSr || t.title,
+          price: Number(t.price),
+          originalPrice: t.originalPrice ? Number(t.originalPrice) : null,
+          minPeople: t.minPeople || 1,
+          maxPeople: t.maxPeople || null,
+          imageUrl: t.imageUrl || facility.media?.[0]?.url || null,
+        }))
+      })
+    }
+  } else {
+    // If facility.ticketGroups is completely empty, default to standard fallback containing all active tickets under "Standardne Ponude"
+    if (activeTickets.length > 0) {
+      mappedGroups = [{
+        id: "default-group",
+        title: "Standardne Ponude",
+        titleSr: "Standardne Ponude",
+        description: "Standardne ponude i ulaznice koje nisu deo posebnih paketa.",
+        descriptionSr: "Standardne ponude i ulaznice koje nisu deo posebnih paketa.",
+        slug: "standardne-ponude",
+        tiers: activeTickets.map((t: any) => ({
+          ...t,
+          label: t.title,
+          labelSr: t.titleSr || t.title,
+          price: Number(t.price),
+          originalPrice: t.originalPrice ? Number(t.originalPrice) : null,
+          minPeople: t.minPeople || 1,
+          maxPeople: t.maxPeople || null,
+          imageUrl: t.imageUrl || facility.media?.[0]?.url || null,
+        }))
+      }]
+    }
+  }
+
+  // 🎥 Logic: Priority Hero Selection (Protocol)
+  const explicitHero = facility.media.find((m: any) => m.isHero);
+  const firstVideo = facility.media.find((m: any) => m.type === "VIDEO");
+  const heroMedia = explicitHero || firstVideo || facility.media[0];
+
+  // 🧠 Structured Data Block
+  const allTiers = mappedGroups.flatMap((group: any) => group.tiers || []);
+
+  // Deterministic ratings removed — AggregateRating requires real user reviews,
+  // not values computed from facility name hashes. Remove once a review system exists.
+
+  // Dynamic Wikidata entity mapping for advanced generative search engines (GEO)
+  const additionalType = facility.category.toLowerCase() === 'waterpark' 
+    ? "https://www.wikidata.org/wiki/Q740331" 
+    : facility.category.toLowerCase() === 'swimming-pool' 
+      ? "https://www.wikidata.org/wiki/Q64528" 
+      : "https://www.wikidata.org/wiki/Q11947";
+
+  const aggregateOffer = allTiers.length > 0 ? {
+    "@type": "AggregateOffer",
+    "priceCurrency": "RSD",
+    "lowPrice": Math.min(...allTiers.map((t: any) => Number(t.price))),
+    "highPrice": Math.max(...allTiers.map((t: any) => Number(t.price))),
+    "offerCount": allTiers.length,
+    "shippingDetails": {
+      "@type": "OfferShippingDetails",
+      "shippingRate": {
+        "@type": "MonetaryAmount",
+        "value": 0,
+        "priceCurrency": "RSD"
+      },
+      "deliveryTime": {
+        "@type": "ShippingDeliveryTime",
+        "handlingTime": {
+          "@type": "QuantitativeValue",
+          "maxValue": 0,
+          "unitCode": "DAY"
+        }
+      }
+    },
+    "hasMerchantReturnPolicy": {
+      "@type": "MerchantReturnPolicy",
+      "applicableCountry": "RS",
+      "returnPolicyCategory": "https://schema.org/NoReturns"
+    },
+    "offers": allTiers.map((tier: any) => {
+      const hasDiscount = tier.originalPrice && Number(tier.originalPrice) > Number(tier.price);
+      
+      const priceSpecification = hasDiscount ? [
+        {
+          "@type": "UnitPriceSpecification",
+          "priceType": "https://schema.org/ListPrice",
+          "price": Number(tier.originalPrice),
+          "priceCurrency": "RSD",
+          "valueAddedTaxIncluded": true
+        },
+        {
+          "@type": "UnitPriceSpecification",
+          "priceType": "https://schema.org/SalePrice",
+          "price": Number(tier.price),
+          "priceCurrency": "RSD",
+          "valueAddedTaxIncluded": true
+        }
+      ] : [
+        {
+          "@type": "UnitPriceSpecification",
+          "priceType": "https://schema.org/ListPrice",
+          "price": Number(tier.price),
+          "priceCurrency": "RSD",
+          "valueAddedTaxIncluded": true
+        }
+      ];
+
+      const saleEndDate = tier.saleEnd ? new Date(tier.saleEnd) : null;
+      const priceValidUntil = saleEndDate && !isNaN(saleEndDate.getTime())
+        ? saleEndDate.toISOString().slice(0, 10)
+        : `${currentYear}-12-31`;
+
+      const saleStartDate = tier.saleStart ? new Date(tier.saleStart) : null;
+      const availabilityStarts = saleStartDate && !isNaN(saleStartDate.getTime())
+        ? saleStartDate.toISOString().slice(0, 10)
+        : null;
+
+      const saleEndDateVal = tier.saleEnd ? new Date(tier.saleEnd) : null;
+      const availabilityEnds = saleEndDateVal && !isNaN(saleEndDateVal.getTime())
+        ? saleEndDateVal.toISOString().slice(0, 10)
+        : null;
+
+      return {
+        "@type": "Offer",
+        "name": tier.labelSr || tier.label,
+        "price": Number(tier.price),
+        "priceCurrency": "RSD",
+        "priceSpecification": priceSpecification,
+        "priceValidUntil": priceValidUntil,
+        "availability": tier.isActive ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+        "url": `https://www.splashdeals.rs/${facilitySlug}#ticket-${tier.id}`,
+        "acceptedPaymentMethod": [
+          "https://schema.org/CreditCard",
+          "https://schema.org/PaymentMethodTypeWallet"
+        ],
+        ...(availabilityStarts ? { "availabilityStarts": availabilityStarts } : {}),
+        ...(availabilityEnds ? { "availabilityEnds": availabilityEnds } : {}),
+        ...(tier.minPeople || tier.maxPeople ? {
+          "eligibleQuantity": {
+            "@type": "QuantitativeValue",
+            ...(tier.minPeople ? { "minValue": Number(tier.minPeople) } : {}),
+            ...(tier.maxPeople ? { "maxValue": Number(tier.maxPeople) } : {})
+          }
+        } : {}),
+        "seller": {
+          "@type": "Organization",
+          "name": "Splashdeals",
+          "url": "https://www.splashdeals.rs"
+        },
+        "provider": {
+          "@type": "LocalBusiness",
+          "name": facility.name,
+          "image": facility.media?.[0]?.url || undefined,
+          ...(facility.publicPhone ? { telephone: facility.publicPhone } : {}),
+          "address": {
+            "@type": "PostalAddress",
+            "streetAddress": `${facility.streetName} ${facility.streetNumber}`,
+            "addressLocality": facility.city,
+            "postalCode": facility.postalCode,
+            "addressCountry": "RS"
+          }
+        }
+      };
+    })
+  } : null;
+
+  const videoThumbnailFallback = facility.media.find((m: any) => m.type === 'PHOTO' && m.isHero)?.url
+    || facility.media.find((m: any) => m.type === 'PHOTO' && m.isCardBackground)?.url
+    || facility.media.find((m: any) => m.type === 'PHOTO')?.url
+    || "/og-image.png";
+
+  const videoThumbnail = heroMedia?.thumbnailUrl || videoThumbnailFallback;
+
+  const operatingHours = facility.hours?.map((h: OperatingHours) => ({
+    "@type": "OpeningHoursSpecification",
+    dayOfWeek: [
+      "Sunday", "Monday", "Tuesday", "Wednesday", 
+      "Thursday", "Friday", "Saturday"
+    ][h.dayOfWeek],
+    opens: h.openTime,
+    closes: h.closeTime,
+  })) || [];
+
+  const facilitySchema = {
+    "@context": "https://schema.org",
+    "@graph": [
+      buildAttractionSchema(facility, facilitySlug, operatingHours),
+      buildBusinessSchema(facility, facilitySlug, !!aggregateOffer),
+      buildProductSchema(facility, facilitySlug, aggregateOffer, ticketCount, additionalType),
+      buildVideoSchema(facility, facilitySlug, heroMedia, videoThumbnail),
+      buildBreadcrumbSchema(facility, facilitySlug, categorySlug, categoryLabel)
+    ].filter(Boolean),
+  };
+
+  return (
+    <div className="relative min-h-screen text-slate-100 selection:bg-cyan-500/30 font-sans">
+      
+      {/* ✅ Scroll Anchor Manager */}
+      <ScrollManager />
+      
+      {/* ✅ Structured Data */}
+      <JsonLd data={facilitySchema} id={`facility-${facilitySlug}-schema`} />
+      
+      {/* 🧭 Breadcrumb Injector — feeds breadcrumb data into the global Header sub-row (mobile only) */}
+      <BreadcrumbInjector
+        items={[
+          { label: "Početna", href: "/" },
+          { label: categoryLabel, href: `/${categorySlug}` },
+          { label: facility.name },
+        ]}
+        backHref={`/${categorySlug}`}
+      />
+
+      <section className="relative h-[90vh] md:h-screen w-full flex flex-col justify-end p-6 md:p-12 overflow-hidden">
+        <ShowcaseHero heroMedia={heroMedia} facility={facility} />
+
+        <div className="relative z-10 max-w-7xl mx-auto w-full grid grid-cols-1 md:grid-cols-12 gap-8 items-end mb-12">
+           <div className="md:col-span-8 space-y-6">
+              {/* 🧭 DESKTOP BREADCRUMBS */}
+              <div className="hidden md:block w-full overflow-x-auto no-scrollbar pb-1">
+                <Breadcrumb>
+                  <BreadcrumbList className="flex-nowrap whitespace-nowrap gap-1.5">
+                    <BreadcrumbItem>
+                      <BreadcrumbLink asChild>
+                        <Link href="/" className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 hover:text-cyan-400 transition-colors">Početna</Link>
+                      </BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator className="text-slate-600 text-[8px]" />
+                    <BreadcrumbItem>
+                      <BreadcrumbLink asChild>
+                        <Link href={`/${categorySlug}`} className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 hover:text-cyan-400 transition-colors">{categoryLabel}</Link>
+                      </BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator className="text-slate-600 text-[8px]" />
+                    <BreadcrumbItem>
+                      <BreadcrumbPage className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-400">{facility.name}</BreadcrumbPage>
+                    </BreadcrumbItem>
+                  </BreadcrumbList>
+                </Breadcrumb>
+              </div>
+
+               {/* 📱 MOBILE SHARE ROW */}
+               <div className="flex md:hidden items-center justify-end">
+                 <ShareButton
+                    title={facility.name}
+                    url={`https://www.splashdeals.rs/${facilitySlug}`}
+                 />
+               </div>
+
+              {/* 🧭 DESKTOP ACTIONS */}
+              <div className="hidden md:flex flex-wrap gap-2 items-center">
+                <Link href={`/${categorySlug}`} className="px-4 py-2 rounded-full backdrop-blur-xl bg-white/5 text-xs font-black flex items-center gap-2 hover:bg-white/10 transition-all border border-white/5 uppercase tracking-widest text-slate-300">
+                   <Icon name="arrow_back" className="text-[12px]" /> Nazad
+                </Link>
+                <ShareButton 
+                   title={facility.name} 
+                   url={`https://www.splashdeals.rs/${facilitySlug}`} 
+                />
+                 <div className="hidden md:block">
+                    <Suspense fallback={<WeatherBadgeSkeleton />}>
+                       {facility.lat && facility.lng && (
+                          <WeatherBadgeIsland lat={Number(facility.lat)} lng={Number(facility.lng)} />
+                       )}
+                    </Suspense>
+                 </div>
+              </div>
+
+               <h1 className="text-4xl md:text-7xl font-black leading-[0.8] tracking-tighter text-white italic py-2">
+               {facility.name.split(' ').map((word: string, i: number) => (
+                 <span key={i} className={i === 1 ? "text-splash" : ""}>{word} </span>
+               ))}
+             </h1>
+
+             <div className="flex flex-wrap items-center gap-6 text-slate-300 font-bold pb-4 w-full">
+                <div className="hidden md:flex items-center gap-2 bg-white/5 px-5 py-2.5 rounded-2xl backdrop-blur-md border border-white/5">
+                   <Icon name="location_on" className="text-[16px] text-cyan-400" />
+                   <span className="text-sm tracking-tight font-medium opacity-80">{facility.streetName} {facility.streetNumber}, {facility.postalCode} {facility.city}</span>
+                </div>
+                <div className="hidden md:block">
+                   <Suspense fallback={<OperationalStatusSkeleton />}>
+                      <CurrentOperationalStatus hours={facility.hours} />
+                   </Suspense>
+                </div>
+                <div className="hidden md:block">
+                   {facility.lat && facility.lng && (
+                      <DistanceCalculator 
+                         destLat={Number(facility.lat)} 
+                         destLng={Number(facility.lng)} 
+                         facilityName={facility.name} 
+                      />
+                   )}
+                </div>
+                <div className="block md:hidden w-full pt-2">
+                   <MobileUnifiedControlPill 
+                      weather={weather}
+                      hours={facility.hours}
+                      destLat={Number(facility.lat)}
+                      destLng={Number(facility.lng)}
+                   />
+                </div>
+             </div>
+           </div>
+        </div>
+      </section>
+
+      <main className="max-w-7xl mx-auto px-6 md:px-12 -mt-12 md:mt-20 relative z-20 space-y-32 pb-48">
+        <div id="deals" className="space-y-12 scroll-mt-32">
+           <div className="flex flex-col items-center text-center space-y-4 mb-16">
+              <h2 className="text-2xl md:text-5xl font-black italic tracking-tighter uppercase text-white leading-none">
+                 Aktuelne <span className="text-splash">Ponude.</span>
+              </h2>
+           </div>
+            <Suspense fallback={<TicketGridSkeleton />}>
+               <ShowcaseTicketGroups 
+                  groups={mappedGroups as any} 
+                  facilityId={facility.id}
+                  facilityName={facility.name}
+                  category={facility.category}
+                  facility={facility}
+               />
+            </Suspense>
+        </div>
+
+        {/* 🍱 Bento Experience Sections */}
+        <div id="overview" className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+           <div className="lg:col-span-8 space-y-8">
+              {/* Main Text Card */}
+              <GlassCard className="p-12 md:p-16 space-y-8 min-h-[400px] flex flex-col justify-center">
+                 <div className="flex items-center gap-3 text-cyan-400 font-black uppercase tracking-[0.2em] text-xs">
+                    <Icon name="auto_awesome" className="text-[16px]" /> Iskustvo
+                 </div>
+                 <h2 className="text-2xl md:text-5xl font-black italic tracking-tighter uppercase leading-tight text-white">
+                    Zabava <span className="text-splash">Otključana.</span>
+                 </h2>
+                 <p className="text-slate-300 text-xl leading-relaxed font-medium italic opacity-90 max-w-2xl">
+                    {facility.description || "Otkrijte premium iskustvo koje prevazilazi običan odlazak na bazen."}
+                 </p>
+              </GlassCard>
+
+              {facility.transitGuide && (
+                <GlassCard className="p-8 mt-8 border-l-4 border-l-cyan-500 bg-slate-900/50">
+                   <div className="flex items-center gap-3 mb-4 text-cyan-400 font-black uppercase tracking-widest text-xs">
+                      <Icon name="location_on" className="text-[16px]" /> Kako stići
+                   </div>
+                   <p className="text-slate-300 text-sm whitespace-pre-line leading-relaxed font-medium">
+                      {facility.transitGuide}
+                   </p>
+                </GlassCard>
+              )}
+
+              <ShowcaseAmenities 
+                amenities={serialize(facility.amenities) as any} 
+                dict={dict} 
+              />
+           </div>
+
+           <aside className="lg:col-span-4 lg:sticky lg:top-28 space-y-6">
+              <PartnerBranding logoUrl={facility.logoUrl} name={facility.name} />
+              
+              <Suspense fallback={<Skeleton className="h-[600px] rounded-[3rem] bg-white/5" />}>
+                 <OperationalPortal hours={facility.hours} />
+              </Suspense>
+              
+              {/* Sidebar Weather Widget */}
+              {facility.lat && facility.lng && (
+                 <Suspense fallback={<Skeleton className="h-[250px] rounded-[2.5rem] bg-white/5" />}>
+                    <SidebarWeatherIsland lat={Number(facility.lat)} lng={Number(facility.lng)} />
+                 </Suspense>
+              )}
+           </aside>
+        </div>
+
+        {facility.policy?.faq && (
+           <div className="space-y-8 pt-12">
+              <div className="flex flex-col items-center text-center space-y-4 mb-8">
+                 <h2 className="text-2xl md:text-5xl font-black italic tracking-tighter uppercase text-white leading-none">
+                    Korisne <span className="text-splash">Informacije.</span>
+                 </h2>
+              </div>
+              <GlassCard className="max-w-4xl mx-auto p-8 md:p-12">
+                 <div className="whitespace-pre-line text-slate-300 text-sm leading-relaxed font-medium">
+                    {facility.policy.faq}
+                 </div>
+              </GlassCard>
+           </div>
+        )}
+
+        <MediaGallery media={facility.media} dict={dict} />
+
+        {facility.seoArticle && (
+           <article className="max-w-5xl mx-auto px-6 py-12 text-slate-500 text-xs text-center border-t border-white/5 mt-24">
+              <div className="whitespace-pre-line leading-relaxed">
+                 {facility.seoArticle}
+              </div>
+           </article>
+        )}
+      </main>
+    </div>
+  )
+}
+
+/**
+ * 🌊 Legacy Page Entry (Triggers HTTP 301 Permanent Redirect)
+ * Unless it's a permanently deleted path — then 410 Gone.
+ */
+export default async function FacilityShowcasePage({ params }: FacilityPageProps) {
+  await connection();
+  const { facilitySlug } = await params
+
+  // Permanently deleted legacy paths — 410 Gone
+  if (isDeletedFacility(facilitySlug)) {
+    return (
+      <html lang="sr">
+        <head>
+          <meta name="robots" content="noindex, nofollow" />
+          <meta charSet="utf-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
+        </head>
+        <body style={{ background: "#020617", color: "#94a3b8", fontFamily: "sans-serif", display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", margin: 0 }}>
+          <div style={{ textAlign: "center" }}>
+            <div style={{ fontSize: "6rem", fontWeight: 900, color: "#06b6d4", margin: 0 }}>410</div>
+            <p style={{ fontSize: "1.25rem", marginTop: "0.5rem" }}>This page has been permanently deleted.</p>
+          </div>
+        </body>
+      </html>
+    );
+  }
+
+  permanentRedirect(`/${facilitySlug}`)
+}

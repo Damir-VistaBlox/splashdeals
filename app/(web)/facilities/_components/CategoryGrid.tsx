@@ -1,0 +1,64 @@
+import { Icon } from "@/components/ui/Icon";
+import { prisma } from "@/lib/prisma";
+import Link from "next/link";
+import { GlassCard } from "@/components/ui/GlassCard";
+import * as motion from "framer-motion/client";
+
+interface CategoryGridProps {
+  
+  facilitiesLabel: string;
+}
+
+/**
+ * 🧿 CategoryGrid Interface
+ * Asynchronous segment for category distribution discovery.
+ */
+const getCategoryLabel = (category: string) => {
+  const c = category.toLowerCase().replace(/[\s_-]+/g, '_');
+  const mapping: Record<string, string> = {
+    waterpark: "Akva Park",
+    pool: "Bazen",
+    spa: "Spa Centar",
+    swimming_pool: "Bazen",
+    beach: "Plaža",
+    attractions: "Atrakcije",
+    services: "Usluge"
+  };
+  return mapping[c] || category;
+};
+
+export async function CategoryGrid({ facilitiesLabel }: CategoryGridProps) {
+  const categories = await prisma.facility.groupBy({
+    by: ['category'],
+    _count: {
+       id: true
+    }
+  });
+
+  return (
+    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+      {categories.map((cat, i) => (
+        <motion.div
+          key={cat.category}
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: i * 0.05 }}
+        >
+          <Link href={`/facilities/${cat.category.toLowerCase()}`}>
+            <GlassCard className="p-6 text-center hover:bg-cyan-500/10 transition-colors border-white/5 group relative overflow-hidden">
+              <div className="absolute top-0 right-0 p-2 opacity-5">
+                 <Icon name="filter_list" className="text-[48px]" />
+              </div>
+              <span className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2">
+                {cat._count.id} {facilitiesLabel}
+              </span>
+              <span className="text-lg font-black uppercase italic tracking-tighter text-white group-hover:text-cyan-400 transition-colors">
+                {getCategoryLabel(cat.category)}
+              </span>
+            </GlassCard>
+          </Link>
+        </motion.div>
+      ))}
+    </div>
+  );
+}

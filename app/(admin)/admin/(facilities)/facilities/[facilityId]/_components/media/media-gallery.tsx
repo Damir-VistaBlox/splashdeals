@@ -1,0 +1,1445 @@
+"use client"
+
+import { Icon } from "@/components/ui/Icon";
+ 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+import Image from "next/image"
+import { useState, useTransition, useMemo, useEffect, useRef, useCallback } from "react"
+import { FacilityMedia } from "@prisma/client"
+import { 
+  uploadMediaAction, 
+  deleteMediaAction, 
+  updateMediaOrderAction, 
+  syncMediaAction, 
+  toggleMediaHeroAction, 
+  toggleMediaCardBackgroundAction, 
+  toggleMediaGalleryVisibilityAction,
+  updateMediaCaptionAction,
+  updateMediaFocalPointAction,
+  bulkUpdateMediaCaptionAction
+} from "@/app/(server)/actions/media-actions"
+import { Button } from "@/components/ui/button"
+import { toast } from "sonner"
+import { 
+  DndContext, 
+  closestCenter, 
+  KeyboardSensor, 
+  PointerSensor, 
+  useSensor, 
+  useSensors,
+  DragOverlay,
+  defaultDropAnimationSideEffects,
+  type DragEndEvent,
+  type DragStartEvent,
+  type DropAnimation
+} from "@dnd-kit/core"
+import { 
+  arrayMove, 
+  SortableContext, 
+  sortableKeyboardCoordinates, 
+  rectSortingStrategy
+} from "@dnd-kit/sortable"
+import { useSortable } from "@dnd-kit/sortable"
+import { CSS } from "@dnd-kit/utilities"
+import { upload } from "@vercel/blob/client"
+import { cn } from "@/lib/utils"
+
+interface MediaGalleryProps {
+  facilityId: string
+  initialMedia: FacilityMedia[]
+}
+
+const dropAnimation: DropAnimation = {
+  sideEffects: defaultDropAnimationSideEffects({
+    styles: {
+      active: {
+        opacity: "0.5",
+      },
+    },
+  }),
+}
+
+/**
+ * 📐 HTML5 Hardware-Native Client-Side Optimization for Large Images
+ * Downscales images to max 2000px on the longest side and converts them to high-density WebP
+ * before upload, preventing Vercel's strict 4.5MB serverless payload limit from blocking the request.
+ */
+const optimizeImageOnClient = async (file: File): Promise<File> => {
+  if (!file.type.startsWith("image/")) return file;
+  
+  let bitmap: ImageBitmap | null = null;
+  try {
+    bitmap = await window.createImageBitmap(file);
+    
+    const canvas = window.document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+    if (!ctx) throw new Error("Canvas rendering context creation failed");
+    
+    const MAX_DIM = 2000;
+    let width = bitmap.width;
+    let height = bitmap.height;
+    
+    if (width > MAX_DIM || height > MAX_DIM) {
+      if (width > height) {
+        height = Math.round((height * MAX_DIM) / width);
+        width = MAX_DIM;
+      } else {
+        width = Math.round((width * MAX_DIM) / height);
+        height = MAX_DIM;
+      }
+    }
+    
+    canvas.width = width;
+    canvas.height = height;
+    
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = "high";
+    ctx.drawImage(bitmap, 0, 0, width, height);
+    
+    const webpBlob = await new Promise<Blob>((resolve, reject) => {
+      canvas.toBlob(
+        (blob) => blob ? resolve(blob) : reject(new Error("WebP re-encoding failed")),
+        "image/webp",
+        0.85
+      );
+    });
+    
+    const baseName = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
+    const newName = `${baseName}.webp`;
+    
+    return new File([webpBlob], newName, { type: "image/webp" });
+  } catch (error) {
+    console.warn("Client-side optimization failed, falling back to raw file:", error);
+    return file;
+  } finally {
+    if (bitmap) {
+      bitmap.close();
+    }
+  }
+};
+
+export function MediaGallery({ facilityId, initialMedia }: MediaGalleryProps) {
+  const [media, setMedia] = useState(initialMedia)
+  const [activeId, setActiveId] = useState<string | null>(null)
+  const [isUploading, startUpload] = useTransition()
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
+  const [isSelectionMode, setIsSelectionMode] = useState(false)
+
+  // Curation state — declared before filteredMedia memo
+  const [searchQuery, setSearchQuery] = useState("")
+  const [activeFilter, setActiveFilter] = useState<"ALL" | "PHOTOS" | "VIDEOS" | "HERO" | "CARDBG" | "PUBLIC" | "HIDDEN" | "MISSING_ALT">("ALL")
+  const [croppingMedia, setCroppingMedia] = useState<{ id: string; url: string } | null>(null)
+  const [focalPointMediaId, setFocalPointMediaId] = useState<string | null>(null)
+  const [bulkCaptionText, setBulkCaptionText] = useState("")
+  
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  )
+
+  const filteredMedia = useMemo(() => {
+    return media.filter(item => {
+      // Search matches caption or filename
+      const matchesSearch = searchQuery === "" || 
+        (item.caption && item.caption.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        item.url.toLowerCase().includes(searchQuery.toLowerCase())
+
+      if (!matchesSearch) return false
+
+      // Category filters
+      switch (activeFilter) {
+        case "PHOTOS":
+          return item.type === "PHOTO"
+        case "VIDEOS":
+          return item.type === "VIDEO"
+        case "HERO":
+          return item.isHero
+        case "CARDBG":
+          return item.isCardBackground
+        case "PUBLIC":
+          return item.isGalleryVisible
+        case "HIDDEN":
+          return !item.isGalleryVisible
+        case "MISSING_ALT":
+          return item.type === "PHOTO" && (!item.caption || item.caption.trim() === "")
+        default:
+          return true
+      }
+    })
+  }, [media, searchQuery, activeFilter])
+
+  const mediaIds = useMemo(() => filteredMedia.map(m => m.id), [filteredMedia])
+  const activeItem = useMemo(() => media.find(m => m.id === activeId), [media, activeId])
+
+  const [uploadProgress, setUploadProgress] = useState<{ [key: string]: number }>({})
+
+  const toggleSelection = (id: string) => {
+    setSelectedIds(prev => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
+  }
+
+  const handleSelectAll = () => {
+    setSelectedIds(new Set(media.map(m => m.id)))
+  }
+
+  const handleDeselectAll = () => {
+    setSelectedIds(new Set())
+  }
+
+  const handleBulkDelete = async () => {
+    if (!confirm(`Are you sure you want to delete ${selectedIds.size} assets?`)) return
+    
+    const idsToDelete = Array.from(selectedIds)
+    setMedia(prev => prev.filter(m => !selectedIds.has(m.id)))
+    setSelectedIds(new Set())
+    setIsSelectionMode(false)
+
+    startUpload(async () => {
+      for (const id of idsToDelete) {
+        await deleteMediaAction(id, facilityId)
+      }
+      toast.success(`Purged ${idsToDelete.length} assets from node`)
+    })
+  }
+
+  const [isDragActive, setIsDragActive] = useState(false)
+  const dragCounterRef = useRef(0)
+  const [uploadingFiles, setUploadingFiles] = useState<{ name: string; type: string }[]>([])
+
+  const processFilesUpload = useCallback(async (files: File[]) => {
+    if (files.length === 0) return
+
+    setUploadingFiles(prev => [...prev, ...files.map(f => ({ name: f.name, type: f.type }))])
+
+    startUpload(async () => {
+      for (const file of files) {
+        const isVideo = file.type.startsWith("video/")
+        
+        try {
+          if (isVideo) {
+            const blob = await upload(`facilities/${facilityId}/videos/${file.name}`, file, {
+              access: "public",
+              handleUploadUrl: "/api/upload",
+              clientPayload: JSON.stringify({ facilityId }),
+              onUploadProgress: (progress) => {
+                setUploadProgress(prev => ({ ...prev, [file.name]: progress.percentage }))
+              }
+            })
+
+            const syncResult = await syncMediaAction(facilityId, blob.url, file.type)
+
+            if (syncResult.success && "media" in syncResult) {
+              setMedia(prev => [...prev, syncResult.media as FacilityMedia])
+              toast.success(`Video recorded: ${file.name}`)
+            } else {
+              toast.error(("error" in syncResult ? syncResult.error : null) || `Sync failed for ${file.name}`)
+            }
+          } else {
+            // Pre-process images on the client to avoid hitting the 4.5MB Serverless Function payload size limit
+            const originalSize = file.size
+            const optimizedFile = await optimizeImageOnClient(file)
+            const optimizedSize = optimizedFile.size
+            const savedBytes = originalSize - optimizedSize
+            const savedPercent = originalSize > 0 ? Math.round((savedBytes / originalSize) * 100) : 0
+            const savedKb = Math.round(savedBytes / 1024)
+
+            const formData = new FormData()
+            formData.append("facilityId", facilityId)
+            formData.append("files", optimizedFile)
+
+            const result = await uploadMediaAction(formData)
+            if (result.success && "media" in result) {
+              setMedia(prev => [...prev, ...(result.media as FacilityMedia[])])
+              if (savedPercent > 0) {
+                toast.success(
+                  `Photo optimized: ${file.name} (-${savedPercent}% size, saved ${savedKb} KB)`
+                )
+              } else {
+                toast.success(`Photo uploaded: ${file.name}`)
+              }
+            } else {
+              toast.error(("error" in result ? result.error : null) || `Failed to optimize ${file.name}`)
+            }
+          }
+        } catch (error) {
+          console.error("Upload failed for:", file.name, error)
+          toast.error(`Fatal error uploading ${file.name}`)
+        } finally {
+          setUploadProgress(prev => {
+            const next = { ...prev }
+            delete next[file.name]
+            return next
+          })
+          setUploadingFiles(prev => prev.filter(f => f.name !== file.name))
+        }
+      }
+    })
+  }, [facilityId, startUpload])
+
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || [])
+    await processFilesUpload(files)
+    e.target.value = ""
+  }
+
+  useEffect(() => {
+    const handleDragEnter = (e: DragEvent) => {
+      e.preventDefault()
+      e.stopPropagation()
+      if (e.dataTransfer?.types.includes("Files")) {
+        dragCounterRef.current++
+        setIsDragActive(true)
+      }
+    }
+
+    const handleDragLeave = (e: DragEvent) => {
+      e.preventDefault()
+      e.stopPropagation()
+      if (e.dataTransfer?.types.includes("Files")) {
+        dragCounterRef.current--
+        if (dragCounterRef.current <= 0) {
+          dragCounterRef.current = 0
+          setIsDragActive(false)
+        }
+      }
+    }
+
+    const handleDragOver = (e: DragEvent) => {
+      e.preventDefault()
+      e.stopPropagation()
+      if (e.dataTransfer) {
+        e.dataTransfer.dropEffect = "copy"
+      }
+    }
+
+    const handleDrop = async (e: DragEvent) => {
+      e.preventDefault()
+      e.stopPropagation()
+      setIsDragActive(false)
+      dragCounterRef.current = 0
+
+      if (e.dataTransfer?.files && e.dataTransfer.files.length > 0) {
+        const files = Array.from(e.dataTransfer.files)
+        await processFilesUpload(files)
+      }
+    }
+
+    window.addEventListener("dragenter", handleDragEnter)
+    window.addEventListener("dragleave", handleDragLeave)
+    window.addEventListener("dragover", handleDragOver)
+    window.addEventListener("drop", handleDrop)
+
+    return () => {
+      window.removeEventListener("dragenter", handleDragEnter)
+      window.removeEventListener("dragleave", handleDragLeave)
+      window.removeEventListener("dragover", handleDragOver)
+      window.removeEventListener("drop", handleDrop)
+    }
+  }, [processFilesUpload])
+
+  useEffect(() => {
+    if (!isSelectionMode) return
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Guard to prevent firing while typing Alt tags inside the input fields
+      if (
+        document.activeElement?.tagName === "INPUT" ||
+        document.activeElement?.tagName === "TEXTAREA"
+      ) {
+        return
+      }
+
+      const key = e.key.toLowerCase()
+
+      if (key === "a") {
+        e.preventDefault()
+        handleSelectAll()
+        toast.info("Selected all media assets")
+      } else if (key === "d") {
+        e.preventDefault()
+        handleDeselectAll()
+        toast.info("Deselected all media assets")
+      } else if (e.key === "Escape") {
+        e.preventDefault()
+        setIsSelectionMode(false)
+        setSelectedIds(new Set())
+        toast.info("Exited curation selection mode")
+      } else if ((e.key === "Delete" || e.key === "Backspace") && selectedIds.size > 0) {
+        e.preventDefault()
+        handleBulkDelete()
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown)
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown)
+    }
+  }, [isSelectionMode, selectedIds, media])
+
+  const handleDelete = async (id: string) => {
+    const itemToDelete = media.find(m => m.id === id)
+    if (!itemToDelete) return
+
+    setMedia(prev => prev.filter(m => m.id !== id))
+
+    const result = await deleteMediaAction(id, facilityId)
+    
+    if (result.success) {
+      toast.success("Media deleted")
+    } else {
+      setMedia(prev => {
+        const next = [...prev, itemToDelete]
+        return next.sort((a, b) => (a.order || 0) - (b.order || 0))
+      })
+      toast.error(result.error || "Delete failed")
+    }
+  }
+
+  const handleToggleHero = async (id: string) => {
+    const item = media.find(m => m.id === id)
+    if (!item) return
+
+    // Optimistic update: unset other heroes, set this one
+    setMedia(prev => prev.map(m => {
+      if (m.id === id) return { ...m, isHero: !m.isHero } as FacilityMedia
+      if (!item.isHero) return { ...m, isHero: false } as FacilityMedia // If we are making this hero, others must lose it
+      return m
+    }))
+
+    const result = await toggleMediaHeroAction(id, facilityId)
+    if (!result.success) {
+      setMedia(prev => prev.map(m => m.id === id ? item : m)) // Rollback
+      toast.error("Failed to update Hero status")
+    } else {
+      toast.success(item.isHero ? "Hero status removed" : "Set as Facility Hero")
+    }
+  }
+
+  const handleToggleCardBackground = async (id: string) => {
+    const item = media.find(m => m.id === id)
+    if (!item) return
+
+    // Optimistic update
+    setMedia(prev => prev.map(m => {
+      if (m.id === id) return { ...m, isCardBackground: !m.isCardBackground } as FacilityMedia
+      if (!item.isCardBackground) return { ...m, isCardBackground: false } as FacilityMedia
+      return m
+    }))
+
+    const result = await toggleMediaCardBackgroundAction(id, facilityId)
+    if (!result.success) {
+      setMedia(prev => prev.map(m => m.id === id ? item : m))
+      toast.error("Failed to update Card Background")
+    } else {
+      toast.success(item.isCardBackground ? "Background removed" : "Set as Card Background")
+    }
+  }
+
+  const handleToggleVisibility = async (id: string) => {
+    const item = media.find(m => m.id === id)
+    if (!item) return
+
+    setMedia(prev => prev.map(m => m.id === id ? { ...m, isGalleryVisible: !m.isGalleryVisible } as FacilityMedia : m))
+
+    const result = await toggleMediaGalleryVisibilityAction(id, facilityId)
+    if (!result.success) {
+      setMedia(prev => prev.map(m => m.id === id ? item : m))
+      toast.error("Visibility toggle failed")
+    }
+  }
+
+  const handleDragStart = (event: DragStartEvent) => {
+    setActiveId(event.active.id as string)
+  }
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event
+    setActiveId(null)
+
+    if (!over || active.id === over.id) return
+
+    setMedia((items) => {
+      const oldIndex = items.findIndex((i) => i.id === active.id)
+      const newIndex = items.findIndex((i) => i.id === over.id)
+      const nextItems = arrayMove(items, oldIndex, newIndex)
+      
+      startUpload(async () => {
+        const res = await updateMediaOrderAction(facilityId, nextItems.map(i => i.id))
+        if (!res.success) {
+          toast.error("Failed to save reorder")
+        }
+      })
+
+      return nextItems
+    })
+  }
+
+  return (
+    <div className="space-y-8">
+      {/* 🌌 High-fidelity Glassmorphic Full-Screen Drag Overlay */}
+      {isDragActive && (
+        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-xl z-[999] pointer-events-none flex flex-col items-center justify-center text-center animate-in fade-in duration-300">
+          <div className="p-12 rounded-3xl bg-white/[0.02] border border-cyan-500/30 shadow-[0_0_50px_rgba(6,182,212,0.15)] flex flex-col items-center max-w-md mx-4 animate-in zoom-in-95 duration-500">
+            <div className="p-6 rounded-3xl bg-cyan-500/10 border border-cyan-500/20 mb-8 animate-bounce">
+              <Icon name="upload" className="h-16 w-16 text-cyan-400" />
+            </div>
+            <h3 className="text-2xl font-black text-white uppercase tracking-tighter mb-3">
+              Spusti datoteke za otpremanje
+            </h3>
+            <p className="text-xs font-semibold text-cyan-400 uppercase tracking-widest leading-relaxed mb-1">
+              Splash Engine: High-Bandwidth Protocol
+            </p>
+            <p className="text-xs font-medium text-slate-500 uppercase tracking-widest leading-relaxed">
+              Asset Optimization active. Drop anywhere to start bulk curation.
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* 🛠️ Action Toolbar */}
+      <div className="flex items-center justify-between gap-4 sticky top-0 z-40 bg-slate-950/60 backdrop-blur-md p-4 -mx-4 border-b border-white/5 shadow-2xl">
+         <div className="flex items-center gap-3">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                setIsSelectionMode(!isSelectionMode)
+                setSelectedIds(new Set())
+              }}
+              className={cn(
+                "h-9 px-4 text-[10px] font-black uppercase tracking-widest gap-2 transition-all",
+                isSelectionMode ? "bg-primary/20 border-primary text-primary" : "bg-white/5 border-white/5"
+              )}
+            >
+               {isSelectionMode ? <Icon name="close" className="size-3" /> : <Icon name="edit" className="size-3" />}
+               {isSelectionMode ? "Exit Curation" : "Selection Mode"}
+            </Button>
+
+            {isSelectionMode && (
+               <div className="flex items-center gap-2 animate-in slide-in-from-left-2 duration-300">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleSelectAll}
+                    className="h-9 px-3 text-[10px] font-black uppercase tracking-widest bg-white/5 border border-white/5 hover:bg-white/10"
+                  >
+                     Select All
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleDeselectAll}
+                    className="h-9 px-3 text-[10px] font-black uppercase tracking-widest bg-white/5 border border-white/5 hover:bg-white/10"
+                  >
+                     Deselect All
+                  </Button>
+                  {selectedIds.size > 0 && (
+                     <>
+                        <div className="h-4 w-[1px] bg-white/10 mx-2" />
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={handleBulkDelete}
+                          className="h-9 px-4 text-[10px] font-black uppercase tracking-widest gap-2 mr-2"
+                        >
+                           <Icon name="delete" className="size-3" />
+                           Delete {selectedIds.size} Assets
+                        </Button>
+
+                        <div className="h-4 w-[1px] bg-white/10 mx-2" />
+                        
+                        <div className="flex items-center gap-1.5 bg-black/40 border border-white/5 rounded-lg px-2 py-0.5 animate-in fade-in duration-300">
+                          <input
+                            type="text"
+                            placeholder="Bulk Alt tag..."
+                            value={bulkCaptionText}
+                            onChange={(e) => setBulkCaptionText(e.target.value)}
+                            className="bg-transparent text-[10px] text-white focus:outline-none placeholder:text-slate-600 w-32 px-1"
+                          />
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={async () => {
+                              const val = bulkCaptionText.trim()
+                              if (!val) {
+                                toast.error("Typing a bulk Alt tag is required")
+                                return
+                              }
+                              startUpload(async () => {
+                                try {
+                                  const ids = Array.from(selectedIds)
+                                  const res = await bulkUpdateMediaCaptionAction(ids, facilityId, val)
+                                  if (res.success) {
+                                    setMedia(prev => prev.map(m => ids.includes(m.id) ? { ...m, caption: val } as FacilityMedia : m))
+                                    setSelectedIds(new Set())
+                                    setIsSelectionMode(false)
+                                    setBulkCaptionText("")
+                                    toast.success(`Bulk ALT tag updated for ${ids.length} images`)
+                                  } else {
+                                    toast.error("Failed to apply bulk Alt tag")
+                                  }
+                                } catch (err) {
+                                  console.error(err)
+                                  toast.error("Bulk save error")
+                                }
+                              })
+                            }}
+                            disabled={isUploading}
+                            className="h-7 px-2 text-[9px] font-black uppercase tracking-widest text-cyan-400 hover:text-cyan-300 hover:bg-cyan-500/10 gap-1"
+                          >
+                            <Icon name="check" className="size-3" />
+                            Apply
+                          </Button>
+                        </div>
+                     </>
+                  )}
+               </div>
+            )}
+         </div>
+
+         <div className="flex items-center gap-2">
+            <span className="text-[10px] font-black uppercase tracking-widest text-slate-500 mr-2">
+               {media.length} Registry Objects
+            </span>
+         </div>
+      </div>
+
+      {/* 🔍 Curation Search & Filter Panel */}
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-slate-900/30 border border-white/5 rounded-2xl p-4 animate-in fade-in duration-300">
+        {/* Search Input */}
+        <div className="relative flex-1 max-w-md">
+          <Icon name="search" className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-slate-500" />
+          <input
+            type="text"
+            placeholder="Pretraži medije po ALT oznaci ili nazivu..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full bg-black/40 border border-white/5 rounded-xl pl-10 pr-4 py-2 text-xs font-medium text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-cyan-500/50 transition-colors"
+          />
+          {searchQuery && (
+            <button 
+              onClick={() => setSearchQuery("")}
+              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white transition-colors"
+            >
+              <Icon name="close" className="size-3.5" />
+            </button>
+          )}
+        </div>
+
+        {/* Filter Badges Row */}
+        <div className="flex flex-wrap gap-2 items-center">
+          {[
+            { id: "ALL", label: "Svi" },
+            { id: "PHOTOS", label: "Slike" },
+            { id: "VIDEOS", label: "Video" },
+            { id: "HERO", label: "Hero" },
+            { id: "CARDBG", label: "Kartica BG" },
+            { id: "PUBLIC", label: "Javno" },
+            { id: "HIDDEN", label: "Skriveno" },
+            { id: "MISSING_ALT", label: "⚠️ Bez ALT taga" },
+          ].map((filt) => (
+            <button
+              key={filt.id}
+              onClick={() => setActiveFilter(filt.id as any)}
+              className={cn(
+                "h-7 px-3 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all",
+                activeFilter === filt.id
+                  ? "bg-cyan-500/20 border border-cyan-500 text-cyan-400 shadow-[0_0_15px_rgba(6,182,212,0.15)]"
+                  : "bg-white/[0.02] border border-white/5 text-slate-400 hover:text-white hover:bg-white/5"
+              )}
+            >
+              {filt.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Upload Zone (Integrated Empty State) */}
+      {!isSelectionMode && (
+        <div className={cn(
+          "relative group overflow-hidden border-2 border-dashed border-white/5 rounded-xl bg-slate-900/40 backdrop-blur-md transition-all hover:bg-slate-900/60 hover:border-primary/50 flex flex-col items-center justify-center text-center cursor-pointer",
+          media.length === 0 && !isUploading ? "py-32" : "py-12"
+        )}>
+          {media.length === 0 && !isUploading ? (
+            <div className="flex flex-col items-center animate-in zoom-in-95 duration-500 max-w-sm">
+              <div className="p-6 rounded-3xl bg-white/[0.02] border border-white/5 mb-8 group-hover:scale-110 group-hover:bg-primary/5 transition-all duration-500">
+                <Icon name="image" className="text-[48px] text-slate-600 group-hover:text-primary transition-colors" />
+              </div>
+              <div className="space-y-2">
+                <h3 className="text-xl font-black text-white uppercase tracking-tighter">Media Node Empty</h3>
+                <p className="text-xs font-medium text-slate-500 uppercase tracking-widest leading-relaxed">
+                  The facility gallery is currently void of visual intelligence. Drop assets here to initiate curation.
+                </p>
+              </div>
+            </div>
+          ) : (
+            <>
+              <Icon name="upload" className="text-[48px] text-muted-foreground group-hover:text-primary transition-colors mb-4" />
+              <div className="space-y-1">
+                <p className="text-base font-semibold">Drop your files here, or browse local</p>
+                <p className="text-sm text-muted-foreground">Photos and Videos supported. WebP processing active.</p>
+              </div>
+            </>
+          )}
+
+          <label htmlFor="media-upload" className="sr-only">Select photos or videos to upload</label>
+          <input 
+            id="media-upload"
+            type="file" 
+            multiple 
+            accept="image/*,video/*"
+            className="absolute inset-0 opacity-0 cursor-pointer"
+            onChange={handleUpload}
+            disabled={isUploading}
+          />
+
+          {isUploading && (
+            <div className="absolute inset-0 bg-slate-950/90 flex flex-col items-center justify-center z-10 animate-in fade-in duration-300">
+              <Icon name="progress_activity" className="text-[40px] animate-spin text-primary mb-2" />
+              <p className="font-bold text-lg animate-pulse">
+                {Object.keys(uploadProgress).length > 0 
+                  ? `Streaming ${Object.values(uploadProgress)[0].toFixed(0)}%` 
+                  : "Optimizing Hub..."}
+              </p>
+              <p className="text-[10px] uppercase tracking-[0.2em] font-black text-primary/60 mt-1">Splash Engine: High-Bandwidth Protocol</p>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Media Grid */}
+      <DndContext 
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+        onDragCancel={() => setActiveId(null)}
+      >
+        <SortableContext 
+          items={mediaIds}
+          strategy={rectSortingStrategy}
+        >
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6 animate-in fade-in duration-500">
+            {filteredMedia.map((item) => (
+              <SortableMediaItem 
+                key={item.id} 
+                item={item} 
+                isSelected={selectedIds.has(item.id)}
+                isSelectionMode={isSelectionMode}
+                onSelect={() => toggleSelection(item.id)}
+                onDelete={() => handleDelete(item.id)} 
+                onToggleHero={() => handleToggleHero(item.id)}
+                onToggleCardBG={() => handleToggleCardBackground(item.id)}
+                onToggleVisibility={() => handleToggleVisibility(item.id)}
+                focalPointMediaId={focalPointMediaId}
+                onToggleFocalPoint={() => setFocalPointMediaId(focalPointMediaId === item.id ? null : item.id)}
+                onCrop={() => setCroppingMedia({ id: item.id, url: item.url })}
+                onFocalPointSaved={(id, coords) => setMedia(prev => prev.map(m => m.id === id ? { ...m, originalUrl: coords } as FacilityMedia : m))}
+              />
+            ))}
+
+            {/* Skeletons for assets currently in transit */}
+            {uploadingFiles.map((file, idx) => (
+              <div 
+                key={`transiting-${idx}-${file.name}`}
+                className="bg-slate-900/40 border border-cyan-500/20 rounded-2xl aspect-video relative overflow-hidden flex flex-col items-center justify-center p-4 shadow-[0_0_20px_rgba(6,182,212,0.05)] animate-pulse"
+              >
+                <Icon name="progress_activity" className="text-[24px] text-cyan-500 animate-spin mb-2" />
+                <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider truncate max-w-full px-2">
+                  {file.name}
+                </span>
+                <span className="text-[8px] font-bold text-cyan-400 uppercase tracking-widest mt-1">
+                  {uploadProgress[file.name] !== undefined 
+                    ? `Uploading ${uploadProgress[file.name].toFixed(0)}%` 
+                    : "Optimizing..."}
+                </span>
+              </div>
+            ))}
+          </div>
+        </SortableContext>
+
+        <DragOverlay adjustScale={true} dropAnimation={dropAnimation}>
+          {activeId && activeItem ? (
+            <div className="z-50 scale-105 transition-transform duration-300 cursor-grabbing">
+              <MediaItemCard item={activeItem} isOverlay />
+            </div>
+          ) : null}
+        </DragOverlay>
+      </DndContext>
+
+      {/* ✂️ High-Fidelity Canvas Image Cropper Modal */}
+      {croppingMedia && (
+        <CropModal 
+          media={croppingMedia} 
+          onClose={() => setCroppingMedia(null)} 
+          onSave={async (file: File) => {
+            await processFilesUpload([file])
+            setCroppingMedia(null)
+          }}
+        />
+      )}
+    </div>
+  )
+}
+
+function MediaItemCard({ 
+  item, 
+  onDelete, 
+  isOverlay, 
+  isSelected, 
+  isSelectionMode, 
+  onSelect, 
+  listeners, 
+  attributes, 
+  onToggleHero, 
+  onToggleCardBG, 
+  onToggleVisibility,
+  focalPointMediaId,
+  onToggleFocalPoint,
+  onCrop,
+  onFocalPointSaved
+}: { 
+  item: FacilityMedia, 
+  onDelete?: () => void,
+  isOverlay?: boolean,
+  isSelected?: boolean,
+  isSelectionMode?: boolean,
+  onSelect?: () => void,
+  listeners?: any,
+  attributes?: any,
+  onToggleHero?: () => void,
+  onToggleCardBG?: () => void,
+  onToggleVisibility?: () => void,
+  focalPointMediaId?: string | null,
+  onToggleFocalPoint?: () => void,
+  onCrop?: () => void,
+  onFocalPointSaved?: (id: string, coords: string) => void
+}) {
+  const [isPortrait, setIsPortrait] = useState(false)
+  const extension = item.url.substring(item.url.lastIndexOf(".") + 1).split("?")[0].toUpperCase();
+
+  return (
+    <div className={cn(
+      "group flex flex-col bg-slate-900/40 rounded-2xl border border-white/5 overflow-hidden transition-all duration-300",
+      isSelected && "ring-2 ring-primary ring-offset-2 ring-offset-slate-950 shadow-[0_0_30px_rgba(6,182,212,0.3)]",
+      isOverlay && "shadow-2xl opacity-90 scale-105"
+    )}>
+      {/* 🖼️ Thumbnail Area */}
+      <div 
+        onClick={() => isSelectionMode && onSelect?.()}
+        className={cn(
+          "aspect-video relative overflow-hidden bg-slate-950",
+          isSelectionMode && "cursor-pointer"
+        )}
+      >
+        {/* Render focal target dot */}
+        {item.originalUrl && item.type === "PHOTO" && (
+          <div 
+            className="absolute size-5 rounded-full border-2 border-cyan-400 bg-cyan-950/70 z-30 shadow-[0_0_10px_rgba(6,182,212,0.5)] flex items-center justify-center -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+            style={{ 
+              left: `${item.originalUrl.split(",")[0]}%`, 
+              top: `${item.originalUrl.split(",")[1]}%` 
+            }}
+          >
+            <div className="size-1.5 rounded-full bg-cyan-400" />
+          </div>
+        )}
+
+        {/* Focal point click overlay selection */}
+        {focalPointMediaId === item.id && (
+          <div 
+            onClick={async (e) => {
+              e.stopPropagation()
+              const rect = e.currentTarget.getBoundingClientRect()
+              const x = Math.round(((e.clientX - rect.left) / rect.width) * 100)
+              const y = Math.round(((e.clientY - rect.top) / rect.height) * 100)
+              
+              try {
+                const res = await updateMediaFocalPointAction(item.id, item.facilityId, `${x},${y}`)
+                if (res.success) {
+                  toast.success(`Focal point set to ${x}%, ${y}%`)
+                  onFocalPointSaved?.(item.id, `${x},${y}`)
+                  onToggleFocalPoint?.()
+                } else {
+                  toast.error("Failed to save focal point")
+                }
+              } catch (err) {
+                console.error(err)
+                toast.error("Error setting focal point")
+              }
+            }}
+            className="absolute inset-0 bg-cyan-950/80 backdrop-blur-sm z-30 flex flex-col items-center justify-center text-center p-3 cursor-crosshair animate-in fade-in duration-200"
+          >
+            <Icon name="gps_fixed" className="size-6 text-cyan-400 animate-pulse mb-1.5" />
+            <span className="text-[10px] font-black text-white uppercase tracking-wider">
+              Postavi Fokus
+            </span>
+            <span className="text-[8px] font-medium text-cyan-300 uppercase tracking-widest mt-0.5 leading-tight max-w-[120px]">
+              Klikni bilo gde za pozicioniranje
+            </span>
+            <button
+              onClick={(e) => {
+                e.stopPropagation()
+                onToggleFocalPoint?.()
+              }}
+              className="absolute bottom-2 right-2 size-5 rounded-md bg-white/10 hover:bg-white/20 flex items-center justify-center text-white"
+            >
+              <Icon name="close" className="size-3" />
+            </button>
+          </div>
+        )}
+
+        {item.type === "PHOTO" ? (
+          <>
+            <Image 
+              src={item.url} 
+              alt="Facility media" 
+              fill
+              className={cn(
+                "object-cover transition-transform duration-500 group-hover:scale-110",
+                !item.isGalleryVisible && "opacity-40 grayscale"
+              )}
+              onLoadingComplete={(img) => {
+                if (img.naturalHeight > img.naturalWidth) {
+                  setIsPortrait(true)
+                }
+              }}
+            />
+            {isPortrait && (
+              <div className="absolute bottom-3 left-3 bg-amber-500 text-slate-950 text-[8px] font-black uppercase px-2 py-0.5 rounded-md z-30 opacity-100 group-hover:opacity-0 transition-opacity flex items-center gap-0.5 shadow-lg">
+                ⚠️ Portrait
+              </div>
+            )}
+          </>
+        ) : (
+          <div className="h-full w-full relative">
+            <video 
+              src={`${item.url}#t=0.1`} 
+              className={cn(
+                "h-full w-full object-cover transition-transform duration-500 group-hover:scale-110",
+                !item.isGalleryVisible && "opacity-40 grayscale"
+              )} 
+              preload="metadata"
+              muted 
+              playsInline 
+              onMouseEnter={(e) => {
+                e.currentTarget.play().catch(err => console.log("Video autoplay blocked", err));
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.pause();
+                e.currentTarget.currentTime = 0.1;
+              }}
+            />
+            <div className="absolute top-3 left-3 bg-black/60 border border-white/10 p-1.5 rounded-lg z-30">
+              <Icon name="movie" className="size-3.5 text-cyan-400 animate-pulse" />
+            </div>
+          </div>
+        )}
+
+        {/* Dynamic extension badge on hover */}
+        <div className="absolute bottom-3 left-3 bg-black/60 border border-white/10 text-[8px] font-black text-slate-300 uppercase px-2 py-0.5 rounded-md z-30 opacity-0 group-hover:opacity-100 transition-opacity">
+          {extension}
+        </div>
+
+        {/* Drag Handle Overlay */}
+        {!isSelectionMode && !isOverlay && (
+          <div 
+            {...listeners} 
+            {...attributes}
+            className="absolute inset-0 z-20 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity cursor-grab active:cursor-grabbing"
+          >
+            <Icon name="drag_indicator" className="size-8 text-white/50" />
+          </div>
+        )}
+
+        {/* Selection Checkmark */}
+        {isSelectionMode && (
+           <div className="absolute top-3 left-3 z-30">
+              <div className={cn(
+                 "size-6 rounded-full border-2 transition-all flex items-center justify-center",
+                 isSelected ? "bg-primary border-primary" : "bg-black/40 border-white/20"
+              )}>
+                 {isSelected && <Icon name="security" className="size-4 text-slate-950 stroke-[3]" />}
+              </div>
+           </div>
+        )}
+
+        {/* Status Badges */}
+        <div className="absolute top-3 right-3 flex flex-col gap-2 z-30">
+          {item.isHero && (
+            <div className="bg-amber-500 text-slate-950 text-[8px] font-black uppercase px-2 py-1 rounded-md shadow-lg flex items-center gap-1 animate-pulse">
+              <Icon name="star" className="size-3 fill-current" />
+              Hero
+            </div>
+          )}
+          {item.isCardBackground && (
+            <div className="bg-cyan-500 text-slate-950 text-[8px] font-black uppercase px-2 py-1 rounded-md shadow-lg flex items-center gap-1">
+              <Icon name="dashboard" className="size-3 fill-current" />
+              Card BG
+            </div>
+          )}
+        </div>
+
+        {/* Delete Button */}
+        {!isSelectionMode && !isOverlay && (
+          <Button
+            variant="destructive"
+            size="icon"
+            onClick={(e) => { e.stopPropagation(); onDelete?.(); }}
+            className="absolute bottom-3 right-3 size-8 rounded-xl opacity-0 group-hover:opacity-100 transition-all z-30"
+          >
+            <Icon name="delete" className="size-4" />
+          </Button>
+        )}
+      </div>
+
+      {/* 🛠️ Action Controls (Below Thumbnail) */}
+      {!isOverlay && (
+        <div className="p-3 bg-white/[0.02] border-t border-white/5 grid grid-cols-3 gap-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onToggleHero}
+            className={cn(
+              "flex flex-col h-auto py-2 gap-1 text-[9px] font-black uppercase tracking-tighter hover:bg-amber-500/10",
+              item.isHero ? "text-amber-500" : "text-slate-500"
+            )}
+          >
+            <Icon name="monitor" className={cn("size-4", item.isHero && "fill-current")} />
+            Hero
+          </Button>
+
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onToggleCardBG}
+            className={cn(
+              "flex flex-col h-auto py-2 gap-1 text-[9px] font-black uppercase tracking-tighter hover:bg-cyan-500/10",
+              item.isCardBackground ? "text-cyan-500" : "text-slate-500"
+            )}
+          >
+            <Icon name="dashboard" className={cn("size-4", item.isCardBackground && "fill-current")} />
+            Card BG
+          </Button>
+
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onToggleVisibility}
+            className={cn(
+              "flex flex-col h-auto py-2 gap-1 text-[9px] font-black uppercase tracking-tighter hover:bg-primary/10",
+              item.isGalleryVisible ? "text-emerald-500" : "text-slate-500"
+            )}
+          >
+            {item.isGalleryVisible ? <Icon name="visibility" className="size-4" /> : <Icon name="visibility_off" className="size-4" />}
+            {item.isGalleryVisible ? "Public" : "Hidden"}
+          </Button>
+        </div>
+      )}
+
+      {/* ✍️ Inline Caption Editor */}
+      {!isOverlay && !isSelectionMode && (
+        <div className="px-3 pb-3 pt-1 bg-white/[0.01] flex items-center gap-2">
+          <input
+            type="text"
+            placeholder="Add descriptive SEO ALT tag..."
+            defaultValue={item.caption || ""}
+            onBlur={async (e) => {
+              const val = e.target.value.trim() || null;
+              if (val === item.caption) return;
+              try {
+                const res = await updateMediaCaptionAction(item.id, item.facilityId, val);
+                if (res.success) {
+                  toast.success("SEO Caption updated successfully");
+                } else {
+                  toast.error("Failed to save caption");
+                }
+              } catch (err) {
+                console.error(err);
+                toast.error("Caption save error");
+              }
+            }}
+            className="w-full bg-black/20 border border-white/5 rounded-lg px-2.5 py-1 text-[10px] font-medium text-slate-300 focus:outline-none focus:border-cyan-500/40 transition-colors placeholder:text-slate-600"
+          />
+          {item.type === "PHOTO" && (
+            <div className="flex gap-1 shrink-0">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => onToggleFocalPoint?.()}
+                className={cn(
+                  "size-7 rounded-lg hover:bg-cyan-500/10 hover:text-cyan-400 border border-white/5 transition-colors",
+                  item.originalUrl ? "text-cyan-400 border-cyan-500/20 bg-cyan-500/5" : "text-slate-500"
+                )}
+                title="Set focal point"
+              >
+                <Icon name="gps_fixed" className="size-3.5" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => onCrop?.()}
+                className="size-7 rounded-lg hover:bg-cyan-500/10 text-slate-500 hover:text-cyan-400 border border-white/5 transition-colors"
+                title="Crop image"
+              >
+                <Icon name="crop" className="size-3.5" />
+              </Button>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  )
+}
+
+function SortableMediaItem({ 
+  item, 
+  isSelected, 
+  isSelectionMode, 
+  onSelect, 
+  onDelete, 
+  onToggleHero, 
+  onToggleCardBG, 
+  onToggleVisibility,
+  focalPointMediaId,
+  onToggleFocalPoint,
+  onCrop,
+  onFocalPointSaved
+}: { 
+  item: FacilityMedia, 
+  isSelected: boolean,
+  isSelectionMode: boolean,
+  onSelect: () => void,
+  onDelete: () => void,
+  onToggleHero: () => void,
+  onToggleCardBG: () => void,
+  onToggleVisibility: () => void,
+  focalPointMediaId?: string | null,
+  onToggleFocalPoint?: () => void,
+  onCrop?: () => void,
+  onFocalPointSaved?: (id: string, coords: string) => void
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging
+  } = useSortable({ 
+    id: item.id,
+    disabled: isSelectionMode 
+  })
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.3 : 1,
+  }
+
+  return (
+    <div ref={setNodeRef} style={style}>
+      <MediaItemCard 
+        item={item} 
+        isSelected={isSelected}
+        isSelectionMode={isSelectionMode}
+        onSelect={onSelect}
+        onDelete={onDelete} 
+        listeners={listeners} 
+        attributes={attributes} 
+        onToggleHero={onToggleHero}
+        onToggleCardBG={onToggleCardBG}
+        onToggleVisibility={onToggleVisibility}
+        focalPointMediaId={focalPointMediaId}
+        onToggleFocalPoint={onToggleFocalPoint}
+        onCrop={onCrop}
+        onFocalPointSaved={onFocalPointSaved}
+      />
+    </div>
+  )
+}
+
+/**
+ * ✂️ High-Fidelity Client-Side HTML5 Canvas Image Cropper Modal
+ * Supports preset dynamic ratios (16:9, 4:3, 1:1), live zoom, translation offsets,
+ * and high-definition WebP rendering output with zero external UI cropping library dependencies.
+ */
+function CropModal({ 
+  media, 
+  onClose, 
+  onSave 
+}: { 
+  media: { id: string; url: string }, 
+  onClose: () => void, 
+  onSave: (file: File) => Promise<void> 
+}) {
+  const [aspectRatio, setAspectRatio] = useState<"16:9" | "4:3" | "1:1">("16:9")
+  const [zoom, setZoom] = useState(1.0)
+  const [offsetX, setOffsetX] = useState(0)
+  const [offsetY, setOffsetY] = useState(0)
+  const [isSaving, setIsSaving] = useState(false)
+  
+  const canvasRef = useRef<HTMLCanvasElement | null>(null)
+  const imageRef = useRef<HTMLImageElement | null>(null)
+
+  // Redraw preview canvas whenever sliders or aspect ratio changes
+  useEffect(() => {
+    const img = imageRef.current
+    const canvas = canvasRef.current
+    if (!img || !canvas) return
+
+    const ctx = canvas.getContext("2d")
+    if (!ctx) return
+
+    // Set canvas dimensions based on preset ratio
+    let targetW = 400
+    let targetH = 225 // Default 16:9 preview size
+
+    if (aspectRatio === "4:3") {
+      targetW = 400
+      targetH = 300
+    } else if (aspectRatio === "1:1") {
+      targetW = 350
+      targetH = 350
+    }
+
+    canvas.width = targetW
+    canvas.height = targetH
+
+    // Centering calculations
+    ctx.fillStyle = "#090d16"
+    ctx.fillRect(0, 0, targetW, targetH)
+
+    const imgRatio = img.naturalWidth / img.naturalHeight
+    const canvasRatio = targetW / targetH
+
+    let drawW = targetW
+    let drawH = targetH
+
+    if (imgRatio > canvasRatio) {
+      drawW = targetH * imgRatio
+    } else {
+      drawH = targetW / imgRatio
+    }
+
+    drawW *= zoom
+    drawH *= zoom
+
+    const x = (targetW - drawW) / 2 + (offsetX * targetW / 100)
+    const y = (targetH - drawH) / 2 + (offsetY * targetH / 100)
+
+    ctx.drawImage(img, x, y, drawW, drawH)
+  }, [aspectRatio, zoom, offsetX, offsetY])
+
+  const handleSave = () => {
+    const img = imageRef.current
+    if (!img) return
+
+    setIsSaving(true)
+
+    // Build the high-resolution cropped image on a large canvas
+    let targetW = 1200
+    let targetH = 675 // Default 16:9 high-res
+
+    if (aspectRatio === "4:3") {
+      targetW = 1000
+      targetH = 750
+    } else if (aspectRatio === "1:1") {
+      targetW = 800
+      targetH = 800
+    }
+
+    const canvas = document.createElement("canvas")
+    canvas.width = targetW
+    canvas.height = targetH
+    const ctx = canvas.getContext("2d")
+    
+    if (ctx) {
+      ctx.fillStyle = "#090d16"
+      ctx.fillRect(0, 0, targetW, targetH)
+
+      const imgRatio = img.naturalWidth / img.naturalHeight
+      const canvasRatio = targetW / canvas.height
+
+      let drawW = targetW
+      let drawH = targetH
+
+      if (imgRatio > canvasRatio) {
+        drawW = targetH * imgRatio
+      } else {
+        drawH = targetW / imgRatio
+      }
+
+      drawW *= zoom
+      drawH *= zoom
+
+      const x = (targetW - drawW) / 2 + (offsetX * targetW / 100)
+      const y = (targetH - drawH) / 2 + (offsetY * targetH / 100)
+
+      ctx.drawImage(img, x, y, drawW, drawH)
+
+      canvas.toBlob(
+        async (blob) => {
+          if (blob) {
+            const file = new File([blob], `cropped-${Date.now()}.webp`, { type: "image/webp" })
+            await onSave(file)
+          }
+          setIsSaving(false)
+        },
+        "image/webp",
+        0.85
+      )
+    }
+  }
+
+  return (
+    <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-[999] flex items-center justify-center p-4 animate-in fade-in duration-300">
+      {/* Hidden raw image for canvas extraction */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img 
+        ref={imageRef} 
+        src={media.url} 
+        alt="Raw crop src" 
+        className="hidden" 
+        crossOrigin="anonymous"
+        onLoad={() => {
+          // Trigger render effect
+          setZoom(1.0001) 
+        }}
+      />
+
+      <div className="bg-slate-900/90 border border-white/10 rounded-3xl p-6 w-full max-w-lg shadow-[0_0_50px_rgba(6,182,212,0.15)] flex flex-col gap-6 animate-in zoom-in-95 duration-300">
+        <div className="flex items-center justify-between border-b border-white/5 pb-4">
+          <div>
+            <h3 className="text-lg font-black text-white uppercase tracking-tighter">Iseci fotografiju</h3>
+            <p className="text-[10px] text-slate-500 uppercase tracking-wider mt-0.5">Crop utility: re-encodes to high-density WebP</p>
+          </div>
+          <Button variant="ghost" size="icon" onClick={onClose} className="rounded-xl size-8">
+            <Icon name="close" className="size-4" />
+          </Button>
+        </div>
+
+        {/* Live Canvas Preview */}
+        <div className="flex justify-center bg-slate-950/80 border border-white/5 rounded-2xl overflow-hidden py-4">
+          <canvas ref={canvasRef} className="rounded-xl border border-white/5 shadow-2xl max-w-full" />
+        </div>
+
+        {/* Presets and Sliders */}
+        <div className="space-y-4">
+          <div className="flex flex-col gap-1.5">
+            <label className="text-[9px] font-black uppercase tracking-widest text-slate-500">Proporcija (Aspect Ratio)</label>
+            <div className="grid grid-cols-3 gap-2">
+              {[
+                { id: "16:9", label: "16:9 (Hero/Bazen)" },
+                { id: "4:3", label: "4:3 (Kartica BG)" },
+                { id: "1:1", label: "1:1 (Kvadrat)" },
+              ].map((ratio) => (
+                <button
+                  key={ratio.id}
+                  onClick={() => setAspectRatio(ratio.id as any)}
+                  className={cn(
+                    "py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all",
+                    aspectRatio === ratio.id 
+                      ? "bg-cyan-500/20 border border-cyan-500 text-cyan-400" 
+                      : "bg-white/[0.02] border border-white/5 text-slate-400 hover:text-white"
+                  )}
+                >
+                  {ratio.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Slider controls */}
+          <div className="space-y-3 bg-white/[0.01] border border-white/5 rounded-xl p-3">
+            {/* Zoom Slider */}
+            <div className="flex flex-col gap-1.5">
+              <div className="flex items-center justify-between text-[9px] font-black uppercase tracking-widest text-slate-400">
+                <span>Uvećanje (Zoom)</span>
+                <span className="font-mono text-cyan-400">{zoom.toFixed(1)}x</span>
+              </div>
+              <input 
+                type="range" 
+                min="1.0" 
+                max="3.0" 
+                step="0.1" 
+                value={zoom} 
+                onChange={(e) => setZoom(parseFloat(e.target.value))}
+                className="w-full h-1 bg-slate-950 rounded-lg appearance-none cursor-pointer accent-cyan-500"
+              />
+            </div>
+
+            {/* Horizontal Position X Slider */}
+            <div className="flex flex-col gap-1.5">
+              <div className="flex items-center justify-between text-[9px] font-black uppercase tracking-widest text-slate-400">
+                <span>Vodoravno pomeranje (X osa)</span>
+                <span className="font-mono text-cyan-400">{offsetX}%</span>
+              </div>
+              <input 
+                type="range" 
+                min="-50" 
+                max="50" 
+                step="1" 
+                value={offsetX} 
+                onChange={(e) => setOffsetX(parseInt(e.target.value))}
+                className="w-full h-1 bg-slate-950 rounded-lg appearance-none cursor-pointer accent-cyan-500"
+              />
+            </div>
+
+            {/* Vertical Position Y Slider */}
+            <div className="flex flex-col gap-1.5">
+              <div className="flex items-center justify-between text-[9px] font-black uppercase tracking-widest text-slate-400">
+                <span>Uspravno pomeranje (Y osa)</span>
+                <span className="font-mono text-cyan-400">{offsetY}%</span>
+              </div>
+              <input 
+                type="range" 
+                min="-50" 
+                max="50" 
+                step="1" 
+                value={offsetY} 
+                onChange={(e) => setOffsetY(parseInt(e.target.value))}
+                className="w-full h-1 bg-slate-950 rounded-lg appearance-none cursor-pointer accent-cyan-500"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Modal CTAs */}
+        <div className="flex items-center justify-end gap-3 border-t border-white/5 pt-4">
+          <Button variant="ghost" onClick={onClose} disabled={isSaving} className="h-9 px-4 text-[10px] font-black uppercase tracking-widest">
+            Otkaži
+          </Button>
+          <Button 
+            onClick={handleSave} 
+            disabled={isSaving} 
+            className="h-9 px-5 bg-cyan-500 text-slate-950 hover:bg-cyan-400 text-[10px] font-black uppercase tracking-widest gap-2 shadow-[0_0_20px_rgba(6,182,212,0.3)]"
+          >
+            {isSaving ? (
+              <>
+                <Icon name="progress_activity" className="size-3 animate-spin text-slate-950" />
+                Sečenje...
+              </>
+            ) : (
+              <>
+                <Icon name="crop" className="size-3 text-slate-950" />
+                Sačuvaj i Otpremi
+              </>
+            )}
+          </Button>
+        </div>
+      </div>
+    </div>
+  )
+}
