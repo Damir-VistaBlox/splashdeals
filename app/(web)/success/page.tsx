@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/server/lib/prisma";
 import { type SuccessDictionary } from "./_components/SuccessClient";
 import { SuccessSkeleton } from "./_components/SuccessSkeleton";
 import { connection } from "next/server";

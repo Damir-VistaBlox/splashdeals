@@ -72,7 +72,7 @@ export async function generateMetadata({ params }: { params: Promise<Record<stri
 import { Header } from "@/components/layout/Header";
 import { GlobalAmbient } from "@/components/ui/GlobalAmbient";
 import { getDictionary } from "@/lib/dictionaries";
-import { getActiveCities } from "@/lib/data/discovery";
+import { getActiveCities } from "@/server/lib/data/discovery";
 import dynamic from "next/dynamic";
 
 const CartDrawer = dynamic(() => import("@/components/cart/CartDrawer").then((mod) => mod.CartDrawer));

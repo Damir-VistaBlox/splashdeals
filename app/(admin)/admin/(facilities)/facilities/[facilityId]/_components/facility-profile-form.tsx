@@ -14,8 +14,8 @@ import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
 import { cn } from "@/lib/utils"
 
-import { updateFacilityGovernanceSchema, type UpdateFacilityGovernanceValues } from "@/lib/validations/facility"
-import { updateFacilityGovernanceAction } from "@/app/(server)/actions/governance"
+import { updateFacilityGovernanceSchema, type UpdateFacilityGovernanceValues } from "@/server/lib/validations/facility"
+import { updateFacilityGovernanceAction } from "@/server/actions/governance"
 import { OperationsTable } from "./operations-control-manager"
 import { DistributionLogic } from "./distribution-logic"
 import { ProfileAndSEO } from "./profile-and-seo"
@@ -53,7 +53,7 @@ interface FacilityProfileFormProps {
     publicPhone: string | null
     publicEmail: string | null
     socialLinks: Prisma.JsonValue
-    emergencyMessage: string | null
+    emergencyContact: string | null
     closures: Array<{
       id: string
       startDate: Date
@@ -165,7 +165,7 @@ export function FacilityProfileForm({
       publicPhone: facility.publicPhone || "",
       publicEmail: facility.publicEmail || "",
       socialLinks: (facility.socialLinks as Record<string, string | null | undefined>) || { facebook: "", instagram: "", website: "" },
-      emergencyMessage: facility.emergencyMessage || "",
+      emergencyContact: facility.emergencyContact || "",
     },
   })
 

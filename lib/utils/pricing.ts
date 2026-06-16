@@ -1,5 +1,5 @@
 import { DayType, TimeSlot, Ticket } from "@prisma/client"
-import { isWeekend } from "date-fns" // Assuming date-fns is available as it's common in Next.js projects
+import { isWeekend } from "date-fns"
 
 /**
  * 🌊 Pricing Engine Utility
@@ -7,15 +7,14 @@ import { isWeekend } from "date-fns" // Assuming date-fns is available as it's c
  */
 
 export function getDayType(date: Date): DayType {
-  // TODO: Add holiday check logic if a holiday registry exists
   if (isWeekend(date)) {
     return DayType.WEEKEND
   }
   return DayType.WEEKDAY
 }
 
-export interface TicketWithPrice extends Ticket {
-  price: any // Decimal from Prisma
+export interface TicketWithPrice extends Omit<Ticket, 'price'> {
+  price: number
 }
 
 /**
@@ -56,7 +55,7 @@ export function formatPrice(price: number | string, currency: string = "RSD"): s
  * Returns the highest percentage as a whole number (e.g. 35 for 35%), or 0 if no discount is found.
  */
 export function calculateMaxDiscount(
-  tickets: { isActive: boolean; price: any; originalPrice: any | null }[]
+  tickets: { isActive: boolean; price: number; originalPrice: number | null }[]
 ): number {
   if (!tickets || tickets.length === 0) return 0
 

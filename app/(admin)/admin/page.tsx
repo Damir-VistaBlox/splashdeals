@@ -1,5 +1,5 @@
 import { connection } from "next/server"
-import { prisma } from "@/lib/prisma"
+import { prisma } from "@/server/lib/prisma"
 import { DashboardClient } from "./_components/DashboardClient"
 import { Metadata } from "next"
 import { cacheLife } from 'next/cache'

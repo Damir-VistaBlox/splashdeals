@@ -13,7 +13,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { GlassCard } from "@/components/ui/GlassCard"
 import { Textarea } from "@/components/ui/textarea"
-import type { UpdateFacilityGovernanceValues } from "@/lib/validations/facility"
+import type { UpdateFacilityGovernanceValues } from "@/server/lib/validations/facility"
 
 export function LocationSection() {
   const { control, getValues, formState: { dirtyFields } } = useFormContext<UpdateFacilityGovernanceValues>()

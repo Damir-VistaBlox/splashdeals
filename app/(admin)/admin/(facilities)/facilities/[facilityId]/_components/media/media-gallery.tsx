@@ -18,7 +18,7 @@ import {
   updateMediaCaptionAction,
   updateMediaFocalPointAction,
   bulkUpdateMediaCaptionAction
-} from "@/app/(server)/actions/media-actions"
+} from "@/server/actions/media-actions"
 import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
 import { 

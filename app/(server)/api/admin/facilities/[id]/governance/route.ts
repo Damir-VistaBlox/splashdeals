@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server"
-import { prisma } from "@/lib/prisma"
-import { authenticateRequest } from "@/lib/api-key-auth"
-import { requireSuperAdmin, validateFacilityAccess } from "@/lib/auth-guards"
-import { updateFacilityGovernanceSchema } from "@/lib/validations/facility"
-import { handleServerActionError } from "@/lib/server-action-error"
+import { prisma } from "@/server/lib/prisma"
+import { authenticateRequest } from "@/server/lib/api-key-auth"
+import { requireSuperAdmin, validateFacilityAccess } from "@/server/lib/auth-guards"
+import { updateFacilityGovernanceSchema } from "@/server/lib/validations/facility"
+import { handleServerActionError } from "@/server/lib/server-action-error"
 
 /**
  * 🏢 Facility Governance API - Patch Profile
@@ -47,7 +47,7 @@ export async function PATCH(
           metaTitle: validated.metaTitle,
           metaDescription: validated.metaDescription,
           logoUrl: validated.logoUrl,
-          emergencyMessage: validated.emergencyMessage,
+          emergencyContact: validated.emergencyContact,
           seoArticle: validated.seoArticle,
           transitGuide: validated.transitGuide,
           status: validated.status,

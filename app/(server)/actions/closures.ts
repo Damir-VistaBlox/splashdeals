@@ -1,10 +1,10 @@
 "use server"
 
-import { revalidatePath } from "next/cache"
 import { z } from "zod"
-import { prisma } from "@/lib/prisma"
-import { handleServerActionError } from "@/lib/server-action-error"
-import { validateFacilityAccess } from "@/lib/auth-guards"
+import { prisma } from "@/server/lib/prisma"
+import { handleServerActionError } from "@/server/lib/server-action-error"
+import { validateFacilityAccess } from "@/server/lib/auth-guards"
+import { revalidateAdminFacility } from "@/server/lib/revalidation"
 
 const closureSchema = z.object({
   facilityId: z.string().uuid(),
@@ -26,10 +26,10 @@ export async function addFacilityClosureAction(data: z.infer<typeof closureSchem
       },
     })
 
-    revalidatePath(`/admin/facilities/${validated.facilityId}`)
+    revalidateAdminFacility(validated.facilityId)
     return { success: true, data: closure }
   } catch (error) {
-    return handleServerActionError(error)
+    return handleServerActionError(error, "closures")
   }
 }
 
@@ -40,9 +40,9 @@ export async function removeFacilityClosureAction(closureId: string, facilityId:
       where: { id: closureId },
     })
 
-    revalidatePath(`/admin/facilities/${facilityId}`)
+    revalidateAdminFacility(facilityId)
     return { success: true }
   } catch (error) {
-    return handleServerActionError(error)
+    return handleServerActionError(error, "closures")
   }
 }

@@ -5,7 +5,7 @@ import { useState, useTransition } from "react"
 import { GlassCard } from "@/components/ui/GlassCard"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { updateFacilitySocialLinksAction } from "@/app/(server)/actions/governance"
+import { updateFacilitySocialLinksAction } from "@/server/actions/governance"
 import { toast } from "sonner"
 
 interface SocialLinksWidgetProps {

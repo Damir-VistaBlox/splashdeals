@@ -1,6 +1,6 @@
 import { handleUpload, type HandleUploadBody } from '@vercel/blob/client';
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { prisma } from '@/server/lib/prisma';
 import { MediaType } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 

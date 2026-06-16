@@ -42,7 +42,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { createColumns, SerializedAdminTicket, SerializedTicketGroup } from "./columns"
 import { cn } from "@/lib/utils"
-import { reorderTicketsAction } from "@/app/(server)/actions/tickets"
+import { reorderTicketsAction } from "@/server/actions/tickets"
 import { toast } from "sonner"
 
 const TicketSheet = dynamic(

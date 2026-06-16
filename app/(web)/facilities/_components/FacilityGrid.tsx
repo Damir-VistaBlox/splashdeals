@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/server/lib/prisma";
 import { FacilityCard } from "./FacilityCard";
 import * as motion from "framer-motion/client";
 

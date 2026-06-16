@@ -1,13 +1,13 @@
 import { Icon } from "@/components/ui/Icon";
 import { connection } from "next/server"
 import { Metadata } from "next"
-import { prisma } from "@/lib/prisma"
+import { prisma } from "@/server/lib/prisma"
 import { Suspense } from "react"
 import { TableSkeleton } from "@/components/admin/TableSkeleton"
 import { AdminMetricCard } from "../../(facilities)/facilities/_components/admin-metric-card"
 import { UsersList } from "./_components/users-list"
 import { UserRole } from "@prisma/client"
-import { requireSuperAdmin } from "@/lib/auth-guards"
+import { requireSuperAdmin } from "@/server/lib/auth-guards"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 

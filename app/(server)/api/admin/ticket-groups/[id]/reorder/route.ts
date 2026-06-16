@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server"
-import { prisma } from "@/lib/prisma"
-import { authenticateRequest } from "@/lib/api-key-auth"
-import { requireSuperAdmin, validateFacilityAccess } from "@/lib/auth-guards"
-import { handleServerActionError } from "@/lib/server-action-error"
+import { prisma } from "@/server/lib/prisma"
+import { authenticateRequest } from "@/server/lib/api-key-auth"
+import { requireSuperAdmin, validateFacilityAccess } from "@/server/lib/auth-guards"
+import { handleServerActionError } from "@/server/lib/server-action-error"
 import { z } from "zod"
 
 const reorderSchema = z.object({

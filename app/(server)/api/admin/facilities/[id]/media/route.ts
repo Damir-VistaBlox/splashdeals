@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server"
-import { prisma } from "@/lib/prisma"
-import { authenticateRequest } from "@/lib/api-key-auth"
-import { requireSuperAdmin, validateFacilityAccess } from "@/lib/auth-guards"
-import { handleServerActionError } from "@/lib/server-action-error"
+import { prisma } from "@/server/lib/prisma"
+import { authenticateRequest } from "@/server/lib/api-key-auth"
+import { requireSuperAdmin, validateFacilityAccess } from "@/server/lib/auth-guards"
+import { handleServerActionError } from "@/server/lib/server-action-error"
 import { put } from "@vercel/blob"
-import { mediaUploadSchema } from "@/lib/validations/media"
-import { processImageToWebP, generateThumbnail } from "@/lib/media"
+import { mediaUploadSchema } from "@/server/lib/validations/media"
+import { processImageToWebP, generateThumbnail } from "@/server/lib/media"
 import { parse } from "url"
 
 /**

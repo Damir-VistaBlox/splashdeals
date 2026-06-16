@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
-import { prisma } from "@/lib/prisma"
-import { requireSuperAdmin } from "@/lib/auth-guards"
-import { handleServerActionError } from "@/lib/server-action-error"
+import { prisma } from "@/server/lib/prisma"
+import { requireSuperAdmin } from "@/server/lib/auth-guards"
+import { handleServerActionError } from "@/server/lib/server-action-error"
 
 /**
  * 🔑 API Key Revocation

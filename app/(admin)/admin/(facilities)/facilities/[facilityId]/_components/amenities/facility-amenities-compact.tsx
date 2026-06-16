@@ -32,9 +32,9 @@ import {
 } from "@/components/ui/tooltip"
 
 import { 
-  updateFacilityAmenities,
-  deleteGlobalAmenity
-} from "@/app/(server)/actions/amenity-actions"
+  updateFacilityAmenitiesAction,
+  deleteGlobalAmenityAction
+} from "@/server/actions/amenity-actions"
 
 // 🎨 Icon Resolver for premium, curated visual styling
 const AMENITY_MATERIAL_ICON_MAP: Record<string, string> = {
@@ -149,7 +149,7 @@ export function CompactAmenitiesTable({
           displayOrder: updatedItem.displayOrder,
         }]
         
-        const result = await updateFacilityAmenities(facilityId, payload)
+        const result = await updateFacilityAmenitiesAction(facilityId, payload)
         
         if (result && !result.success) {
           throw new Error("Registry reject")
@@ -223,7 +223,7 @@ export function CompactAmenitiesTable({
 
     startTransition(async () => {
       try {
-        const res = await deleteGlobalAmenity(id, facilityId)
+        const res = await deleteGlobalAmenityAction(id, facilityId)
         if (res && res.success) {
           setItems(prev => prev.filter(item => item.id !== id))
           toast.success("Amenity Deleted", {
@@ -264,7 +264,7 @@ export function CompactAmenitiesTable({
         type: newRow.type,
       }]
 
-      const result = await updateFacilityAmenities(facilityId, payload)
+      const result = await updateFacilityAmenitiesAction(facilityId, payload)
       
       if (result && result.success) {
         toast.success("Asset Created & Registered", {

@@ -1,4 +1,4 @@
-import { getAdminUsersAction } from "@/app/(server)/actions/users"
+import { getAdminUsersAction } from "@/server/actions/users"
 import { UsersTable } from "./users-table"
 
 interface UsersListProps {

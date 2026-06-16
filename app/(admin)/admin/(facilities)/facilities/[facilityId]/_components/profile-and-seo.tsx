@@ -13,9 +13,9 @@ import {
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { GlassCard } from "@/components/ui/GlassCard"
-import { checkSlugAvailabilityAction } from "@/app/(server)/actions/governance"
+import { checkSlugAvailabilityAction } from "@/server/actions/governance"
 import { cn } from "@/lib/utils"
-import type { UpdateFacilityGovernanceValues } from "@/lib/validations/facility"
+import type { UpdateFacilityGovernanceValues } from "@/server/lib/validations/facility"
 
 interface ProfileAndSEOProps {
   facilityId: string

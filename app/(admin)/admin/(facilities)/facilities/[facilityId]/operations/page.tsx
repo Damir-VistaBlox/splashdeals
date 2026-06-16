@@ -1,7 +1,7 @@
 import { Icon } from "@/components/ui/Icon";
  
 import { Metadata } from "next"
-import { prisma } from "@/lib/prisma"
+import { prisma } from "@/server/lib/prisma"
 import { notFound } from "next/navigation"
 import { connection } from "next/server"
 import { OperationsTable } from "../_components/operations-control-manager"

@@ -23,7 +23,7 @@ import { CSS } from "@dnd-kit/utilities"
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-import { reorderTicketGroupsAction } from "@/app/(server)/actions/tickets"
+import { reorderTicketGroupsAction } from "@/server/actions/tickets"
 import { SerializedTicketGroup } from "./columns"
 import { toast } from "sonner"
 

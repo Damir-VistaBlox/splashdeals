@@ -31,8 +31,11 @@ async function main() {
   
   // 0.1 Seed Admin User
   const adminEmail = process.env.ADMIN_SEED_EMAIL || "admin@splashdeals.rs";
-  const adminPassword = process.env.ADMIN_SEED_PASSWORD || "Splashdeals2026!"; // Robust default for dev
+  const adminPassword = process.env.ADMIN_SEED_PASSWORD;
   
+  if (!adminPassword) {
+    console.warn("⚠️ Skipping admin seed: ADMIN_SEED_PASSWORD not set.");
+  } else {
   console.log(`👤 Seeding admin user: ${adminEmail}`);
   
   const auth = betterAuth({
@@ -62,6 +65,7 @@ async function main() {
     } else {
        console.error("❌ Failed to seed admin user:", err);
     }
+  }
   }
 
   // 1. Seed Strategic Cities/Regions

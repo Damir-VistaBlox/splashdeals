@@ -1,11 +1,11 @@
 "use server"
 
-import { prisma } from "@/lib/prisma"
+import { prisma } from "@/server/lib/prisma"
 import { revalidatePath } from "next/cache"
 import { z } from "zod"
-import { requireAdmin } from "@/lib/auth-guards"
+import { requireAdmin } from "@/server/lib/auth-guards"
 
-import { handleServerActionError } from "@/lib/server-action-error"
+import { handleServerActionError } from "@/server/lib/server-action-error"
 
 const citySchema = z.object({
   id: z.string().optional(),
@@ -19,7 +19,6 @@ const manageCitiesSchema = z.array(citySchema)
 export async function manageCitiesAction(cities: z.infer<typeof manageCitiesSchema>) {
   try {
     await requireAdmin()
-    
     const validated = manageCitiesSchema.parse(cities)
 
     await prisma.$transaction(async (tx) => {
@@ -56,6 +55,6 @@ export async function manageCitiesAction(cities: z.infer<typeof manageCitiesSche
     revalidatePath("/admin/facilities", "layout")
     return { success: true }
   } catch (error: unknown) {
-    return handleServerActionError(error)
+    return handleServerActionError(error, "cities")
   }
 }

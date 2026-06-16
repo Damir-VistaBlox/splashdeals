@@ -1,9 +1,9 @@
 "use server"
 
-import { prisma } from "@/lib/prisma"
+import { prisma } from "@/server/lib/prisma"
 import { revalidatePath } from "next/cache"
 import { put } from "@vercel/blob"
-import { processTicketImage } from "@/lib/media"
+import { processTicketImage } from "@/server/lib/media"
 import { 
   upsertTicketSchema, 
   type UpsertTicketValues,
@@ -14,23 +14,23 @@ import {
   reorderSchema,
   type ReorderValues,
   slugSchema
-} from "@/lib/validations/ticket"
-import { validateFacilityAccess } from "@/lib/auth-guards"
-import { handleServerActionError } from "@/lib/server-action-error"
-import { withFacilityAccess } from "@/lib/with-facility-access"
+} from "@/server/lib/validations/ticket"
+import { validateFacilityAccess } from "@/server/lib/auth-guards"
+import { handleServerActionError } from "@/server/lib/server-action-error"
+import { withFacilityAccess } from "@/server/lib/with-facility-access"
 
 /**
  * 🌊 High-Density Ticket Upload Action
  */
 export async function uploadTicketImageAction(formData: FormData) {
-  const facilityId = formData.get("facilityId") as string;
-  const file = formData.get("file") as File;
-
-  if (!facilityId || !file) {
-    return { success: false, error: "Missing facility ID or file" };
-  }
-
   try {
+    const facilityId = formData.get("facilityId");
+    const file = formData.get("file");
+
+    if (typeof facilityId !== "string" || !file || !(file instanceof File)) {
+      throw new Error("Missing facility ID or file");
+    }
+
     await validateFacilityAccess(facilityId)
     const buffer = Buffer.from(await file.arrayBuffer());
     
@@ -44,7 +44,7 @@ export async function uploadTicketImageAction(formData: FormData) {
 
     return { success: true, url: blob.url };
   } catch (error) {
-    return handleServerActionError(error)
+    return handleServerActionError(error, "tickets")
   }
 }
 
@@ -122,7 +122,7 @@ export const upsertTicketAction = withFacilityAccess(async (data: UpsertTicketVa
     revalidatePath(`/admin/facilities/${validatedFields.facilityId}`)
     return { success: true }
   } catch (error) {
-    return handleServerActionError(error)
+    return handleServerActionError(error, "tickets")
   }
 })
 
@@ -135,7 +135,7 @@ export async function deleteTicketAction(ticketId: string, facilityId: string) {
     revalidatePath(`/admin/facilities/${facilityId}`)
     return { success: true }
   } catch (error) {
-    return handleServerActionError(error)
+    return handleServerActionError(error, "tickets")
   }
 }
 
@@ -170,7 +170,7 @@ export async function getTicketGroupsAction(facilitySlug: string) {
 
     return { success: true, data: serialized }
   } catch (error) {
-    return handleServerActionError(error)
+    return handleServerActionError(error, "tickets")
   }
 }
 
@@ -268,7 +268,7 @@ export const upsertTicketGroupAction = withFacilityAccess(async (values: TicketG
     revalidatePath(`/admin/facilities/${data.facilityId}`)
     return { success: true }
   } catch (error) {
-    return handleServerActionError(error)
+    return handleServerActionError(error, "tickets")
   }
 })
 
@@ -279,7 +279,7 @@ export async function deleteTicketGroupAction(id: string, facilityId: string) {
     revalidatePath(`/admin/facilities/${facilityId}`)
     return { success: true }
   } catch (error) {
-    return handleServerActionError(error)
+    return handleServerActionError(error, "tickets")
   }
 }
 
@@ -318,7 +318,7 @@ export async function upsertTicketTierAction(groupId: string, values: TicketTier
     revalidatePath(`/admin/facilities/${facilityId}`)
     return { success: true }
   } catch (error) {
-    return handleServerActionError(error)
+    return handleServerActionError(error, "tickets")
   }
 }
 
@@ -329,7 +329,7 @@ export async function deleteTicketTierAction(id: string, facilityId: string) {
     revalidatePath(`/admin/facilities/${facilityId}`)
     return { success: true }
   } catch (error) {
-    return handleServerActionError(error)
+    return handleServerActionError(error, "tickets")
   }
 }
 
@@ -350,7 +350,7 @@ export async function reorderTiersAction(groupId: string, ids: string[], facilit
     revalidatePath(`/admin/facilities/${facilityId}`)
     return { success: true }
   } catch (error) {
-    return handleServerActionError(error)
+    return handleServerActionError(error, "tickets")
   }
 }
 
@@ -369,7 +369,7 @@ export async function reorderTicketGroupsAction({ facilityId, orderedIds }: { fa
     revalidatePath(`/admin/facilities/${facilityId}`)
     return { success: true }
   } catch (error) {
-    return handleServerActionError(error)
+    return handleServerActionError(error, "tickets")
   }
 }
 
@@ -387,6 +387,6 @@ export const reorderTicketsAction = withFacilityAccess(async ({ facilityId, orde
     revalidatePath(`/admin/facilities/${facilityId}`)
     return { success: true }
   } catch (error) {
-    return handleServerActionError(error)
+    return handleServerActionError(error, "tickets")
   }
 })

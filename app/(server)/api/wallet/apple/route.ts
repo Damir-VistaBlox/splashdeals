@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 // import { PKPass } from "passkit-generator";
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/server/lib/prisma";
 
 
 

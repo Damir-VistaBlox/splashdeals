@@ -25,6 +25,12 @@
     "paths": {
       "@/*": [
         "./*"
+      ],
+      "@/server/lib/*": [
+        "./app/(server)/lib/*"
+      ],
+      "@/server/actions/*": [
+        "./app/(server)/actions/*"
       ]
     }
   },

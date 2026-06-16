@@ -1,5 +1,5 @@
 import { Icon } from "@/components/ui/Icon";
-import { prisma } from "@/lib/prisma"
+import { prisma } from "@/server/lib/prisma"
 import { connection } from "next/server"
 import { notFound } from "next/navigation"
 import Link from "next/link"

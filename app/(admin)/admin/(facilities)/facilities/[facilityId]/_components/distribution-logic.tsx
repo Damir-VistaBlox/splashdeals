@@ -14,8 +14,8 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { GlassCard } from "@/components/ui/GlassCard"
 import { Badge } from "@/components/ui/badge"
-import { manageCitiesAction } from "@/app/(server)/actions/cities"
-import type { UpdateFacilityGovernanceValues } from "@/lib/validations/facility"
+import { manageCitiesAction } from "@/server/actions/cities"
+import type { UpdateFacilityGovernanceValues } from "@/server/lib/validations/facility"
 
 interface City {
   id: string

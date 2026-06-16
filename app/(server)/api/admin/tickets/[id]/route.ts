@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server"
-import { prisma } from "@/lib/prisma"
-import { requireSuperAdmin, validateFacilityAccess } from "@/lib/auth-guards"
-import { authenticateRequest } from "@/lib/api-key-auth"
-import { upsertTicketSchema } from "@/lib/validations/ticket"
-import { handleServerActionError } from "@/lib/server-action-error"
+import { prisma } from "@/server/lib/prisma"
+import { requireSuperAdmin, validateFacilityAccess } from "@/server/lib/auth-guards"
+import { authenticateRequest } from "@/server/lib/api-key-auth"
+import { upsertTicketSchema } from "@/server/lib/validations/ticket"
+import { handleServerActionError } from "@/server/lib/server-action-error"
 
 /**
  * 🎟️ Ticket API - Detail, Update, Delete

@@ -14,4 +14,21 @@ describe('cn utility', () => {
   it('handles undefined and null', () => {
     expect(cn('px-2', undefined, null)).toBe('px-2');
   });
+
+  it('returns empty string for all falsy values', () => {
+    expect(cn(false, null, undefined, '')).toBe('');
+  });
+
+  it('resolves conflicting classes via twMerge', () => {
+    expect(cn('px-4', 'px-2')).toBe('px-2');
+    expect(cn('text-red-500', 'text-blue-500')).toBe('text-blue-500');
+  });
+
+  it('handles single string input', () => {
+    expect(cn('px-4')).toBe('px-4');
+  });
+
+  it('handles empty string input', () => {
+    expect(cn('')).toBe('');
+  });
 });

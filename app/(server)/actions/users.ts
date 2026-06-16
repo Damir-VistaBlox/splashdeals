@@ -1,24 +1,31 @@
 "use server"
 
-import { prisma } from "@/lib/prisma"
-import { requireSuperAdmin } from "@/lib/auth-guards"
+import { z } from "zod"
+import { prisma } from "@/server/lib/prisma"
+import { requireSuperAdmin } from "@/server/lib/auth-guards"
 import { revalidatePath } from "next/cache"
 import { UserRole } from "@prisma/client"
-import { auth } from "@/lib/auth"
+import { auth } from "@/server/lib/auth"
 
-import { handleServerActionError } from "@/lib/server-action-error"
+import { handleServerActionError } from "@/server/lib/server-action-error"
+
+const createAdminUserSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  email: z.string().email("Invalid email"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
+  role: z.nativeEnum(UserRole),
+})
 
 /**
  * 👥 Fetch all administrative users (Super Admins & Staff)
  */
 export async function getAdminUsersAction(params?: { page?: number, limit?: number }) {
-  await requireSuperAdmin()
-  
-  const page = params?.page || 1
-  const limit = params?.limit || 15
-  const skip = (page - 1) * limit
-
   try {
+    await requireSuperAdmin()
+
+    const page = params?.page || 1
+    const limit = params?.limit || 15
+    const skip = (page - 1) * limit
     const [users, totalCount] = await Promise.all([
       prisma.user.findMany({
         where: {
@@ -41,7 +48,7 @@ export async function getAdminUsersAction(params?: { page?: number, limit?: numb
 
     return { success: true, data: users, totalCount, page, limit }
   } catch (error) {
-    return handleServerActionError(error)
+    return handleServerActionError(error, "users")
   }
 }
 
@@ -49,9 +56,8 @@ export async function getAdminUsersAction(params?: { page?: number, limit?: numb
  * 🎭 Update user role
  */
 export async function updateUserRoleAction(userId: string, role: UserRole) {
-  await requireSuperAdmin()
-  
   try {
+    await requireSuperAdmin()
     await prisma.user.update({
       where: { id: userId },
       data: { role }
@@ -60,7 +66,7 @@ export async function updateUserRoleAction(userId: string, role: UserRole) {
     revalidatePath("/admin/users")
     return { success: true }
   } catch (error) {
-    return handleServerActionError(error)
+    return handleServerActionError(error, "users")
   }
 }
 
@@ -82,7 +88,7 @@ export async function deleteUserAction(userId: string) {
     revalidatePath("/admin/users")
     return { success: true }
   } catch (error) {
-    return handleServerActionError(error)
+    return handleServerActionError(error, "users")
   }
 }
 
@@ -93,12 +99,14 @@ export async function createAdminUserAction(data: { name: string, email: string,
   try {
     await requireSuperAdmin()
 
+    const validated = createAdminUserSchema.parse(data)
+
     const result = await auth.api.signUpEmail({
       body: {
-        email: data.email,
-        password: data.password,
-        name: data.name,
-        role: data.role
+        email: validated.email,
+        password: validated.password,
+        name: validated.name,
+        role: validated.role,
       }
     })
 
@@ -108,7 +116,7 @@ export async function createAdminUserAction(data: { name: string, email: string,
 
     revalidatePath("/admin/users")
     return { success: true }
-  } catch (error: any) {
-    return handleServerActionError(error)
+  } catch (error: unknown) {
+    return handleServerActionError(error, "users")
   }
 }

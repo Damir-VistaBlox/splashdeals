@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma"
+import { prisma } from "@/server/lib/prisma"
 import { DataTable } from "./partners-table"
 import { columns } from "./columns"
 import { Prisma } from "@prisma/client"
@@ -44,6 +44,7 @@ export async function FacilitiesList({ q, page, limit }: FacilitiesListProps) {
       totalCount={totalCount} 
       currentPage={currentPage}
       pageSize={pageSize}
+      initialQ={q}
     />
   )
 }

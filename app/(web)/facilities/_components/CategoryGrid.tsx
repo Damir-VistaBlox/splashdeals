@@ -1,5 +1,5 @@
 import { Icon } from "@/components/ui/Icon";
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/server/lib/prisma";
 import Link from "next/link";
 import { GlassCard } from "@/components/ui/GlassCard";
 import * as motion from "framer-motion/client";

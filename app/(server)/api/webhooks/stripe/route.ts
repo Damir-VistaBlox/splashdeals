@@ -1,13 +1,13 @@
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
 import Stripe from "stripe";
-import { prisma } from "@/lib/prisma";
-import { getNextSubscriptionExpiry } from "@/lib/utils/seasonal";
+import { prisma } from "@/server/lib/prisma";
+import { getNextSubscriptionExpiry } from "@/server/lib/utils/seasonal";
 import { after } from "next/server";
 import { TicketStatus } from "@prisma/client";
 import crypto from "node:crypto";
-import { sendEmail } from "@/lib/email";
-import { buildTicketDeliveryHtml, buildTicketDeliveryText } from "@/lib/email-templates/ticket-delivery";
+import { sendEmail } from "@/server/lib/email";
+import { buildTicketDeliveryHtml, buildTicketDeliveryText } from "@/server/lib/email-templates/ticket-delivery";
 import QRCode from "qrcode";
 
 /**
@@ -96,7 +96,7 @@ export async function fulfillOrder(session: Stripe.Checkout.Session) {
     const targetEmail = fulfillmentEmail || session.customer_details?.email;
     
     // 1. Resolve User
-    let userId: string | null = null;
+    let userId = "";
     if (targetEmail) {
       const user = await prisma.user.upsert({
         where: { email: targetEmail },
@@ -114,7 +114,7 @@ export async function fulfillOrder(session: Stripe.Checkout.Session) {
         where: { stripeSession: session.id },
         update: {
           status: "SUCCESS",
-          userId: userId || undefined,
+          userId: userId || "",
         },
         create: {
           stripeSession: session.id,
@@ -122,7 +122,7 @@ export async function fulfillOrder(session: Stripe.Checkout.Session) {
           totalAmount: (session.amount_total || 0) / 100,
           currency: "RSD",
           status: "SUCCESS",
-          userId: userId || undefined,
+          userId: userId || "",
         }
       });
 
@@ -155,6 +155,7 @@ export async function fulfillOrder(session: Stripe.Checkout.Session) {
               data: {
                 qrHash: crypto.randomUUID().replace(/-/g, ""),
                 ticketId: item.ticketTierId,
+                ticketGroupId: item.ticketTierId,
                 transactionId: transaction.id,
                 expiryDate: new Date(),
                 status: TicketStatus.HOLD,
@@ -178,7 +179,7 @@ export async function fulfillOrder(session: Stripe.Checkout.Session) {
           tickets.push({
             qrHash: crypto.randomUUID().replace(/-/g, ""),
             ticketId: ticket.id,
-            ticketGroupId: ticket.groupId,
+            ticketGroupId: ticket.groupId || ticket.id,
             transactionId: transaction.id,
             expiryDate: isSeason 
               ? getNextSubscriptionExpiry(new Date().getFullYear(), new Date()) 

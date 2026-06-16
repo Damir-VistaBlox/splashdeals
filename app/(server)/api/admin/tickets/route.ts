@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server"
-import { prisma } from "@/lib/prisma"
-import { authenticateRequest } from "@/lib/api-key-auth"
-import { requireSuperAdmin } from "@/lib/auth-guards"
-import { upsertTicketSchema } from "@/lib/validations/ticket"
-import { handleServerActionError } from "@/lib/server-action-error"
+import { prisma } from "@/server/lib/prisma"
+import { authenticateRequest } from "@/server/lib/api-key-auth"
+import { requireSuperAdmin } from "@/server/lib/auth-guards"
+import { upsertTicketSchema } from "@/server/lib/validations/ticket"
+import { handleServerActionError } from "@/server/lib/server-action-error"
 
 /**
  * 🎟️ Tickets API - List & Create

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/server/lib/prisma";
 
 /**
  * 🌊 SEO Ticket Redirect API
@@ -67,7 +67,7 @@ export async function GET(request: NextRequest) {
     }
 
     // 3. Fallback: try finding by slug
-    const ticketBySlug = await prisma.ticket.findUnique({
+    const ticketBySlug = await prisma.ticket.findFirst({
       where: { slug: id },
       select: { slug: true, facility: { select: { slug: true, category: true } } },
     });

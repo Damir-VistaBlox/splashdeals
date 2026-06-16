@@ -41,7 +41,7 @@ export const metadata: Metadata = {
   },
 };
 
-import { auth } from "@/lib/auth"
+import { auth } from "@/server/lib/auth"
 import { headers } from "next/headers"
 import { redirect } from "next/navigation"
 import { connection } from "next/server"

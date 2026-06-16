@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import Stripe from "stripe";
-import { prisma } from "@/lib/prisma";
-import { generateIdempotencyKey, withStripeRetry } from "@/lib/stripe-utils";
+import { prisma } from "@/server/lib/prisma";
+import { generateIdempotencyKey, withStripeRetry } from "@/server/lib/stripe-utils";
 
 const checkoutSchema = z.object({
   items: z.array(z.object({
@@ -130,6 +130,17 @@ export async function POST(request: Request) {
 
     // 4. Create PENDING Transaction in our DB
     // We assume the first facility in the list is the primary facility for the transaction record
+    // Resolve user from email if available
+    let checkoutUserId: string | null = null;
+    if (email) {
+      const user = await prisma.user.upsert({
+        where: { email },
+        update: {},
+        create: { email, name: email.split("@")[0] || "Customer" },
+      });
+      checkoutUserId = user.id;
+    }
+
     await prisma.transaction.create({
       data: {
         facilityId: orderDetails[0].facilityId,
@@ -137,7 +148,7 @@ export async function POST(request: Request) {
         totalAmount: (session.amount_total || 0) / 100,
         currency: "RSD",
         status: "PENDING",
-        // If the user email is provided, we can attempt to link the user here once we have established user context logic
+        userId: checkoutUserId || "",
       },
     });
 

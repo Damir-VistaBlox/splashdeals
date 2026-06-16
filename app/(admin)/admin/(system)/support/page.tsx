@@ -1,7 +1,7 @@
 import { Icon } from "@/components/ui/Icon";
 import { Metadata } from "next"
-import { requireSuperAdmin } from "@/lib/auth-guards"
-import { prisma } from "@/lib/prisma"
+import { requireSuperAdmin } from "@/server/lib/auth-guards"
+import { prisma } from "@/server/lib/prisma"
 import { connection } from "next/server"
 
 export const metadata: Metadata = {

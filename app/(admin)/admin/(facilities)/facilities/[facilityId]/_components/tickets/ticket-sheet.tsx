@@ -40,11 +40,11 @@ import {
 } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
-import { upsertTicketAction, deleteTicketAction } from "@/app/(server)/actions/tickets"
+import { upsertTicketAction, deleteTicketAction } from "@/server/actions/tickets"
 import { TicketImageUpload } from "./ticket-image-upload"
 import { toast } from "sonner"
 
-import { ticketSchema, type TicketFormValues } from "@/lib/validations/ticket"
+import { ticketSchema, type TicketFormValues } from "@/server/lib/validations/ticket"
 
 import { SerializedAdminTicket } from "./columns"
 

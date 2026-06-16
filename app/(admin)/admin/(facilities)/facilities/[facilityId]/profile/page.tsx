@@ -1,8 +1,8 @@
 import { FacilityProfileForm } from "../_components/facility-profile-form"
-import { prisma } from "@/lib/prisma"
+import { prisma } from "@/server/lib/prisma"
 import { notFound } from "next/navigation"
 import { connection } from "next/server"
-import { auth } from "@/lib/auth"
+import { auth } from "@/server/lib/auth"
 import { headers } from "next/headers"
 
 export default async function ProfilePage({ params }: { params: Promise<{ facilityId: string }> }) {

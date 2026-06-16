@@ -7,7 +7,7 @@ import { FacilityGridSkeleton } from "../_components/FacilitySkeletons";
 import * as motion from "framer-motion/client";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import Link from "next/link";
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/server/lib/prisma";
 import { notFound, permanentRedirect } from "next/navigation";
 import { JsonLd } from "@/components/SEO/JsonLd";
 

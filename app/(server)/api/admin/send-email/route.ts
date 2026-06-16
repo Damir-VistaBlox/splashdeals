@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
-import { authenticateRequest } from "@/lib/api-key-auth"
-import { requireSuperAdmin } from "@/lib/auth-guards"
-import { sendEmail } from "@/lib/email"
+import { authenticateRequest } from "@/server/lib/api-key-auth"
+import { requireSuperAdmin } from "@/server/lib/auth-guards"
+import { sendEmail } from "@/server/lib/email"
 import { z } from "zod"
 
 const sendEmailSchema = z.object({

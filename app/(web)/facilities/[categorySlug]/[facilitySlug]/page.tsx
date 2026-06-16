@@ -2,7 +2,7 @@ import { Icon } from "@/components/ui/Icon";
 import { notFound, redirect, permanentRedirect } from "next/navigation"
 import { Metadata } from "next"
 import Image from "next/image"
-import { prisma } from "@/lib/prisma"
+import { prisma } from "@/server/lib/prisma"
 import Link from "next/link"
 import { connection } from "next/server"
 import { cacheLife, cacheTag } from "next/cache"
@@ -74,7 +74,7 @@ import {
 import { serialize } from "@/lib/serialize"
 import { ShareButton } from "./_components/ShareButton"
 import { JsonLd } from "@/components/SEO/JsonLd"
-import { validateDiscoverySlug } from "@/lib/routing/discovery";
+import { validateDiscoverySlug } from "@/server/lib/data/discovery";
 import { calculateMaxDiscount } from "@/lib/utils/pricing";
 import { 
   catLabelMap,

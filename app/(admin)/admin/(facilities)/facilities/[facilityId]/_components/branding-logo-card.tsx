@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/form"
 import { GlassCard } from "@/components/ui/GlassCard"
 import { FacilityLogoUpload } from "./facility-logo-upload"
-import type { UpdateFacilityGovernanceValues } from "@/lib/validations/facility"
+import type { UpdateFacilityGovernanceValues } from "@/server/lib/validations/facility"
 
 interface BrandingLogoCardProps {
   facilityId: string

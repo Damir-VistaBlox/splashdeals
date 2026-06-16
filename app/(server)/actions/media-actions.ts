@@ -2,13 +2,13 @@
 
 import { z } from "zod";
 import { put, del } from "@vercel/blob";
-import { prisma } from "@/lib/prisma";
-import { processImageToWebP } from "@/lib/media";
+import { prisma } from "@/server/lib/prisma";
+import { processImageToWebP } from "@/server/lib/media";
 import { MediaType, MediaPurpose } from "@prisma/client";
 import { revalidatePath } from "next/cache";
-import { handleServerActionError } from "@/lib/server-action-error"
-import { validateAction } from "@/lib/actions/validator"
-import { validateFacilityAccess } from "@/lib/auth-guards"
+import { handleServerActionError } from "@/server/lib/server-action-error"
+import { validateAction } from "@/server/lib/actions/validator"
+import { validateFacilityAccess } from "@/server/lib/auth-guards"
 
 const updateMediaPurposeSchema = z.object({
   mediaId: z.string().uuid(),
@@ -54,22 +54,31 @@ const bulkUpdateMediaCaptionSchema = z.object({
   caption: z.string().max(255).nullable(),
 })
 
+const purposeValues = new Set(Object.values(MediaPurpose));
+
 /**
  * Handles multi-file uploads with automated WebP conversion for images.
  */
 export async function uploadMediaAction(formData: FormData) {
-  const facilityId = formData.get("facilityId") as string;
-  const files = formData.getAll("files") as File[];
-  const rawPurpose = formData.get("purpose") as string;
-  const purpose = (rawPurpose && Object.values(MediaPurpose).includes(rawPurpose as any) 
-    ? (rawPurpose as MediaPurpose) 
-    : MediaPurpose.GALLERY);
-
-  if (!facilityId || files.length === 0) {
-    return { success: false, error: "Missing facility ID or files" };
-  }
-
   try {
+    const facilityId = formData.get("facilityId");
+    const rawFiles = formData.getAll("files");
+    const rawPurpose = formData.get("purpose") as string | null;
+
+    if (typeof facilityId !== "string" || rawFiles.length === 0) {
+      throw new Error("Missing facility ID or files");
+    }
+
+    const files = rawFiles.filter((f): f is File => f instanceof File);
+    if (files.length === 0) {
+      throw new Error("No valid files in upload");
+    }
+
+    let purpose: MediaPurpose = MediaPurpose.GALLERY;
+    if (rawPurpose && purposeValues.has(rawPurpose as MediaPurpose)) {
+      purpose = rawPurpose as MediaPurpose;
+    }
+
     await validateFacilityAccess(facilityId)
     const results = [];
     const lastMedia = await prisma.facilityMedia.findFirst({
@@ -117,7 +126,7 @@ export async function uploadMediaAction(formData: FormData) {
     revalidatePath(`/facilities/[category]/[slug]`, "layout");
     return { success: true, media: results };
   } catch (error) {
-    return handleServerActionError(error)
+    return handleServerActionError(error, "media-actions")
   }
 }
 
@@ -166,7 +175,7 @@ export async function updateMediaPurposeAction(mediaId: string, purpose: MediaPu
 
     return { success: true, media: updated };
   } catch (error) {
-    return handleServerActionError(error)
+    return handleServerActionError(error, "media-actions")
   }
 }
 
@@ -193,7 +202,7 @@ export async function deleteMediaAction(mediaId: string, facilityId: string) {
     revalidatePath(`/admin/facilities/${facilityId}/media`);
     return { success: true };
   } catch (error) {
-    return handleServerActionError(error)
+    return handleServerActionError(error, "media-actions")
   }
 }
 
@@ -218,7 +227,7 @@ export async function updateMediaOrderAction(facilityId: string, mediaIds: strin
     revalidatePath(`/admin/facilities/${facilityId}/media`);
     return { success: true };
   } catch (error) {
-    return handleServerActionError(error)
+    return handleServerActionError(error, "media-actions")
   }
 }
 
@@ -260,7 +269,7 @@ export async function syncMediaAction(facilityId: string, blobUrl: string, conte
 
     return { success: true, media };
   } catch (error) {
-    return handleServerActionError(error)
+    return handleServerActionError(error, "media-actions")
   }
 }
 
@@ -298,7 +307,7 @@ export async function toggleMediaHeroAction(mediaId: string, facilityId: string)
     revalidatePath(`/facilities/[category]/[slug]`, "layout");
     return { success: true, media: updated };
   } catch (error) {
-    return handleServerActionError(error)
+    return handleServerActionError(error, "media-actions")
   }
 }
 
@@ -336,7 +345,7 @@ export async function toggleMediaCardBackgroundAction(mediaId: string, facilityI
     revalidatePath(`/facilities/[category]/[slug]`, "layout");
     return { success: true, media: updated };
   } catch (error) {
-    return handleServerActionError(error)
+    return handleServerActionError(error, "media-actions")
   }
 }
 
@@ -362,7 +371,7 @@ export async function toggleMediaGalleryVisibilityAction(mediaId: string, facili
     revalidatePath(`/facilities/[category]/[slug]`, "layout");
     return { success: true, media: updated };
   } catch (error) {
-    return handleServerActionError(error)
+    return handleServerActionError(error, "media-actions")
   }
 }
 
@@ -386,7 +395,7 @@ export async function updateMediaCaptionAction(mediaId: string, facilityId: stri
 
     return { success: true, media: updated };
   } catch (error) {
-    return handleServerActionError(error)
+    return handleServerActionError(error, "media-actions")
   }
 }
 
@@ -402,7 +411,7 @@ export async function updateMediaFocalPointAction(mediaId: string, facilityId: s
 
     const updated = await prisma.facilityMedia.update({
       where: { id: mediaId },
-      data: { originalUrl: validation.data.focalPoint }, // Stored in originalUrl column
+      data: { focalPoint: validation.data.focalPoint },
     });
 
     revalidatePath(`/admin/facilities/${facilityId}/media`);
@@ -410,7 +419,7 @@ export async function updateMediaFocalPointAction(mediaId: string, facilityId: s
 
     return { success: true, media: updated };
   } catch (error) {
-    return handleServerActionError(error)
+    return handleServerActionError(error, "media-actions")
   }
 }
 
@@ -437,7 +446,7 @@ export async function bulkUpdateMediaCaptionAction(mediaIds: string[], facilityI
 
     return { success: true };
   } catch (error) {
-    return handleServerActionError(error)
+    return handleServerActionError(error, "media-actions")
   }
 }
 

@@ -34,10 +34,10 @@ import {
 import { 
   ticketGroupSchema, 
   TicketGroupValues 
-} from "@/lib/validations/ticket"
+} from "@/server/lib/validations/ticket"
 import { 
   upsertTicketGroupAction 
-} from "@/app/(server)/actions/tickets"
+} from "@/server/actions/tickets"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
 import { DayType, TimeSlot } from "@prisma/client"

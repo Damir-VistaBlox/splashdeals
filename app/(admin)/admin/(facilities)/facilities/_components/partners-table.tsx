@@ -14,8 +14,6 @@ import {
   useReactTable,
   Row,
 } from "@tanstack/react-table"
-import { useSearchParams } from "next/navigation"
-
 import {
   Table,
   TableBody,
@@ -35,10 +33,10 @@ import {
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
-import { bulkUpdateFacilityStatusAction } from "@/app/(server)/actions/facilities"
+import { bulkUpdateFacilityStatusAction } from "@/server/actions/facilities"
 import { FacilityStatus } from "@prisma/client"
 import { useRouter } from "next/navigation"
-import { withUndo } from "@/lib/undo-system"
+import { withUndo } from "@/server/lib/undo-system"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -46,6 +44,7 @@ interface DataTableProps<TData, TValue> {
   totalCount: number
   currentPage: number
   pageSize: number
+  initialQ?: string
 }
 
 export function DataTable<TData, TValue>({
@@ -54,6 +53,7 @@ export function DataTable<TData, TValue>({
   totalCount,
   currentPage,
   pageSize,
+  initialQ,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
@@ -61,15 +61,17 @@ export function DataTable<TData, TValue>({
   const [rowSelection, setRowSelection] = React.useState({})
   const [isPending, startTransition] = React.useTransition()
   const router = useRouter()
-  const searchParams = useSearchParams()
-  const initialSearch = searchParams?.get("q") ?? ""
+  const initialSearch = initialQ ?? ""
 
-  const [density, setDensity] = React.useState<"comfortable" | "compact">("compact")
-
-  React.useEffect(() => {
-    const saved = localStorage.getItem("table-density") as "comfortable" | "compact"
-    if (saved) setDensity(saved)
-  }, [])
+  const [density, setDensity] = React.useState<"comfortable" | "compact">(
+    () => {
+      if (typeof window !== "undefined") {
+        const saved = localStorage.getItem("table-density")
+        if (saved === "comfortable" || saved === "compact") return saved
+      }
+      return "compact"
+    }
+  )
 
   const toggleDensity = (val: "comfortable" | "compact") => {
     setDensity(val)

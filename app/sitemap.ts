@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next';
-import { prisma } from '@/lib/prisma';
+import { prisma } from '@/server/lib/prisma';
 
 export const revalidate = 3600; // Revalidate sitemap every hour
 

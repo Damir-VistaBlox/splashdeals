@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server"
-import { prisma } from "@/lib/prisma"
-import { requireSuperAdmin } from "@/lib/auth-guards"
-import { authenticateRequest } from "@/lib/api-key-auth"
-import { facilitySchema } from "@/lib/validations/facility"
-import { handleServerActionError } from "@/lib/server-action-error"
+import { prisma } from "@/server/lib/prisma"
+import { requireSuperAdmin } from "@/server/lib/auth-guards"
+import { authenticateRequest } from "@/server/lib/api-key-auth"
+import { facilitySchema } from "@/server/lib/validations/facility"
+import { handleServerActionError } from "@/server/lib/server-action-error"
 
 /**
  * 🏢 Facility API - Detail, Update, Delete
@@ -52,7 +52,7 @@ export async function PATCH(
     const disallowedFields = [
       "description", "descriptionSr", "publicPhone", "publicEmail", 
       "socialLinks", "hours", "amenities", "targetCityIds", 
-      "logoUrl", "emergencyMessage", "seoArticle", "transitGuide", 
+      "logoUrl", "emergencyContact", "seoArticle", "transitGuide", 
       "lat", "lng"
     ]
     const foundDisallowed = Object.keys(json).filter(key => disallowedFields.includes(key))

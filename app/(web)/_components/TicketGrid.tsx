@@ -1,6 +1,6 @@
 import { Icon } from "@/components/ui/Icon";
 import Image from "next/image";
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/server/lib/prisma";
 import Link from "next/link";
 import { cacheLife } from 'next/cache';
 import * as motion from "framer-motion/client";

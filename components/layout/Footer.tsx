@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useActionState } from "react"
-import { subscribeToNewsletter } from "@/lib/actions/newsletter"
+import { subscribeToNewsletter } from "@/server/lib/actions/newsletter"
 import { getClientDictionary } from "@/lib/client-dictionaries"
 
 /**

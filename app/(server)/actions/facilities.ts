@@ -1,12 +1,12 @@
 "use server"
 
-import { prisma } from "@/lib/prisma"
-import { revalidatePath } from "next/cache"
+import { prisma } from "@/server/lib/prisma"
+import { revalidateAdminFacilities } from "@/server/lib/revalidation"
 import { FacilityStatus } from "@prisma/client"
-import { facilitySchema, type FacilityFormValues } from "@/lib/validations/facility"
-import { requireSuperAdmin } from "@/lib/auth-guards"
+import { facilitySchema, type FacilityFormValues } from "@/server/lib/validations/facility"
+import { requireSuperAdmin } from "@/server/lib/auth-guards"
 
-import { handleServerActionError } from "@/lib/server-action-error"
+import { handleServerActionError } from "@/server/lib/server-action-error"
 
 export async function bulkUpdateFacilityStatusAction(ids: string[], status: FacilityStatus) {
   try {
@@ -20,17 +20,17 @@ export async function bulkUpdateFacilityStatusAction(ids: string[], status: Faci
       },
     })
 
-    revalidatePath("/admin/facilities")
+    revalidateAdminFacilities()
     return { success: true }
   } catch (error) {
-    return handleServerActionError(error)
+    return handleServerActionError(error, "facilities")
   }
 }
 
 export async function createFacilityAction(data: FacilityFormValues) {
   try {
     const validatedFields = facilitySchema.parse(data)
-    const { name, slug, category, city, streetName, streetNumber, postalCode, status } = validatedFields
+    const { name, slug, category, city, cityId, streetName, streetNumber, postalCode, status } = validatedFields
 
     await requireSuperAdmin()
     const facility = await prisma.facility.create({
@@ -39,6 +39,7 @@ export async function createFacilityAction(data: FacilityFormValues) {
         slug,
         category,
         city,
+        cityId: cityId || city,
         streetName,
         streetNumber,
         postalCode,
@@ -46,10 +47,10 @@ export async function createFacilityAction(data: FacilityFormValues) {
       },
     })
 
-    revalidatePath("/admin/facilities")
+    revalidateAdminFacilities()
     return { success: true, id: facility.id }
   } catch (error: unknown) {
-    return handleServerActionError(error)
+    return handleServerActionError(error, "facilities")
   }
 }
 
@@ -57,7 +58,6 @@ export async function deleteFacilityAction(id: string) {
   try {
     await requireSuperAdmin()
 
-    // 🛡️ Cascade Guardrail: Verify zero historical transactions exist before purging
     const transactionCount = await prisma.transaction.count({
       where: { facilityId: id },
     })
@@ -73,9 +73,9 @@ export async function deleteFacilityAction(id: string) {
       where: { id },
     })
 
-    revalidatePath("/admin/facilities")
+    revalidateAdminFacilities()
     return { success: true }
-  } catch (error: unknown) {
-    return handleServerActionError(error)
+  } catch (error) {
+    return handleServerActionError(error, "facilities")
   }
 }

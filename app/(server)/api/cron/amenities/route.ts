@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { processScheduledAmenities } from "@/app/(server)/actions/amenity-actions"
+import { processScheduledAmenitiesAction } from "@/server/actions/amenity-actions"
 
 /**
  * 🛰️ Infrastructure Pulse: Scheduled Amenity Activation
@@ -14,7 +14,7 @@ export async function GET(request: Request) {
   }
 
   try {
-    const result = await processScheduledAmenities()
+    const result = await processScheduledAmenitiesAction()
     return NextResponse.json({ 
       success: true, 
       count: result.count,

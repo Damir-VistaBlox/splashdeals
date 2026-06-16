@@ -1,6 +1,6 @@
 import { Icon } from "@/components/ui/Icon";
 import { Metadata } from "next"
-import { requireSuperAdmin } from "@/lib/auth-guards"
+import { requireSuperAdmin } from "@/server/lib/auth-guards"
 import { CreateUserForm } from "../_components/create-user-form"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"

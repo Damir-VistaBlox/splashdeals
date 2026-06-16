@@ -1,6 +1,6 @@
 import { Metadata } from "next"
 import { connection } from "next/server"
-import { prisma } from "@/lib/prisma"
+import { prisma } from "@/server/lib/prisma"
 import { notFound } from "next/navigation"
 import { TicketManagement } from "../_components/tickets/ticket-management"
 import { SerializedAdminTicket, SerializedTicketGroup } from "../_components/tickets/columns"

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { prisma } from "@/lib/prisma"
+import { prisma } from "@/server/lib/prisma"
 
 export async function GET() {
   const [revenueRaw, facilityCount, userCount, ticketCount, recentActivity] = await Promise.all([

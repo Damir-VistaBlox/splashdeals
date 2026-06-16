@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  schemas  = ["admin", "partners", "public", "sales"]
+  schemas  = ["admin", "marketing", "partners", "public", "sales"]
 }
 
 model User {
@@ -54,6 +54,7 @@ model Session {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
+  @@index([expiresAt])
   @@schema("admin")
 }
 
@@ -95,6 +96,8 @@ model Facility {
   slug              String            @unique
   category          String
   city              String
+  cityId            String
+  primaryCity           City              @relation(fields: [cityId], references: [id], name: "facilityCityRel")
   streetName        String
   streetNumber      String
   postalCode        String
@@ -104,12 +107,12 @@ model Facility {
   metaTitle         String?
   metaDescription   String?
   logoUrl           String?
-  description       String?
+  description       String?   @db.Text
   descriptionSr     String?
   publicPhone       String?
   publicEmail       String?
   socialLinks       Json?
-  emergencyMessage  String?
+  emergencyContact  String?
   seoArticle        String?   @db.Text
   transitGuide      String?   @db.Text
   createdAt         DateTime          @default(now())
@@ -125,6 +128,8 @@ model Facility {
   revenue           Transaction[]
   closures          FacilityClosure[]
   staffAssignments  FacilityStaffAssignment[]
+  products          Product[]
+  campaignLinks     CampaignFacility[]
 
   @@schema("partners")
 }
@@ -157,6 +162,7 @@ model FacilityClosure {
   createdAt   DateTime @default(now())
   facility    Facility @relation(fields: [facilityId], references: [id], onDelete: Cascade)
 
+  @@map("facility_closures")
   @@schema("partners")
 }
 
@@ -191,17 +197,19 @@ model FacilityAmenity {
 }
 
 model AmenityAuditLog {
-  id         String   @id @default(uuid())
-  facilityId String
-  amenityId  String
-  action     String
-  oldValue   String?
-  newValue   String?
-  userId     String?
-  createdAt  DateTime @default(now())
+  id              String   @id @default(uuid())
+  targetFacilityId String
+  amenityId       String
+  action          String
+  oldValue        String?
+  newValue        String?
+  userId          String?
+  createdAt       DateTime @default(now())
 
   user       User?    @relation(fields: [userId], references: [id])
 
+  @@index([targetFacilityId])
+  @@map("amenity_audit_logs")
   @@schema("partners")
 }
 
@@ -215,6 +223,7 @@ model FacilityMedia {
   purpose      MediaPurpose @default(GALLERY)
   caption      String?
   order        Int          @default(0)
+  focalPoint    String?
   isHero            Boolean      @default(false)
   isCardBackground  Boolean      @default(false)
   isGalleryVisible  Boolean      @default(true)
@@ -228,18 +237,19 @@ model OperatingHours {
   id         String   @id @default(uuid())
   facilityId String
   dayOfWeek  Int
-  openTime   String
-  closeTime  String
+  openTime   String   @db.Text
+  closeTime  String   @db.Text
   isClosed   Boolean  @default(false)
   facility   Facility @relation(fields: [facilityId], references: [id], onDelete: Cascade)
 
+  @@index([facilityId, dayOfWeek])
   @@schema("partners")
 }
 
 model FacilityPolicy {
   id         String   @id @default(uuid())
   facilityId String   @unique
-  rules      String
+  rules      String   @db.Text
   faq        String?
   facility   Facility @relation(fields: [facilityId], references: [id], onDelete: Cascade)
 
@@ -250,7 +260,7 @@ model PayoutProfile {
   id              String   @id @default(uuid())
   facilityId      String   @unique
   stripeAccountId String?  @unique
-  commissionRate  Decimal  @default(5.00) @db.Decimal(5, 2)
+  commissionRate  Decimal  @default(5.00) @db.Decimal(4, 2)
   bankName        String?
   iban            String?
   facility        Facility @relation(fields: [facilityId], references: [id], onDelete: Cascade)
@@ -263,6 +273,7 @@ model City {
   name       String
   slug       String         @unique
   facilities FacilityCity[]
+  facilityPrimary Facility[] @relation(name: "facilityCityRel")
 
   @@schema("partners")
 }
@@ -305,13 +316,15 @@ model Ticket {
   isSeasonPass     Boolean        @default(false)
   minPeople        Int            @default(1)
   maxPeople        Int?
-  slug             String?        @unique
+  slug             String?
   createdAt        DateTime       @default(now())
   updatedAt        DateTime       @updatedAt
   facility         Facility       @relation(fields: [facilityId], references: [id], onDelete: Cascade)
   group            TicketGroup?   @relation(fields: [groupId], references: [id], onDelete: Cascade)
   issuedTickets    IssuedTicket[]
 
+  @@unique([facilityId, slug])
+  @@index([facilityId, isActive])
   @@schema("partners")
 }
 
@@ -332,12 +345,13 @@ model TicketGroup {
   tickets       Ticket[]
   issuedTickets IssuedTicket[]
 
+  @@index([facilityId])
   @@schema("partners")
 }
 
 model Transaction {
   id               String         @id @default(uuid())
-  userId           String?
+  userId           String
   facilityId       String
   stripeSession    String         @unique
   totalAmount      Decimal        @db.Decimal(10, 2)
@@ -348,15 +362,39 @@ model Transaction {
   fulfillmentError Json?
   issuedTickets    IssuedTicket[]
   facility         Facility       @relation(fields: [facilityId], references: [id])
-  user             User?          @relation(fields: [userId], references: [id])
+  user             User           @relation(fields: [userId], references: [id])
 
+  @@index([status])
   @@schema("sales")
+}
+
+model Product {
+  id          String   @id @default(uuid())
+  facilityId  String
+  name        String
+  nameSr      String?
+  description String?
+  descriptionSr String?
+  price       Decimal  @db.Decimal(10, 2)
+  currency    String   @default("RSD")
+  inventory   Int?
+  imageUrl    String?
+  isActive    Boolean  @default(true)
+  displayOrder Int     @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  facility Facility @relation(fields: [facilityId], references: [id], onDelete: Cascade)
+
+  @@index([facilityId])
+  @@map("products")
+  @@schema("partners")
 }
 
 model IssuedTicket {
   id             String       @id @default(uuid())
   qrHash         String       @unique
-  ticketId       String?
+  ticketId       String
   transactionId  String
   status         TicketStatus @default(ACTIVE)
   usageCount     Int          @default(0)
@@ -365,13 +403,46 @@ model IssuedTicket {
   holderName     String?
   holderPhotoUrl String?
   
-  ticket         Ticket?       @relation(fields: [ticketId], references: [id])
+  ticket         Ticket        @relation(fields: [ticketId], references: [id], onDelete: Restrict)
   transaction    Transaction  @relation(fields: [transactionId], references: [id], onDelete: Cascade)
   
-  ticketGroupId  String?
-  ticketGroup    TicketGroup? @relation(fields: [ticketGroupId], references: [id])
+  ticketGroupId  String
+  ticketGroup    TicketGroup @relation(fields: [ticketGroupId], references: [id])
 
   @@schema("sales")
+}
+
+model Campaign {
+  id              String   @id @default(uuid())
+  name            String
+  code            String?  @unique
+  discountPercent Decimal  @db.Decimal(5, 2)
+  minPurchaseAmount Decimal? @db.Decimal(10, 2)
+  validFrom       DateTime
+  validTo         DateTime
+  usageLimit      Int?
+  usedCount       Int      @default(0)
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  facilityRestrictions CampaignFacility[]
+
+  @@index([createdAt])
+  @@map("campaigns")
+  @@schema("marketing")
+}
+
+model CampaignFacility {
+  campaignId String
+  facilityId String
+
+  campaign Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  facility Facility @relation(fields: [facilityId], references: [id], onDelete: Cascade)
+
+  @@id([campaignId, facilityId])
+  @@map("campaign_facilities")
+  @@schema("marketing")
 }
 
 model Subscriber {
@@ -382,7 +453,7 @@ model Subscriber {
   source    String?
 
   @@map("subscriber")
-  @@schema("public")
+  @@schema("marketing")
 }
 
 enum UserRole {
@@ -414,6 +485,8 @@ enum MediaPurpose {
   HERO_ONLY
   TICKET
   AERIAL
+  LOGO
+  MENU
 
   @@schema("partners")
 }

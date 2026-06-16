@@ -1,7 +1,7 @@
 import { Icon } from "@/components/ui/Icon";
 import { connection } from "next/server"
 import { Metadata } from "next"
-import { prisma } from "@/lib/prisma"
+import { prisma } from "@/server/lib/prisma"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { Suspense } from "react"

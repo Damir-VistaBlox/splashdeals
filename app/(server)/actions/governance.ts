@@ -1,8 +1,9 @@
 "use server"
 
-import { prisma } from "@/lib/prisma"
+import { z } from "zod"
+import { prisma } from "@/server/lib/prisma"
 import { FacilityStatus } from "@prisma/client"
-import { revalidatePath } from "next/cache"
+import { revalidateAdminFacility, revalidateAdminFacilities } from "@/server/lib/revalidation"
 import { 
   updateFacilityGovernanceSchema, 
   type UpdateFacilityGovernanceValues,
@@ -10,12 +11,37 @@ import {
   type UpdateFacilityStatusValues,
   updateFacilityOperationsSchema,
   type UpdateFacilityOperationsValues,
-} from "@/lib/validations/facility"
-import { validateFacilityAccess } from "@/lib/auth-guards"
+} from "@/server/lib/validations/facility"
+import { validateFacilityAccess } from "@/server/lib/auth-guards"
 
 
 
-import { handleServerActionError } from "@/lib/server-action-error"
+import { handleServerActionError } from "@/server/lib/server-action-error"
+
+const socialLinksSchema = z.object({
+  facilityId: z.string(),
+  socialLinks: z.object({
+    facebook: z.string().url().nullish().or(z.literal("")),
+    instagram: z.string().url().nullish().or(z.literal("")),
+    website: z.string().url().nullish().or(z.literal("")),
+  }),
+})
+
+const contactSchema = z.object({
+  facilityId: z.string(),
+  publicPhone: z.string().max(25).nullable(),
+  publicEmail: z.string().email().nullable().or(z.literal("")),
+})
+
+const logoUrlSchema = z.object({
+  facilityId: z.string(),
+  logoUrl: z.string().url().nullable(),
+})
+
+const slugCheckSchema = z.object({
+  slug: z.string().min(2),
+  excludeFacilityId: z.string(),
+})
 
 export async function updateFacilityStatusAction(rawValues: UpdateFacilityStatusValues) {
   try {
@@ -28,10 +54,10 @@ export async function updateFacilityStatusAction(rawValues: UpdateFacilityStatus
       data: { status },
     })
 
-    revalidatePath(`/admin/facilities/${facilityId}`, "layout")
+    revalidateAdminFacility(facilityId)
     return { success: true }
   } catch (error: unknown) {
-    return handleServerActionError(error)
+    return handleServerActionError(error, "governance")
   }
 }
 
@@ -55,7 +81,7 @@ export async function updateFacilityGovernanceAction(rawValues: UpdateFacilityGo
       publicPhone,
       publicEmail,
       socialLinks,
-      emergencyMessage,
+      emergencyContact,
       status,
       hours,
       seoArticle,
@@ -80,9 +106,9 @@ export async function updateFacilityGovernanceAction(rawValues: UpdateFacilityGo
           logoUrl,
           publicPhone,
           publicEmail,
-          socialLinks: socialLinks as Record<string, string | null | undefined>,
-          emergencyMessage,
-          status: status as FacilityStatus,
+          socialLinks,
+          emergencyContact,
+          status,
           seoArticle,
           transitGuide
         },
@@ -120,11 +146,10 @@ export async function updateFacilityGovernanceAction(rawValues: UpdateFacilityGo
       })
     })
 
-    revalidatePath(`/admin/facilities/${facilityId}`, "layout")
-    revalidatePath(`/${facilityId}`, "layout") // Revalidate public views as well if cached
+    revalidateAdminFacility(facilityId)
     return { success: true }
   } catch (error: unknown) {
-    return handleServerActionError(error)
+    return handleServerActionError(error, "governance")
   }
 }
 
@@ -135,7 +160,6 @@ export async function updateFacilityOperationsAction(rawValues: UpdateFacilityOp
 
     await validateFacilityAccess(facilityId)
     await prisma.$transaction(async (tx) => {
-      // Clear existing hours for this facility and replace with new ones
       await tx.operatingHours.deleteMany({
         where: { facilityId }
       })
@@ -151,25 +175,26 @@ export async function updateFacilityOperationsAction(rawValues: UpdateFacilityOp
       })
     })
 
-    revalidatePath(`/admin/facilities/${facilityId}`, "layout")
+    revalidateAdminFacility(facilityId)
     return { success: true }
   } catch (error: unknown) {
-    return handleServerActionError(error)
+    return handleServerActionError(error, "governance")
   }
 }
 
 export async function updateFacilitySocialLinksAction(facilityId: string, socialLinks: Record<string, string>) {
   try {
-    await validateFacilityAccess(facilityId)
+    const validated = socialLinksSchema.parse({ facilityId, socialLinks })
+    await validateFacilityAccess(validated.facilityId)
     await prisma.facility.update({
-      where: { id: facilityId },
-      data: { socialLinks }
+      where: { id: validated.facilityId },
+      data: { socialLinks: validated.socialLinks }
     })
     
-    revalidatePath(`/admin/facilities/${facilityId}`, "layout")
+    revalidateAdminFacility(facilityId)
     return { success: true }
   } catch (error: unknown) {
-    return handleServerActionError(error)
+    return handleServerActionError(error, "governance")
   }
 }
 
@@ -178,22 +203,22 @@ export async function updateFacilityContactAction(
   contact: { publicPhone: string; publicEmail: string }
 ) {
   try {
-    await validateFacilityAccess(facilityId)
+    const validated = contactSchema.parse({ facilityId, publicPhone: contact.publicPhone, publicEmail: contact.publicEmail })
+    await validateFacilityAccess(validated.facilityId)
     await prisma.facility.update({
-      where: { id: facilityId },
-      data: { publicPhone: contact.publicPhone, publicEmail: contact.publicEmail }
+      where: { id: validated.facilityId },
+      data: { publicPhone: validated.publicPhone, publicEmail: validated.publicEmail }
     })
 
-    revalidatePath(`/admin/facilities/${facilityId}`, "layout")
+    revalidateAdminFacility(facilityId)
     return { success: true }
   } catch (error: unknown) {
-    return handleServerActionError(error)
+    return handleServerActionError(error, "governance")
   }
 }
 
 export async function checkSlugAvailabilityAction(slug: string, excludeFacilityId: string) {
-  "use server"
-  if (!slug || slug.length < 2) return { isAvailable: true } // Skip checking tiny slugs
+  if (!slug || slug.length < 2) return { isAvailable: true }
   
   try {
     const existing = await prisma.facility.findFirst({
@@ -206,22 +231,23 @@ export async function checkSlugAvailabilityAction(slug: string, excludeFacilityI
     
     return { isAvailable: !existing }
   } catch (error) {
+    console.error("[checkSlugAvailability] Error:", error)
     return { isAvailable: false, error: "Validation failure" }
   }
 }
 
 export async function updateFacilityLogoAction(facilityId: string, logoUrl: string) {
-  "use server"
   try {
-    await validateFacilityAccess(facilityId)
+    const validated = logoUrlSchema.parse({ facilityId, logoUrl })
+    await validateFacilityAccess(validated.facilityId)
     await prisma.facility.update({
-      where: { id: facilityId },
-      data: { logoUrl }
+      where: { id: validated.facilityId },
+      data: { logoUrl: validated.logoUrl }
     })
     
-    revalidatePath(`/admin/facilities/${facilityId}`, "layout")
+    revalidateAdminFacility(facilityId)
     return { success: true }
   } catch (error) {
-    return handleServerActionError(error)
+    return handleServerActionError(error, "governance")
   }
 }
