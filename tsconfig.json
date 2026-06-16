@@ -27,7 +27,7 @@
         "./*"
       ],
       "@/server/lib/*": [
-        "./app/(server)/lib/*"
+        "./server/lib/*"
       ],
       "@/server/actions/*": [
         "./app/(server)/actions/*"

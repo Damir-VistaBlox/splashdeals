@@ -33,11 +33,11 @@ export const ROUTING_CONFIG = {
   TICKET_MIGRATION: {
     pattern: /^(?:\/[a-z]{2})?\/ticket\/(.+)$/i,
     // We rewrite internally to the consolidated API route
-    internalPath: (id: string) => `/(server)/api/seo/redirect-ticket?id=${id}`
+    internalPath: (id: string) => `/api/seo/redirect-ticket?id=${id}`
   },
 
   // Admin protection & exclusion
-  ADMIN_PREFIXES: ['/admin', '/(admin)'],
+  ADMIN_PREFIXES: ['/admin'],
   
   // Public routes allowed without locale
   PUBLIC_ASSETS: [

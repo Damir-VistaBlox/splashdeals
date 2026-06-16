@@ -9,7 +9,7 @@ import { revalidatePath } from 'next/cache';
  * Handles direct-to-storage client uploads for 4K videos and high-res assets.
  * Bypasses standard Next.js body size limits (1MB/10MB).
  * 
- * This route is housed in (server) according to project routing protocols.
+ * This route is housed in app/api according to project routing protocols.
  */
 export async function POST(request: Request): Promise<NextResponse> {
   const body = (await request.json()) as HandleUploadBody;
