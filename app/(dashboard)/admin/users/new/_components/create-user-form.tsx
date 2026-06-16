@@ -73,9 +73,9 @@ export function CreateUserForm() {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-xs font-black uppercase tracking-widest text-slate-400">Full Name</FormLabel>
+              <FormLabel className="text-xs font-black uppercase tracking-widest text-muted-foreground">Full Name</FormLabel>
               <FormControl>
-                <Input placeholder="Damir K." className="bg-slate-950 border-white/10 rounded-xl focus:border-cyan-500/50 transition-all h-11" {...field} />
+                <Input placeholder="Damir K." className="bg-background border-border rounded-xl focus:border-cyan-500/50 transition-all h-11" {...field} />
               </FormControl>
               <FormMessage className="text-[10px] font-bold uppercase tracking-tight text-red-400" />
             </FormItem>
@@ -87,9 +87,9 @@ export function CreateUserForm() {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-xs font-black uppercase tracking-widest text-slate-400">Corporate Email</FormLabel>
+              <FormLabel className="text-xs font-black uppercase tracking-widest text-muted-foreground">Corporate Email</FormLabel>
               <FormControl>
-                <Input placeholder="admin@splashdeals.rs" className="bg-slate-950 border-white/10 rounded-xl focus:border-cyan-500/50 transition-all h-11" {...field} />
+                <Input placeholder="admin@splashdeals.rs" className="bg-background border-border rounded-xl focus:border-cyan-500/50 transition-all h-11" {...field} />
               </FormControl>
               <FormMessage className="text-[10px] font-bold uppercase tracking-tight text-red-400" />
             </FormItem>
@@ -101,11 +101,11 @@ export function CreateUserForm() {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-xs font-black uppercase tracking-widest text-slate-400">Temporary Password</FormLabel>
+              <FormLabel className="text-xs font-black uppercase tracking-widest text-muted-foreground">Temporary Password</FormLabel>
               <FormControl>
-                <Input type="password" placeholder="••••••••" className="bg-slate-950 border-white/10 rounded-xl focus:border-cyan-500/50 transition-all h-11" {...field} />
+                <Input type="password" placeholder="••••••••" className="bg-background border-border rounded-xl focus:border-cyan-500/50 transition-all h-11" {...field} />
               </FormControl>
-              <FormDescription className="text-[9px] text-slate-500 uppercase tracking-tighter">Min 8 characters. User can reset this via email later.</FormDescription>
+              <FormDescription className="text-[9px] text-muted-foreground uppercase tracking-tighter">Min 8 characters. User can reset this via email later.</FormDescription>
               <FormMessage className="text-[10px] font-bold uppercase tracking-tight text-red-400" />
             </FormItem>
           )}
@@ -116,21 +116,21 @@ export function CreateUserForm() {
           name="role"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-xs font-black uppercase tracking-widest text-slate-400">Access Level</FormLabel>
+              <FormLabel className="text-xs font-black uppercase tracking-widest text-muted-foreground">Access Level</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
-                  <SelectTrigger className="bg-slate-950 border-white/10 rounded-xl focus:border-cyan-500/50 transition-all h-11">
+                  <SelectTrigger className="bg-background border-border rounded-xl focus:border-cyan-500/50 transition-all h-11">
                     <SelectValue placeholder="Select a role" />
                   </SelectTrigger>
                 </FormControl>
-                <SelectContent className="bg-slate-950 border-white/10 text-white">
-                  <SelectItem value={UserRole.FACILITY_STAFF} className="focus:bg-white/5 cursor-pointer">
+                <SelectContent className="bg-background border-border text-foreground">
+                  <SelectItem value={UserRole.FACILITY_STAFF} className="focus:bg-muted/30 cursor-pointer">
                     <div className="flex items-center gap-2">
                         <Icon name="manage_accounts" className="text-[14px] text-amber-400" />
                         <span>Facility Staff</span>
                     </div>
                   </SelectItem>
-                  <SelectItem value={UserRole.SUPER_ADMIN} className="focus:bg-white/5 cursor-pointer">
+                  <SelectItem value={UserRole.SUPER_ADMIN} className="focus:bg-muted/30 cursor-pointer">
                     <div className="flex items-center gap-2">
                         <Icon name="security" className="text-[14px] text-cyan-400" />
                         <span>Super Admin</span>

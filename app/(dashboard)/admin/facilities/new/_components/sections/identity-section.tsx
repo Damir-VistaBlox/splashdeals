@@ -27,8 +27,8 @@ export function IdentitySection({ isSlugLocked, setIsSlugLocked, onNameChange }:
   const { control } = useFormContext<FacilityFormValues>()
 
   return (
-    <Card className="border-white/5 bg-slate-900/50 backdrop-blur-md overflow-hidden">
-      <CardHeader className="border-b border-white/5 bg-white/5">
+    <Card className="border-border/50 bg-muted/50 backdrop-blur-md overflow-hidden">
+      <CardHeader className="border-b border-border/50 bg-muted/30">
         <CardTitle className="flex items-center gap-2 text-lg">
           <Icon name="business" className="text-[20px] text-primary" />
           General Identity
@@ -47,7 +47,7 @@ export function IdentitySection({ isSlugLocked, setIsSlugLocked, onNameChange }:
               <FormControl>
                 <Input 
                   placeholder="e.g. AquaPark Petroland" 
-                  className="h-12 bg-white/5 border-white/10"
+                  className="h-12 bg-muted/30 border-border"
                   {...field} 
                   onChange={(e) => {
                     field.onChange(e);
@@ -71,7 +71,7 @@ export function IdentitySection({ isSlugLocked, setIsSlugLocked, onNameChange }:
                   <Icon name="link" className="absolute left-3 top-4 text-[16px] text-muted-foreground" />
                   <Input 
                     placeholder="aquapark-petroland" 
-                    className="h-12 pl-9 pr-10 bg-white/5 border-white/10" 
+                    className="h-12 pl-9 pr-10 bg-muted/30 border-border" 
                     {...field} 
                     onChange={(e) => {
                       field.onChange(e)
@@ -82,7 +82,7 @@ export function IdentitySection({ isSlugLocked, setIsSlugLocked, onNameChange }:
                     type="button"
                     variant="ghost"
                     size="icon"
-                    className="absolute right-1 top-2 h-8 w-8 text-zinc-500 hover:text-white"
+                    className="absolute right-1 top-2 h-8 w-8 text-muted-foreground hover:text-foreground"
                     onClick={() => setIsSlugLocked(!isSlugLocked)}
                     title={isSlugLocked ? "Unlock to edit slug" : "Lock to sync with name"}
                   >
@@ -90,7 +90,7 @@ export function IdentitySection({ isSlugLocked, setIsSlugLocked, onNameChange }:
                   </Button>
                 </div>
               </FormControl>
-              <FormDescription className="text-xs italic text-slate-500">
+              <FormDescription className="text-xs italic text-muted-foreground">
                 splashdeals.rs/places/<strong>{field.value || "slug"}</strong>
               </FormDescription>
               <FormMessage />

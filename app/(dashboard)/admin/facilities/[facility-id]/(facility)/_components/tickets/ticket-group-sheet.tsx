@@ -124,7 +124,7 @@ export function TicketGroupSheet({ facilityId, group, open, onOpenChange }: Tick
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="sm:max-w-[700px] bg-slate-950 border-white/10 p-0 flex flex-col overflow-hidden">
+      <SheetContent className="sm:max-w-[700px] bg-background border-border p-0 flex flex-col overflow-hidden">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="h-full flex flex-col overflow-hidden">
             <div 
@@ -137,14 +137,14 @@ export function TicketGroupSheet({ facilityId, group, open, onOpenChange }: Tick
               <SheetHeader className="space-y-1">
                 <div className="flex items-center gap-2 text-cyan-400">
                   <Icon name="dashboard" className="text-[16px]" />
-                  <Badge variant="outline" className="bg-white/5 border-white/10 text-[8px] font-black uppercase tracking-widest text-muted-foreground py-0.5 px-1.5 rounded">
+                  <Badge variant="outline" className="bg-muted/30 border-border text-[8px] font-black uppercase tracking-widest text-muted-foreground py-0.5 px-1.5 rounded">
                     {group ? "Edit Mode" : "Creation Mode"}
                   </Badge>
                 </div>
-                <SheetTitle className="text-xl font-black italic tracking-tighter uppercase text-white">
+                <SheetTitle className="text-xl font-black italic tracking-tighter uppercase text-foreground">
                   {group ? "Uredi Grupu" : "Nova Grupa Ulaznica"}
                 </SheetTitle>
-                <SheetDescription className="text-[11px] text-slate-400 font-medium italic">
+                <SheetDescription className="text-[11px] text-muted-foreground font-medium italic">
                   Konfigurišite logičku grupu i njene cenovne nivoe.
                 </SheetDescription>
               </SheetHeader>
@@ -155,9 +155,9 @@ export function TicketGroupSheet({ facilityId, group, open, onOpenChange }: Tick
                   name="title"
                   render={({ field }) => (
                     <FormItem className="space-y-2">
-                      <FormLabel className="text-sm font-medium text-slate-300">Naziv Grupe</FormLabel>
+                      <FormLabel className="text-sm font-medium text-foreground/80">Naziv Grupe</FormLabel>
                       <FormControl>
-                        <Input placeholder="npr. Dnevne Ulaznice" className="h-11 bg-white/5 border-white/10 focus:border-cyan-500/50 transition-all font-bold text-sm rounded-xl" {...field} value={field.value || ""} />
+                        <Input placeholder="npr. Dnevne Ulaznice" className="h-11 bg-muted/30 border-border focus:border-cyan-500/50 transition-all font-bold text-sm rounded-xl" {...field} value={field.value || ""} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -168,9 +168,9 @@ export function TicketGroupSheet({ facilityId, group, open, onOpenChange }: Tick
                   name="slug"
                   render={({ field }) => (
                     <FormItem className="space-y-2">
-                      <FormLabel className="text-sm font-medium text-slate-300">URL Putanja (Slug)</FormLabel>
+                      <FormLabel className="text-sm font-medium text-foreground/80">URL Putanja (Slug)</FormLabel>
                       <FormControl>
-                        <Input placeholder="npr. dnevne-ulaznice" className="h-11 bg-white/5 border-white/10 focus:border-cyan-500/50 transition-all font-mono text-sm rounded-xl" {...field} value={field.value || ""} />
+                        <Input placeholder="npr. dnevne-ulaznice" className="h-11 bg-muted/30 border-border focus:border-cyan-500/50 transition-all font-mono text-sm rounded-xl" {...field} value={field.value || ""} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -181,9 +181,9 @@ export function TicketGroupSheet({ facilityId, group, open, onOpenChange }: Tick
                   name="description"
                   render={({ field }) => (
                     <FormItem className="md:col-span-2 space-y-2">
-                      <FormLabel className="text-sm font-medium text-slate-300">Opis (Opciono)</FormLabel>
+                      <FormLabel className="text-sm font-medium text-foreground/80">Opis (Opciono)</FormLabel>
                       <FormControl>
-                        <Input placeholder="Kratak opis koji se vidi na sajtu..." className="h-11 bg-white/5 border-white/10 focus:border-cyan-500/50 transition-all text-sm rounded-xl" {...field} value={field.value || ""} />
+                        <Input placeholder="Kratak opis koji se vidi na sajtu..." className="h-11 bg-muted/30 border-border focus:border-cyan-500/50 transition-all text-sm rounded-xl" {...field} value={field.value || ""} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -193,10 +193,10 @@ export function TicketGroupSheet({ facilityId, group, open, onOpenChange }: Tick
                   control={form.control}
                   name="isActive"
                   render={({ field }) => (
-                    <FormItem className="flex items-center justify-between rounded-2xl border border-white/5 bg-white/[0.02] p-4 md:col-span-2">
+                    <FormItem className="flex items-center justify-between rounded-2xl border border-border/50 bg-muted/10 p-4 md:col-span-2">
                       <div className="space-y-1">
-                        <FormLabel className="text-sm font-bold text-slate-200">Status Grupe</FormLabel>
-                        <p className="text-xs text-slate-500">Da li je ova grupa trenutno vidljiva posetiocima?</p>
+                        <FormLabel className="text-sm font-bold text-foreground/90">Status Grupe</FormLabel>
+                        <p className="text-xs text-muted-foreground">Da li je ova grupa trenutno vidljiva posetiocima?</p>
                       </div>
                       <FormControl>
                         <Switch
@@ -209,11 +209,11 @@ export function TicketGroupSheet({ facilityId, group, open, onOpenChange }: Tick
                 />
               </div>
 
-              <div className="space-y-6 pt-6 border-t border-white/5">
+              <div className="space-y-6 pt-6 border-t border-border/50">
                 <div className="flex items-center justify-between">
                   <div className="space-y-1">
-                    <h3 className="text-lg font-black text-white italic tracking-tight uppercase">Varijante u Grupi</h3>
-                    <p className="text-[10px] text-slate-500 font-bold uppercase tracking-[0.2em]">Definišite cenovne nivoe za ovu kategoriju</p>
+                    <h3 className="text-lg font-black text-foreground italic tracking-tight uppercase">Varijante u Grupi</h3>
+                    <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-[0.2em]">Definišite cenovne nivoe za ovu kategoriju</p>
                   </div>
                   <Button 
                     type="button" 
@@ -240,10 +240,10 @@ export function TicketGroupSheet({ facilityId, group, open, onOpenChange }: Tick
 
                   <div className="space-y-4">
                     {fields.map((field, index) => (
-                      <div key={field.id} className="relative group/tier p-6 rounded-2xl bg-white/[0.03] border border-white/5 hover:border-white/10 transition-all space-y-6">
+                      <div key={field.id} className="relative group/tier p-6 rounded-2xl bg-muted/20 border border-border/50 hover:border-border transition-all space-y-6">
                         <div className="flex items-start justify-between gap-4">
                            <div className="flex items-center gap-3 flex-1">
-                              <div className="cursor-grab active:cursor-grabbing p-1.5 text-slate-600 hover:text-cyan-400 transition-colors">
+                              <div className="cursor-grab active:cursor-grabbing p-1.5 text-muted-foreground/80 hover:text-cyan-400 transition-colors">
                                 <Icon name="drag_indicator" className="text-[20px]" />
                               </div>
                               <FormField
@@ -252,7 +252,7 @@ export function TicketGroupSheet({ facilityId, group, open, onOpenChange }: Tick
                                 render={({ field }) => (
                                   <FormItem className="flex-1 space-y-0.5">
                                     <FormControl>
-                                      <Input placeholder="npr. Odrasli / Deca / Porodična" className="h-10 bg-transparent border-none focus-visible:ring-0 text-lg font-black uppercase italic tracking-tight p-0 text-white" {...field} value={field.value || ""} />
+                                      <Input placeholder="npr. Odrasli / Deca / Porodična" className="h-10 bg-transparent border-none focus-visible:ring-0 text-lg font-black uppercase italic tracking-tight p-0 text-foreground" {...field} value={field.value || ""} />
                                     </FormControl>
                                     <FormMessage className="text-[10px]" />
                                   </FormItem>
@@ -263,7 +263,7 @@ export function TicketGroupSheet({ facilityId, group, open, onOpenChange }: Tick
                              type="button" 
                              variant="ghost" 
                              size="icon" 
-                             className="text-slate-600 hover:text-rose-500 h-9 w-9 rounded-xl hover:bg-rose-500/5 transition-all"
+                             className="text-muted-foreground/80 hover:text-rose-500 h-9 w-9 rounded-xl hover:bg-rose-500/5 transition-all"
                              onClick={() => remove(index)}
                            >
                              <Icon name="delete" className="text-[16px]" />
@@ -276,9 +276,9 @@ export function TicketGroupSheet({ facilityId, group, open, onOpenChange }: Tick
                               name={`tickets.${index}.price`}
                               render={({ field }) => (
                                 <FormItem className="space-y-2">
-                                  <FormLabel className="text-[10px] font-black uppercase tracking-widest text-slate-500">Cena (RSD)</FormLabel>
+                                  <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Cena (RSD)</FormLabel>
                                   <FormControl>
-                                    <Input type="number" className="h-10 bg-slate-950/60 border-white/10 font-bold text-sm rounded-lg" {...field} value={field.value as string} onChange={e => field.onChange(Number(e.target.value))} />
+                                    <Input type="number" className="h-10 bg-background/60 border-border font-bold text-sm rounded-lg" {...field} value={field.value as string} onChange={e => field.onChange(Number(e.target.value))} />
                                   </FormControl>
                                   <FormMessage />
                                 </FormItem>
@@ -289,9 +289,9 @@ export function TicketGroupSheet({ facilityId, group, open, onOpenChange }: Tick
                               name={`tickets.${index}.originalPrice`}
                               render={({ field }) => (
                                 <FormItem className="space-y-2">
-                                  <FormLabel className="text-[10px] font-black uppercase tracking-widest text-slate-500">Gate Cena</FormLabel>
+                                  <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Gate Cena</FormLabel>
                                   <FormControl>
-                                    <Input type="number" className="h-10 bg-slate-950/60 border-white/10 text-sm rounded-lg opacity-60" {...field} value={String(field.value ?? "")} onChange={e => field.onChange(e.target.value ? Number(e.target.value) : null)} />
+                                    <Input type="number" className="h-10 bg-background/60 border-border text-sm rounded-lg opacity-60" {...field} value={String(field.value ?? "")} onChange={e => field.onChange(e.target.value ? Number(e.target.value) : null)} />
                                   </FormControl>
                                   <FormMessage />
                                 </FormItem>
@@ -302,14 +302,14 @@ export function TicketGroupSheet({ facilityId, group, open, onOpenChange }: Tick
                               name={`tickets.${index}.dayType`}
                               render={({ field }) => (
                                 <FormItem className="space-y-2">
-                                  <FormLabel className="text-[10px] font-black uppercase tracking-widest text-slate-500">Dan</FormLabel>
+                                  <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Dan</FormLabel>
                                   <Select onValueChange={field.onChange} defaultValue={field.value || undefined}>
                                     <FormControl>
-                                      <SelectTrigger className="h-10 bg-slate-950/60 border-white/10 text-[10px] font-bold uppercase rounded-lg">
+                                      <SelectTrigger className="h-10 bg-background/60 border-border text-[10px] font-bold uppercase rounded-lg">
                                         <SelectValue placeholder="Izaberi" />
                                       </SelectTrigger>
                                     </FormControl>
-                                    <SelectContent className="bg-slate-950 border-white/10">
+                                    <SelectContent className="bg-background border-border">
                                       {Object.values(DayType).map(v => (
                                         <SelectItem key={v} value={v} className="text-[10px] font-bold uppercase">{v.replace('_', ' ')}</SelectItem>
                                       ))}
@@ -326,14 +326,14 @@ export function TicketGroupSheet({ facilityId, group, open, onOpenChange }: Tick
                               name={`tickets.${index}.timeSlot`}
                               render={({ field }) => (
                                 <FormItem className="space-y-2">
-                                  <FormLabel className="text-[10px] font-black uppercase tracking-widest text-slate-500">Termin</FormLabel>
+                                  <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Termin</FormLabel>
                                   <Select onValueChange={field.onChange} defaultValue={field.value || undefined}>
                                     <FormControl>
-                                      <SelectTrigger className="h-10 bg-slate-950/60 border-white/10 text-[10px] font-bold uppercase rounded-lg">
+                                      <SelectTrigger className="h-10 bg-background/60 border-border text-[10px] font-bold uppercase rounded-lg">
                                         <SelectValue placeholder="Izaberi" />
                                       </SelectTrigger>
                                     </FormControl>
-                                    <SelectContent className="bg-slate-950 border-white/10">
+                                    <SelectContent className="bg-background border-border">
                                       {Object.values(TimeSlot).map(v => (
                                         <SelectItem key={v} value={v} className="text-[10px] font-bold uppercase">{v.replace('_', ' ')}</SelectItem>
                                       ))}
@@ -347,9 +347,9 @@ export function TicketGroupSheet({ facilityId, group, open, onOpenChange }: Tick
                               name={`tickets.${index}.minPeople`}
                               render={({ field }) => (
                                 <FormItem className="space-y-2">
-                                  <FormLabel className="text-[10px] font-black uppercase tracking-widest text-slate-500">Min. Osoba</FormLabel>
+                                  <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Min. Osoba</FormLabel>
                                   <FormControl>
-                                    <Input type="number" className="h-10 bg-slate-950/60 border-white/10 text-sm rounded-lg" {...field} value={field.value as string} onChange={e => field.onChange(Number(e.target.value))} />
+                                    <Input type="number" className="h-10 bg-background/60 border-border text-sm rounded-lg" {...field} value={field.value as string} onChange={e => field.onChange(Number(e.target.value))} />
                                   </FormControl>
                                   <FormMessage />
                                 </FormItem>
@@ -360,9 +360,9 @@ export function TicketGroupSheet({ facilityId, group, open, onOpenChange }: Tick
                               name={`tickets.${index}.maxPeople`}
                               render={({ field }) => (
                                 <FormItem className="space-y-2">
-                                  <FormLabel className="text-[10px] font-black uppercase tracking-widest text-slate-500">Max. Osoba</FormLabel>
+                                  <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Max. Osoba</FormLabel>
                                   <FormControl>
-                                    <Input type="number" className="h-10 bg-slate-950/60 border-white/10 text-sm rounded-lg" {...field} value={String(field.value ?? "")} onChange={e => field.onChange(e.target.value ? Number(e.target.value) : null)} />
+                                    <Input type="number" className="h-10 bg-background/60 border-border text-sm rounded-lg" {...field} value={String(field.value ?? "")} onChange={e => field.onChange(e.target.value ? Number(e.target.value) : null)} />
                                   </FormControl>
                                   <FormMessage />
                                 </FormItem>
@@ -370,7 +370,7 @@ export function TicketGroupSheet({ facilityId, group, open, onOpenChange }: Tick
                            />
                         </div>
 
-                        <div className="flex flex-wrap items-center gap-x-6 gap-y-3 pt-4 border-t border-white/5">
+                        <div className="flex flex-wrap items-center gap-x-6 gap-y-3 pt-4 border-t border-border/50">
                            <FormField
                               control={form.control}
                               name={`tickets.${index}.isSeasonPass`}
@@ -379,7 +379,7 @@ export function TicketGroupSheet({ facilityId, group, open, onOpenChange }: Tick
                                   <FormControl>
                                     <Switch checked={field.value} onCheckedChange={field.onChange} />
                                   </FormControl>
-                                  <FormLabel className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Sezonska</FormLabel>
+                                  <FormLabel className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Sezonska</FormLabel>
                                 </FormItem>
                               )}
                            />
@@ -391,7 +391,7 @@ export function TicketGroupSheet({ facilityId, group, open, onOpenChange }: Tick
                                   <FormControl>
                                     <Switch checked={field.value} onCheckedChange={field.onChange} />
                                   </FormControl>
-                                  <FormLabel className="text-[10px] font-bold uppercase tracking-widest text-slate-400">ID Obavezan</FormLabel>
+                                  <FormLabel className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">ID Obavezan</FormLabel>
                                 </FormItem>
                               )}
                            />
@@ -399,8 +399,8 @@ export function TicketGroupSheet({ facilityId, group, open, onOpenChange }: Tick
                               control={form.control}
                               name={`tickets.${index}.isActive`}
                               render={({ field }) => (
-                                <FormItem className="flex items-center gap-3 space-y-0 ml-auto bg-white/5 px-3 py-1.5 rounded-lg border border-white/5">
-                                  <FormLabel className="text-[10px] font-black uppercase tracking-widest text-slate-500">Aktivna</FormLabel>
+                                <FormItem className="flex items-center gap-3 space-y-0 ml-auto bg-muted/30 px-3 py-1.5 rounded-lg border border-border/50">
+                                  <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Aktivna</FormLabel>
                                   <FormControl>
                                     <Switch checked={field.value} onCheckedChange={field.onChange} className="scale-90" />
                                   </FormControl>
@@ -414,8 +414,8 @@ export function TicketGroupSheet({ facilityId, group, open, onOpenChange }: Tick
                 </div>
               </div>
 
-            <div className="relative border-t border-white/10 p-6 bg-slate-950 flex-shrink-0 flex justify-end gap-4 shadow-[0_-20px_50px_rgba(0,0,0,0.5)]">
-               <Button type="button" variant="ghost" onClick={() => onOpenChange(false)} className="h-11 px-8 rounded-xl font-bold uppercase text-[10px] tracking-widest text-slate-500 hover:text-white transition-all">
+            <div className="relative border-t border-border p-6 bg-background flex-shrink-0 flex justify-end gap-4 shadow-[0_-20px_50px_rgba(0,0,0,0.5)]">
+               <Button type="button" variant="ghost" onClick={() => onOpenChange(false)} className="h-11 px-8 rounded-xl font-bold uppercase text-[10px] tracking-widest text-muted-foreground hover:text-foreground transition-all">
                   Otkaži
                </Button>
                <Button 

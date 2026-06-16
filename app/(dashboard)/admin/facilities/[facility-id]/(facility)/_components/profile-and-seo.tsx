@@ -55,7 +55,7 @@ export function ProfileAndSEO({ facilityId }: ProfileAndSEOProps) {
 
   return (
     <div className="space-y-4">
-      <GlassCard className="p-4 border-white/5 bg-slate-950/40 space-y-4">
+      <GlassCard className="p-4 border-border/50 bg-background/40 space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FormField
             control={control}
@@ -64,7 +64,7 @@ export function ProfileAndSEO({ facilityId }: ProfileAndSEOProps) {
               <FormItem>
                 <FormLabel className="text-[10px] uppercase tracking-widest font-black opacity-70">Facility Legal Name</FormLabel>
                 <FormControl>
-                  <Input className="bg-slate-950/40 border-white/5 focus-visible:ring-cyan-500/50 h-10 text-sm font-black uppercase" {...field} value={field.value || ""} />
+                  <Input className="bg-background/40 border-border/50 focus-visible:ring-cyan-500/50 h-10 text-sm font-black uppercase" {...field} value={field.value || ""} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -80,7 +80,7 @@ export function ProfileAndSEO({ facilityId }: ProfileAndSEOProps) {
                   <FormLabel className="text-[10px] uppercase tracking-widest font-black opacity-70">URL Registry Slug</FormLabel>
                   <div className={cn(
                     "text-[8px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded-md border transition-all duration-500",
-                    slugAvailability === "loading" && "bg-slate-500/10 border-slate-500/20 text-slate-400",
+                    slugAvailability === "loading" && "bg-muted/10 border-muted/20 text-muted-foreground",
                     slugAvailability === "available" && "bg-emerald-500/10 border-emerald-500/20 text-emerald-400",
                     slugAvailability === "collision" && "bg-rose-500/10 border-rose-500/20 text-rose-400",
                     slugAvailability === "idle" && "opacity-0"
@@ -92,7 +92,7 @@ export function ProfileAndSEO({ facilityId }: ProfileAndSEOProps) {
                 </div>
                 <FormControl>
                   <Input 
-                    className="bg-slate-950/40 border-white/5 focus-visible:ring-cyan-500/50 h-10 text-sm font-mono text-cyan-400" 
+                    className="bg-background/40 border-border/50 focus-visible:ring-cyan-500/50 h-10 text-sm font-mono text-cyan-400" 
                     {...field} 
                     value={field.value || ""} 
                     onChange={(e) => {
@@ -116,7 +116,7 @@ export function ProfileAndSEO({ facilityId }: ProfileAndSEOProps) {
               <FormControl>
                 <Textarea 
                   placeholder="Tell your story..." 
-                  className="bg-slate-950/40 border-white/5 focus-visible:ring-cyan-500/50 min-h-[80px] leading-relaxed text-sm font-medium text-slate-300" 
+                  className="bg-background/40 border-border/50 focus-visible:ring-cyan-500/50 min-h-[80px] leading-relaxed text-sm font-medium text-foreground/80" 
                   {...field} 
                   value={field.value || ""} 
                 />
@@ -128,21 +128,21 @@ export function ProfileAndSEO({ facilityId }: ProfileAndSEOProps) {
       </GlassCard>
 
       {/* SEO Discovery Module */}
-      <GlassCard className="p-4 border-white/5 bg-slate-950/40 space-y-4">
+      <GlassCard className="p-4 border-border/50 bg-background/40 space-y-4">
         <header className="flex items-center justify-between">
           <h3 className="text-[10px] font-black uppercase tracking-widest text-cyan-400">Search Engine Discovery (GEO)</h3>
           <Icon name="bar_chart" className="size-3.5 text-cyan-400 opacity-50" />
         </header>
 
-        <div className="bg-slate-950/80 rounded-xl p-4 border border-white/5 group/serp relative overflow-hidden transition-all hover:border-cyan-500/20">
+        <div className="bg-background/80 rounded-xl p-4 border border-border/50 group/serp relative overflow-hidden transition-all hover:border-cyan-500/20">
            <div className="flex items-center gap-2 mb-1.5 opacity-60">
              <Icon name="language" className="text-[12px] text-cyan-400" />
-             <span className="text-[9px] font-mono text-slate-400">splashdeals.rs <span className="text-cyan-500/50">›</span> {facilitySlug}</span>
+             <span className="text-[9px] font-mono text-muted-foreground">splashdeals.rs <span className="text-cyan-500/50">›</span> {facilitySlug}</span>
            </div>
            <h4 className="text-sm font-bold text-blue-400 line-clamp-1 mb-1">
              {metaTitle || "Facility Title Placeholder"}
            </h4>
-           <p className="text-[11px] leading-tight text-slate-400 line-clamp-2">
+           <p className="text-[11px] leading-tight text-muted-foreground line-clamp-2">
              {metaDescription || "Enter a high-intent meta description to see how your facility will materialize across generative search architectures."}
            </p>
          </div>
@@ -161,7 +161,7 @@ export function ProfileAndSEO({ facilityId }: ProfileAndSEOProps) {
                   )}>{metaTitle.length}/60</span>
                 </div>
                 <FormControl>
-                  <Input className="bg-slate-950/40 border-white/5 focus-visible:ring-cyan-500/50 h-9 text-[11px] font-bold" {...field} value={field.value || ""} />
+                  <Input className="bg-background/40 border-border/50 focus-visible:ring-cyan-500/50 h-9 text-[11px] font-bold" {...field} value={field.value || ""} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -181,7 +181,7 @@ export function ProfileAndSEO({ facilityId }: ProfileAndSEOProps) {
                   )}>{metaDescription.length}/160</span>
                 </div>
                 <FormControl>
-                  <Input className="bg-slate-950/40 border-white/5 focus-visible:ring-cyan-500/50 h-9 text-[11px] font-bold" {...field} value={field.value || ""} />
+                  <Input className="bg-background/40 border-border/50 focus-visible:ring-cyan-500/50 h-9 text-[11px] font-bold" {...field} value={field.value || ""} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -190,7 +190,7 @@ export function ProfileAndSEO({ facilityId }: ProfileAndSEOProps) {
         </div>
       </GlassCard>
 
-      <GlassCard className="p-4 border-white/5 bg-slate-950/40">
+      <GlassCard className="p-4 border-border/50 bg-background/40">
         <FormField
           control={control}
           name="seoArticle"
@@ -205,7 +205,7 @@ export function ProfileAndSEO({ facilityId }: ProfileAndSEOProps) {
               <FormControl>
                 <Textarea 
                   placeholder="Comprehensive overview for AI agents..." 
-                  className="bg-slate-950/40 border-white/5 focus-visible:ring-cyan-500/50 min-h-[120px] leading-relaxed text-sm font-mono text-slate-300" 
+                  className="bg-background/40 border-border/50 focus-visible:ring-cyan-500/50 min-h-[120px] leading-relaxed text-sm font-mono text-foreground/80" 
                   {...field} 
                   value={field.value || ""} 
                 />

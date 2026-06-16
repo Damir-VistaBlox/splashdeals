@@ -23,17 +23,33 @@ export async function getAdminDashboardStats() {
   }
 }
 
-export async function getRecentActivity() {
+export interface RecentActivityItem {
+  id: string
+  totalAmount: number
+  status: string
+  createdAt: Date
+  city: string
+}
+
+export async function getRecentActivity(): Promise<RecentActivityItem[]> {
   "use cache"
   cacheLife("minutes")
 
-  return prisma.transaction.findMany({
+  const transactions = await prisma.transaction.findMany({
     take: 5,
     orderBy: { createdAt: "desc" },
     include: {
       facility: { select: { city: true } },
     },
   })
+
+  return transactions.map(tx => ({
+    id: tx.id,
+    totalAmount: Number(tx.totalAmount),
+    status: tx.status,
+    createdAt: tx.createdAt,
+    city: tx.facility?.city ?? "Unknown",
+  }))
 }
 
 export async function getFacilityCounts() {

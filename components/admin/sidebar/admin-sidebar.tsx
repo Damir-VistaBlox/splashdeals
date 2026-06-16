@@ -281,7 +281,7 @@ export function AdminSidebar({ user, ...props }: AdminSidebarProps) {
       <SidebarFooter className="p-4 border-t border-sidebar-border space-y-4">
         <div className="flex items-center gap-3 px-2 py-2 rounded-xl bg-sidebar-accent/30 border border-sidebar-border hover:bg-sidebar-accent/50 transition-all">
           <div className="relative shrink-0">
-            <div className="size-8 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white font-black text-xs shadow-lg shadow-cyan-500/20">
+            <div className="size-8 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-foreground font-black text-xs shadow-lg shadow-cyan-500/20">
               {userInitials}
             </div>
             <div className="absolute -bottom-0.5 -right-0.5 size-2.5 rounded-full border-2 border-sidebar bg-emerald-500 animate-pulse" />

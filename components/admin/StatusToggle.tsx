@@ -46,7 +46,7 @@ export function StatusToggle({ facilityId, status, compact }: StatusToggleProps)
       <div className={cn(
         "inline-flex items-center px-2.5 py-0.5 rounded-md border text-[9px] font-black uppercase tracking-[0.15em]",
         status === "EMERGENCY_SHUTDOWN" ? "bg-rose-500/10 text-rose-400 border-rose-500/20 shadow-[0_0_12px_rgba(244,63,94,0.1)]" :
-        "bg-slate-500/10 text-slate-400 border-slate-500/20"
+        "bg-muted/10 text-muted-foreground border-muted/20"
       )}>
         {status}
       </div>
@@ -76,7 +76,7 @@ export function StatusToggle({ facilityId, status, compact }: StatusToggleProps)
           {status}
         </span>
         
-        <div className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-slate-900 border border-white/10 rounded text-[8px] font-bold text-white opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
+        <div className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-muted border border-border rounded text-[8px] font-bold text-foreground opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
           Click to {status === "ACTIVE" ? "Set Draft" : "Go Live"}
         </div>
       </button>
@@ -89,7 +89,7 @@ export function StatusToggle({ facilityId, status, compact }: StatusToggleProps)
       size="sm"
       disabled={isPending}
       onClick={toggleStatus}
-      className="gap-2 border-white/5 bg-white/[0.02] hover:bg-white/5 transition-all text-[10px] font-black uppercase tracking-widest h-8"
+      className="gap-2 border-border/50 bg-muted/10 hover:bg-muted/30 transition-all text-[10px] font-black uppercase tracking-widest h-8"
     >
       {isPending ? (
         <Icon name="progress_activity" className="text-[12px] animate-spin" />

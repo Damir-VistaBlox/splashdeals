@@ -87,7 +87,7 @@ export function TicketImageUpload({ value, onChange, facilityId }: TicketImageUp
       )}
 
       {value ? (
-        <div className="relative aspect-[1.91/1] w-full rounded-xl overflow-hidden border border-white/10 bg-muted/50 group">
+        <div className="relative aspect-[1.91/1] w-full rounded-xl overflow-hidden border border-border bg-muted/50 group">
           <Image 
             src={value} 
             alt="Ticket Visual" 
@@ -108,7 +108,7 @@ export function TicketImageUpload({ value, onChange, facilityId }: TicketImageUp
               </Button>
             </div>
           )}
-          <div className="absolute bottom-2 left-2 bg-black/60 backdrop-blur-sm text-[10px] text-white px-2 py-0.5 rounded font-black uppercase tracking-widest">
+          <div className="absolute bottom-2 left-2 bg-black/60 backdrop-blur-sm text-[10px] text-foreground px-2 py-0.5 rounded font-black uppercase tracking-widest">
             1.91:1 Razmera
           </div>
         </div>
@@ -117,8 +117,8 @@ export function TicketImageUpload({ value, onChange, facilityId }: TicketImageUp
           onClick={() => !isUploading && fileInputRef.current?.click()}
           className={cn(
             "relative aspect-[1.91/1] w-full border-2 border-dashed rounded-xl flex flex-col items-center justify-center gap-3 cursor-pointer transition-all",
-            "hover:bg-white/5 hover:border-cyan-500/50 hover:shadow-lg hover:shadow-cyan-500/5",
-            isUploading ? "pointer-events-none opacity-50" : "bg-card/30 border-white/5"
+            "hover:bg-muted/30 hover:border-cyan-500/50 hover:shadow-lg hover:shadow-cyan-500/5",
+            isUploading ? "pointer-events-none opacity-50" : "bg-card/30 border-border/50"
           )}
         >
           <input 
@@ -129,12 +129,12 @@ export function TicketImageUpload({ value, onChange, facilityId }: TicketImageUp
             onChange={onUpload}
           />
           
-          <div className="h-14 w-14 rounded-full bg-white/5 flex items-center justify-center">
-            <Icon name="upload" className="text-[28px] text-slate-500" />
+          <div className="h-14 w-14 rounded-full bg-muted/30 flex items-center justify-center">
+            <Icon name="upload" className="text-[28px] text-muted-foreground" />
           </div>
           <div className="text-center space-y-1">
-            <p className="text-sm font-semibold text-slate-300">Dodaj Sliku</p>
-            <p className="text-[10px] text-slate-500 uppercase font-black tracking-widest">Preporučeno: 1200x630 (WebP)</p>
+            <p className="text-sm font-semibold text-foreground/80">Dodaj Sliku</p>
+            <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest">Preporučeno: 1200x630 (WebP)</p>
           </div>
         </div>
       )}

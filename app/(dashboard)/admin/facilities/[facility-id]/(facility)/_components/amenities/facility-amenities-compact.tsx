@@ -317,16 +317,16 @@ export function CompactAmenitiesTable({
 
   return (
     <TooltipProvider>
-      <div className="rounded-2xl border border-white/5 bg-slate-900/40 backdrop-blur-xl p-6 space-y-6 shadow-2xl relative overflow-hidden">
+      <div className="rounded-2xl border border-border/50 bg-muted/40 backdrop-blur-xl p-6 space-y-6 shadow-2xl relative overflow-hidden">
       {/* Table Action Controls */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="relative flex-1 max-w-md">
-          <Icon name="search" className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[16px] text-slate-500" />
+          <Icon name="search" className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[16px] text-muted-foreground" />
           <Input
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search facility infrastructure, slides, features..."
-            className="pl-10 h-10 bg-slate-950/40 border-white/5 text-slate-300 focus-visible:ring-cyan-500 rounded-xl"
+            className="pl-10 h-10 bg-background/40 border-border/50 text-foreground/80 focus-visible:ring-cyan-500 rounded-xl"
           />
         </div>
         
@@ -339,16 +339,16 @@ export function CompactAmenitiesTable({
       </div>
 
       {/* Grid Container */}
-      <div className="overflow-x-auto rounded-xl border border-white/5 bg-slate-950/20 max-h-[500px] overflow-y-auto no-scrollbar">
+      <div className="overflow-x-auto rounded-xl border border-border/50 bg-background/20 max-h-[500px] overflow-y-auto no-scrollbar">
         <Table>
-          <TableHeader className="sticky top-0 bg-slate-950/80 backdrop-blur-md z-10 border-b border-white/5">
-            <TableRow className="hover:bg-transparent border-white/5">
-              <TableHead className="w-[80px] text-[10px] font-black uppercase tracking-widest text-slate-400">Active</TableHead>
-              <TableHead className="text-[10px] font-black uppercase tracking-widest text-slate-400">Infrastructure Asset</TableHead>
-              <TableHead className="w-[120px] text-[10px] font-black uppercase tracking-widest text-slate-400">Type</TableHead>
-              <TableHead className="w-[200px] text-[10px] font-black uppercase tracking-widest text-slate-400">Operational Value</TableHead>
-              <TableHead className="w-[80px] text-center text-[10px] font-black uppercase tracking-widest text-slate-400">Featured</TableHead>
-              <TableHead className="w-[80px] text-right text-[10px] font-black uppercase tracking-widest text-slate-400">Action</TableHead>
+          <TableHeader className="sticky top-0 bg-background/80 backdrop-blur-md z-10 border-b border-border/50">
+            <TableRow className="hover:bg-transparent border-border/50">
+              <TableHead className="w-[80px] text-[10px] font-black uppercase tracking-widest text-muted-foreground">Active</TableHead>
+              <TableHead className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Infrastructure Asset</TableHead>
+              <TableHead className="w-[120px] text-[10px] font-black uppercase tracking-widest text-muted-foreground">Type</TableHead>
+              <TableHead className="w-[200px] text-[10px] font-black uppercase tracking-widest text-muted-foreground">Operational Value</TableHead>
+              <TableHead className="w-[80px] text-center text-[10px] font-black uppercase tracking-widest text-muted-foreground">Featured</TableHead>
+              <TableHead className="w-[80px] text-right text-[10px] font-black uppercase tracking-widest text-muted-foreground">Action</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -356,7 +356,7 @@ export function CompactAmenitiesTable({
               filteredItems.map((item) => (
                 <TableRow 
                   key={item.id} 
-                  className="hover:bg-white/[0.02] border-white/5 transition-colors group"
+                  className="hover:bg-muted/10 border-border/50 transition-colors group"
                 >
                   {/* Toggle Switch */}
                   <TableCell>
@@ -368,14 +368,14 @@ export function CompactAmenitiesTable({
                   </TableCell>
                   
                   {/* Amenity Name with Icon Dynamic Resolver */}
-                  <TableCell className="font-medium text-slate-200">
+                  <TableCell className="font-medium text-foreground/90">
                     <div className="flex items-center gap-3">
-                      <div className="flex size-7 items-center justify-center rounded-lg bg-white/5 border border-white/10 text-cyan-400 shrink-0">
+                      <div className="flex size-7 items-center justify-center rounded-lg bg-muted/30 border border-border text-cyan-400 shrink-0">
                         <AmenityIcon iconName={item.icon} className="text-[14px]" />
                       </div>
                       <div className="flex flex-col min-w-0">
                         <span className="text-xs font-bold truncate">{item.name}</span>
-                        <span className="text-[9px] text-slate-500 uppercase tracking-widest truncate">{item.category}</span>
+                        <span className="text-[9px] text-muted-foreground uppercase tracking-widest truncate">{item.category}</span>
                       </div>
                     </div>
                   </TableCell>
@@ -384,7 +384,7 @@ export function CompactAmenitiesTable({
                   <TableCell>
                     <Badge 
                       variant="outline"
-                      className="text-[9px] font-black uppercase tracking-widest py-0.5 border-white/10 text-slate-400"
+                      className="text-[9px] font-black uppercase tracking-widest py-0.5 border-border text-muted-foreground"
                     >
                       {item.type}
                     </Badge>
@@ -399,7 +399,7 @@ export function CompactAmenitiesTable({
                         onBlur={() => handleValueBlur(item.id)}
                         onKeyDown={(e) => handleValueKeyDown(e, item.id)}
                         placeholder={item.type === "QUANTIFIABLE" ? "e.g. 5 slides" : "e.g. Wi-Fi speed, extra details"}
-                        className="h-8 bg-slate-950/40 border-white/5 text-xs text-slate-200 focus-visible:ring-cyan-500 rounded-lg max-w-[180px]"
+                        className="h-8 bg-background/40 border-border/50 text-xs text-foreground/90 focus-visible:ring-cyan-500 rounded-lg max-w-[180px]"
                         aria-label={`${item.name} value`}
                       />
                     ) : item.checked ? (
@@ -408,7 +408,7 @@ export function CompactAmenitiesTable({
                         <span>Enabled</span>
                       </div>
                     ) : (
-                      <span className="text-xs text-slate-600 font-medium">Inactive</span>
+                      <span className="text-xs text-muted-foreground/80 font-medium">Inactive</span>
                     )}
                   </TableCell>
 
@@ -426,16 +426,16 @@ export function CompactAmenitiesTable({
                             <Icon name="star" className={`text-[16px] transition-all duration-200 ${
                                 item.isFeatured 
                                   ? "text-amber-400 fill-amber-400 drop-shadow-[0_0_8px_rgba(245,158,11,0.5)] scale-110" 
-                                  : "text-slate-700 hover:text-slate-400"
+                                  : "text-muted-foreground/60 hover:text-muted-foreground"
                               }`} />
                           </button>
                         </TooltipTrigger>
-                        <TooltipContent className="bg-slate-950 border border-white/10 text-white/90 text-[10px] font-medium tracking-wide">
+                        <TooltipContent className="bg-background border border-border text-foreground/90 text-[10px] font-medium tracking-wide">
                           {item.isFeatured ? "Unfeature amenity on landing" : "Feature amenity on landing"}
                         </TooltipContent>
                       </Tooltip>
                     ) : (
-                      <span className="text-xs text-slate-800">-</span>
+                      <span className="text-xs text-muted-foreground/40">-</span>
                     )}
                   </TableCell>
 
@@ -447,13 +447,13 @@ export function CompactAmenitiesTable({
                           <button
                             type="button"
                             onClick={() => handleDeleteCustom(item.id, item.name)}
-                            className="text-slate-600 hover:text-rose-500 transition-colors p-1.5 rounded-lg hover:bg-rose-500/10 cursor-pointer animate-in fade-in zoom-in-95 duration-100"
+                            className="text-muted-foreground/80 hover:text-rose-500 transition-colors p-1.5 rounded-lg hover:bg-rose-500/10 cursor-pointer animate-in fade-in zoom-in-95 duration-100"
                             aria-label="Delete custom amenity permanently"
                           >
                             <Icon name="delete" className="text-[14px]" />
                           </button>
                         </TooltipTrigger>
-                        <TooltipContent className="bg-slate-950 border border-white/10 text-white/90 text-[10px] font-medium tracking-wide">
+                        <TooltipContent className="bg-background border border-border text-foreground/90 text-[10px] font-medium tracking-wide">
                           Delete custom amenity permanently
                         </TooltipContent>
                       </Tooltip>
@@ -461,10 +461,10 @@ export function CompactAmenitiesTable({
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <span className="cursor-help inline-block">
-                            <Icon name="help" className="text-[14px] text-slate-800 ml-auto mr-2" />
+                            <Icon name="help" className="text-[14px] text-muted-foreground/40 ml-auto mr-2" />
                           </span>
                         </TooltipTrigger>
-                        <TooltipContent className="bg-slate-950 border border-white/10 text-white/90 text-[10px] font-medium tracking-wide">
+                        <TooltipContent className="bg-background border border-border text-foreground/90 text-[10px] font-medium tracking-wide">
                           Core Infrastructure (Cannot Delete)
                         </TooltipContent>
                       </Tooltip>
@@ -474,7 +474,7 @@ export function CompactAmenitiesTable({
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={6} className="h-32 text-center text-slate-500 text-xs font-medium uppercase tracking-widest">
+                <TableCell colSpan={6} className="h-32 text-center text-muted-foreground text-xs font-medium uppercase tracking-widest">
                   No matching assets found
                 </TableCell>
               </TableRow>
@@ -484,24 +484,24 @@ export function CompactAmenitiesTable({
       </div>
 
       {/* ➕ Space-Efficient Table Footer Add Row */}
-      <div className="pt-4 border-t border-white/5">
-        <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-3">Add Custom Facility Infrastructure</h3>
-        <div className="flex flex-col md:flex-row items-center gap-3 bg-slate-950/40 p-4 border border-white/5 rounded-xl">
+      <div className="pt-4 border-t border-border/50">
+        <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground mb-3">Add Custom Facility Infrastructure</h3>
+        <div className="flex flex-col md:flex-row items-center gap-3 bg-background/40 p-4 border border-border/50 rounded-xl">
           <Input
             value={newRow.name}
             onChange={(e) => setNewRow(prev => ({ ...prev, name: e.target.value }))}
             placeholder="Infrastructure Asset Name (e.g. Wave Generator)"
-            className="flex-1 h-9 bg-slate-900 border-white/5 text-xs text-slate-300 focus-visible:ring-cyan-500 rounded-lg"
+            className="flex-1 h-9 bg-muted border-border/50 text-xs text-foreground/80 focus-visible:ring-cyan-500 rounded-lg"
           />
 
           <Select
             value={newRow.type}
             onValueChange={(val: any) => setNewRow(prev => ({ ...prev, type: val }))}
           >
-            <SelectTrigger className="w-[140px] h-9 bg-slate-900 border-white/5 text-xs text-slate-300 rounded-lg">
+            <SelectTrigger className="w-[140px] h-9 bg-muted border-border/50 text-xs text-foreground/80 rounded-lg">
               <SelectValue placeholder="Value Type" />
             </SelectTrigger>
-            <SelectContent className="bg-slate-950 border-white/10 text-slate-300">
+            <SelectContent className="bg-background border-border text-foreground/80">
               <SelectItem value="BOOLEAN">BOOLEAN</SelectItem>
               <SelectItem value="QUANTIFIABLE">QUANTIFIABLE</SelectItem>
               <SelectItem value="TEXT">TEXT</SelectItem>
@@ -512,14 +512,14 @@ export function CompactAmenitiesTable({
             value={newRow.category}
             onChange={(e) => setNewRow(prev => ({ ...prev, category: e.target.value }))}
             placeholder="Category (e.g. Attractions)"
-            className="w-[160px] h-9 bg-slate-900 border-white/5 text-xs text-slate-300 focus-visible:ring-cyan-500 rounded-lg"
+            className="w-[160px] h-9 bg-muted border-border/50 text-xs text-foreground/80 focus-visible:ring-cyan-500 rounded-lg"
           />
 
           <Button
             type="button"
             onClick={handleCreateAmenity}
             disabled={isCreating || !newRow.name.trim()}
-            className="h-9 px-4 bg-cyan-500 hover:bg-cyan-400 disabled:bg-white/5 disabled:text-slate-600 text-slate-950 text-xs font-black uppercase tracking-widest rounded-lg flex items-center gap-1.5 shrink-0"
+            className="h-9 px-4 bg-cyan-500 hover:bg-cyan-400 disabled:bg-muted/30 disabled:text-muted-foreground/80 text-slate-950 text-xs font-black uppercase tracking-widest rounded-lg flex items-center gap-1.5 shrink-0"
           >
             {isCreating ? (
               <Icon name="progress_activity" className="text-[14px] animate-spin" />

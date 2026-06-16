@@ -63,7 +63,7 @@ export function CommandPalette() {
         value={query}
         onValueChange={setQuery}
       />
-      <CommandList className="bg-slate-950 border-t border-white/5 max-h-[450px]">
+      <CommandList className="bg-background border-t border-border/50 max-h-[450px]">
         <CommandEmpty className="py-12 text-center">
           <div className="flex flex-col items-center gap-2 opacity-40">
             <Icon name="search" className="text-[32px]" />
@@ -82,7 +82,7 @@ export function CommandPalette() {
                 <Icon name="business" className="text-[16px] text-cyan-400" />
                 <div className="flex flex-col">
                   <span className="font-bold text-xs">{f.name}</span>
-                  <span className="text-[9px] text-slate-500 uppercase tracking-tighter">{f.city} • {f.category}</span>
+                  <span className="text-[9px] text-muted-foreground uppercase tracking-tighter">{f.city} • {f.category}</span>
                 </div>
               </CommandItem>
             ))}
@@ -100,7 +100,7 @@ export function CommandPalette() {
                 <Icon name="confirmation_number" className="text-[16px] text-emerald-400" />
                 <div className="flex flex-col">
                   <span className="font-bold text-xs">{t.title}</span>
-                  <span className="text-[9px] text-slate-500 uppercase tracking-tighter">{t.facility.name} • {t.price} RSD</span>
+                  <span className="text-[9px] text-muted-foreground uppercase tracking-tighter">{t.facility.name} • {t.price} RSD</span>
                 </div>
               </CommandItem>
             ))}
@@ -118,37 +118,37 @@ export function CommandPalette() {
                 <Icon name="credit_card" className="text-[16px] text-amber-400" />
                 <div className="flex flex-col">
                   <span className="font-bold text-[10px] uppercase tracking-widest">{tr.id}</span>
-                  <span className="text-[9px] text-slate-500 uppercase tracking-tighter">{tr.totalAmount} RSD • {tr.status}</span>
+                  <span className="text-[9px] text-muted-foreground uppercase tracking-tighter">{tr.totalAmount} RSD • {tr.status}</span>
                 </div>
               </CommandItem>
             ))}
           </CommandGroup>
         )}
 
-        <CommandSeparator className="bg-white/5" />
+        <CommandSeparator className="bg-muted/30" />
         
         <CommandGroup heading="Navigation">
           <CommandItem onSelect={() => runCommand(() => router.push("/admin"))}>
-            <Icon name="dashboard" className="mr-2 text-[16px] text-slate-400" />
+            <Icon name="dashboard" className="mr-2 text-[16px] text-muted-foreground" />
             <span className="font-bold text-xs">Overview Dashboard</span>
             <CommandShortcut className="text-[10px]">G H</CommandShortcut>
           </CommandItem>
           <CommandItem onSelect={() => runCommand(() => router.push("/admin/facilities"))}>
-            <Icon name="business" className="mr-2 text-[16px] text-slate-400" />
+            <Icon name="business" className="mr-2 text-[16px] text-muted-foreground" />
             <span className="font-bold text-xs">Facilities Registry</span>
             <CommandShortcut className="text-[10px]">G F</CommandShortcut>
           </CommandItem>
           <CommandItem onSelect={() => runCommand(() => router.push("/admin/support"))}>
-            <Icon name="history" className="mr-2 text-[16px] text-slate-400" />
+            <Icon name="history" className="mr-2 text-[16px] text-muted-foreground" />
             <span className="font-bold text-xs">System Activity Logs</span>
           </CommandItem>
         </CommandGroup>
 
-        <CommandSeparator className="bg-white/5" />
+        <CommandSeparator className="bg-muted/30" />
         
         <CommandGroup heading="Governance">
           <CommandItem onSelect={() => runCommand(() => setOpen(false))}>
-            <Icon name="settings" className="mr-2 text-[16px] text-slate-400" />
+            <Icon name="settings" className="mr-2 text-[16px] text-muted-foreground" />
             <span className="font-bold text-xs">System Settings</span>
             <CommandShortcut className="text-[10px]">S ,</CommandShortcut>
           </CommandItem>

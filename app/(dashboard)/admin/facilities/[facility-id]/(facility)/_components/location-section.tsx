@@ -19,13 +19,13 @@ export function LocationSection() {
   const { control, getValues, formState: { dirtyFields } } = useFormContext<UpdateFacilityGovernanceValues>()
 
   return (
-    <GlassCard className="p-5 border-white/10 bg-slate-900/40 backdrop-blur-sm space-y-4">
+    <GlassCard className="p-5 border-border bg-muted/40 backdrop-blur-sm space-y-4">
       <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-2">
           <div className="p-1.5 rounded-lg bg-blue-500/10">
             <Icon name="location_on" className="text-[14px] text-blue-400" />
           </div>
-          <h3 className="text-[10px] font-black uppercase tracking-widest text-white">Registry Geolocation</h3>
+          <h3 className="text-[10px] font-black uppercase tracking-widest text-foreground">Registry Geolocation</h3>
         </div>
       </div>
 
@@ -37,7 +37,7 @@ export function LocationSection() {
             <FormItem className="space-y-1">
               <FormLabel className="text-[9px] uppercase tracking-widest font-black opacity-60">City</FormLabel>
               <FormControl>
-                <Input className="bg-slate-950/40 border-white/5 h-8 text-[11px] font-bold" {...field} value={field.value || ""} />
+                <Input className="bg-background/40 border-border/50 h-8 text-[11px] font-bold" {...field} value={field.value || ""} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -50,7 +50,7 @@ export function LocationSection() {
             <FormItem className="space-y-1">
               <FormLabel className="text-[9px] uppercase tracking-widest font-black opacity-60">Postal Code</FormLabel>
               <FormControl>
-                <Input className="bg-slate-950/40 border-white/5 h-8 text-[11px] font-bold" {...field} value={field.value || ""} />
+                <Input className="bg-background/40 border-border/50 h-8 text-[11px] font-bold" {...field} value={field.value || ""} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -65,7 +65,7 @@ export function LocationSection() {
           <FormItem className="space-y-1">
             <FormLabel className="text-[9px] uppercase tracking-widest font-black opacity-60">Street Address</FormLabel>
             <FormControl>
-              <Input className="bg-slate-950/40 border-white/5 h-8 text-[11px] font-bold" {...field} value={field.value || ""} />
+              <Input className="bg-background/40 border-border/50 h-8 text-[11px] font-bold" {...field} value={field.value || ""} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -88,7 +88,7 @@ export function LocationSection() {
               </button>
             </div>
             <FormControl>
-              <Input className="bg-slate-950/40 border-white/5 h-8 text-[11px] font-bold" {...field} value={field.value || ""} />
+              <Input className="bg-background/40 border-border/50 h-8 text-[11px] font-bold" {...field} value={field.value || ""} />
             </FormControl>
             <FormMessage />
           </FormItem>

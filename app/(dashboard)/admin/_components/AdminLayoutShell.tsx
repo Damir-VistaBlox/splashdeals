@@ -24,28 +24,28 @@ export function AdminLayoutShell({ children, user }: AdminLayoutShellProps) {
     <>
       <header 
         className={cn(
-          "admin-global-header sticky top-0 z-10 flex h-14 shrink-0 items-center gap-3 border-b border-white/5 bg-slate-950/50 backdrop-blur-xl px-4 md:px-6 transition-all duration-300",
+          "admin-global-header sticky top-0 z-10 flex h-14 shrink-0 items-center gap-3 border-b border-border/50 bg-background/50 backdrop-blur-xl px-4 md:px-6 transition-all duration-300",
           hideGlobalHeader && "opacity-0 pointer-events-none h-0 border-none overflow-hidden"
         )}
       >
-        <SidebarTrigger className="-ml-2 h-9 w-9 rounded-xl hover:bg-white/5 hover:text-primary transition-all" />
-        <Separator orientation="vertical" className="h-4 bg-white/10" />
+        <SidebarTrigger className="-ml-2 h-9 w-9 rounded-xl hover:bg-muted/30 hover:text-primary transition-all" />
+        <Separator orientation="vertical" className="h-4 bg-muted/50" />
         <div className="flex-1 min-w-0 overflow-hidden">
-          <Suspense fallback={<div className="h-4 w-32 bg-white/5 animate-pulse rounded" />}>
+          <Suspense fallback={<div className="h-4 w-32 bg-muted/30 animate-pulse rounded" />}>
             <div className="truncate whitespace-nowrap">
               <Breadcrumbs />
             </div>
           </Suspense>
         </div>
         <div className="flex items-center gap-4">
-          <div className="hidden md:flex items-center gap-1.5 px-2 py-1 rounded-md bg-white/5 border border-white/5">
+          <div className="hidden md:flex items-center gap-1.5 px-2 py-1 rounded-md bg-muted/30 border border-border/50">
               <div className="h-1 w-1 rounded-full bg-cyan-500" />
-              <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Node: {nodeLabel}</span>
+              <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Node: {nodeLabel}</span>
           </div>
           
-          <div className="flex items-center gap-2 px-1.5 py-1 rounded-full bg-white/5 border border-white/10">
+          <div className="flex items-center gap-2 px-1.5 py-1 rounded-full bg-muted/30 border border-border">
             {user.image ? (
-              <div className="relative h-5 w-5 rounded-full overflow-hidden border border-white/10">
+              <div className="relative h-5 w-5 rounded-full overflow-hidden border border-border">
                 <Image src={user.image} alt={user.name || ""} fill className="object-cover" />
               </div>
             ) : (
@@ -53,7 +53,7 @@ export function AdminLayoutShell({ children, user }: AdminLayoutShellProps) {
                 {user.name?.[0] || "?"}
               </div>
             )}
-            <span className="hidden sm:inline text-[9px] font-bold text-slate-300 pr-1.5 uppercase tracking-tighter">
+            <span className="hidden sm:inline text-[9px] font-bold text-foreground/80 pr-1.5 uppercase tracking-tighter">
               {user.name?.split(' ')[0]}
             </span>
           </div>

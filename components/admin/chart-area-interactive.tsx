@@ -172,14 +172,14 @@ export function ChartAreaInteractive() {
   // 🛡️ Skeleton: Prevents white flash and layout shift
   if (!mounted) {
     return (
-      <Card className="@container/card h-full bg-slate-900/50 border-white/5 animate-pulse">
+      <Card className="@container/card h-full bg-muted/50 border-border/50 animate-pulse">
         <CardHeader>
            <div className="flex items-center justify-between">
               <div className="space-y-2">
-                <div className="h-6 w-32 bg-white/10 rounded" />
-                <div className="h-4 w-48 bg-white/5 rounded" />
+                <div className="h-6 w-32 bg-muted/50 rounded" />
+                <div className="h-4 w-48 bg-muted/30 rounded" />
               </div>
-              <div className="h-10 w-40 bg-white/5 rounded" />
+              <div className="h-10 w-40 bg-muted/30 rounded" />
            </div>
         </CardHeader>
         <CardContent className="h-[250px] flex items-center justify-center">
@@ -190,13 +190,13 @@ export function ChartAreaInteractive() {
   }
 
   return (
-    <Card className="@container/card h-full border-white/5 bg-[#0f172a]/40 backdrop-blur-md">
+    <Card className="@container/card h-full border-border/50 bg-[#0f172a]/40 backdrop-blur-md">
       <CardHeader className="py-3 px-4 sm:px-6 flex flex-row items-center justify-between space-y-0">
         <div className="flex flex-col @[540px]/card:flex-row @[540px]/card:items-baseline gap-0 @[540px]/card:gap-2">
-          <CardTitle className="text-white text-base">
+          <CardTitle className="text-foreground text-base">
             Total Visitors
           </CardTitle>
-          <CardDescription className="text-slate-500 text-[10px] font-bold uppercase tracking-wider opacity-70">
+          <CardDescription className="text-muted-foreground text-[10px] font-bold uppercase tracking-wider opacity-70">
             Last {timeRange === "90d" ? "3 Months" : timeRange === "30d" ? "30 Days" : "7 Days"}
           </CardDescription>
         </div>
@@ -206,20 +206,20 @@ export function ChartAreaInteractive() {
             value={timeRange}
             onValueChange={setTimeRange}
             variant="outline"
-            className="hidden *:data-[slot=toggle-group-item]:px-4! @[767px]/card:flex border-white/10"
+            className="hidden *:data-[slot=toggle-group-item]:px-4! @[767px]/card:flex border-border"
           >
-            <ToggleGroupItem value="90d" className="text-slate-300">90 Days</ToggleGroupItem>
-            <ToggleGroupItem value="30d" className="text-slate-300">30 Days</ToggleGroupItem>
-            <ToggleGroupItem value="7d" className="text-slate-300">7 Days</ToggleGroupItem>
+            <ToggleGroupItem value="90d" className="text-foreground/80">90 Days</ToggleGroupItem>
+            <ToggleGroupItem value="30d" className="text-foreground/80">30 Days</ToggleGroupItem>
+            <ToggleGroupItem value="7d" className="text-foreground/80">7 Days</ToggleGroupItem>
           </ToggleGroup>
           <Select value={timeRange} onValueChange={setTimeRange}>
             <SelectTrigger
-              className="flex w-40 border-white/10 text-slate-300 @[767px]/card:hidden"
+              className="flex w-40 border-border text-foreground/80 @[767px]/card:hidden"
               size="sm"
             >
               <SelectValue placeholder="Last 3 months" />
             </SelectTrigger>
-            <SelectContent className="rounded-xl bg-slate-900 border-white/10">
+            <SelectContent className="rounded-xl bg-muted border-border">
               <SelectItem value="90d">Last 3 months</SelectItem>
               <SelectItem value="30d">Last 30 days</SelectItem>
               <SelectItem value="7d">Last 7 days</SelectItem>
@@ -279,7 +279,7 @@ export function ChartAreaInteractive() {
               cursor={false}
               content={
                 <ChartTooltipContent
-                  className="bg-slate-900 border-white/10"
+                  className="bg-muted border-border"
                   labelFormatter={(value) => {
                     return new Date(value).toLocaleDateString("en-GB", {
                       month: "short",

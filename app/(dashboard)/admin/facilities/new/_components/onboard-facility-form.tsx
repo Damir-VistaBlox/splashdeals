@@ -101,7 +101,7 @@ export function OnboardFacilityForm() {
             <Button 
               type="submit" 
               size="lg" 
-              className="w-full h-14 rounded-xl bg-white text-black font-bold text-base hover:bg-zinc-200 transition-all hover:scale-[1.01] active:scale-[0.99] shadow-xl shadow-white/5" 
+              className="w-full h-14 rounded-xl bg-white text-black font-bold text-base hover:bg-muted transition-all hover:scale-[1.01] active:scale-[0.99] shadow-xl shadow-white/5" 
               disabled={isSubmitting}
             >
               {isSubmitting ? (

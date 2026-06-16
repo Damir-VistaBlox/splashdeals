@@ -25,21 +25,21 @@ export default async function FacilitiesDirectoryPage({
   const counts = await getFacilityCounts()
 
   const stats = [
-    { label: "Total Registry", value: counts.total, color: "text-white", glow: "border-white/10 bg-white/[0.02]" },
+    { label: "Total Registry", value: counts.total, color: "text-foreground", glow: "border-border bg-muted/10" },
     { label: "Active Nodes", value: counts.active, color: "text-cyan-400", glow: "border-cyan-500/10 bg-cyan-500/[0.02]" },
     { label: "Draft Ops", value: counts.draft, color: "text-amber-400", glow: "border-amber-500/10 bg-amber-500/[0.02]" },
-    { label: "Closed/Archived", value: counts.closed, color: "text-slate-500", glow: "border-slate-500/10 bg-slate-500/[0.02]" },
+    { label: "Closed/Archived", value: counts.closed, color: "text-muted-foreground", glow: "border-muted/10 bg-muted/5" },
   ]
 
   return (
-    <div className="flex flex-col gap-8 p-4 md:p-6 w-full relative overflow-hidden bg-slate-950 min-h-[calc(100vh-4rem)] rounded-2xl border border-white/5">
+    <div className="flex flex-col gap-8 p-4 md:p-6 w-full relative overflow-hidden bg-background min-h-[calc(100vh-4rem)] rounded-2xl border border-border/50">
       {/* Immersive Ambient Glow */}
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-cyan-500/10 blur-[120px] rounded-full -mr-64 -mt-64 pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-blue-500/5 blur-[100px] rounded-full -ml-48 -mb-48 pointer-events-none" />
 
       <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black tracking-tight text-white uppercase italic">Facilities Registry</h1>
+          <h1 className="text-2xl font-black tracking-tight text-foreground uppercase italic">Facilities Registry</h1>
           <p className="text-muted-foreground mt-1.5 text-xs font-medium uppercase tracking-wider opacity-80">
             Manage all waterpark entities, onboard new locations, and overview global status.
           </p>

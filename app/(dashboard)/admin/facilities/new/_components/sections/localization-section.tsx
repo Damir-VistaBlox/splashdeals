@@ -19,8 +19,8 @@ export function LocalizationSection() {
   const { control } = useFormContext<FacilityFormValues>()
 
   return (
-    <Card className="border-white/5 bg-slate-900/50 backdrop-blur-md overflow-hidden">
-      <CardHeader className="border-b border-white/5 bg-white/5">
+    <Card className="border-border/50 bg-muted/50 backdrop-blur-md overflow-hidden">
+      <CardHeader className="border-b border-border/50 bg-muted/30">
         <CardTitle className="flex items-center gap-2 text-lg">
           <Icon name="location_on" className="text-[20px] text-primary" />
           Localization
@@ -37,7 +37,7 @@ export function LocalizationSection() {
             <FormItem className="col-span-1">
               <FormLabel>City</FormLabel>
               <FormControl>
-                <Input placeholder="Bački Petrovac" className="h-11 bg-white/5 border-white/10" {...field} />
+                <Input placeholder="Bački Petrovac" className="h-11 bg-muted/30 border-border" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -50,7 +50,7 @@ export function LocalizationSection() {
             <FormItem className="col-span-1">
               <FormLabel>Postal Code</FormLabel>
               <FormControl>
-                <Input placeholder="21470" className="h-11 bg-white/5 border-white/10" {...field} />
+                <Input placeholder="21470" className="h-11 bg-muted/30 border-border" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -63,7 +63,7 @@ export function LocalizationSection() {
             <FormItem className="col-span-2">
               <FormLabel>Street Name</FormLabel>
               <FormControl>
-                <Input placeholder="Novosadski put" className="h-11 bg-white/5 border-white/10" {...field} />
+                <Input placeholder="Novosadski put" className="h-11 bg-muted/30 border-border" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -76,7 +76,7 @@ export function LocalizationSection() {
             <FormItem className="col-span-2">
               <FormLabel>Number / Entrance</FormLabel>
               <FormControl>
-                <Input placeholder="bb" className="h-11 bg-white/5 border-white/10" {...field} />
+                <Input placeholder="bb" className="h-11 bg-muted/30 border-border" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

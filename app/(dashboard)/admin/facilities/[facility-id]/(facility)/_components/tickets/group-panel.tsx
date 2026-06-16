@@ -78,7 +78,7 @@ function SortableGroupCard({
           "group relative flex items-center gap-3 px-3 py-3 rounded-xl border transition-all duration-200 cursor-pointer select-none",
           isActive
             ? "bg-cyan-500/10 border-cyan-500/30 shadow-[0_0_20px_rgba(6,182,212,0.12)]"
-            : "bg-slate-900/40 border-white/5 hover:bg-white/[0.04] hover:border-white/10"
+            : "bg-muted/40 border-border/50 hover:bg-white/[0.04] hover:border-border"
         )}
         onClick={onSelect}
       >
@@ -87,7 +87,7 @@ function SortableGroupCard({
           {...attributes}
           {...listeners}
           onClick={(e) => e.stopPropagation()}
-          className="shrink-0 flex items-center text-slate-600 hover:text-slate-400 transition-colors cursor-grab active:cursor-grabbing"
+          className="shrink-0 flex items-center text-muted-foreground/80 hover:text-muted-foreground transition-colors cursor-grab active:cursor-grabbing"
         >
           <Icon name="drag_indicator" className="text-[14px]" />
         </div>
@@ -102,12 +102,12 @@ function SortableGroupCard({
           <p
             className={cn(
               "text-xs font-bold truncate transition-colors",
-              isActive ? "text-cyan-300" : "text-slate-200 group-hover:text-white"
+              isActive ? "text-cyan-300" : "text-foreground/90 group-hover:text-foreground"
             )}
           >
             {group.title}
           </p>
-          <p className="text-[10px] text-slate-600 font-mono mt-0.5">
+          <p className="text-[10px] text-muted-foreground/80 font-mono mt-0.5">
             {group.tiers.length} {group.tiers.length === 1 ? "varijanta" : "varijante"}
           </p>
         </div>
@@ -116,7 +116,7 @@ function SortableGroupCard({
         <div
           className={cn(
             "shrink-0 size-1.5 rounded-full",
-            group.isActive ? "bg-emerald-500" : "bg-slate-600"
+            group.isActive ? "bg-emerald-500" : "bg-muted"
           )}
           title={group.isActive ? "Aktivno" : "Skica"}
         />
@@ -128,14 +128,14 @@ function SortableGroupCard({
         >
           <button
             onClick={onEdit}
-            className="size-6 rounded-md bg-white/10 hover:bg-cyan-500/20 hover:text-cyan-400 flex items-center justify-center text-slate-400 transition-colors"
+            className="size-6 rounded-md bg-muted/50 hover:bg-cyan-500/20 hover:text-cyan-400 flex items-center justify-center text-muted-foreground transition-colors"
             title="Izmeni grupu"
           >
             <Icon name="edit" className="text-[12px]" />
           </button>
           <button
             onClick={onDelete}
-            className="size-6 rounded-md bg-white/10 hover:bg-rose-500/20 hover:text-rose-400 flex items-center justify-center text-slate-400 transition-colors"
+            className="size-6 rounded-md bg-muted/50 hover:bg-rose-500/20 hover:text-rose-400 flex items-center justify-center text-muted-foreground transition-colors"
             title="Obriši grupu"
           >
             <Icon name="delete" className="text-[12px]" />
@@ -232,16 +232,16 @@ export function GroupPanel({
   return (
     <aside
       aria-label="Grupe Ulaznica"
-      className="flex flex-col h-full bg-slate-950/60 border-r border-white/5"
+      className="flex flex-col h-full bg-background/60 border-r border-border/50"
     >
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-4 border-b border-white/5 shrink-0">
+      <div className="flex items-center justify-between px-4 py-4 border-b border-border/50 shrink-0">
         <div className="flex items-center gap-2">
           <Icon name="dashboard" className="text-[14px] text-cyan-500" />
-          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">
             Grupe
           </span>
-          <span className="text-[9px] font-mono text-slate-600 ml-1">
+          <span className="text-[9px] font-mono text-muted-foreground/80 ml-1">
             ({groups.length})
           </span>
         </div>
@@ -264,7 +264,7 @@ export function GroupPanel({
             "flex items-center gap-3 px-3 py-3 rounded-xl border cursor-pointer transition-all duration-200",
             activeGroupId === "ALL"
               ? "bg-cyan-500/10 border-cyan-500/30 shadow-[0_0_20px_rgba(6,182,212,0.12)]"
-              : "bg-slate-900/40 border-white/5 hover:bg-white/[0.04] hover:border-white/10"
+              : "bg-muted/40 border-border/50 hover:bg-white/[0.04] hover:border-border"
           )}
         >
           {activeGroupId === "ALL" && (
@@ -273,11 +273,11 @@ export function GroupPanel({
           <div className="flex-1 min-w-0">
             <p className={cn(
               "text-xs font-bold",
-              activeGroupId === "ALL" ? "text-cyan-300" : "text-slate-300"
+              activeGroupId === "ALL" ? "text-cyan-300" : "text-foreground/80"
             )}>
               Sve Ulaznice
             </p>
-            <p className="text-[10px] text-slate-600 font-mono mt-0.5">
+            <p className="text-[10px] text-muted-foreground/80 font-mono mt-0.5">
               {groups.reduce((sum, g) => sum + g.tiers.length, 0)} ukupno
             </p>
           </div>
@@ -313,10 +313,10 @@ export function GroupPanel({
             <div className="p-4 rounded-2xl bg-cyan-500/5 border border-cyan-500/10 mb-4">
               <Icon name="dashboard" className="text-[32px] text-cyan-900" />
             </div>
-            <p className="text-xs font-black text-slate-400 uppercase tracking-tight italic mb-1">
+            <p className="text-xs font-black text-muted-foreground uppercase tracking-tight italic mb-1">
               Nema Grupa
             </p>
-            <p className="text-[10px] text-slate-600 font-medium leading-relaxed">
+            <p className="text-[10px] text-muted-foreground/80 font-medium leading-relaxed">
               Kreirajte grupu za organizovanje cenovnih nivoa.
             </p>
           </div>

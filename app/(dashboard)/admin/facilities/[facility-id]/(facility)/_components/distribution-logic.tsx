@@ -204,7 +204,7 @@ export function DistributionLogic({ availableCities }: DistributionLogicProps) {
           <Icon name="tag" className="text-[16px] text-cyan-400 animate-pulse" />
         </div>
         <div>
-          <h3 className="text-md font-black tracking-tight uppercase text-white">Marketplace Reach</h3>
+          <h3 className="text-md font-black tracking-tight uppercase text-foreground">Marketplace Reach</h3>
           <p className="text-[9px] text-muted-foreground uppercase tracking-widest font-bold">Configure regional tagging and distribution.</p>
         </div>
       </header>
@@ -233,7 +233,7 @@ export function DistributionLogic({ availableCities }: DistributionLogicProps) {
             >
               Select All
             </button>
-            <span className="text-slate-800">|</span>
+            <span className="text-muted-foreground/40">|</span>
             <button 
               type="button" 
               onClick={() => setValue("targetCityIds", [], { shouldDirty: true })}
@@ -245,7 +245,7 @@ export function DistributionLogic({ availableCities }: DistributionLogicProps) {
         </div>
 
         {/* 🏷️ Interactive Active Region Tag Cloud */}
-        <div className="flex flex-wrap gap-1.5 p-3 min-h-[60px] border border-white/5 rounded-xl bg-slate-950/40 backdrop-blur-md">
+        <div className="flex flex-wrap gap-1.5 p-3 min-h-[60px] border border-border/50 rounded-xl bg-background/40 backdrop-blur-md">
           {selectedCities.map((city) => (
             <div
               key={city.id}
@@ -268,7 +268,7 @@ export function DistributionLogic({ availableCities }: DistributionLogicProps) {
             </div>
             ))}
           {selectedCities.length === 0 && (
-            <div className="flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-widest text-slate-500 m-auto select-none">
+            <div className="flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-widest text-muted-foreground m-auto select-none">
               <span>No marketplace regions selected</span>
             </div>
           )}
@@ -286,7 +286,7 @@ export function DistributionLogic({ availableCities }: DistributionLogicProps) {
                 setIsOpen(true)
               }}
               onFocus={() => setIsOpen(true)}
-              className="h-9 pl-9 bg-slate-950/40 border-white/5 text-[11px] font-bold focus-visible:ring-1 focus-visible:ring-cyan-500/20 placeholder:text-slate-600 rounded-xl"
+              className="h-9 pl-9 bg-background/40 border-border/50 text-[11px] font-bold focus-visible:ring-1 focus-visible:ring-cyan-500/20 placeholder:text-muted-foreground/80 rounded-xl"
             />
             {isPending && (
               <Icon name="progress_activity" className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[14px] animate-spin text-cyan-400" />
@@ -296,7 +296,7 @@ export function DistributionLogic({ availableCities }: DistributionLogicProps) {
           {/* Autocomplete Dropdown List */}
           {isOpen && (search.length > 0 || filteredSuggestions.length > 0) && (
             <div
-              className="absolute left-0 right-0 top-full mt-1.5 max-h-[180px] overflow-y-auto border border-white/10 rounded-xl bg-slate-950/95 backdrop-blur-xl shadow-2xl z-[70] divide-y divide-white/5 scrollbar-thin scrollbar-thumb-slate-800 scrollbar-track-transparent animate-in fade-in slide-in-from-top-1 duration-150"
+              className="absolute left-0 right-0 top-full mt-1.5 max-h-[180px] overflow-y-auto border border-border rounded-xl bg-background/95 backdrop-blur-xl shadow-2xl z-[70] divide-y divide-white/5 scrollbar-thin scrollbar-thumb-slate-800 scrollbar-track-transparent animate-in fade-in slide-in-from-top-1 duration-150"
             >
                 {/* Available Matches */}
                 {filteredSuggestions.map((city) => (
@@ -304,7 +304,7 @@ export function DistributionLogic({ availableCities }: DistributionLogicProps) {
                     key={city.id}
                     type="button"
                     onClick={() => selectCity(city.id)}
-                    className="flex items-center justify-between w-full px-3 py-2 text-left text-[11px] font-semibold text-slate-300 hover:text-white hover:bg-white/[0.04] transition-colors cursor-pointer"
+                    className="flex items-center justify-between w-full px-3 py-2 text-left text-[11px] font-semibold text-foreground/80 hover:text-foreground hover:bg-white/[0.04] transition-colors cursor-pointer"
                   >
                     <span>{city.name}</span>
                     <span className="text-[9px] font-mono text-cyan-500/40">/{city.slug}</span>
@@ -329,7 +329,7 @@ export function DistributionLogic({ availableCities }: DistributionLogicProps) {
                 )}
 
                 {filteredSuggestions.length === 0 && exactMatchExists && (
-                  <div className="px-3 py-4 text-center text-[10px] font-bold uppercase tracking-widest text-slate-500 select-none">
+                  <div className="px-3 py-4 text-center text-[10px] font-bold uppercase tracking-widest text-muted-foreground select-none">
                     No remaining matching regions
                   </div>
                 )}
@@ -338,35 +338,35 @@ export function DistributionLogic({ availableCities }: DistributionLogicProps) {
         </div>
 
         {/* ⚙️ Collapsible Advanced Global Registry Editor */}
-        <details className="mt-8 border-t border-white/5 pt-4 group">
-          <summary className="flex items-center justify-between text-[9px] font-black uppercase tracking-widest text-slate-500 hover:text-white cursor-pointer select-none transition-colors">
+        <details className="mt-8 border-t border-border/50 pt-4 group">
+          <summary className="flex items-center justify-between text-[9px] font-black uppercase tracking-widest text-muted-foreground hover:text-foreground cursor-pointer select-none transition-colors">
             <span className="flex items-center gap-1.5">
               Advanced: Global Registry Editor
             </span>
-            <Icon name="keyboard_arrow_down" className="text-[12px] transition-transform duration-300 group-open:rotate-180 text-slate-500" />
+            <Icon name="keyboard_arrow_down" className="text-[12px] transition-transform duration-300 group-open:rotate-180 text-muted-foreground" />
           </summary>
           
           <div className="mt-4 space-y-2 max-h-[220px] overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-slate-800 scrollbar-track-transparent">
             {localCities.map((city) => (
               <div 
                 key={city.id} 
-                className="flex items-center gap-2 p-1.5 rounded-lg bg-slate-900/30 border border-white/5"
+                className="flex items-center gap-2 p-1.5 rounded-lg bg-muted/30 border border-border/50"
               >
                 <div className="flex-1 min-w-0 grid grid-cols-2 gap-2">
                   <Input 
                     value={city.name}
                     disabled={isRegistryPending}
                     onChange={(e) => updateCityRegistry(city.id, { name: e.target.value })}
-                    className="h-7 px-2 bg-slate-950/50 border-white/5 text-[10px] font-bold focus-visible:ring-cyan-500/20"
+                    className="h-7 px-2 bg-background/50 border-border/50 text-[10px] font-bold focus-visible:ring-cyan-500/20"
                     placeholder="Region Name"
                   />
                   <div className="flex items-center gap-0.5">
-                    <span className="text-[9px] font-mono text-slate-600">/</span>
+                    <span className="text-[9px] font-mono text-muted-foreground/80">/</span>
                     <Input 
                       value={city.slug}
                       disabled={isRegistryPending}
                       onChange={(e) => updateCityRegistry(city.id, { slug: e.target.value })}
-                      className="h-7 px-2 bg-slate-950/50 border-white/5 text-[10px] font-mono text-cyan-400/90 focus-visible:ring-cyan-500/20"
+                      className="h-7 px-2 bg-background/50 border-border/50 text-[10px] font-mono text-cyan-400/90 focus-visible:ring-cyan-500/20"
                       placeholder="url-slug"
                     />
                   </div>
@@ -390,7 +390,7 @@ export function DistributionLogic({ availableCities }: DistributionLogicProps) {
                     size="icon"
                     disabled={isRegistryPending}
                     onClick={() => purgeCityFromRegistry(city)}
-                    className="size-7 rounded-md text-slate-500 hover:bg-red-500/10 hover:text-red-400 transition-colors cursor-pointer"
+                    className="size-7 rounded-md text-muted-foreground hover:bg-red-500/10 hover:text-red-400 transition-colors cursor-pointer"
                     title="Delete globally"
                   >
                     <Icon name="delete" className="text-[14px]" />
@@ -400,7 +400,7 @@ export function DistributionLogic({ availableCities }: DistributionLogicProps) {
             ))}
             
             {localCities.length === 0 && (
-              <div className="text-center py-4 text-[9px] font-black uppercase tracking-widest text-slate-600">
+              <div className="text-center py-4 text-[9px] font-black uppercase tracking-widest text-muted-foreground/80">
                 No regions in registry
               </div>
             )}

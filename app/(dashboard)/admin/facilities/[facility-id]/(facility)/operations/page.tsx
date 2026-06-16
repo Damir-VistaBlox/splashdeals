@@ -47,17 +47,17 @@ export default async function FacilityOperationsPage({ params }: OperationsPageP
 
   return (
     <div className="flex flex-col gap-8 animate-in fade-in slide-in-from-right-4 duration-500">
-      <div className="flex items-center justify-between bg-slate-900/40 p-6 rounded-2xl border border-white/5 backdrop-blur-md">
+      <div className="flex items-center justify-between bg-muted/40 p-6 rounded-2xl border border-border/50 backdrop-blur-md">
         <div className="space-y-1">
           <div className="flex items-center gap-3">
-            <Button asChild variant="ghost" size="sm" className="h-8 w-8 p-0 rounded-lg hover:bg-white/10">
+            <Button asChild variant="ghost" size="sm" className="h-8 w-8 p-0 rounded-lg hover:bg-muted/50">
               <Link href={`/admin/facilities/${facilityId}`}>
                 <Icon name="keyboard_arrow_left" className="size-4" />
               </Link>
             </Button>
-            <h1 className="text-2xl font-black text-white italic tracking-tight">Operational Pulse</h1>
+            <h1 className="text-2xl font-black text-foreground italic tracking-tight">Operational Pulse</h1>
           </div>
-          <p className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] ml-11">
+          <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] ml-11">
             Adjust entry availability for {facility.name}
           </p>
         </div>
@@ -66,7 +66,7 @@ export default async function FacilityOperationsPage({ params }: OperationsPageP
         </div>
       </div>
 
-      <div className="rounded-2xl border border-white/5 bg-slate-900/20 p-1">
+      <div className="rounded-2xl border border-border/50 bg-muted/20 p-1">
         <OperationsTable 
           facilityId={facilityId} 
           initialHours={facility.hours} 

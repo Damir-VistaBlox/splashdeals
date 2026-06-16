@@ -438,18 +438,18 @@ export function MediaGallery({ facilityId, initialMedia }: MediaGalleryProps) {
     <div className="space-y-8">
       {/* 🌌 High-fidelity Glassmorphic Full-Screen Drag Overlay */}
       {isDragActive && (
-        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-xl z-[999] pointer-events-none flex flex-col items-center justify-center text-center animate-in fade-in duration-300">
-          <div className="p-12 rounded-3xl bg-white/[0.02] border border-cyan-500/30 shadow-[0_0_50px_rgba(6,182,212,0.15)] flex flex-col items-center max-w-md mx-4 animate-in zoom-in-95 duration-500">
+        <div className="fixed inset-0 bg-background/80 backdrop-blur-xl z-[999] pointer-events-none flex flex-col items-center justify-center text-center animate-in fade-in duration-300">
+          <div className="p-12 rounded-3xl bg-muted/10 border border-cyan-500/30 shadow-[0_0_50px_rgba(6,182,212,0.15)] flex flex-col items-center max-w-md mx-4 animate-in zoom-in-95 duration-500">
             <div className="p-6 rounded-3xl bg-cyan-500/10 border border-cyan-500/20 mb-8 animate-bounce">
               <Icon name="upload" className="h-16 w-16 text-cyan-400" />
             </div>
-            <h3 className="text-2xl font-black text-white uppercase tracking-tighter mb-3">
+            <h3 className="text-2xl font-black text-foreground uppercase tracking-tighter mb-3">
               Spusti datoteke za otpremanje
             </h3>
             <p className="text-xs font-semibold text-cyan-400 uppercase tracking-widest leading-relaxed mb-1">
               Splash Engine: High-Bandwidth Protocol
             </p>
-            <p className="text-xs font-medium text-slate-500 uppercase tracking-widest leading-relaxed">
+            <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest leading-relaxed">
               Asset Optimization active. Drop anywhere to start bulk curation.
             </p>
           </div>
@@ -457,7 +457,7 @@ export function MediaGallery({ facilityId, initialMedia }: MediaGalleryProps) {
       )}
 
       {/* 🛠️ Action Toolbar */}
-      <div className="flex items-center justify-between gap-4 sticky top-0 z-40 bg-slate-950/60 backdrop-blur-md p-4 -mx-4 border-b border-white/5 shadow-2xl">
+      <div className="flex items-center justify-between gap-4 sticky top-0 z-40 bg-background/60 backdrop-blur-md p-4 -mx-4 border-b border-border/50 shadow-2xl">
          <div className="flex items-center gap-3">
             <Button
               variant="outline"
@@ -468,7 +468,7 @@ export function MediaGallery({ facilityId, initialMedia }: MediaGalleryProps) {
               }}
               className={cn(
                 "h-9 px-4 text-[10px] font-black uppercase tracking-widest gap-2 transition-all",
-                isSelectionMode ? "bg-primary/20 border-primary text-primary" : "bg-white/5 border-white/5"
+                isSelectionMode ? "bg-primary/20 border-primary text-primary" : "bg-muted/30 border-border/50"
               )}
             >
                {isSelectionMode ? <Icon name="close" className="size-3" /> : <Icon name="edit" className="size-3" />}
@@ -481,7 +481,7 @@ export function MediaGallery({ facilityId, initialMedia }: MediaGalleryProps) {
                     variant="outline"
                     size="sm"
                     onClick={handleSelectAll}
-                    className="h-9 px-3 text-[10px] font-black uppercase tracking-widest bg-white/5 border border-white/5 hover:bg-white/10"
+                    className="h-9 px-3 text-[10px] font-black uppercase tracking-widest bg-muted/30 border border-border/50 hover:bg-muted/50"
                   >
                      Select All
                   </Button>
@@ -489,13 +489,13 @@ export function MediaGallery({ facilityId, initialMedia }: MediaGalleryProps) {
                     variant="outline"
                     size="sm"
                     onClick={handleDeselectAll}
-                    className="h-9 px-3 text-[10px] font-black uppercase tracking-widest bg-white/5 border border-white/5 hover:bg-white/10"
+                    className="h-9 px-3 text-[10px] font-black uppercase tracking-widest bg-muted/30 border border-border/50 hover:bg-muted/50"
                   >
                      Deselect All
                   </Button>
                   {selectedIds.size > 0 && (
                      <>
-                        <div className="h-4 w-[1px] bg-white/10 mx-2" />
+                        <div className="h-4 w-[1px] bg-muted/50 mx-2" />
                         <Button
                           variant="destructive"
                           size="sm"
@@ -506,15 +506,15 @@ export function MediaGallery({ facilityId, initialMedia }: MediaGalleryProps) {
                            Delete {selectedIds.size} Assets
                         </Button>
 
-                        <div className="h-4 w-[1px] bg-white/10 mx-2" />
+                        <div className="h-4 w-[1px] bg-muted/50 mx-2" />
                         
-                        <div className="flex items-center gap-1.5 bg-black/40 border border-white/5 rounded-lg px-2 py-0.5 animate-in fade-in duration-300">
+                        <div className="flex items-center gap-1.5 bg-black/40 border border-border/50 rounded-lg px-2 py-0.5 animate-in fade-in duration-300">
                           <input
                             type="text"
                             placeholder="Bulk Alt tag..."
                             value={bulkCaptionText}
                             onChange={(e) => setBulkCaptionText(e.target.value)}
-                            className="bg-transparent text-[10px] text-white focus:outline-none placeholder:text-slate-600 w-32 px-1"
+                            className="bg-transparent text-[10px] text-foreground focus:outline-none placeholder:text-muted-foreground/80 w-32 px-1"
                           />
                           <Button
                             variant="ghost"
@@ -558,28 +558,28 @@ export function MediaGallery({ facilityId, initialMedia }: MediaGalleryProps) {
          </div>
 
          <div className="flex items-center gap-2">
-            <span className="text-[10px] font-black uppercase tracking-widest text-slate-500 mr-2">
+            <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mr-2">
                {media.length} Registry Objects
             </span>
          </div>
       </div>
 
       {/* 🔍 Curation Search & Filter Panel */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-slate-900/30 border border-white/5 rounded-2xl p-4 animate-in fade-in duration-300">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-muted/30 border border-border/50 rounded-2xl p-4 animate-in fade-in duration-300">
         {/* Search Input */}
         <div className="relative flex-1 max-w-md">
-          <Icon name="search" className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-slate-500" />
+          <Icon name="search" className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
           <input
             type="text"
             placeholder="Pretraži medije po ALT oznaci ili nazivu..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-black/40 border border-white/5 rounded-xl pl-10 pr-4 py-2 text-xs font-medium text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-cyan-500/50 transition-colors"
+            className="w-full bg-black/40 border border-border/50 rounded-xl pl-10 pr-4 py-2 text-xs font-medium text-foreground/90 placeholder:text-muted-foreground/80 focus:outline-none focus:border-cyan-500/50 transition-colors"
           />
           {searchQuery && (
             <button 
               onClick={() => setSearchQuery("")}
-              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white transition-colors"
+              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
             >
               <Icon name="close" className="size-3.5" />
             </button>
@@ -605,7 +605,7 @@ export function MediaGallery({ facilityId, initialMedia }: MediaGalleryProps) {
                 "h-7 px-3 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all",
                 activeFilter === filt.id
                   ? "bg-cyan-500/20 border border-cyan-500 text-cyan-400 shadow-[0_0_15px_rgba(6,182,212,0.15)]"
-                  : "bg-white/[0.02] border border-white/5 text-slate-400 hover:text-white hover:bg-white/5"
+                  : "bg-muted/10 border border-border/50 text-muted-foreground hover:text-foreground hover:bg-muted/30"
               )}
             >
               {filt.label}
@@ -617,17 +617,17 @@ export function MediaGallery({ facilityId, initialMedia }: MediaGalleryProps) {
       {/* Upload Zone (Integrated Empty State) */}
       {!isSelectionMode && (
         <div className={cn(
-          "relative group overflow-hidden border-2 border-dashed border-white/5 rounded-xl bg-slate-900/40 backdrop-blur-md transition-all hover:bg-slate-900/60 hover:border-primary/50 flex flex-col items-center justify-center text-center cursor-pointer",
+          "relative group overflow-hidden border-2 border-dashed border-border/50 rounded-xl bg-muted/40 backdrop-blur-md transition-all hover:bg-muted/60 hover:border-primary/50 flex flex-col items-center justify-center text-center cursor-pointer",
           media.length === 0 && !isUploading ? "py-32" : "py-12"
         )}>
           {media.length === 0 && !isUploading ? (
             <div className="flex flex-col items-center animate-in zoom-in-95 duration-500 max-w-sm">
-              <div className="p-6 rounded-3xl bg-white/[0.02] border border-white/5 mb-8 group-hover:scale-110 group-hover:bg-primary/5 transition-all duration-500">
-                <Icon name="image" className="text-[48px] text-slate-600 group-hover:text-primary transition-colors" />
+              <div className="p-6 rounded-3xl bg-muted/10 border border-border/50 mb-8 group-hover:scale-110 group-hover:bg-primary/5 transition-all duration-500">
+                <Icon name="image" className="text-[48px] text-muted-foreground/80 group-hover:text-primary transition-colors" />
               </div>
               <div className="space-y-2">
-                <h3 className="text-xl font-black text-white uppercase tracking-tighter">Media Node Empty</h3>
-                <p className="text-xs font-medium text-slate-500 uppercase tracking-widest leading-relaxed">
+                <h3 className="text-xl font-black text-foreground uppercase tracking-tighter">Media Node Empty</h3>
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest leading-relaxed">
                   The facility gallery is currently void of visual intelligence. Drop assets here to initiate curation.
                 </p>
               </div>
@@ -654,7 +654,7 @@ export function MediaGallery({ facilityId, initialMedia }: MediaGalleryProps) {
           />
 
           {isUploading && (
-            <div className="absolute inset-0 bg-slate-950/90 flex flex-col items-center justify-center z-10 animate-in fade-in duration-300">
+            <div className="absolute inset-0 bg-background/90 flex flex-col items-center justify-center z-10 animate-in fade-in duration-300">
               <Icon name="progress_activity" className="text-[40px] animate-spin text-primary mb-2" />
               <p className="font-bold text-lg animate-pulse">
                 {Object.keys(uploadProgress).length > 0 
@@ -702,10 +702,10 @@ export function MediaGallery({ facilityId, initialMedia }: MediaGalleryProps) {
             {uploadingFiles.map((file, idx) => (
               <div 
                 key={`transiting-${idx}-${file.name}`}
-                className="bg-slate-900/40 border border-cyan-500/20 rounded-2xl aspect-video relative overflow-hidden flex flex-col items-center justify-center p-4 shadow-[0_0_20px_rgba(6,182,212,0.05)] animate-pulse"
+                className="bg-muted/40 border border-cyan-500/20 rounded-2xl aspect-video relative overflow-hidden flex flex-col items-center justify-center p-4 shadow-[0_0_20px_rgba(6,182,212,0.05)] animate-pulse"
               >
                 <Icon name="progress_activity" className="text-[24px] text-cyan-500 animate-spin mb-2" />
-                <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider truncate max-w-full px-2">
+                <span className="text-[10px] font-black text-muted-foreground uppercase tracking-wider truncate max-w-full px-2">
                   {file.name}
                 </span>
                 <span className="text-[8px] font-bold text-cyan-400 uppercase tracking-widest mt-1">
@@ -780,7 +780,7 @@ function MediaItemCard({
 
   return (
     <div className={cn(
-      "group flex flex-col bg-slate-900/40 rounded-2xl border border-white/5 overflow-hidden transition-all duration-300",
+      "group flex flex-col bg-muted/40 rounded-2xl border border-border/50 overflow-hidden transition-all duration-300",
       isSelected && "ring-2 ring-primary ring-offset-2 ring-offset-slate-950 shadow-[0_0_30px_rgba(6,182,212,0.3)]",
       isOverlay && "shadow-2xl opacity-90 scale-105"
     )}>
@@ -788,7 +788,7 @@ function MediaItemCard({
       <div 
         onClick={() => isSelectionMode && onSelect?.()}
         className={cn(
-          "aspect-video relative overflow-hidden bg-slate-950",
+          "aspect-video relative overflow-hidden bg-background",
           isSelectionMode && "cursor-pointer"
         )}
       >
@@ -831,7 +831,7 @@ function MediaItemCard({
             className="absolute inset-0 bg-cyan-950/80 backdrop-blur-sm z-30 flex flex-col items-center justify-center text-center p-3 cursor-crosshair animate-in fade-in duration-200"
           >
             <Icon name="gps_fixed" className="size-6 text-cyan-400 animate-pulse mb-1.5" />
-            <span className="text-[10px] font-black text-white uppercase tracking-wider">
+            <span className="text-[10px] font-black text-foreground uppercase tracking-wider">
               Postavi Fokus
             </span>
             <span className="text-[8px] font-medium text-cyan-300 uppercase tracking-widest mt-0.5 leading-tight max-w-[120px]">
@@ -842,7 +842,7 @@ function MediaItemCard({
                 e.stopPropagation()
                 onToggleFocalPoint?.()
               }}
-              className="absolute bottom-2 right-2 size-5 rounded-md bg-white/10 hover:bg-white/20 flex items-center justify-center text-white"
+              className="absolute bottom-2 right-2 size-5 rounded-md bg-muted/50 hover:bg-white/20 flex items-center justify-center text-foreground"
             >
               <Icon name="close" className="size-3" />
             </button>
@@ -890,14 +890,14 @@ function MediaItemCard({
                 e.currentTarget.currentTime = 0.1;
               }}
             />
-            <div className="absolute top-3 left-3 bg-black/60 border border-white/10 p-1.5 rounded-lg z-30">
+            <div className="absolute top-3 left-3 bg-black/60 border border-border p-1.5 rounded-lg z-30">
               <Icon name="movie" className="size-3.5 text-cyan-400 animate-pulse" />
             </div>
           </div>
         )}
 
         {/* Dynamic extension badge on hover */}
-        <div className="absolute bottom-3 left-3 bg-black/60 border border-white/10 text-[8px] font-black text-slate-300 uppercase px-2 py-0.5 rounded-md z-30 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="absolute bottom-3 left-3 bg-black/60 border border-border text-[8px] font-black text-foreground/80 uppercase px-2 py-0.5 rounded-md z-30 opacity-0 group-hover:opacity-100 transition-opacity">
           {extension}
         </div>
 
@@ -908,7 +908,7 @@ function MediaItemCard({
             {...attributes}
             className="absolute inset-0 z-20 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity cursor-grab active:cursor-grabbing"
           >
-            <Icon name="drag_indicator" className="size-8 text-white/50" />
+            <Icon name="drag_indicator" className="size-8 text-foreground/50" />
           </div>
         )}
 
@@ -917,7 +917,7 @@ function MediaItemCard({
            <div className="absolute top-3 left-3 z-30">
               <div className={cn(
                  "size-6 rounded-full border-2 transition-all flex items-center justify-center",
-                 isSelected ? "bg-primary border-primary" : "bg-black/40 border-white/20"
+                 isSelected ? "bg-primary border-primary" : "bg-black/40 border-border"
               )}>
                  {isSelected && <Icon name="security" className="size-4 text-slate-950 stroke-[3]" />}
               </div>
@@ -955,14 +955,14 @@ function MediaItemCard({
 
       {/* 🛠️ Action Controls (Below Thumbnail) */}
       {!isOverlay && (
-        <div className="p-3 bg-white/[0.02] border-t border-white/5 grid grid-cols-3 gap-2">
+        <div className="p-3 bg-muted/10 border-t border-border/50 grid grid-cols-3 gap-2">
           <Button
             variant="ghost"
             size="sm"
             onClick={onToggleHero}
             className={cn(
               "flex flex-col h-auto py-2 gap-1 text-[9px] font-black uppercase tracking-tighter hover:bg-amber-500/10",
-              item.isHero ? "text-amber-500" : "text-slate-500"
+              item.isHero ? "text-amber-500" : "text-muted-foreground"
             )}
           >
             <Icon name="monitor" className={cn("size-4", item.isHero && "fill-current")} />
@@ -975,7 +975,7 @@ function MediaItemCard({
             onClick={onToggleCardBG}
             className={cn(
               "flex flex-col h-auto py-2 gap-1 text-[9px] font-black uppercase tracking-tighter hover:bg-cyan-500/10",
-              item.isCardBackground ? "text-cyan-500" : "text-slate-500"
+              item.isCardBackground ? "text-cyan-500" : "text-muted-foreground"
             )}
           >
             <Icon name="dashboard" className={cn("size-4", item.isCardBackground && "fill-current")} />
@@ -988,7 +988,7 @@ function MediaItemCard({
             onClick={onToggleVisibility}
             className={cn(
               "flex flex-col h-auto py-2 gap-1 text-[9px] font-black uppercase tracking-tighter hover:bg-primary/10",
-              item.isGalleryVisible ? "text-emerald-500" : "text-slate-500"
+              item.isGalleryVisible ? "text-emerald-500" : "text-muted-foreground"
             )}
           >
             {item.isGalleryVisible ? <Icon name="visibility" className="size-4" /> : <Icon name="visibility_off" className="size-4" />}
@@ -1019,7 +1019,7 @@ function MediaItemCard({
                 toast.error("Caption save error");
               }
             }}
-            className="w-full bg-black/20 border border-white/5 rounded-lg px-2.5 py-1 text-[10px] font-medium text-slate-300 focus:outline-none focus:border-cyan-500/40 transition-colors placeholder:text-slate-600"
+            className="w-full bg-black/20 border border-border/50 rounded-lg px-2.5 py-1 text-[10px] font-medium text-foreground/80 focus:outline-none focus:border-cyan-500/40 transition-colors placeholder:text-muted-foreground/80"
           />
           {item.type === "PHOTO" && (
             <div className="flex gap-1 shrink-0">
@@ -1028,8 +1028,8 @@ function MediaItemCard({
                 size="icon"
                 onClick={() => onToggleFocalPoint?.()}
                 className={cn(
-                  "size-7 rounded-lg hover:bg-cyan-500/10 hover:text-cyan-400 border border-white/5 transition-colors",
-                  item.originalUrl ? "text-cyan-400 border-cyan-500/20 bg-cyan-500/5" : "text-slate-500"
+                  "size-7 rounded-lg hover:bg-cyan-500/10 hover:text-cyan-400 border border-border/50 transition-colors",
+                  item.originalUrl ? "text-cyan-400 border-cyan-500/20 bg-cyan-500/5" : "text-muted-foreground"
                 )}
                 title="Set focal point"
               >
@@ -1039,7 +1039,7 @@ function MediaItemCard({
                 variant="ghost"
                 size="icon"
                 onClick={() => onCrop?.()}
-                className="size-7 rounded-lg hover:bg-cyan-500/10 text-slate-500 hover:text-cyan-400 border border-white/5 transition-colors"
+                className="size-7 rounded-lg hover:bg-cyan-500/10 text-muted-foreground hover:text-cyan-400 border border-border/50 transition-colors"
                 title="Crop image"
               >
                 <Icon name="crop" className="size-3.5" />
@@ -1253,7 +1253,7 @@ function CropModal({
   }
 
   return (
-    <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-[999] flex items-center justify-center p-4 animate-in fade-in duration-300">
+    <div className="fixed inset-0 bg-background/80 backdrop-blur-md z-[999] flex items-center justify-center p-4 animate-in fade-in duration-300">
       {/* Hidden raw image for canvas extraction */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img 
@@ -1268,11 +1268,11 @@ function CropModal({
         }}
       />
 
-      <div className="bg-slate-900/90 border border-white/10 rounded-3xl p-6 w-full max-w-lg shadow-[0_0_50px_rgba(6,182,212,0.15)] flex flex-col gap-6 animate-in zoom-in-95 duration-300">
-        <div className="flex items-center justify-between border-b border-white/5 pb-4">
+      <div className="bg-muted/90 border border-border rounded-3xl p-6 w-full max-w-lg shadow-[0_0_50px_rgba(6,182,212,0.15)] flex flex-col gap-6 animate-in zoom-in-95 duration-300">
+        <div className="flex items-center justify-between border-b border-border/50 pb-4">
           <div>
-            <h3 className="text-lg font-black text-white uppercase tracking-tighter">Iseci fotografiju</h3>
-            <p className="text-[10px] text-slate-500 uppercase tracking-wider mt-0.5">Crop utility: re-encodes to high-density WebP</p>
+            <h3 className="text-lg font-black text-foreground uppercase tracking-tighter">Iseci fotografiju</h3>
+            <p className="text-[10px] text-muted-foreground uppercase tracking-wider mt-0.5">Crop utility: re-encodes to high-density WebP</p>
           </div>
           <Button variant="ghost" size="icon" onClick={onClose} className="rounded-xl size-8">
             <Icon name="close" className="size-4" />
@@ -1280,14 +1280,14 @@ function CropModal({
         </div>
 
         {/* Live Canvas Preview */}
-        <div className="flex justify-center bg-slate-950/80 border border-white/5 rounded-2xl overflow-hidden py-4">
-          <canvas ref={canvasRef} className="rounded-xl border border-white/5 shadow-2xl max-w-full" />
+        <div className="flex justify-center bg-background/80 border border-border/50 rounded-2xl overflow-hidden py-4">
+          <canvas ref={canvasRef} className="rounded-xl border border-border/50 shadow-2xl max-w-full" />
         </div>
 
         {/* Presets and Sliders */}
         <div className="space-y-4">
           <div className="flex flex-col gap-1.5">
-            <label className="text-[9px] font-black uppercase tracking-widest text-slate-500">Proporcija (Aspect Ratio)</label>
+            <label className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Proporcija (Aspect Ratio)</label>
             <div className="grid grid-cols-3 gap-2">
               {[
                 { id: "16:9", label: "16:9 (Hero/Bazen)" },
@@ -1301,7 +1301,7 @@ function CropModal({
                     "py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all",
                     aspectRatio === ratio.id 
                       ? "bg-cyan-500/20 border border-cyan-500 text-cyan-400" 
-                      : "bg-white/[0.02] border border-white/5 text-slate-400 hover:text-white"
+                      : "bg-muted/10 border border-border/50 text-muted-foreground hover:text-foreground"
                   )}
                 >
                   {ratio.label}
@@ -1311,10 +1311,10 @@ function CropModal({
           </div>
 
           {/* Slider controls */}
-          <div className="space-y-3 bg-white/[0.01] border border-white/5 rounded-xl p-3">
+          <div className="space-y-3 bg-white/[0.01] border border-border/50 rounded-xl p-3">
             {/* Zoom Slider */}
             <div className="flex flex-col gap-1.5">
-              <div className="flex items-center justify-between text-[9px] font-black uppercase tracking-widest text-slate-400">
+              <div className="flex items-center justify-between text-[9px] font-black uppercase tracking-widest text-muted-foreground">
                 <span>Uvećanje (Zoom)</span>
                 <span className="font-mono text-cyan-400">{zoom.toFixed(1)}x</span>
               </div>
@@ -1325,13 +1325,13 @@ function CropModal({
                 step="0.1" 
                 value={zoom} 
                 onChange={(e) => setZoom(parseFloat(e.target.value))}
-                className="w-full h-1 bg-slate-950 rounded-lg appearance-none cursor-pointer accent-cyan-500"
+                className="w-full h-1 bg-background rounded-lg appearance-none cursor-pointer accent-cyan-500"
               />
             </div>
 
             {/* Horizontal Position X Slider */}
             <div className="flex flex-col gap-1.5">
-              <div className="flex items-center justify-between text-[9px] font-black uppercase tracking-widest text-slate-400">
+              <div className="flex items-center justify-between text-[9px] font-black uppercase tracking-widest text-muted-foreground">
                 <span>Vodoravno pomeranje (X osa)</span>
                 <span className="font-mono text-cyan-400">{offsetX}%</span>
               </div>
@@ -1342,13 +1342,13 @@ function CropModal({
                 step="1" 
                 value={offsetX} 
                 onChange={(e) => setOffsetX(parseInt(e.target.value))}
-                className="w-full h-1 bg-slate-950 rounded-lg appearance-none cursor-pointer accent-cyan-500"
+                className="w-full h-1 bg-background rounded-lg appearance-none cursor-pointer accent-cyan-500"
               />
             </div>
 
             {/* Vertical Position Y Slider */}
             <div className="flex flex-col gap-1.5">
-              <div className="flex items-center justify-between text-[9px] font-black uppercase tracking-widest text-slate-400">
+              <div className="flex items-center justify-between text-[9px] font-black uppercase tracking-widest text-muted-foreground">
                 <span>Uspravno pomeranje (Y osa)</span>
                 <span className="font-mono text-cyan-400">{offsetY}%</span>
               </div>
@@ -1359,14 +1359,14 @@ function CropModal({
                 step="1" 
                 value={offsetY} 
                 onChange={(e) => setOffsetY(parseInt(e.target.value))}
-                className="w-full h-1 bg-slate-950 rounded-lg appearance-none cursor-pointer accent-cyan-500"
+                className="w-full h-1 bg-background rounded-lg appearance-none cursor-pointer accent-cyan-500"
               />
             </div>
           </div>
         </div>
 
         {/* Modal CTAs */}
-        <div className="flex items-center justify-end gap-3 border-t border-white/5 pt-4">
+        <div className="flex items-center justify-end gap-3 border-t border-border/50 pt-4">
           <Button variant="ghost" onClick={onClose} disabled={isSaving} className="h-9 px-4 text-[10px] font-black uppercase tracking-widest">
             Otkaži
           </Button>

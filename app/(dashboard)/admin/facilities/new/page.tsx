@@ -18,7 +18,7 @@ export default async function NewFacilityPage() {
   return (
     <div className="flex flex-col gap-4 p-4 md:p-6 max-w-7xl w-full mx-auto">
       <div className="flex items-center gap-4 animate-in fade-in slide-in-from-left-4 duration-500">
-        <Button variant="outline" size="icon" asChild className="rounded-xl border-white/10 bg-slate-900/50 backdrop-blur-sm">
+        <Button variant="outline" size="icon" asChild className="rounded-xl border-border bg-muted/50 backdrop-blur-sm">
           <Link href="/admin/facilities">
             <Icon name="keyboard_arrow_left" className="text-[16px]" />
           </Link>

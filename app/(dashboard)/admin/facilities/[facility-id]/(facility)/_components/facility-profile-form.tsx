@@ -221,10 +221,10 @@ export function FacilityProfileForm({
       <form onSubmit={form.handleSubmit(onSubmit)} className="relative space-y-6">
         
         {/* 🏢 CRM-Style Command Header */}
-        <header className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 border-b border-white/5">
+        <header className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 border-b border-border/50">
           <div className="flex flex-col gap-1">
             <div className="flex items-center gap-3">
-              <h1 className="text-3xl font-black tracking-tighter text-white uppercase">{facility.name}</h1>
+              <h1 className="text-3xl font-black tracking-tighter text-foreground uppercase">{facility.name}</h1>
               <div className={cn(
                 "px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-widest border",
                 facility.status === "ACTIVE" ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400" : "bg-amber-500/10 border-amber-500/20 text-amber-400"
@@ -240,15 +240,15 @@ export function FacilityProfileForm({
           </div>
 
           <div className="flex items-center gap-2">
-             <div className="flex flex-col items-end mr-4 pr-4 border-r border-white/5">
+             <div className="flex flex-col items-end mr-4 pr-4 border-r border-border/50">
                 <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Last Synced</span>
-                <span className="text-[11px] font-mono text-slate-300 uppercase">{new Date(facility.updatedAt).toLocaleString()}</span>
+                <span className="text-[11px] font-mono text-foreground/80 uppercase">{new Date(facility.updatedAt).toLocaleString()}</span>
              </div>
              <Button
                 asChild
                 type="button"
                 variant="outline"
-                className="h-10 px-6 border-white/5 bg-white/5 hover:bg-white/10 text-white font-black uppercase tracking-widest text-[10px] rounded-xl"
+                className="h-10 px-6 border-border/50 bg-muted/30 hover:bg-muted/50 text-foreground font-black uppercase tracking-widest text-[10px] rounded-xl"
               >
                 <a href={publicPreviewUrl} target="_blank" rel="noopener noreferrer">
                   <Icon name="visibility" className="size-3.5 mr-2 text-cyan-400" />
@@ -266,7 +266,7 @@ export function FacilityProfileForm({
             <section id="identity" className="scroll-mt-32 space-y-4">
               <div className="flex items-center gap-3">
                 <Icon name="language" className="text-[16px] text-cyan-400" />
-                <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-white/70">Identity & Global Discovery</h2>
+                <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-foreground/70">Identity & Global Discovery</h2>
               </div>
               <ProfileAndSEO facilityId={facility.id} />
             </section>
@@ -288,7 +288,7 @@ export function FacilityProfileForm({
             <section id="marketplace" className="scroll-mt-32 space-y-4">
               <div className="flex items-center gap-3">
                 <Icon name="label" className="size-4 text-emerald-400" />
-                <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-white/70">Marketplace Reach</h2>
+                <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-foreground/70">Marketplace Reach</h2>
               </div>
               <DistributionLogic availableCities={availableCities} />
             </section>
@@ -296,8 +296,8 @@ export function FacilityProfileForm({
         </div>
 
         {/* 💾 Global Save Bar (Floating Command Center) */}
-        <footer className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[60] flex items-center gap-4 px-6 py-4 bg-slate-950/40 backdrop-blur-3xl border border-white/10 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.8)] ring-1 ring-white/5 animate-in fade-in slide-in-from-bottom-6 duration-700">
-          <div className="flex items-center gap-5 pr-6 border-r border-white/10">
+        <footer className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[60] flex items-center gap-4 px-6 py-4 bg-background/40 backdrop-blur-3xl border border-border rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.8)] ring-1 ring-white/5 animate-in fade-in slide-in-from-bottom-6 duration-700">
+          <div className="flex items-center gap-5 pr-6 border-r border-border">
             <div className="relative">
               <div className={cn(
                 "size-3 rounded-full transition-all duration-500",
@@ -309,7 +309,7 @@ export function FacilityProfileForm({
               )} />
             </div>
             <div className="flex flex-col min-w-[120px]">
-              <span className="text-[10px] font-black uppercase tracking-widest text-white">
+              <span className="text-[10px] font-black uppercase tracking-widest text-foreground">
                  {form.formState.isDirty ? "Pending Mutations" : "Registry Synced"}
               </span>
               <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest mt-0.5 opacity-60">
@@ -323,7 +323,7 @@ export function FacilityProfileForm({
               asChild
               type="button"
               variant="outline"
-              className="h-10 px-5 border-white/5 bg-white/5 hover:bg-white/10 text-white font-black uppercase tracking-widest text-[9px] rounded-xl transition-all"
+              className="h-10 px-5 border-border/50 bg-muted/30 hover:bg-muted/50 text-foreground font-black uppercase tracking-widest text-[9px] rounded-xl transition-all"
             >
               <a href={publicPreviewUrl} target="_blank" rel="noopener noreferrer">
                 <Icon name="visibility" className="size-3 mr-2 text-cyan-400" />
@@ -338,7 +338,7 @@ export function FacilityProfileForm({
                 "h-10 px-8 font-black uppercase tracking-[0.2em] text-[9px] rounded-xl transition-all relative overflow-hidden",
                 form.formState.isDirty 
                   ? "bg-cyan-500 text-slate-950 hover:bg-cyan-400 shadow-lg shadow-cyan-500/20" 
-                  : "bg-white/5 text-muted-foreground border border-white/5"
+                  : "bg-muted/30 text-muted-foreground border border-border/50"
               )}
             >
               {isPending ? (

@@ -1,16 +1,13 @@
 import { ReactNode, Suspense } from "react"
 import { prisma } from "@/server/lib/prisma"
-import { notFound, redirect } from "next/navigation"
+import { notFound } from "next/navigation"
 import { connection } from "next/server"
-import { headers } from "next/headers"
 
 import { FacilityNav, FacilityNavSkeleton } from "./_components/nav"
 import { FacilityActionSidebar, FacilityActionSidebarSkeleton } from "./_components/sidebar"
 import { Metadata } from "next"
 import { FacilityLayoutContextHandler } from "./_components/FacilityLayoutContextHandler"
 import { FacilityProvider } from "./_components/facility-context"
-import { auth } from "@/server/lib/auth"
-import { validateFacilityAccess } from "@/server/lib/auth-guards"
 
 export async function generateMetadata({
   params,
@@ -69,18 +66,9 @@ export default async function FacilityManagementLayout({
 
   if (!facility) notFound()
 
-  // 🛡️ Validate staff has access to this facility
-  const session = await auth.api.getSession({ headers: await headers() })
-  if (session) {
-    const userRole = (session.user as { role?: string }).role?.toUpperCase()
-    if (userRole === "FACILITY_STAFF") {
-      await validateFacilityAccess(facilityId).catch(() => redirect("/admin/forbidden"))
-    }
-  }
-
   return (
     <FacilityProvider facility={{ id: facility.id, name: facility.name, status: facility.status, slug: facility.slug, category: facility.category }}>
-    <div className="flex flex-1 flex-col h-full overflow-hidden bg-slate-950 relative">
+    <div className="flex flex-1 flex-col h-full overflow-hidden bg-background relative">
       <FacilityLayoutContextHandler 
         facilityId={facilityId} 
         facilityName={facility.name} 
@@ -106,7 +94,7 @@ export default async function FacilityManagementLayout({
       <div className="flex-1 p-4 md:p-8 relative z-10 w-full overflow-y-auto">
         <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 items-start animate-in fade-in slide-in-from-bottom-2 duration-700">
           <div className="xl:col-span-9 space-y-8">
-            <Suspense fallback={<div className="h-96 animate-pulse bg-slate-800/50 rounded-xl" />}>
+            <Suspense fallback={<div className="h-96 animate-pulse bg-muted/50 rounded-xl" />}>
               {children}
             </Suspense>
           </div>

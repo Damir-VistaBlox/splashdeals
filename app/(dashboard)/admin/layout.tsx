@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/sidebar"
 import { BreadcrumbProvider } from "@/components/admin/breadcrumb-context"
 import { AdminLayoutShell } from "./_components/AdminLayoutShell"
-import { Suspense } from "react"
 import { CommandPalette } from "@/components/admin/CommandPalette"
 import { AdminSkeleton } from "@/components/admin/AdminSkeleton"
 import { auth } from "@/server/lib/auth"
@@ -38,23 +37,32 @@ export default async function AdminRootLayout({
 }>) {
   return (
     <BreadcrumbProvider>
-      <Suspense fallback={<AdminSkeleton />}>
-        <AdminGuard>
-          <LayoutWrapper>
-            {children}
-          </LayoutWrapper>
-        </AdminGuard>
-      </Suspense>
+      <React.Suspense fallback={<AdminSkeleton />}>
+        <AuthenticatedLayout>
+          {children}
+        </AuthenticatedLayout>
+      </React.Suspense>
     </BreadcrumbProvider>
   );
 }
 
-async function LayoutWrapper({ children }: { children: React.ReactNode }) {
-  const session = await auth.api.getSession({
-    headers: await headers()
+async function AuthenticatedLayout({ children }: { children: React.ReactNode }) {
+  await connection();
+  const session = await auth.api.getSession({ 
+    headers: await headers() 
   });
 
-  if (!session) return <>{children}</>;
+  if (!session) {
+    redirect("/auth/login?callbackUrl=/admin");
+  }
+
+  const user = session.user as { role?: string; email?: string };
+  const role = user.role;
+
+  if (role !== "SUPER_ADMIN" && role !== "FACILITY_STAFF") {
+    console.warn(`[Security] Unauthorized access attempt by ${session.user.email} (Role: ${role})`);
+    redirect("/admin/forbidden");
+  }
 
   return (
     <SidebarProvider
@@ -69,7 +77,7 @@ async function LayoutWrapper({ children }: { children: React.ReactNode }) {
         <AdminLayoutShell user={session.user}>
           <React.Suspense fallback={
             <div className="flex flex-1 items-center justify-center min-h-[50vh]">
-              <Icon name="progress_activity" className="text-[40px] animate-spin text-primary/30" />
+              <Icon name="progress_activity" className="size-10 animate-spin text-primary/30" />
             </div>
           }>
             {children}
@@ -79,29 +87,4 @@ async function LayoutWrapper({ children }: { children: React.ReactNode }) {
       <CommandPalette />
     </SidebarProvider>
   )
-}
-
-/**
- * 🛡️ Admin Security Gate (RBAC)
- */
-async function AdminGuard({ children }: { children: React.ReactNode }) {
-  await connection();
-  const session = await auth.api.getSession({ 
-    headers: await headers() 
-  });
-
-  if (!session) {
-    redirect("/auth/login?callbackUrl=/admin");
-  }
-
-  const user = session.user as { role?: string; email?: string };
-  const role = user.role;
-  const isAuthorized = role === "SUPER_ADMIN" || role === "FACILITY_STAFF";
-
-  if (!isAuthorized) {
-    console.warn(`[Security] Unauthorized access attempt by ${session.user.email} (Role: ${role})`);
-    redirect("/admin/forbidden");
-  }
-
-  return <>{children}</>;
 }

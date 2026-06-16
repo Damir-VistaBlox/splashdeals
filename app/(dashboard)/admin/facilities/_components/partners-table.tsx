@@ -62,15 +62,14 @@ export function DataTable<TData, TValue>({
   const router = useRouter()
   const initialSearch = initialQ ?? ""
 
-  const [density, setDensity] = React.useState<"comfortable" | "compact">(
-    () => {
-      if (typeof window !== "undefined") {
-        const saved = localStorage.getItem("table-density")
-        if (saved === "comfortable" || saved === "compact") return saved
-      }
-      return "compact"
+  const [density, setDensity] = React.useState<"comfortable" | "compact">("compact")
+
+  React.useEffect(() => {
+    const saved = localStorage.getItem("table-density")
+    if (saved === "comfortable" || saved === "compact") {
+      setDensity(saved)
     }
-  )
+  }, [])
 
   const toggleDensity = (val: "comfortable" | "compact") => {
     setDensity(val)
@@ -155,15 +154,15 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3 p-2 bg-slate-950/40 border border-white/5 rounded-xl backdrop-blur-md">
+      <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3 p-2 bg-background/40 border border-border/50 rounded-xl backdrop-blur-md">
         <div className="flex flex-col sm:flex-row flex-1 items-stretch sm:items-center gap-3">
           <div className="relative flex-1 sm:max-w-xs">
-            <Icon name="search" className="absolute left-3 top-1/2 -translate-y-1/2 text-[14px] text-slate-500" />
+            <Icon name="search" className="absolute left-3 top-1/2 -translate-y-1/2 text-[14px] text-muted-foreground" />
             <Input
               placeholder="Search registry..."
               value={globalFilter ?? ""}
               onChange={(event) => setGlobalFilter(event.target.value)}
-              className="pl-9 h-9 bg-slate-950/40 border-white/5 focus-visible:ring-1 focus-visible:ring-cyan-500/30 text-xs font-semibold placeholder:text-slate-500"
+              className="pl-9 h-9 bg-background/40 border-border/50 focus-visible:ring-1 focus-visible:ring-cyan-500/30 text-xs font-semibold placeholder:text-muted-foreground"
             />
           </div>
           
@@ -174,13 +173,13 @@ export function DataTable<TData, TValue>({
                 table.getColumn("status")?.setFilterValue(value === "all" ? "" : value)
               }
             >
-              <SelectTrigger className="flex-1 sm:w-[160px] h-9 bg-slate-950/40 border-white/5 text-[10px] font-black uppercase tracking-wider relative hover:bg-slate-950/60 transition-colors">
+              <SelectTrigger className="flex-1 sm:w-[160px] h-9 bg-background/40 border-border/50 text-[10px] font-black uppercase tracking-wider relative hover:bg-background/60 transition-colors">
                 <SelectValue placeholder="Status" />
                 <Badge variant="outline" className="ml-2 h-5 px-1.5 bg-cyan-500/10 border-cyan-500/20 text-[9px] font-black pointer-events-none text-cyan-400">
                   {totalCount}
                 </Badge>
               </SelectTrigger>
-              <SelectContent className="bg-slate-900 border-white/10">
+              <SelectContent className="bg-muted border-border">
                 <SelectItem value="all">All Statuses</SelectItem>
                 <SelectItem value="ACTIVE">Active</SelectItem>
                 <SelectItem value="DRAFT">Draft</SelectItem>
@@ -192,7 +191,7 @@ export function DataTable<TData, TValue>({
             <Button
               variant="ghost"
               size="icon"
-              className="h-9 w-9 text-slate-500 hover:text-white hover:bg-white/10 rounded-lg shrink-0"
+              className="h-9 w-9 text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-lg shrink-0"
               onClick={() => toggleDensity(density === "comfortable" ? "compact" : "comfortable")}
               title={density === "comfortable" ? "Switch to Compact View" : "Switch to Comfortable View"}
             >
@@ -230,17 +229,17 @@ export function DataTable<TData, TValue>({
             <Button
               variant="ghost"
               size="sm"
-              className="h-7 w-7 p-0 hover:bg-white/10"
+              className="h-7 w-7 p-0 hover:bg-muted/50"
               onClick={() => setRowSelection({})}
               disabled={isPending}
             >
-              <Icon name="cancel" className="text-[14px] text-slate-500" />
+              <Icon name="cancel" className="text-[14px] text-muted-foreground" />
             </Button>
           </div>
         )}
       </div>
 
-      <div className="rounded-2xl border border-white/5 bg-slate-900/40 backdrop-blur-md overflow-hidden overflow-x-auto shadow-2xl">
+      <div className="rounded-2xl border border-border/50 bg-muted/40 backdrop-blur-md overflow-hidden overflow-x-auto shadow-2xl">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -285,7 +284,7 @@ export function DataTable<TData, TValue>({
                   <div className="flex flex-col items-center justify-center">
                     <div className="relative mb-4">
                       <div className="absolute -inset-4 bg-primary/5 rounded-full blur-2xl animate-pulse" />
-                      <div className="relative size-16 rounded-xl bg-slate-900 border border-white/5 flex items-center justify-center text-slate-400 group-hover:text-primary transition-colors">
+                      <div className="relative size-16 rounded-xl bg-muted border border-border/50 flex items-center justify-center text-muted-foreground group-hover:text-primary transition-colors">
                         {globalFilter || columnFilters.length > 0 ? (
                           <Icon name="search_off" className="size-8" />
                         ) : (
@@ -294,12 +293,12 @@ export function DataTable<TData, TValue>({
                       </div>
                     </div>
                     
-                    <h3 className="text-lg font-bold text-white mb-1">
+                    <h3 className="text-lg font-bold text-foreground mb-1">
                       {globalFilter || columnFilters.length > 0 
                         ? "No facilities match your filters" 
                         : "No facilities registered yet"}
                     </h3>
-                    <p className="text-sm text-slate-400 max-w-[280px] mb-6">
+                    <p className="text-sm text-muted-foreground max-w-[280px] mb-6">
                       {globalFilter || columnFilters.length > 0
                         ? "Try adjusting your search terms or filters to find the facility you're looking for."
                         : "Start building your marketplace by onboarding your first facility."}
@@ -314,14 +313,14 @@ export function DataTable<TData, TValue>({
                             setGlobalFilter("")
                             setColumnFilters([])
                           }}
-                          className="h-10 px-6 rounded-xl border-white/10 hover:bg-white/5"
+                          className="h-10 px-6 rounded-xl border-border hover:bg-muted/30"
                         >
                           Clear all filters
                         </Button>
                       ) : (
                         <Button 
                           onClick={() => router.push("/admin/facilities/new")}
-                          className="h-10 px-6 rounded-xl bg-white text-black font-bold hover:bg-zinc-200"
+                          className="h-10 px-6 rounded-xl bg-white text-black font-bold hover:bg-muted"
                         >
                           <Icon name="add" className="mr-2 size-4" />
                           Register First Facility
@@ -337,14 +336,14 @@ export function DataTable<TData, TValue>({
       </div>
 
       <div className="flex items-center justify-between">
-        <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest">
+        <div className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">
           {currentPage} / {totalPages || 1} • {totalCount} Total
         </div>
         <div className="flex items-center space-x-2">
           <Button
             variant="outline"
             size="sm"
-            className="h-8 w-8 p-0 bg-slate-950/40 border-white/5"
+            className="h-8 w-8 p-0 bg-background/40 border-border/50"
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage <= 1}
           >
@@ -353,7 +352,7 @@ export function DataTable<TData, TValue>({
           <Button
             variant="outline"
             size="sm"
-            className="h-8 w-8 p-0 bg-slate-950/40 border-white/5"
+            className="h-8 w-8 p-0 bg-background/40 border-border/50"
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={currentPage >= totalPages}
           >

@@ -256,7 +256,7 @@ export function TicketSheet({ facilityId, ticket, open, onOpenChange, ticketGrou
 
   return (
     <Sheet open={open} onOpenChange={handleOpenChange}>
-      <SheetContent className="sm:max-w-lg p-0 flex flex-col h-full bg-slate-950 border-white/5">
+      <SheetContent className="sm:max-w-lg p-0 flex flex-col h-full bg-background border-border/50">
         <SheetHeader className="p-6 border-b">
           <SheetTitle>{ticket ? "Izmeni Varijantu Karte" : "Kreiraj Novu Kartu"}</SheetTitle>
           <SheetDescription>
@@ -273,9 +273,9 @@ export function TicketSheet({ facilityId, ticket, open, onOpenChange, ticketGrou
                   name="title"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-xs font-semibold uppercase tracking-wider text-slate-400">Naziv Ulaznice</FormLabel>
+                      <FormLabel className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Naziv Ulaznice</FormLabel>
                       <FormControl>
-                        <Input placeholder="npr. Dnevna karta - Odrasli" {...field} className="h-11 bg-white/5 border-white/10 rounded-xl font-bold text-slate-100 placeholder-slate-600 focus:border-cyan-500/50 transition-all" />
+                        <Input placeholder="npr. Dnevna karta - Odrasli" {...field} className="h-11 bg-muted/30 border-border rounded-xl font-bold text-foreground placeholder-slate-600 focus:border-cyan-500/50 transition-all" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -287,9 +287,9 @@ export function TicketSheet({ facilityId, ticket, open, onOpenChange, ticketGrou
                   name="slug"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-xs font-semibold uppercase tracking-wider text-slate-400">Slug (URL Putanja)</FormLabel>
+                      <FormLabel className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Slug (URL Putanja)</FormLabel>
                       <FormControl>
-                        <Input placeholder="npr. odrasli-radni-dan" {...field} value={field.value || ""} className="h-10 bg-white/5 border-white/10 rounded-xl font-mono text-xs text-slate-300 focus:border-cyan-500/50 transition-all" />
+                        <Input placeholder="npr. odrasli-radni-dan" {...field} value={field.value || ""} className="h-10 bg-muted/30 border-border rounded-xl font-mono text-xs text-foreground/80 focus:border-cyan-500/50 transition-all" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -302,11 +302,11 @@ export function TicketSheet({ facilityId, ticket, open, onOpenChange, ticketGrou
                     name="price"
                     render={({ field }: { field: ControllerRenderProps<TicketFormValues, "price"> }) => (
                       <FormItem>
-                        <FormLabel className="text-xs font-semibold uppercase tracking-wider text-slate-400">Cena</FormLabel>
+                        <FormLabel className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Cena</FormLabel>
                         <FormControl>
                           <div className="relative">
-                            <Input type="number" {...field} value={field.value as string} className="h-11 pr-12 bg-white/5 border-white/10 rounded-xl text-sm font-mono font-bold text-cyan-400 focus:border-cyan-500/50 transition-all" />
-                            <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[10px] font-black text-slate-500 pointer-events-none uppercase tracking-widest">
+                            <Input type="number" {...field} value={field.value as string} className="h-11 pr-12 bg-muted/30 border-border rounded-xl text-sm font-mono font-bold text-cyan-400 focus:border-cyan-500/50 transition-all" />
+                            <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[10px] font-black text-muted-foreground pointer-events-none uppercase tracking-widest">
                               {currency}
                             </span>
                           </div>
@@ -321,11 +321,11 @@ export function TicketSheet({ facilityId, ticket, open, onOpenChange, ticketGrou
                     name="originalPrice"
                     render={({ field }: { field: ControllerRenderProps<TicketFormValues, "originalPrice"> }) => (
                       <FormItem>
-                        <FormLabel className="text-xs font-semibold uppercase tracking-wider text-slate-400">Gate Cena</FormLabel>
+                        <FormLabel className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Gate Cena</FormLabel>
                         <FormControl>
                           <div className="relative">
-                            <Input type="number" {...field} value={String(field.value ?? "")} onChange={(e) => field.onChange(e.target.value === "" ? null : Number(e.target.value))} className="h-11 pr-12 bg-white/5 border-white/10 rounded-xl text-sm font-mono text-slate-400 focus:border-cyan-500/50 transition-all opacity-85" />
-                            <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[10px] font-black text-slate-500 pointer-events-none uppercase tracking-widest">
+                            <Input type="number" {...field} value={String(field.value ?? "")} onChange={(e) => field.onChange(e.target.value === "" ? null : Number(e.target.value))} className="h-11 pr-12 bg-muted/30 border-border rounded-xl text-sm font-mono text-muted-foreground focus:border-cyan-500/50 transition-all opacity-85" />
+                            <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[10px] font-black text-muted-foreground pointer-events-none uppercase tracking-widest">
                               {currency}
                             </span>
                           </div>
@@ -340,16 +340,16 @@ export function TicketSheet({ facilityId, ticket, open, onOpenChange, ticketGrou
                     name="type"
                     render={({ field }: { field: ControllerRenderProps<TicketFormValues, "type"> }) => (
                       <FormItem>
-                        <FormLabel className="text-xs font-semibold uppercase tracking-wider text-slate-400">Tip Karte</FormLabel>
+                        <FormLabel className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Tip Karte</FormLabel>
                         <Select onValueChange={field.onChange} value={field.value}>
                           <FormControl>
-                            <SelectTrigger className="h-11 bg-white/5 border-white/10 rounded-xl text-xs px-3.5 text-slate-200 focus:border-cyan-500/50 transition-all">
+                            <SelectTrigger className="h-11 bg-muted/30 border-border rounded-xl text-xs px-3.5 text-foreground/90 focus:border-cyan-500/50 transition-all">
                               <SelectValue placeholder="Tip" />
                             </SelectTrigger>
                           </FormControl>
-                          <SelectContent className="bg-slate-900 border-white/10 text-slate-200">
+                          <SelectContent className="bg-muted border-border text-foreground/90">
                             {Object.values(TicketType).map((t) => (
-                              <SelectItem key={t} value={t} className="text-xs focus:bg-cyan-500/20 focus:text-slate-100">
+                              <SelectItem key={t} value={t} className="text-xs focus:bg-cyan-500/20 focus:text-foreground">
                                 {TICKET_TYPE_LABELS[t] || t.replace("_", " ")}
                               </SelectItem>
                             ))}
@@ -365,17 +365,17 @@ export function TicketSheet({ facilityId, ticket, open, onOpenChange, ticketGrou
                     name="validityType"
                     render={({ field }: { field: ControllerRenderProps<TicketFormValues, "validityType"> }) => (
                       <FormItem>
-                        <FormLabel className="text-xs font-semibold uppercase tracking-wider text-slate-400">Važenje</FormLabel>
+                        <FormLabel className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Važenje</FormLabel>
                         <Select onValueChange={field.onChange} value={field.value}>
                           <FormControl>
-                            <SelectTrigger className="h-11 bg-white/5 border-white/10 rounded-xl text-xs px-3.5 text-slate-200 focus:border-cyan-500/50 transition-all">
+                            <SelectTrigger className="h-11 bg-muted/30 border-border rounded-xl text-xs px-3.5 text-foreground/90 focus:border-cyan-500/50 transition-all">
                               <SelectValue placeholder="Važenje" />
                             </SelectTrigger>
                           </FormControl>
-                          <SelectContent className="bg-slate-900 border-white/10 text-slate-200">
-                            <SelectItem value="FIXED_DATE" className="text-xs focus:bg-cyan-500/20 focus:text-slate-100">Fiksni Datum</SelectItem>
-                            <SelectItem value="FLEXIBLE_30_DAY" className="text-xs focus:bg-cyan-500/20 focus:text-slate-100">30 Dana Flex</SelectItem>
-                            <SelectItem value="SUMMER_SEASON" className="text-xs focus:bg-cyan-500/20 focus:text-slate-100">Letnja Sezona</SelectItem>
+                          <SelectContent className="bg-muted border-border text-foreground/90">
+                            <SelectItem value="FIXED_DATE" className="text-xs focus:bg-cyan-500/20 focus:text-foreground">Fiksni Datum</SelectItem>
+                            <SelectItem value="FLEXIBLE_30_DAY" className="text-xs focus:bg-cyan-500/20 focus:text-foreground">30 Dana Flex</SelectItem>
+                            <SelectItem value="SUMMER_SEASON" className="text-xs focus:bg-cyan-500/20 focus:text-foreground">Letnja Sezona</SelectItem>
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -390,14 +390,14 @@ export function TicketSheet({ facilityId, ticket, open, onOpenChange, ticketGrou
                     name="dayType"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-xs font-semibold uppercase tracking-wider text-slate-400">Dan</FormLabel>
+                        <FormLabel className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Dan</FormLabel>
                         <Select onValueChange={field.onChange} value={field.value || undefined}>
                           <FormControl>
-                            <SelectTrigger className="h-11 bg-white/5 border-white/10 rounded-xl text-xs px-3.5 text-slate-200">
+                            <SelectTrigger className="h-11 bg-muted/30 border-border rounded-xl text-xs px-3.5 text-foreground/90">
                               <SelectValue placeholder="Izaberi" />
                             </SelectTrigger>
                           </FormControl>
-                          <SelectContent className="bg-slate-900 border-white/10 text-slate-200">
+                          <SelectContent className="bg-muted border-border text-foreground/90">
                             {Object.values(DayType).map(v => (
                               <SelectItem key={v} value={v} className="text-xs focus:bg-cyan-500/20">{v.replace('_', ' ')}</SelectItem>
                             ))}
@@ -412,14 +412,14 @@ export function TicketSheet({ facilityId, ticket, open, onOpenChange, ticketGrou
                     name="timeSlot"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-xs font-semibold uppercase tracking-wider text-slate-400">Termin</FormLabel>
+                        <FormLabel className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Termin</FormLabel>
                         <Select onValueChange={field.onChange} value={field.value || undefined}>
                           <FormControl>
-                            <SelectTrigger className="h-11 bg-white/5 border-white/10 rounded-xl text-xs px-3.5 text-slate-200">
+                            <SelectTrigger className="h-11 bg-muted/30 border-border rounded-xl text-xs px-3.5 text-foreground/90">
                               <SelectValue placeholder="Izaberi" />
                             </SelectTrigger>
                           </FormControl>
-                          <SelectContent className="bg-slate-900 border-white/10 text-slate-200">
+                          <SelectContent className="bg-muted border-border text-foreground/90">
                             {Object.values(TimeSlot).map(v => (
                               <SelectItem key={v} value={v} className="text-xs focus:bg-cyan-500/20">{v.replace('_', ' ')}</SelectItem>
                             ))}
@@ -436,9 +436,9 @@ export function TicketSheet({ facilityId, ticket, open, onOpenChange, ticketGrou
                     name="minPeople"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-xs font-semibold uppercase tracking-wider text-slate-400">Min. Osoba</FormLabel>
+                        <FormLabel className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Min. Osoba</FormLabel>
                         <FormControl>
-                          <Input type="number" {...field} value={field.value as string} className="h-11 bg-white/5 border-white/10 rounded-xl text-sm font-bold text-slate-200" onChange={e => field.onChange(Number(e.target.value))} />
+                          <Input type="number" {...field} value={field.value as string} className="h-11 bg-muted/30 border-border rounded-xl text-sm font-bold text-foreground/90" onChange={e => field.onChange(Number(e.target.value))} />
                         </FormControl>
                       </FormItem>
                     )}
@@ -448,9 +448,9 @@ export function TicketSheet({ facilityId, ticket, open, onOpenChange, ticketGrou
                     name="maxPeople"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-xs font-semibold uppercase tracking-wider text-slate-400">Max. Osoba</FormLabel>
+                        <FormLabel className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Max. Osoba</FormLabel>
                         <FormControl>
-                          <Input type="number" {...field} value={String(field.value ?? "")} className="h-11 bg-white/5 border-white/10 rounded-xl text-sm font-bold text-slate-200" onChange={e => field.onChange(e.target.value === "" ? null : Number(e.target.value))} />
+                          <Input type="number" {...field} value={String(field.value ?? "")} className="h-11 bg-muted/30 border-border rounded-xl text-sm font-bold text-foreground/90" onChange={e => field.onChange(e.target.value === "" ? null : Number(e.target.value))} />
                         </FormControl>
                       </FormItem>
                     )}
@@ -459,8 +459,8 @@ export function TicketSheet({ facilityId, ticket, open, onOpenChange, ticketGrou
               </div>
               <Accordion type="multiple" defaultValue={["governance"]} className="w-full space-y-4 border-none">
                 {/* Section 1: Status i Podešavanja */}
-                <AccordionItem value="governance" className="border border-white/5 bg-white/[0.02] rounded-2xl px-4 overflow-hidden transition-all hover:bg-white/[0.03]">
-                  <AccordionTrigger className="text-sm font-bold hover:no-underline py-4 text-slate-200">
+                <AccordionItem value="governance" className="border border-border/50 bg-muted/10 rounded-2xl px-4 overflow-hidden transition-all hover:bg-muted/20">
+                  <AccordionTrigger className="text-sm font-bold hover:no-underline py-4 text-foreground/90">
                     <div className="flex items-center gap-3">
                       <div className="h-2 w-2 rounded-full bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.5)]" />
                       Status i Podešavanja
@@ -472,10 +472,10 @@ export function TicketSheet({ facilityId, ticket, open, onOpenChange, ticketGrou
                         control={form.control}
                         name="isActive"
                         render={({ field }: { field: ControllerRenderProps<TicketFormValues, "isActive"> }) => (
-                          <FormItem className="flex items-center justify-between p-3 border border-white/5 rounded-xl bg-slate-950/40 space-y-0 gap-2">
+                          <FormItem className="flex items-center justify-between p-3 border border-border/50 rounded-xl bg-background/40 space-y-0 gap-2">
                             <div className="space-y-0.5">
-                              <FormLabel className="text-xs font-bold text-slate-300">Aktivna</FormLabel>
-                              <span className="block text-[9px] text-slate-500 uppercase tracking-wider">Na sajtu</span>
+                              <FormLabel className="text-xs font-bold text-foreground/80">Aktivna</FormLabel>
+                              <span className="block text-[9px] text-muted-foreground uppercase tracking-wider">Na sajtu</span>
                             </div>
                             <FormControl>
                               <Switch
@@ -492,10 +492,10 @@ export function TicketSheet({ facilityId, ticket, open, onOpenChange, ticketGrou
                         control={form.control}
                         name="isFeatured"
                         render={({ field }: { field: ControllerRenderProps<TicketFormValues, "isFeatured"> }) => (
-                          <FormItem className="flex items-center justify-between p-3 border border-white/5 rounded-xl bg-slate-950/40 space-y-0 gap-2">
+                          <FormItem className="flex items-center justify-between p-3 border border-border/50 rounded-xl bg-background/40 space-y-0 gap-2">
                             <div className="space-y-0.5">
-                              <FormLabel className="text-xs font-bold text-slate-300">Izdvojena</FormLabel>
-                              <span className="block text-[9px] text-slate-500 uppercase tracking-wider">Vrh liste</span>
+                              <FormLabel className="text-xs font-bold text-foreground/80">Izdvojena</FormLabel>
+                              <span className="block text-[9px] text-muted-foreground uppercase tracking-wider">Vrh liste</span>
                             </div>
                             <FormControl>
                               <Switch
@@ -514,14 +514,14 @@ export function TicketSheet({ facilityId, ticket, open, onOpenChange, ticketGrou
                       name="groupId"
                       render={({ field }: { field: ControllerRenderProps<TicketFormValues, "groupId"> }) => (
                         <FormItem className="space-y-1">
-                          <FormLabel className="text-xs font-semibold text-slate-400">Grupa Ulaznica</FormLabel>
+                          <FormLabel className="text-xs font-semibold text-muted-foreground">Grupa Ulaznica</FormLabel>
                           <Select onValueChange={field.onChange} value={field.value || "none"}>
                             <FormControl>
-                              <SelectTrigger className="h-10 bg-white/5 border-white/10 rounded-xl text-xs px-3.5 text-slate-200">
+                              <SelectTrigger className="h-10 bg-muted/30 border-border rounded-xl text-xs px-3.5 text-foreground/90">
                                 <SelectValue placeholder="Izaberite grupu" />
                               </SelectTrigger>
                             </FormControl>
-                            <SelectContent className="bg-slate-900 border-white/10 text-slate-200">
+                            <SelectContent className="bg-muted border-border text-foreground/90">
                               <SelectItem value="none" className="text-xs focus:bg-cyan-500/20">Nema grupe (Pojedinačna karta)</SelectItem>
                               {ticketGroups?.map((g) => (
                                 <SelectItem key={g.id} value={g.id} className="text-xs focus:bg-cyan-500/20">
@@ -541,9 +541,9 @@ export function TicketSheet({ facilityId, ticket, open, onOpenChange, ticketGrou
                         name="saleStart"
                         render={({ field }: { field: ControllerRenderProps<TicketFormValues, "saleStart"> }) => (
                           <FormItem className="space-y-1">
-                            <FormLabel className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Početak Prodaje</FormLabel>
+                            <FormLabel className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Početak Prodaje</FormLabel>
                             <FormControl>
-                              <Input type="datetime-local" {...field} value={field.value || ""} className="h-10 bg-slate-950/60 border-white/10 rounded-xl text-xs text-slate-300 px-3" />
+                              <Input type="datetime-local" {...field} value={field.value || ""} className="h-10 bg-background/60 border-border rounded-xl text-xs text-foreground/80 px-3" />
                             </FormControl>
                           </FormItem>
                         )}
@@ -553,9 +553,9 @@ export function TicketSheet({ facilityId, ticket, open, onOpenChange, ticketGrou
                         name="saleEnd"
                         render={({ field }: { field: ControllerRenderProps<TicketFormValues, "saleEnd"> }) => (
                           <FormItem className="space-y-1">
-                            <FormLabel className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Kraj Prodaje</FormLabel>
+                            <FormLabel className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Kraj Prodaje</FormLabel>
                             <FormControl>
-                              <Input type="datetime-local" {...field} value={field.value || ""} className="h-10 bg-slate-950/60 border-white/10 rounded-xl text-xs text-slate-300 px-3" />
+                              <Input type="datetime-local" {...field} value={field.value || ""} className="h-10 bg-background/60 border-border rounded-xl text-xs text-foreground/80 px-3" />
                             </FormControl>
                           </FormItem>
                         )}
@@ -565,8 +565,8 @@ export function TicketSheet({ facilityId, ticket, open, onOpenChange, ticketGrou
                 </AccordionItem>
 
                 {/* Section 2: Opis i Sitna Slova */}
-                <AccordionItem value="description_section" className="border border-white/5 bg-white/[0.02] rounded-2xl px-4 overflow-hidden transition-all hover:bg-white/[0.03]">
-                  <AccordionTrigger className="text-sm font-bold hover:no-underline py-4 text-slate-200">
+                <AccordionItem value="description_section" className="border border-border/50 bg-muted/10 rounded-2xl px-4 overflow-hidden transition-all hover:bg-muted/20">
+                  <AccordionTrigger className="text-sm font-bold hover:no-underline py-4 text-foreground/90">
                     <div className="flex items-center gap-3">
                       <div className="h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
                       Opis i Sitna Slova
@@ -578,9 +578,9 @@ export function TicketSheet({ facilityId, ticket, open, onOpenChange, ticketGrou
                       name="descriptionSr"
                       render={({ field }) => (
                         <FormItem className="space-y-1">
-                          <FormLabel className="text-xs font-semibold text-slate-400">Opis Ponude</FormLabel>
+                          <FormLabel className="text-xs font-semibold text-muted-foreground">Opis Ponude</FormLabel>
                           <FormControl>
-                            <Textarea placeholder="Šta je uključeno u ovu kartu?" className="min-h-[90px] bg-slate-950/60 border-white/10 rounded-xl leading-relaxed text-sm text-slate-200 placeholder-slate-600 focus:border-cyan-500/50" {...field} value={field.value || ""} />
+                            <Textarea placeholder="Šta je uključeno u ovu kartu?" className="min-h-[90px] bg-background/60 border-border rounded-xl leading-relaxed text-sm text-foreground/90 placeholder-slate-600 focus:border-cyan-500/50" {...field} value={field.value || ""} />
                           </FormControl>
                         </FormItem>
                       )}
@@ -591,9 +591,9 @@ export function TicketSheet({ facilityId, ticket, open, onOpenChange, ticketGrou
                       name="finePrint"
                       render={({ field }: { field: ControllerRenderProps<TicketFormValues, "finePrint"> }) => (
                         <FormItem className="space-y-1">
-                          <FormLabel className="text-xs font-semibold text-slate-400">Važne Napomene (Sitna slova)</FormLabel>
+                          <FormLabel className="text-xs font-semibold text-muted-foreground">Važne Napomene (Sitna slova)</FormLabel>
                           <FormControl>
-                            <Textarea placeholder="Npr. Nema povraćaja novca, samo radnim danima..." className="min-h-[70px] bg-slate-950/60 border-white/10 rounded-xl leading-relaxed text-xs text-slate-300 placeholder-slate-600 focus:border-cyan-500/50" {...field} value={field.value || ""} />
+                            <Textarea placeholder="Npr. Nema povraćaja novca, samo radnim danima..." className="min-h-[70px] bg-background/60 border-border rounded-xl leading-relaxed text-xs text-foreground/80 placeholder-slate-600 focus:border-cyan-500/50" {...field} value={field.value || ""} />
                           </FormControl>
                         </FormItem>
                       )}
@@ -602,8 +602,8 @@ export function TicketSheet({ facilityId, ticket, open, onOpenChange, ticketGrou
                 </AccordionItem>
 
                 {/* Section 3: Vizuelni Identitet & Sigurnost */}
-                <AccordionItem value="visuals" className="border border-white/5 bg-white/[0.02] rounded-2xl px-4 overflow-hidden transition-all hover:bg-white/[0.03]">
-                  <AccordionTrigger className="text-sm font-bold hover:no-underline py-4 text-slate-200">
+                <AccordionItem value="visuals" className="border border-border/50 bg-muted/10 rounded-2xl px-4 overflow-hidden transition-all hover:bg-muted/20">
+                  <AccordionTrigger className="text-sm font-bold hover:no-underline py-4 text-foreground/90">
                     <div className="flex items-center justify-between w-full pr-4">
                       <div className="flex items-center gap-3">
                         <div className="h-2 w-2 rounded-full bg-cyan-500 shadow-[0_0_10px_rgba(6,182,212,0.5)]" />
@@ -622,7 +622,7 @@ export function TicketSheet({ facilityId, ticket, open, onOpenChange, ticketGrou
                       name="imageUrl"
                       render={({ field }: { field: ControllerRenderProps<TicketFormValues, "imageUrl"> }) => (
                         <FormItem className="space-y-2">
-                          <FormLabel className="text-xs font-semibold text-slate-400">Glavna Slika Kartice</FormLabel>
+                          <FormLabel className="text-xs font-semibold text-muted-foreground">Glavna Slika Kartice</FormLabel>
                           <FormControl>
                             <TicketImageUpload 
                               value={field.value} 
@@ -639,10 +639,10 @@ export function TicketSheet({ facilityId, ticket, open, onOpenChange, ticketGrou
                         control={form.control}
                         name="requiresIdentity"
                         render={({ field }: { field: ControllerRenderProps<TicketFormValues, "requiresIdentity"> }) => (
-                          <FormItem className="flex items-center justify-between p-3 border border-white/5 rounded-xl bg-slate-950/40 space-y-0 gap-2">
+                          <FormItem className="flex items-center justify-between p-3 border border-border/50 rounded-xl bg-background/40 space-y-0 gap-2">
                             <div className="space-y-0.5">
-                              <FormLabel className="text-xs font-bold text-slate-300">Ime i Prezime</FormLabel>
-                              <span className="block text-[9px] text-slate-500 uppercase tracking-wider">Za pretplate</span>
+                              <FormLabel className="text-xs font-bold text-foreground/80">Ime i Prezime</FormLabel>
+                              <span className="block text-[9px] text-muted-foreground uppercase tracking-wider">Za pretplate</span>
                             </div>
                             <FormControl>
                               <Switch
@@ -662,10 +662,10 @@ export function TicketSheet({ facilityId, ticket, open, onOpenChange, ticketGrou
                         control={form.control}
                         name="requiresPhoto"
                         render={({ field }: { field: ControllerRenderProps<TicketFormValues, "requiresPhoto"> }) => (
-                          <FormItem className="flex items-center justify-between p-3 border border-white/5 rounded-xl bg-slate-950/40 space-y-0 gap-2">
+                          <FormItem className="flex items-center justify-between p-3 border border-border/50 rounded-xl bg-background/40 space-y-0 gap-2">
                             <div className="space-y-0.5">
-                              <FormLabel className="text-xs font-bold text-slate-300">Fotografija</FormLabel>
-                              <span className="block text-[9px] text-slate-500 uppercase tracking-wider">Vizuelna provera</span>
+                              <FormLabel className="text-xs font-bold text-foreground/80">Fotografija</FormLabel>
+                              <span className="block text-[9px] text-muted-foreground uppercase tracking-wider">Vizuelna provera</span>
                             </div>
                             <FormControl>
                               <Switch
@@ -683,7 +683,7 @@ export function TicketSheet({ facilityId, ticket, open, onOpenChange, ticketGrou
               </Accordion>
             </div>
 
-            <SheetFooter className="p-6 border-t bg-slate-950 shrink-0">
+            <SheetFooter className="p-6 border-t bg-background shrink-0">
               <div className="flex flex-col gap-3 w-full">
                 {form.formState.isDirty && (
                   <div className="text-[10px] text-amber-500 font-bold uppercase tracking-[0.2em] text-center bg-amber-500/5 border border-amber-500/10 py-2.5 rounded-xl animate-pulse">
@@ -699,7 +699,7 @@ export function TicketSheet({ facilityId, ticket, open, onOpenChange, ticketGrou
                   <Button 
                     type="button" 
                     variant="ghost" 
-                    className="w-full h-10 text-slate-500 hover:text-rose-500 hover:bg-rose-500/5 transition-all text-xs font-bold uppercase tracking-widest"
+                    className="w-full h-10 text-muted-foreground hover:text-rose-500 hover:bg-rose-500/5 transition-all text-xs font-bold uppercase tracking-widest"
                     onClick={onDelete}
                     disabled={isSubmitting}
                   >

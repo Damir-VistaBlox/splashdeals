@@ -81,7 +81,7 @@ export function Breadcrumbs() {
               href={href}
               className={cn(
                 "transition-colors",
-                isLast ? "text-primary font-black" : "hover:text-white"
+                isLast ? "text-primary font-black" : "hover:text-foreground"
               )}
               aria-current={isLast ? "page" : undefined}
             >

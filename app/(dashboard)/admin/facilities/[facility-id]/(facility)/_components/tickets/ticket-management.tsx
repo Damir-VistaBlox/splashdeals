@@ -44,14 +44,14 @@ export function TicketManagement({
   return (
     <div className="flex flex-col h-full">
       {/* ── Mobile Tab Toggle (visible only on <lg) ─────────────────────────── */}
-      <div className="flex lg:hidden items-center gap-1 p-3 border-b border-white/5 bg-slate-950/60 backdrop-blur-md shrink-0">
+      <div className="flex lg:hidden items-center gap-1 p-3 border-b border-border/50 bg-background/60 backdrop-blur-md shrink-0">
         <button
           onClick={() => setMobileView("groups")}
           className={cn(
             "flex-1 flex items-center justify-center gap-2 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
             mobileView === "groups"
               ? "bg-cyan-500/10 border border-cyan-500/30 text-cyan-400"
-              : "bg-white/[0.02] border border-white/5 text-slate-500 hover:text-slate-300"
+              : "bg-muted/10 border border-border/50 text-muted-foreground hover:text-foreground/80"
           )}
         >
           <Icon name="dashboard" className="text-[14px]" />
@@ -63,7 +63,7 @@ export function TicketManagement({
             "flex-1 flex items-center justify-center gap-2 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
             mobileView === "tickets"
               ? "bg-cyan-500/10 border border-cyan-500/30 text-cyan-400"
-              : "bg-white/[0.02] border border-white/5 text-slate-500 hover:text-slate-300"
+              : "bg-muted/10 border border-border/50 text-muted-foreground hover:text-foreground/80"
           )}
         >
           <Icon name="confirmation_number" className="text-[14px]" />
@@ -77,7 +77,7 @@ export function TicketManagement({
         <div
           className={cn(
             // Desktop: always visible fixed-width sidebar
-            "lg:flex lg:w-72 xl:w-80 lg:flex-col lg:shrink-0 lg:border-r lg:border-white/5",
+            "lg:flex lg:w-72 xl:w-80 lg:flex-col lg:shrink-0 lg:border-r lg:border-border/50",
             // Mobile: conditionally visible
             mobileView === "groups" ? "flex flex-col flex-1" : "hidden"
           )}

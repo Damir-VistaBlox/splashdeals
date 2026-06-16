@@ -127,7 +127,7 @@ export function FacilityLogoUpload({ value, onChange, facilityId }: FacilityLogo
       onDrop={handleDrop}
     >
       {isUploading && (
-        <div className="absolute inset-0 z-50 bg-slate-950/80 backdrop-blur-md rounded-2xl flex flex-col items-center justify-center gap-3 animate-in fade-in zoom-in-95 duration-300">
+        <div className="absolute inset-0 z-50 bg-background/80 backdrop-blur-md rounded-2xl flex flex-col items-center justify-center gap-3 animate-in fade-in zoom-in-95 duration-300">
           <div className="relative">
             <div className="absolute inset-0 rounded-full bg-cyan-500/20 blur-md animate-pulse" />
             <Icon name="progress_activity" className="text-[32px] animate-spin text-cyan-400 relative z-10" />
@@ -144,7 +144,7 @@ export function FacilityLogoUpload({ value, onChange, facilityId }: FacilityLogo
             onClick={() => fileInputRef.current?.click()}
             className={cn(
               "relative h-full w-full rounded-2xl overflow-hidden border transition-all cursor-pointer flex items-center justify-center shadow-lg overflow-hidden",
-              previewBg === "dark" ? "bg-slate-950/40 border-white/10 hover:border-cyan-500/40" : "bg-slate-200 border-slate-300 hover:border-cyan-600",
+              previewBg === "dark" ? "bg-background/40 border-border hover:border-cyan-500/40" : "bg-muted/50 border-muted/70 hover:border-cyan-600",
               isDragging && "border-cyan-400 bg-cyan-500/5 scale-105 border-dashed"
             )}
           >
@@ -156,7 +156,7 @@ export function FacilityLogoUpload({ value, onChange, facilityId }: FacilityLogo
             className="object-contain p-3 drop-shadow-md transition-transform group-hover:scale-105 duration-300"
           />
           {!isUploading && (
-            <div className="absolute inset-0 bg-slate-950/70 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1">
+            <div className="absolute inset-0 bg-background/70 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1">
               <Icon name="upload" className="text-[20px] text-cyan-400 animate-bounce" />
               <span className="text-[8px] font-black uppercase tracking-widest text-cyan-400">Swap Logo</span>
               
@@ -166,7 +166,7 @@ export function FacilityLogoUpload({ value, onChange, facilityId }: FacilityLogo
                   e.stopPropagation()
                   removeImage()
                 }}
-                className="absolute top-2 right-2 p-1.5 rounded-lg bg-rose-500/20 hover:bg-rose-500 border border-rose-500/30 text-white transition-all scale-90 hover:scale-100"
+                className="absolute top-2 right-2 p-1.5 rounded-lg bg-rose-500/20 hover:bg-rose-500 border border-rose-500/30 text-foreground transition-all scale-90 hover:scale-100"
                 title="Remove asset"
               >
                 <Icon name="close" className="text-[12px]" />
@@ -185,8 +185,8 @@ export function FacilityLogoUpload({ value, onChange, facilityId }: FacilityLogo
             className={cn(
               "absolute bottom-2 left-2 z-20 p-1 rounded-md backdrop-blur-md border transition-all shadow-sm",
               previewBg === "dark" 
-                ? "bg-slate-900/60 border-white/10 text-slate-400 hover:text-white" 
-                : "bg-white/80 border-slate-200 text-slate-600 hover:text-slate-900"
+                ? "bg-muted/60 border-border text-muted-foreground hover:text-foreground" 
+                : "bg-white/80 border-muted/50 text-muted-foreground/80 hover:text-slate-900"
             )}
             title="Toggle Contrast Background"
           >
@@ -197,26 +197,26 @@ export function FacilityLogoUpload({ value, onChange, facilityId }: FacilityLogo
         <div 
           onClick={() => fileInputRef.current?.click()}
           className={cn(
-            "relative h-32 w-32 rounded-2xl border-2 border-dashed bg-slate-950/30 hover:bg-slate-950/60 transition-all duration-300 cursor-pointer mx-auto flex flex-col items-center justify-center text-center p-4 group/drop box-border",
+            "relative h-32 w-32 rounded-2xl border-2 border-dashed bg-background/30 hover:bg-background/60 transition-all duration-300 cursor-pointer mx-auto flex flex-col items-center justify-center text-center p-4 group/drop box-border",
             isDragging 
               ? "border-cyan-400 bg-cyan-500/10 scale-[1.02] shadow-[0_0_25px_rgba(6,182,212,0.15)]" 
-              : "border-white/5 hover:border-cyan-500/30"
+              : "border-border/50 hover:border-cyan-500/30"
           )}
         >
           <div className={cn(
              "p-2.5 rounded-xl transition-all duration-300 mb-2",
-             isDragging ? "bg-cyan-500/20 text-cyan-400 scale-110" : "bg-slate-900/50 text-slate-500 group-hover/drop:bg-cyan-500/10 group-hover/drop:text-cyan-400"
+             isDragging ? "bg-cyan-500/20 text-cyan-400 scale-110" : "bg-muted/50 text-muted-foreground group-hover/drop:bg-cyan-500/10 group-hover/drop:text-cyan-400"
           )}>
              <Icon name="upload" className="text-[20px]" />
           </div>
           <span className={cn(
             "text-[9px] font-black uppercase tracking-widest transition-colors",
-            isDragging ? "text-cyan-300" : "text-slate-400 group-hover/drop:text-slate-200"
+            isDragging ? "text-cyan-300" : "text-muted-foreground group-hover/drop:text-foreground/90"
           )}>
              {isDragging ? "Release File" : "Upload Logo"}
           </span>
           {!isDragging && (
-            <span className="text-[7px] font-bold uppercase tracking-tighter text-slate-500 mt-1 opacity-60">Square WebP</span>
+            <span className="text-[7px] font-bold uppercase tracking-tighter text-muted-foreground mt-1 opacity-60">Square WebP</span>
           )}
         </div>
       )}

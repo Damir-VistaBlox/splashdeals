@@ -83,23 +83,23 @@ export function UsersTable({ initialUsers, totalCount, currentPage, pageSize }: 
 
   return (
     <div className="space-y-4">
-      <div className="rounded-xl border border-white/5 bg-slate-900/50 backdrop-blur-sm overflow-hidden">
+      <div className="rounded-xl border border-border/50 bg-muted/50 backdrop-blur-sm overflow-hidden">
         <Table>
-          <TableHeader className="bg-white/[0.02]">
-            <TableRow className="hover:bg-transparent border-white/5">
-              <TableHead className="text-[10px] font-black uppercase tracking-widest text-slate-400 py-4 px-6">Identity</TableHead>
-              <TableHead className="text-[10px] font-black uppercase tracking-widest text-slate-400 py-4">Security Role</TableHead>
-              <TableHead className="text-[10px] font-black uppercase tracking-widest text-slate-400 py-4">Status</TableHead>
-              <TableHead className="text-[10px] font-black uppercase tracking-widest text-slate-400 py-4">Created</TableHead>
-              <TableHead className="text-right text-[10px] font-black uppercase tracking-widest text-slate-400 py-4 px-6">Actions</TableHead>
+          <TableHeader className="bg-muted/10">
+            <TableRow className="hover:bg-transparent border-border/50">
+              <TableHead className="text-[10px] font-black uppercase tracking-widest text-muted-foreground py-4 px-6">Identity</TableHead>
+              <TableHead className="text-[10px] font-black uppercase tracking-widest text-muted-foreground py-4">Security Role</TableHead>
+              <TableHead className="text-[10px] font-black uppercase tracking-widest text-muted-foreground py-4">Status</TableHead>
+              <TableHead className="text-[10px] font-black uppercase tracking-widest text-muted-foreground py-4">Created</TableHead>
+              <TableHead className="text-right text-[10px] font-black uppercase tracking-widest text-muted-foreground py-4 px-6">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {users.map((user) => (
-              <TableRow key={user.id} className="hover:bg-white/[0.02] border-white/5 transition-colors">
+              <TableRow key={user.id} className="hover:bg-muted/10 border-border/50 transition-colors">
                 <TableCell className="py-4 px-6">
                   <div className="flex items-center gap-3">
-                    <div className="relative h-8 w-8 rounded-lg bg-gradient-to-br from-slate-800 to-slate-900 border border-white/10 flex items-center justify-center text-white font-bold text-xs overflow-hidden">
+                    <div className="relative h-8 w-8 rounded-lg bg-gradient-to-br from-slate-800 to-slate-900 border border-border flex items-center justify-center text-foreground font-bold text-xs overflow-hidden">
                       {user.image ? (
                           <Image 
                             src={user.image} 
@@ -112,7 +112,7 @@ export function UsersTable({ initialUsers, totalCount, currentPage, pageSize }: 
                       )}
                     </div>
                     <div className="flex flex-col">
-                      <span className="text-sm font-bold text-white tracking-tight">{user.name || "Anonymous User"}</span>
+                      <span className="text-sm font-bold text-foreground tracking-tight">{user.name || "Anonymous User"}</span>
                       <span className="text-[10px] text-muted-foreground font-mono lowercase">{user.email}</span>
                     </div>
                   </div>
@@ -133,7 +133,7 @@ export function UsersTable({ initialUsers, totalCount, currentPage, pageSize }: 
                           Verified
                       </div>
                   ) : (
-                      <div className="flex items-center gap-1.5 text-slate-500 text-[10px] font-bold uppercase tracking-tight">
+                      <div className="flex items-center gap-1.5 text-muted-foreground text-[10px] font-bold uppercase tracking-tight">
                           <Icon name="schedule" className="text-[12px]" />
                           Pending
                       </div>
@@ -147,28 +147,28 @@ export function UsersTable({ initialUsers, totalCount, currentPage, pageSize }: 
                 <TableCell className="text-right px-6">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" className="h-8 w-8 p-0 hover:bg-white/5">
-                        <Icon name="more_horiz" className="text-[16px] text-slate-400" />
+                      <Button variant="ghost" className="h-8 w-8 p-0 hover:bg-muted/30">
+                        <Icon name="more_horiz" className="text-[16px] text-muted-foreground" />
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-56 bg-slate-950 border-white/10 text-white">
+                    <DropdownMenuContent align="end" className="w-56 bg-background border-border text-foreground">
                       <DropdownMenuLabel className="text-[10px] font-black uppercase tracking-widest opacity-50 px-2 py-1.5">Manage Access</DropdownMenuLabel>
-                      <DropdownMenuSeparator className="bg-white/5" />
+                      <DropdownMenuSeparator className="bg-muted/30" />
                       <DropdownMenuItem 
                           onClick={() => handleRoleUpdate(user.id, UserRole.SUPER_ADMIN)}
-                          className="gap-2 text-xs focus:bg-white/5 focus:text-cyan-400 cursor-pointer"
+                          className="gap-2 text-xs focus:bg-muted/30 focus:text-cyan-400 cursor-pointer"
                       >
                         <Icon name="shield" className="text-[14px]" />
                         Make Super Admin
                       </DropdownMenuItem>
                       <DropdownMenuItem 
                           onClick={() => handleRoleUpdate(user.id, UserRole.FACILITY_STAFF)}
-                          className="gap-2 text-xs focus:bg-white/5 focus:text-amber-400 cursor-pointer"
+                          className="gap-2 text-xs focus:bg-muted/30 focus:text-amber-400 cursor-pointer"
                       >
                         <Icon name="manage_accounts" className="text-[14px]" />
                         Make Facility Staff
                       </DropdownMenuItem>
-                      <DropdownMenuSeparator className="bg-white/5" />
+                      <DropdownMenuSeparator className="bg-muted/30" />
                       <DropdownMenuItem 
                           onClick={() => handleDelete(user.id)}
                           className="gap-2 text-xs text-red-400 focus:bg-red-500/10 focus:text-red-400 cursor-pointer"
@@ -185,7 +185,7 @@ export function UsersTable({ initialUsers, totalCount, currentPage, pageSize }: 
               <TableRow>
                 <TableCell colSpan={5} className="py-12 text-center">
                   <div className="flex flex-col items-center gap-2 opacity-50">
-                      <Icon name="manage_accounts" className="text-[32px] text-slate-600" />
+                      <Icon name="manage_accounts" className="text-[32px] text-muted-foreground/80" />
                       <span className="text-xs font-black uppercase tracking-widest">No Admin Users Found</span>
                   </div>
                 </TableCell>
@@ -196,14 +196,14 @@ export function UsersTable({ initialUsers, totalCount, currentPage, pageSize }: 
       </div>
 
       <div className="flex items-center justify-between px-2">
-        <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest">
+        <div className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">
           {currentPage} / {totalPages || 1} • {totalCount} Total Admins
         </div>
         <div className="flex items-center space-x-2">
           <Button
             variant="outline"
             size="sm"
-            className="h-8 w-8 p-0 bg-slate-950/40 border-white/5"
+            className="h-8 w-8 p-0 bg-background/40 border-border/50"
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage <= 1}
           >
@@ -212,7 +212,7 @@ export function UsersTable({ initialUsers, totalCount, currentPage, pageSize }: 
           <Button
             variant="outline"
             size="sm"
-            className="h-8 w-8 p-0 bg-slate-950/40 border-white/5"
+            className="h-8 w-8 p-0 bg-background/40 border-border/50"
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={currentPage >= totalPages}
           >

@@ -87,7 +87,7 @@ function SortableRow({ row }: { row: Row<SerializedAdminTicket> }) {
       data-state={row.getIsSelected() && "selected"}
       className={cn(
         "group hover:bg-muted/30 transition-colors",
-        isDragging && "bg-slate-900/80 shadow-2xl ring-1 ring-primary/20 z-50"
+        isDragging && "bg-muted/80 shadow-2xl ring-1 ring-primary/20 z-50"
       )}
     >
       {row.getVisibleCells().map((cell: Cell<SerializedAdminTicket, unknown>) => (
@@ -237,16 +237,16 @@ export function TicketPanel({
       )}
 
       {/* Panel header */}
-      <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-4 py-4 border-b border-white/5 shrink-0">
+      <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-4 py-4 border-b border-border/50 shrink-0">
         <div className="flex flex-col min-w-0">
           <div className="flex items-center gap-2">
             <Icon name="confirmation_number" className="text-[14px] text-cyan-500 shrink-0" />
-            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">
               {activeGroupId === "ALL"
                 ? "Sve Ulaznice"
                 : activeGroup?.title ?? "Ulaznice"}
             </span>
-            <span className="text-[9px] font-mono text-slate-600">
+            <span className="text-[9px] font-mono text-muted-foreground/80">
               ({displayedTickets.length})
             </span>
           </div>
@@ -254,10 +254,10 @@ export function TicketPanel({
 
         <div className="flex items-center gap-2 shrink-0">
           <div className="relative">
-            <Icon name="search" className="absolute left-3 top-1/2 -translate-y-1/2 text-[14px] text-slate-500" />
+            <Icon name="search" className="absolute left-3 top-1/2 -translate-y-1/2 text-[14px] text-muted-foreground" />
             <Input
               placeholder="Pretraži katalog..."
-              className="pl-9 h-9 w-52 bg-white/5 border-white/10 rounded-xl text-xs font-medium"
+              className="pl-9 h-9 w-52 bg-muted/30 border-border rounded-xl text-xs font-medium"
               value={globalFilter ?? ""}
               onChange={(e) => setGlobalFilter(e.target.value)}
               aria-label="Pretraži katalog"
@@ -287,12 +287,12 @@ export function TicketPanel({
                 {table.getHeaderGroups().map((headerGroup) => (
                   <TableRow
                     key={headerGroup.id}
-                    className="bg-white/[0.03] hover:bg-white/[0.03] border-white/5"
+                    className="bg-muted/20 hover:bg-muted/20 border-border/50"
                   >
                     {headerGroup.headers.map((header) => (
                       <TableHead
                         key={header.id}
-                        className="font-bold text-slate-500 uppercase text-[10px] tracking-[0.15em] py-3"
+                        className="font-bold text-muted-foreground uppercase text-[10px] tracking-[0.15em] py-3"
                       >
                         {header.isPlaceholder
                           ? null
@@ -319,21 +319,21 @@ export function TicketPanel({
                       <TableCell colSpan={columns.length} className="h-[360px] text-center">
                         {globalFilter ? (
                           <div className="flex flex-col items-center justify-center space-y-4 animate-in zoom-in-95 duration-500">
-                            <div className="p-5 rounded-2xl bg-white/[0.02] border border-white/5 mb-2">
-                              <Icon name="search" className="text-[40px] text-slate-700" />
+                            <div className="p-5 rounded-2xl bg-muted/10 border border-border/50 mb-2">
+                              <Icon name="search" className="text-[40px] text-muted-foreground/60" />
                             </div>
                             <div className="space-y-2">
-                              <p className="text-base font-black text-white uppercase tracking-tighter italic">
+                              <p className="text-base font-black text-foreground uppercase tracking-tighter italic">
                                 Nema rezultata za &quot;{globalFilter}&quot;
                               </p>
-                              <p className="text-xs font-medium text-slate-500 uppercase tracking-widest mb-6">
+                              <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest mb-6">
                                 Pokušajte sa drugačijim terminom.
                               </p>
                               <Button
                                 variant="outline"
                                 size="sm"
                                 onClick={() => setGlobalFilter("")}
-                                className="h-9 px-6 rounded-xl border-white/10 hover:bg-white/5 text-xs font-bold uppercase tracking-widest"
+                                className="h-9 px-6 rounded-xl border-border hover:bg-muted/30 text-xs font-bold uppercase tracking-widest"
                               >
                                 Obriši pretragu
                               </Button>
@@ -345,10 +345,10 @@ export function TicketPanel({
                               <Icon name="confirmation_number" className="text-[48px] text-cyan-900" />
                             </div>
                             <div className="space-y-2">
-                              <p className="text-xl font-black text-white uppercase tracking-tighter italic">
+                              <p className="text-xl font-black text-foreground uppercase tracking-tighter italic">
                                 {activeGroupId === "ALL" ? "Katalog je Prazan" : "Ova Grupa je Prazna"}
                               </p>
-                              <p className="text-xs font-medium text-slate-500 uppercase tracking-widest max-w-sm mx-auto leading-relaxed">
+                              <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest max-w-sm mx-auto leading-relaxed">
                                 {activeGroupId === "ALL"
                                   ? "Kreirajte prvu ulaznicu za pokretanje prodaje."
                                   : `Dodajte ulaznicu u grupu "${activeGroup?.title}".`}

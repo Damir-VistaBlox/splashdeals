@@ -10,12 +10,12 @@ export const adminNavData = {
   navMain: [
     {
       title: "Command Center",
-      url: "/admin",
+      url: "/admin/dashboard",
       icon: "dashboard",
       items: [
         {
           title: "Global Overview",
-          url: "/admin",
+          url: "/admin/dashboard",
           icon: "globe",
         },
       ],

@@ -22,8 +22,8 @@ export function SlotError({ error, reset, title = "Segment failed to load" }: Sl
         <Icon name="error" className="text-[24px] text-red-500" />
       </div>
       <div className="text-center space-y-1">
-        <h3 className="text-sm font-black text-slate-100 uppercase tracking-widest">{title}</h3>
-        <p className="text-xs text-slate-500 font-medium max-w-[200px]">
+        <h3 className="text-sm font-black text-foreground uppercase tracking-widest">{title}</h3>
+        <p className="text-xs text-muted-foreground font-medium max-w-[200px]">
           Something went wrong while retrieving this data.
         </p>
       </div>

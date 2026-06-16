@@ -26,8 +26,8 @@ export function ConfigurationSection() {
   const { control } = useFormContext<FacilityFormValues>()
 
   return (
-    <Card className="border-white/5 bg-slate-900/50 backdrop-blur-md overflow-hidden">
-      <CardHeader className="border-b border-white/5 bg-white/5">
+    <Card className="border-border/50 bg-muted/50 backdrop-blur-md overflow-hidden">
+      <CardHeader className="border-b border-border/50 bg-muted/30">
         <CardTitle className="flex items-center gap-2 text-lg">
           <Icon name="security" className="text-[20px] text-primary" />
           Configuration
@@ -42,11 +42,11 @@ export function ConfigurationSection() {
               <FormLabel>Category</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
-                  <SelectTrigger className="h-11 bg-white/5 border-white/10">
+                  <SelectTrigger className="h-11 bg-muted/30 border-border">
                     <SelectValue placeholder="Select type" />
                   </SelectTrigger>
                 </FormControl>
-                <SelectContent className="bg-slate-900 border-white/10">
+                <SelectContent className="bg-muted border-border">
                   <SelectItem value="Waterpark">Waterpark</SelectItem>
                   <SelectItem value="Thermal Bath">Thermal Bath</SelectItem>
                   <SelectItem value="Public Pool">Public Pool</SelectItem>
@@ -66,11 +66,11 @@ export function ConfigurationSection() {
               <FormLabel>Initial Status</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
-                  <SelectTrigger className="h-11 bg-white/5 border-white/10">
+                  <SelectTrigger className="h-11 bg-muted/30 border-border">
                     <SelectValue placeholder="Select status" />
                   </SelectTrigger>
                 </FormControl>
-                <SelectContent className="bg-slate-900 border-white/10">
+                <SelectContent className="bg-muted border-border">
                   <SelectItem value="DRAFT">Draft (Hidden)</SelectItem>
                   <SelectItem value="ACTIVE">Active (Live)</SelectItem>
                 </SelectContent>

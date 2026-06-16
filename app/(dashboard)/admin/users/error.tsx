@@ -3,6 +3,7 @@ import { Icon } from "@/components/ui/Icon";
 import { useEffect } from "react"
 import { GlassCard } from "@/components/ui/GlassCard"
 import Link from "next/link"
+import { Button } from "@/components/ui/button"
 
 export default function UsersError({
   error,
@@ -17,33 +18,33 @@ export default function UsersError({
 
   return (
     <div className="flex items-center justify-center min-h-[60vh] p-6">
-      <GlassCard className="max-w-xl w-full p-8 md:p-12 border-white/5 bg-slate-950/50 relative z-10 text-center space-y-8">
-        <div className="relative inline-flex items-center justify-center h-20 w-20 rounded-full bg-slate-800/50 border border-white/10 text-slate-400">
-          <Icon name="gpp_maybe" className="text-[40px] stroke-[1.5]" />
+      <GlassCard className="max-w-xl w-full p-8 md:p-12 border-border/50 bg-background/50 relative z-10 text-center space-y-8">
+        <div className="relative inline-flex items-center justify-center h-20 w-20 rounded-full bg-muted/50 border border-border text-muted-foreground">
+          <Icon name="gpp_maybe" className="size-10 stroke-[1.5]" />
         </div>
         <div className="space-y-3">
-          <h1 className="text-3xl font-black italic tracking-tighter uppercase leading-none text-slate-100">
-            Users <span className="text-slate-400">Error</span>
+          <h1 className="text-3xl font-black italic tracking-tighter uppercase leading-none text-foreground">
+            Users <span className="text-muted-foreground">Error</span>
           </h1>
-          <p className="text-slate-500 text-sm leading-relaxed max-w-sm mx-auto">
+          <p className="text-muted-foreground text-sm leading-relaxed max-w-sm mx-auto">
             Something went wrong loading the users section.
           </p>
         </div>
         <div className="flex flex-col gap-3 pt-4">
-          <button 
+          <Button 
             onClick={reset}
-            className="w-full px-8 py-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 transition-all"
+            variant="outline"
+            className="font-black uppercase tracking-widest text-[10px] h-11 rounded-xl"
           >
-            <Icon name="refresh" className="text-[16px]" />
+            <Icon name="refresh" className="size-4" />
             Try Again
-          </button>
-          <Link 
-            href="/admin"
-            className="w-full px-8 py-4 rounded-xl bg-slate-100 hover:bg-white text-[#020617] font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 transition-all"
-          >
-            <Icon name="home" className="text-[16px]" />
-            Dashboard
-          </Link>
+          </Button>
+          <Button asChild variant="secondary" className="font-black uppercase tracking-widest text-[10px] h-11 rounded-xl">
+            <Link href="/admin/users">
+              <Icon name="arrow_back" className="size-4" />
+              Back to Users
+            </Link>
+          </Button>
         </div>
       </GlassCard>
     </div>

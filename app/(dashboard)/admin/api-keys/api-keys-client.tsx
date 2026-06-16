@@ -64,7 +64,7 @@ export function ApiKeysClient({ initialKeys }: { initialKeys: ApiKey[] }) {
     <div className="p-6 max-w-6xl mx-auto space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-black tracking-tight text-white uppercase">Agent API Keys</h1>
+          <h1 className="text-3xl font-black tracking-tight text-foreground uppercase">Agent API Keys</h1>
           <p className="text-muted-foreground text-sm uppercase font-mono mt-1 opacity-70">
             Manage headless access for Paperclip Facility Administrator agents
           </p>
@@ -82,10 +82,10 @@ export function ApiKeysClient({ initialKeys }: { initialKeys: ApiKey[] }) {
               Generate New Key
             </Button>
           </DialogTrigger>
-          <DialogContent className="bg-slate-950 border-white/10 text-white">
+          <DialogContent className="bg-background border-border text-foreground">
             <DialogHeader>
               <DialogTitle className="text-xl font-black uppercase tracking-tight">Generate API Key</DialogTitle>
-              <DialogDescription className="text-slate-400 font-mono text-xs">
+              <DialogDescription className="text-muted-foreground font-mono text-xs">
                 Give your API key a name to identify it later.
               </DialogDescription>
             </DialogHeader>
@@ -99,7 +99,7 @@ export function ApiKeysClient({ initialKeys }: { initialKeys: ApiKey[] }) {
                     placeholder="e.g. Facility Admin Agent" 
                     value={newKeyName}
                     onChange={(e) => setNewKeyName(e.target.value)}
-                    className="bg-white/5 border-white/10 focus:border-cyan-500/50"
+                    className="bg-muted/30 border-border focus:border-cyan-500/50"
                   />
                 </div>
               </div>
@@ -118,11 +118,11 @@ export function ApiKeysClient({ initialKeys }: { initialKeys: ApiKey[] }) {
                   <Input 
                     value={generatedKey}
                     readOnly
-                    className="bg-white/5 border-white/10 font-mono text-xs pr-10 focus:ring-0 focus:border-cyan-500/50"
+                    className="bg-muted/30 border-border font-mono text-xs pr-10 focus:ring-0 focus:border-cyan-500/50"
                   />
                   <button 
                     onClick={() => copyToClipboard(generatedKey)}
-                    className="absolute right-2 top-1.5 p-1.5 rounded-md hover:bg-white/10 text-slate-400 transition-colors"
+                    className="absolute right-2 top-1.5 p-1.5 rounded-md hover:bg-muted/50 text-muted-foreground transition-colors"
                   >
                     {hasCopied ? <Icon name="check" className="text-[16px] text-emerald-500" /> : <Icon name="content_copy" className="text-[16px]" />}
                   </button>
@@ -144,7 +144,7 @@ export function ApiKeysClient({ initialKeys }: { initialKeys: ApiKey[] }) {
               ) : (
                 <Button 
                   onClick={() => setGeneratedKey(null)}
-                  className="w-full bg-white/5 hover:bg-white/10 text-white font-black uppercase"
+                  className="w-full bg-muted/30 hover:bg-muted/50 text-foreground font-black uppercase"
                 >
                   Done
                 </Button>
@@ -154,8 +154,8 @@ export function ApiKeysClient({ initialKeys }: { initialKeys: ApiKey[] }) {
         </Dialog>
       </div>
 
-      <Card className="bg-slate-950/40 border-white/5 backdrop-blur-xl overflow-hidden shadow-2xl">
-        <CardHeader className="border-b border-white/5">
+      <Card className="bg-background/40 border-border/50 backdrop-blur-xl overflow-hidden shadow-2xl">
+        <CardHeader className="border-b border-border/50">
           <CardTitle className="text-lg font-black uppercase tracking-tight flex items-center gap-2">
             <Icon name="key" className="text-[20px] text-cyan-500" />
             Active API Keys
@@ -166,8 +166,8 @@ export function ApiKeysClient({ initialKeys }: { initialKeys: ApiKey[] }) {
         </CardHeader>
         <CardContent className="p-0">
           <Table>
-            <TableHeader className="bg-white/[0.02]">
-              <TableRow className="border-white/5 hover:bg-transparent">
+            <TableHeader className="bg-muted/10">
+              <TableRow className="border-border/50 hover:bg-transparent">
                 <TableHead className="text-[10px] font-black uppercase opacity-40">Name</TableHead>
                 <TableHead className="text-[10px] font-black uppercase opacity-40">Prefix</TableHead>
                 <TableHead className="text-[10px] font-black uppercase opacity-40">Status</TableHead>
@@ -185,10 +185,10 @@ export function ApiKeysClient({ initialKeys }: { initialKeys: ApiKey[] }) {
                 </TableRow>
               ) : (
                 keys.map((key) => (
-                  <TableRow key={key.id} className="border-white/5 group transition-colors hover:bg-white/[0.02]">
-                    <TableCell className="font-bold text-sm text-white">{key.name}</TableCell>
+                  <TableRow key={key.id} className="border-border/50 group transition-colors hover:bg-muted/10">
+                    <TableCell className="font-bold text-sm text-foreground">{key.name}</TableCell>
                     <TableCell>
-                      <code className="text-[10px] px-1.5 py-0.5 rounded bg-white/5 border border-white/10 font-mono text-cyan-400">
+                      <code className="text-[10px] px-1.5 py-0.5 rounded bg-muted/30 border border-border font-mono text-cyan-400">
                         {key.prefix}...
                       </code>
                     </TableCell>
@@ -225,10 +225,10 @@ export function ApiKeysClient({ initialKeys }: { initialKeys: ApiKey[] }) {
       </Card>
 
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-        <DialogContent className="bg-slate-950 border-white/10 text-white">
+        <DialogContent className="bg-background border-border text-foreground">
           <DialogHeader>
             <DialogTitle className="text-xl font-black uppercase tracking-tight text-red-500">Revoke API Key</DialogTitle>
-            <DialogDescription className="text-slate-400 font-mono text-xs leading-relaxed">
+            <DialogDescription className="text-muted-foreground font-mono text-xs leading-relaxed">
               Are you sure? This will immediately terminate all access for this key. This action cannot be undone.
             </DialogDescription>
           </DialogHeader>
@@ -244,7 +244,7 @@ export function ApiKeysClient({ initialKeys }: { initialKeys: ApiKey[] }) {
                   setKeyToDelete(null)
                 }
               }} 
-              className="bg-red-600 hover:bg-red-700 text-white font-black uppercase text-xs"
+              className="bg-red-600 hover:bg-red-700 text-foreground font-black uppercase text-xs"
             >
               Revoke Key
             </Button>

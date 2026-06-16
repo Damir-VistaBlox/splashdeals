@@ -87,13 +87,13 @@ export function FacilityGovernanceSheet({ facility }: FacilityGovernanceSheetPro
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
-        <Button variant="outline" size="sm" className="gap-2 border-white/10 hover:bg-white/5 transition-all text-[10px] font-black uppercase tracking-widest">
+        <Button variant="outline" size="sm" className="gap-2 border-border hover:bg-muted/30 transition-all text-[10px] font-black uppercase tracking-widest">
           <Icon name="settings" className="text-[16px]" />
           Advanced Governance
         </Button>
       </SheetTrigger>
-      <SheetContent className="w-full sm:max-w-[440px] p-8 overflow-y-auto bg-slate-950/95 backdrop-blur-2xl border-white/5 shadow-2xl">
-        <SheetHeader className="pb-8 border-b border-white/5">
+      <SheetContent className="w-full sm:max-w-[440px] p-8 overflow-y-auto bg-background/95 backdrop-blur-2xl border-border/50 shadow-2xl">
+        <SheetHeader className="pb-8 border-b border-border/50">
           <SheetTitle className="flex items-center gap-2 text-xl font-black tracking-tighter">
             <Icon name="gpp_maybe" className="text-[20px] text-primary" />
             System Governance
@@ -117,11 +117,11 @@ export function FacilityGovernanceSheet({ facility }: FacilityGovernanceSheetPro
                     </FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
-                        <SelectTrigger className="h-12 bg-white/[0.03] border-white/10 focus:ring-primary">
+                        <SelectTrigger className="h-12 bg-muted/20 border-border focus:ring-primary">
                           <SelectValue placeholder="Select status" />
                         </SelectTrigger>
                       </FormControl>
-                      <SelectContent className="bg-slate-950 border-white/10">
+                      <SelectContent className="bg-background border-border">
                         <SelectItem value="DRAFT">Draft</SelectItem>
                         <SelectItem value="ACTIVE">Active</SelectItem>
                         <SelectItem value="CLOSED">Closed</SelectItem>
@@ -138,7 +138,7 @@ export function FacilityGovernanceSheet({ facility }: FacilityGovernanceSheetPro
                 )}
               />
 
-              <SheetFooter className="pt-8 border-t border-white/5">
+              <SheetFooter className="pt-8 border-t border-border/50">
                 <Button type="submit" disabled={isPending} className="w-full h-12 text-[10px] font-black uppercase tracking-widest gap-2 bg-primary text-primary-foreground hover:scale-[1.02] transition-transform">
                   {isPending ? (
                     <Icon name="progress_activity" className="text-[14px] animate-spin" />
