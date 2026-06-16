@@ -1,8 +1,7 @@
 import { Icon } from "@/components/ui/Icon";
 import type { Metadata } from "next";
 import * as React from "react";
-import "./globals.css";
-import { Fira_Sans, Fira_Code } from "next/font/google";
+import "@/app/globals.css";
 import { cn } from "@/lib/utils";
 
 import { AdminSidebar } from "@/components/admin/sidebar/admin-sidebar"
@@ -19,18 +18,6 @@ import { auth } from "@/server/lib/auth"
 import { headers } from "next/headers"
 import { redirect } from "next/navigation"
 import { connection } from "next/server"
-
-const firaSans = Fira_Sans({
-  subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700'],
-  variable: '--font-sans',
-});
-
-const firaCode = Fira_Code({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-  variable: '--font-mono',
-});
 
 export const metadata: Metadata = {
   title: "Splashdeals.rs Admin",
@@ -52,24 +39,15 @@ export default async function AdminRootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="sr" className={cn("dark", firaSans.variable, firaCode.variable)}>
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block" rel="stylesheet" />
-      </head>
-      <body className="antialiased bg-[#020617] text-slate-100 selection:bg-cyan-500/20 font-sans">
-        <BreadcrumbProvider>
-          <Suspense fallback={<AdminSkeleton />}>
-            <AdminGuard>
-              <LayoutWrapper>
-                {children}
-              </LayoutWrapper>
-            </AdminGuard>
-          </Suspense>
-        </BreadcrumbProvider>
-      </body>
-    </html>
+    <BreadcrumbProvider>
+      <Suspense fallback={<AdminSkeleton />}>
+        <AdminGuard>
+          <LayoutWrapper>
+            {children}
+          </LayoutWrapper>
+        </AdminGuard>
+      </Suspense>
+    </BreadcrumbProvider>
   );
 }
 
@@ -118,7 +96,6 @@ async function AdminGuard({ children }: { children: React.ReactNode }) {
     redirect("/auth/login?callbackUrl=/admin");
   }
 
-  // RBAC: Only SUPER_ADMIN and FACILITY_STAFF are allowed in /admin
   const user = session.user as { role?: string; email?: string };
   const role = user.role;
   const isAuthorized = role === "SUPER_ADMIN" || role === "FACILITY_STAFF";

@@ -1,18 +1,19 @@
-"use client"
-import { Icon } from "@/components/ui/Icon"
-import { useEffect } from "react"
-import Link from "next/link"
+"use client";
+import { Icon } from "@/components/ui/Icon";
+import { useEffect } from "react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 export default function AuthError({
   error,
   reset,
 }: {
-  error: Error & { digest?: string }
-  reset: () => void
+  error: Error & { digest?: string };
+  reset: () => void;
 }) {
   useEffect(() => {
-    console.error("Auth Error:", error)
-  }, [error])
+    console.error("Auth Error:", error);
+  }, [error]);
 
   return (
     <div className="text-center space-y-6">
@@ -28,21 +29,20 @@ export default function AuthError({
         </p>
       </div>
       <div className="flex flex-col gap-3">
-        <button
+        <Button
           onClick={reset}
           className="w-full px-8 py-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 transition-all"
         >
           <Icon name="refresh" className="text-[16px]" />
           Try Again
-        </button>
-        <Link
-          href="/auth/login"
-          className="w-full px-8 py-4 rounded-xl bg-slate-100 hover:bg-white text-[#020617] font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 transition-all"
-        >
-          <Icon name="login" className="text-[16px]" />
-          Go to Login
-        </Link>
+        </Button>
+        <Button asChild className="w-full px-8 py-4 rounded-xl bg-slate-100 hover:bg-white text-[#020617] font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 transition-all">
+          <Link href="/auth/login">
+            <Icon name="login" className="text-[16px]" />
+            Go to Login
+          </Link>
+        </Button>
       </div>
     </div>
-  )
+  );
 }

@@ -1,34 +1,30 @@
 "use client";
 import { Icon } from "@/components/ui/Icon";
-
-import * as React from "react";
+import { useState, Suspense, type FormEvent } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
 import { authClient } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { ErrorBanner, PasswordInput } from "../_components";
 
-/**
- * 🔑 Admin Login Form Component
- */
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/admin";
   const errorParam = searchParams.get("error");
 
-  const [email, setEmail] = React.useState("");
-  const [password, setPassword] = React.useState("");
-  const [showPassword, setShowPassword] = React.useState(false);
-  const [error, setError] = React.useState(
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState(
     errorParam === "unauthorized" ? "Access denied. Your account lacks administrator privileges." : ""
   );
-  const [loading, setLoading] = React.useState(false);
+  const [loading, setLoading] = useState(false);
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setLoading(true);
     setError("");
@@ -46,21 +42,16 @@ function LoginForm() {
         return;
       }
 
-      // Success - Better-Auth handles the cookie, we just navigate
       router.push(callbackUrl);
       router.refresh();
-    } catch (err) {
+    } catch {
       setError("A critical authentication error occurred. Please try again or contact support.");
       setLoading(false);
     }
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
-    >
+    <div>
       <Card className="border-white/5 bg-white/5 backdrop-blur-2xl shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)] overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 via-blue-500 to-cyan-500 bg-[length:200%_auto] animate-[gradient_3s_linear_infinite]" />
         
@@ -74,19 +65,7 @@ function LoginForm() {
         </CardHeader>
         
         <CardContent className="grid gap-6">
-          <AnimatePresence mode="wait">
-            {error && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
-                className="p-3 rounded-xl bg-red-500/10 border border-red-500/20 flex items-start gap-3"
-              >
-                <Icon name="error" className="text-[16px] text-red-400 mt-0.5 shrink-0" />
-                <p className="text-[11px] text-red-400 font-bold leading-relaxed">{error}</p>
-              </motion.div>
-            )}
-          </AnimatePresence>
+          {error && <ErrorBanner message={error} />}
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="space-y-2">
@@ -117,25 +96,14 @@ function LoginForm() {
                   Forgot?
                 </Link>
               </div>
-              <div className="relative">
-                <Input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  disabled={loading}
-                  className="h-12 bg-white/5 border-white/10 focus-visible:ring-cyan-500/50 rounded-xl pr-10 transition-all"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-600 hover:text-slate-400 transition-colors"
-                  tabIndex={-1}
-                >
-                  {showPassword ? <Icon name="visibility_off" className="text-[16px]" /> : <Icon name="visibility" className="text-[16px]" />}
-                </button>
-              </div>
+              <PasswordInput
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                showPassword={showPassword}
+                onToggle={() => setShowPassword(!showPassword)}
+                disabled={loading}
+              />
             </div>
 
             <Button 
@@ -148,12 +116,7 @@ function LoginForm() {
               ) : (
                 <span className="flex items-center gap-2">
                   Authorize Access
-                  <motion.span
-                    animate={{ x: [0, 4, 0] }}
-                    transition={{ repeat: Infinity, duration: 1.5 }}
-                  >
-                    →
-                  </motion.span>
+                  <span>→</span>
                 </span>
               )}
             </Button>
@@ -166,16 +129,13 @@ function LoginForm() {
           </p>
         </CardFooter>
       </Card>
-    </motion.div>
+    </div>
   );
 }
 
-/**
- * 🔒 Admin Login Page
- */
 export default function LoginPage() {
   return (
-    <React.Suspense 
+    <Suspense 
       fallback={
         <div className="flex items-center justify-center">
           <Icon name="progress_activity" className="text-[32px] animate-spin text-cyan-500/50" />
@@ -183,6 +143,6 @@ export default function LoginPage() {
       }
     >
       <LoginForm />
-    </React.Suspense>
+    </Suspense>
   );
 }
