@@ -11,11 +11,11 @@ interface PageProps {
 
 export async function generateMetadata({ params: _params }: PageProps): Promise<Metadata> {
   return {
-    title: "Centar za Podršku i Pomoć Korisnicima | Splashdeals",
+    title: "Centar za Podršku i Pomoć Korisnicima",
     description: "Imate pitanje o digitalnim kartama ili plaćanju? Naš tim za korisničku podršku je dostupan 24/7. Pronađite brze odgovore i rešite problem odmah.",
     alternates: { canonical: "https://www.splashdeals.rs/support" },
     openGraph: {
-      title: "Centar za Podršku i Pomoć Korisnicima | Splashdeals",
+      title: "Centar za Podršku i Pomoć Korisnicima",
       description: "Imate pitanje o digitalnim kartama ili plaćanju? Naš tim za korisničku podršku je dostupan 24/7. Pronađite brze odgovore i rešite problem odmah.",
       images: ["/og-image.png"],
       locale: "sr_RS",
@@ -23,7 +23,7 @@ export async function generateMetadata({ params: _params }: PageProps): Promise<
     },
     twitter: {
       card: "summary_large_image",
-      title: "Centar za Podršku i Pomoć Korisnicima | Splashdeals",
+      title: "Centar za Podršku i Pomoć Korisnicima",
       description: "Imate pitanje o digitalnim kartama ili plaćanju? Naš tim za korisničku podršku je dostupan 24/7. Pronađite brze odgovore i rešite problem odmah.",
       images: ["/og-image.png"],
     },
