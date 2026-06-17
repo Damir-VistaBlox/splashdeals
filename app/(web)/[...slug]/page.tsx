@@ -25,7 +25,7 @@ async function resolveSlug(firstSlug: string) {
     select: { slug: true, category: true }
   });
   if (facility) {
-    return { type: "facility", category: facility.category };
+    return { type: "facility", category: facility.category.toLowerCase().replace(/\s+/g, '-') };
   }
 
   return null;

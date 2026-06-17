@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import * as React from "react";
 import { Header } from "@/components/layout/Header";
+import { BreadcrumbBar } from "@/components/layout/BreadcrumbBar";
 import { GlobalAmbient } from "@/components/ui/GlobalAmbient";
 import { getDictionary } from "@/lib/dictionaries";
 import { getActiveCities } from "@/server/lib/data/discovery";
@@ -52,7 +53,10 @@ async function WebLayoutContent({
       <GlobalAmbient />
       <Header dict={dict} cities={cities} />
 
-      <main className="flex-grow pt-20">
+      {/* 🧭 Breadcrumb bar — always visible just below the top nav header */}
+      <BreadcrumbBar />
+
+      <main className="flex-grow pt-[6.5rem]">
         <React.Suspense
           fallback={
             <div className="flex-1 flex items-center justify-center p-20 animate-pulse bg-slate-900" />

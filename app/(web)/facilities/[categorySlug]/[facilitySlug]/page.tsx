@@ -582,6 +582,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
 
       return {
         "@type": "Offer",
+        "@id": `https://www.splashdeals.rs/${facilitySlug}#ticket-${tier.id}`,
         "name": tier.labelSr || tier.label,
         "price": Number(tier.price),
         "priceCurrency": "RSD",
@@ -590,8 +591,8 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
         "availability": tier.isActive ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
         "url": `https://www.splashdeals.rs/${facilitySlug}#ticket-${tier.id}`,
         "acceptedPaymentMethod": [
-          "https://schema.org/CreditCard",
-          "https://schema.org/PaymentMethodTypeWallet"
+          {"@type": "PaymentMethod", "@id": "https://schema.org/CreditCard"},
+          {"@type": "PaymentMethod", "@id": "https://schema.org/PaymentMethodTypeWallet"}
         ],
         ...(availabilityStarts ? { "availabilityStarts": availabilityStarts } : {}),
         ...(availabilityEnds ? { "availabilityEnds": availabilityEnds } : {}),
@@ -676,31 +677,8 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
 
         <div className="relative z-10 max-w-7xl mx-auto w-full grid grid-cols-1 md:grid-cols-12 gap-8 items-end mb-12">
            <div className="md:col-span-8 space-y-6">
-              {/* 🧭 DESKTOP BREADCRUMBS */}
-              <div className="hidden md:block w-full overflow-x-auto no-scrollbar pb-1">
-                <Breadcrumb>
-                  <BreadcrumbList className="flex-nowrap whitespace-nowrap gap-1.5">
-                    <BreadcrumbItem>
-                      <BreadcrumbLink asChild>
-                        <Link href="/" className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 hover:text-cyan-400 transition-colors">Početna</Link>
-                      </BreadcrumbLink>
-                    </BreadcrumbItem>
-                    <BreadcrumbSeparator className="text-slate-600 text-[8px]" />
-                    <BreadcrumbItem>
-                      <BreadcrumbLink asChild>
-                        <Link href={`/${categorySlug}`} className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 hover:text-cyan-400 transition-colors">{categoryLabel}</Link>
-                      </BreadcrumbLink>
-                    </BreadcrumbItem>
-                    <BreadcrumbSeparator className="text-slate-600 text-[8px]" />
-                    <BreadcrumbItem>
-                      <BreadcrumbPage className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-400">{facility.name}</BreadcrumbPage>
-                    </BreadcrumbItem>
-                  </BreadcrumbList>
-                </Breadcrumb>
-              </div>
-
-               {/* 📱 MOBILE SHARE ROW */}
-               <div className="flex md:hidden items-center justify-end">
+              {/* 📱 MOBILE SHARE ROW */}
+              <div className="flex md:hidden items-center justify-end">
                  <ShareButton
                     title={facility.name}
                     url={`https://www.splashdeals.rs/${facilitySlug}`}

@@ -1,14 +1,20 @@
 import { FacilitySchemaInput } from "./types";
 
 export function buildBusinessSchema(facility: FacilitySchemaInput, facilitySlug: string, hasAggregateOffer: boolean) {
+  const heroImage = facility.media?.[0]?.url || `https://www.splashdeals.rs/og-image.png`;
   return {
     "@type": "EntertainmentBusiness",
     "@id": `https://www.splashdeals.rs/${facilitySlug}#business`,
     name: facility.name,
     url: `https://www.splashdeals.rs/${facilitySlug}`,
-    image: facility.media?.[0]?.url || undefined,
+    image: heroImage,
     priceRange: hasAggregateOffer ? "RSD" : undefined,
     ...(facility.publicPhone ? { telephone: facility.publicPhone } : {}),
+    sameAs: [
+      "https://www.instagram.com/splashdeals",
+      "https://www.facebook.com/splashdeals.rs/",
+      "https://x.com/splashdeals"
+    ].filter(Boolean),
     address: {
       "@type": "PostalAddress",
       streetAddress: `${facility.streetName} ${facility.streetNumber}`,

@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useCart, initCartSync } from "@/hooks/use-cart";
 import { useUIState } from "@/hooks/use-ui-state";
 import { useBreadcrumb } from "@/hooks/use-breadcrumb";
-import { useHeaderScroll, DesktopTopNav, Breadcrumb, MobileOverlay } from "./_header";
+import { useHeaderScroll, DesktopTopNav, MobileOverlay } from "./_header";
 ;
 
 interface HeaderProps {
@@ -74,21 +74,21 @@ export const Header = ({ dict, cities }: HeaderProps) => {
           setIsHovered={setIsHovered}
         />
 
-        <Breadcrumb
-          breadcrumbItems={breadcrumbItems}
-          backHref={backHref}
-          hasBreadcrumbs={hasBreadcrumbs}
+        {/* ⚡ Online status dot for tab bar */}
+        {isOnline === false && (
+          <div className="hidden" role="status" aria-label="offline" />
+        )}
+
+        {/* 📱 Mobile Menu Overlay */}
+        <MobileOverlay
+          isMobileMenuOpen={isMobileMenuOpen}
+          setIsMobileMenuOpen={setIsMobileMenuOpen}
+          dict={dict}
+          cities={cities}
+          isReducedMotion={isReducedMotion}
+          isTabActive={isTabActive}
         />
       </header>
-
-      <MobileOverlay
-        isMobileMenuOpen={isMobileMenuOpen}
-        setIsMobileMenuOpen={setIsMobileMenuOpen}
-        dict={dict}
-        cities={cities}
-        isReducedMotion={isReducedMotion}
-        isTabActive={isTabActive}
-      />
     </>
   );
 };

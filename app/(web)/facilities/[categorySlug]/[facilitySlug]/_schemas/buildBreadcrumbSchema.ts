@@ -1,6 +1,9 @@
 import { FacilitySchemaInput } from "./types";
 
 export function buildBreadcrumbSchema(facility: FacilitySchemaInput, facilitySlug: string, categorySlug: string, categoryLabel: string) {
+  // Normalize category slug: "Waterpark" → "waterpark", "Swimming Pool" → "swimming-pool"
+  const normalizedCategorySlug = categorySlug.toLowerCase().replace(/\s+/g, '-');
+  
   return {
     "@type": "BreadcrumbList",
     "@id": `https://www.splashdeals.rs/${facilitySlug}#breadcrumb`,
@@ -15,7 +18,7 @@ export function buildBreadcrumbSchema(facility: FacilitySchemaInput, facilitySlu
         "@type": "ListItem",
         position: 2,
         name: categoryLabel,
-        item: `https://www.splashdeals.rs/${categorySlug}`,
+        item: `https://www.splashdeals.rs/${normalizedCategorySlug}`,
       },
       {
         "@type": "ListItem",
