@@ -11,11 +11,11 @@ interface PageProps {
 
 export async function generateMetadata({ params: _params }: PageProps): Promise<Metadata> {
   return {
-    title: "Uslovi Korišćenja i Pravna Pravila | Splashdeals",
+    title: "Uslovi Korišćenja i Pravna Pravila",
     description: "Pročitajte zvanične uslove korišćenja platforme Splashdeals.rs. Saznajte više o pravima korisnika, načinu plaćanja i zaštiti kupaca karata.",
     alternates: { canonical: "https://www.splashdeals.rs/terms" },
     openGraph: {
-      title: "Uslovi Korišćenja i Pravna Pravila | Splashdeals",
+      title: "Uslovi Korišćenja i Pravna Pravila",
       description: "Pročitajte zvanične uslove korišćenja platforme Splashdeals.rs. Saznajte više o pravima korisnika, načinu plaćanja i zaštiti kupaca karata.",
       images: ["/og-image.png"],
       locale: "sr_RS",
@@ -23,7 +23,7 @@ export async function generateMetadata({ params: _params }: PageProps): Promise<
     },
     twitter: {
       card: "summary_large_image",
-      title: "Uslovi Korišćenja i Pravna Pravila | Splashdeals",
+      title: "Uslovi Korišćenja i Pravna Pravila",
       description: "Pročitajte zvanične uslove korišćenja platforme Splashdeals.rs. Saznajte više o pravima korisnika, načinu plaćanja i zaštiti kupaca karata.",
       images: ["/og-image.png"],
     },
