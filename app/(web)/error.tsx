@@ -25,7 +25,7 @@ export default function GlobalWebError({
 
   useEffect(() => {
     console.error("Global Web Error:", error)
-    getClientDictionary().then((d) => setDict(d))
+    getClientDictionary().then((d) => requestAnimationFrame(() => setDict(d)))
   }, [error])
 
   // Fallback while dictionary loads (matching the style)
