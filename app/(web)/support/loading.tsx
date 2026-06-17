@@ -1,6 +1,6 @@
 import { Icon } from "@/components/ui/Icon";
 import { Skeleton } from "@/components/ui/skeleton"
-import { GlassCard } from "@/components/ui/GlassCard"
+import { Card } from "@/components/ui/card"
 export default function SupportLoading() {
   return (
     <div className="min-h-screen pb-32 pt-32 px-6 sm:px-12 max-w-5xl mx-auto animate-pulse">
@@ -31,17 +31,17 @@ export default function SupportLoading() {
 
           <div className="grid gap-6">
             {[1, 2, 3].map((idx) => (
-              <GlassCard key={idx} className="p-6 border-white/5 bg-gradient-to-r from-white/5 to-transparent space-y-3">
+              <Card key={idx} className="p-6 border-white/5 bg-gradient-to-r from-white/5 to-transparent space-y-3">
                 <Skeleton className="h-5 w-1/3 bg-white/5 rounded-md" />
                 <Skeleton className="h-4 w-full bg-white/5 rounded-md" />
                 <Skeleton className="h-4 w-2/3 bg-white/5 rounded-md" />
-              </GlassCard>
+              </Card>
             ))}
           </div>
         </section>
 
         {/* 📧 CONTACT SECTION SKELETON */}
-        <GlassCard className="p-8 border-white/5 bg-white/5">
+        <Card className="p-8 border-white/5 bg-white/5">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
             <div className="space-y-3 flex-grow">
               <Skeleton className="h-5 w-44 bg-white/5 rounded-md" />
@@ -49,7 +49,7 @@ export default function SupportLoading() {
             </div>
             <Skeleton className="h-12 w-36 bg-white/5 rounded-xl flex-shrink-0" />
           </div>
-        </GlassCard>
+        </Card>
       </div>
     </div>
   )

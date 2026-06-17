@@ -2,7 +2,7 @@ import { Icon } from "@/components/ui/Icon";
 import { Metadata } from "next";
 import { getDictionary } from "@/lib/dictionaries";
 import { connection } from "next/server";
-import { GlassCard } from "@/components/ui/GlassCard";
+import { Card } from "@/components/ui/card";
 import { JsonLd } from "@/components/SEO/JsonLd";
 
 interface PageProps {
@@ -116,7 +116,7 @@ export default async function SupportPage({ params: _params }: PageProps) {
                 key={idx}
                 className="transition-all duration-300"
               >
-                <GlassCard className="p-6 border-white/5 hover:border-cyan-500/20 transition-colors group">
+                <Card className="p-6 border-white/5 hover:border-cyan-500/20 transition-colors group">
                   <h3 className="text-lg font-bold text-white mb-3 flex items-center gap-3">
                     <Icon name="keyboard_arrow_right" className="text-[16px] text-cyan-500 group-hover:translate-x-1 transition-transform" />
                     {faq.q}
@@ -124,7 +124,7 @@ export default async function SupportPage({ params: _params }: PageProps) {
                   <p className="text-slate-400 leading-relaxed text-sm sm:text-base">
                     {faq.a}
                   </p>
-                </GlassCard>
+                </Card>
               </div>
             ))}
           </div>
@@ -134,7 +134,7 @@ export default async function SupportPage({ params: _params }: PageProps) {
         <div
           className="transition-all duration-500"
         >
-          <GlassCard className="p-8 border-cyan-500/20 bg-cyan-500/5">
+          <Card className="p-8 border-cyan-500/20 bg-cyan-500/5">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
               <div className="space-y-2">
                 <h3 className="text-xl font-black uppercase italic tracking-tight text-white flex items-center gap-2">
@@ -148,7 +148,7 @@ export default async function SupportPage({ params: _params }: PageProps) {
                 {dict.support.contact_btn || "Kontaktirajte Nas"}
               </div>
             </div>
-          </GlassCard>
+          </Card>
         </div>
       </div>
     </div>

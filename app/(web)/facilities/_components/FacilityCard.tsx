@@ -1,7 +1,7 @@
 import { Icon } from "@/components/ui/Icon";
 import Link from "next/link";
 import Image from "next/image";
-import { GlassCard } from "@/components/ui/GlassCard";
+import { Card } from "@/components/ui/card";
 interface Facility {
   id: string;
   name: string;
@@ -36,9 +36,8 @@ export function FacilityCard({ facility, dict, fromLabel, isPriority = false }: 
 
   return (
     <Link href={`/facilities/${facility.category.toLowerCase()}/${facility.slug}`} className="block">
-      <GlassCard 
-        className="h-[400px] group overflow-hidden border-white/5 hover:border-cyan-400/30 transition-all duration-500 relative"
-        innerClassName="flex flex-col justify-end h-full w-full"
+      <Card 
+        className="h-[400px] group overflow-hidden border-white/5 hover:border-cyan-400/30 transition-all duration-500 relative flex flex-col justify-end"
       >
         {facility.logoUrl && (
           <div className="absolute top-6 right-6 z-20 h-14 w-14 rounded-2xl overflow-hidden border border-white/10 bg-slate-950/60 p-2 backdrop-blur-md flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform duration-500">
@@ -103,7 +102,7 @@ export function FacilityCard({ facility, dict, fromLabel, isPriority = false }: 
             </div>
           </div>
         </div>
-      </GlassCard>
+      </Card>
     </Link>
   );
 }

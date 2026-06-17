@@ -16,7 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { GlassCard } from "@/components/ui/GlassCard"
+import { Card } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 import { UpdateFacilityGovernanceValues } from "@/server/lib/validations/facility"
 import { updateFacilityOperationsAction } from "@/server/actions/governance"
@@ -83,7 +83,7 @@ function OperationsTableInner({ facilityId, initialHours }: { facilityId: string
   }
 
   return (
-    <GlassCard className="p-4 border-border/50 bg-background/40 space-y-4">
+    <Card className="p-4 border-border/50 bg-background/40 space-y-4">
       <header className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <Icon name="schedule" className="size-3.5 text-amber-400" />
@@ -245,7 +245,7 @@ function OperationsTableInner({ facilityId, initialHours }: { facilityId: string
         {isPending ? <Icon name="progress_activity" className="text-[12px] animate-spin" /> : <Icon name="save" className="text-[12px]" />}
         Persist Schedule
       </Button>
-    </GlassCard>
+    </Card>
   )
 }
 export { OperationsTable }

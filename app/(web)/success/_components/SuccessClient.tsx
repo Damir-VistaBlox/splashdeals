@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import Link from "next/link";
 import { LiquidButton } from "@/components/ui/LiquidButton";
-import { GlassCard } from "@/components/ui/GlassCard";
+import { Card } from "@/components/ui/card";
 
 interface IssuedTicket {
   id: string;
@@ -171,7 +171,7 @@ export function SuccessClient({
                 className="animate-fade-in-up"
                 style={{ animationDelay: `${0.2 + index * 0.1}s` }}
                 >
-                <GlassCard className="group overflow-hidden flex flex-col md:flex-row p-0 border-white/5 bg-slate-950/40 hover:border-cyan-500/30 transition-colors duration-500">
+                <Card className="group overflow-hidden flex flex-col md:flex-row p-0 border-white/5 bg-slate-950/40 hover:border-cyan-500/30 transition-colors duration-500">
                     {/* QR Code Wing */}
                     <div className="p-10 bg-white flex items-center justify-center relative min-w-[240px]">
                         <div className="absolute inset-0 bg-gradient-to-br from-cyan-50/50 to-transparent pointer-events-none" />
@@ -239,7 +239,7 @@ export function SuccessClient({
                             </div>
                         </div>
                     </div>
-                </GlassCard>
+                </Card>
                 </div>
             ))}
         </div>

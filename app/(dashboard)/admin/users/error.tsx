@@ -1,7 +1,7 @@
 "use client"
 import { Icon } from "@/components/ui/Icon";
 import { useEffect } from "react"
-import { GlassCard } from "@/components/ui/GlassCard"
+import { Card } from "@/components/ui/card"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 
@@ -18,7 +18,7 @@ export default function UsersError({
 
   return (
     <div className="flex items-center justify-center min-h-[60vh] p-6">
-      <GlassCard className="max-w-xl w-full p-8 md:p-12 border-border/50 bg-background/50 relative z-10 text-center space-y-8">
+      <Card className="max-w-xl w-full p-8 md:p-12 border-border/50 bg-background/50 relative z-10 text-center space-y-8">
         <div className="relative inline-flex items-center justify-center h-20 w-20 rounded-full bg-muted/50 border border-border text-muted-foreground">
           <Icon name="gpp_maybe" className="size-10 stroke-[1.5]" />
         </div>
@@ -46,7 +46,7 @@ export default function UsersError({
             </Link>
           </Button>
         </div>
-      </GlassCard>
+      </Card>
     </div>
   )
 }

@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { GlassCard } from "@/components/ui/GlassCard"
+import { Card } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
 import type { UpdateFacilityGovernanceValues } from "@/server/lib/validations/facility"
 
@@ -20,7 +20,7 @@ export function LocationSection() {
   const { control, getValues, formState: { dirtyFields } } = useFormContext<UpdateFacilityGovernanceValues>()
 
   return (
-    <GlassCard className="p-5 border-border bg-muted/40 backdrop-blur-sm space-y-4">
+    <Card className="p-5 border-border bg-muted/40 backdrop-blur-sm space-y-4">
       <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-2">
           <div className="p-1.5 rounded-lg bg-blue-500/10">
@@ -97,6 +97,6 @@ export function LocationSection() {
           </FormItem>
         )}
       />
-    </GlassCard>
+    </Card>
   )
 }

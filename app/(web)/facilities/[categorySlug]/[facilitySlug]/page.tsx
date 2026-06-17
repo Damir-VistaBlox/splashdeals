@@ -54,7 +54,7 @@ const MobileUnifiedControlPill = dynamic(() => import("./_components/MobileUnifi
   loading: () => <div className="h-16 w-full max-w-md mx-auto rounded-full bg-white/5 border border-white/10" />,
 });
 
-import { GlassCard } from "@/components/ui/GlassCard"
+import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
 import { PartnerBranding } from "./_components/PartnerBranding"
@@ -671,7 +671,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
         <div id="overview" className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
            <div className="lg:col-span-8 space-y-8">
               {/* Main Text Card */}
-              <GlassCard className="p-12 md:p-16 space-y-8 min-h-[400px] flex flex-col justify-center">
+              <Card className="p-12 md:p-16 space-y-8 min-h-[400px] flex flex-col justify-center">
                  <div className="flex items-center gap-3 text-cyan-400 font-black uppercase tracking-[0.2em] text-xs">
                     <Icon name="auto_awesome" className="text-[16px]" /> Iskustvo
                  </div>
@@ -681,17 +681,17 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
                  <p className="text-slate-300 text-xl leading-relaxed font-medium italic opacity-90 max-w-2xl">
                     {facility.description || "Otkrijte premium iskustvo koje prevazilazi običan odlazak na bazen."}
                  </p>
-              </GlassCard>
+              </Card>
 
               {facility.transitGuide && (
-                <GlassCard className="p-8 mt-8 border-l-4 border-l-cyan-500 bg-slate-900/50">
+                <Card className="p-8 mt-8 border-l-4 border-l-cyan-500 bg-slate-900/50">
                    <div className="flex items-center gap-3 mb-4 text-cyan-400 font-black uppercase tracking-widest text-xs">
                       <Icon name="location_on" className="text-[16px]" /> Kako stići
                    </div>
                    <p className="text-slate-300 text-sm whitespace-pre-line leading-relaxed font-medium">
                       {facility.transitGuide}
                    </p>
-                </GlassCard>
+                </Card>
               )}
 
               <ShowcaseAmenities 
@@ -723,11 +723,11 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
                     Korisne <span className="text-splash">Informacije.</span>
                  </h2>
               </div>
-              <GlassCard className="max-w-4xl mx-auto p-8 md:p-12">
+              <Card className="max-w-4xl mx-auto p-8 md:p-12">
                  <div className="whitespace-pre-line text-slate-300 text-sm leading-relaxed font-medium">
                     {facility.policy.faq}
                  </div>
-              </GlassCard>
+              </Card>
            </div>
         )}
 

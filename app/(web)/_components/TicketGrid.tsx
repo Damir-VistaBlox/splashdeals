@@ -3,7 +3,7 @@ import Image from "next/image";
 import { prisma } from "@/server/lib/prisma";
 import Link from "next/link";
 import { cacheLife } from 'next/cache';
-import { GlassCard } from "@/components/ui/GlassCard";
+import { Card } from "@/components/ui/card";
 import { AddToCartButton } from "@/components/cart/AddToCartButton";
 import { Badge } from "./Badge";
 
@@ -58,7 +58,7 @@ export async function TicketGrid({ dict }: { dict: Record<string, any>; }) {
             key={ticket.id}
             className="h-full transition-all duration-700"
           >
-            <GlassCard className="h-full flex flex-col group border-white/5 hover:border-cyan-500/30 transition-all duration-500 hover:-translate-y-2">
+            <Card className="h-full flex flex-col group border-white/5 hover:border-cyan-500/30 transition-all duration-500 hover:-translate-y-2">
               <div className="relative h-52 w-full overflow-hidden rounded-t-[1.5rem]">
                 <Link 
                   href={ticketUrl} 
@@ -121,7 +121,7 @@ export async function TicketGrid({ dict }: { dict: Record<string, any>; }) {
                   <AddToCartButton ticket={{ ...ticket, imageUrl: cardImage }} />
                 </div>
               </div>
-            </GlassCard>
+            </Card>
           </article>
         );
       })}
@@ -131,7 +131,7 @@ export async function TicketGrid({ dict }: { dict: Record<string, any>; }) {
           key={`filler-${i}`}
           className="h-full pointer-events-none grayscale select-none transition-opacity duration-500 opacity-40"
         >
-           <GlassCard className="h-full flex flex-col border-dashed border-white/10 opacity-50">
+           <Card className="h-full flex flex-col border-dashed border-white/10 opacity-50">
               <div className="h-52 w-full bg-slate-900/50 flex items-center justify-center">
                 <Icon name="auto_awesome" className="text-[40px] text-slate-800" />
               </div>
@@ -144,7 +144,7 @@ export async function TicketGrid({ dict }: { dict: Record<string, any>; }) {
                   <div className="h-12 w-12 rounded-2xl bg-white/5" />
                 </div>
               </div>
-           </GlassCard>
+           </Card>
         </div>
       ))}
     </div>

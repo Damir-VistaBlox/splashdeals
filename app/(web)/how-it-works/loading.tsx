@@ -1,5 +1,5 @@
 import { Skeleton } from "@/components/ui/skeleton"
-import { GlassCard } from "@/components/ui/GlassCard"
+import { Card } from "@/components/ui/card"
 
 export default function HowItWorksLoading() {
   return (
@@ -17,7 +17,7 @@ export default function HowItWorksLoading() {
       {/* 📜 STEPS GRID SKELETON */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
         {[1, 2, 3].map((step) => (
-          <GlassCard key={step} className="p-8 border-white/5 bg-gradient-to-b from-white/5 to-transparent space-y-6">
+          <Card key={step} className="p-8 border-white/5 bg-gradient-to-b from-white/5 to-transparent space-y-6">
             <div className="h-12 w-12 rounded-2xl bg-white/5" />
             <Skeleton className="h-6 w-32 bg-white/5 rounded-md" />
             <div className="space-y-2">
@@ -25,7 +25,7 @@ export default function HowItWorksLoading() {
               <Skeleton className="h-4 w-full bg-white/5 rounded-md" />
               <Skeleton className="h-4 w-2/3 bg-white/5 rounded-md" />
             </div>
-          </GlassCard>
+          </Card>
         ))}
       </div>
 

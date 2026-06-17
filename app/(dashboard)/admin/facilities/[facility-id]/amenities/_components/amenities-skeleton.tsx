@@ -2,11 +2,11 @@
 
 import * as React from "react"
 import { Skeleton } from "@/components/ui/skeleton"
-import { GlassCard } from "@/components/ui/GlassCard"
+import { Card } from "@/components/ui/card"
 
 export function AmenitiesSkeleton() {
   return (
-    <GlassCard className="rounded-2xl border border-border/50 bg-muted/40 backdrop-blur-xl p-6 space-y-6 shadow-2xl relative overflow-hidden animate-pulse">
+    <Card className="rounded-2xl border border-border/50 bg-muted/40 backdrop-blur-xl p-6 space-y-6 shadow-2xl relative overflow-hidden animate-pulse">
       {/* Search and filter bar skeletons */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="w-full max-w-md h-9 bg-background/40 rounded-lg border border-border/50 flex items-center px-3 gap-2">
@@ -56,7 +56,7 @@ export function AmenitiesSkeleton() {
           <div className="w-32 h-9 bg-muted rounded-lg" />
         </div>
       </div>
-    </GlassCard>
+    </Card>
   )
 }
 

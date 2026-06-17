@@ -2,7 +2,7 @@
 import { Icon } from "@/components/ui/Icon";
 
 import { useState, useTransition } from "react"
-import { GlassCard } from "@/components/ui/GlassCard"
+import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { updateFacilitySocialLinksAction } from "@/server/actions/governance"
@@ -45,7 +45,7 @@ export function SocialLinksWidget({ facilityId, initialSocialLinks }: SocialLink
   }
 
   return (
-    <GlassCard className="p-5 border-border bg-muted/40 backdrop-blur-sm">
+    <Card className="p-5 border-border bg-muted/40 backdrop-blur-sm">
       <div className="flex items-center justify-between mb-5">
          <div className="flex items-center gap-2">
            <div className="p-1.5 rounded-lg bg-pink-500/10">
@@ -99,6 +99,6 @@ export function SocialLinksWidget({ facilityId, initialSocialLinks }: SocialLink
            />
          </div>
       </div>
-    </GlassCard>
+    </Card>
   )
 }

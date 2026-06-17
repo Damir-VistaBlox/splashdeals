@@ -3,7 +3,7 @@ import { Icon } from "@/components/ui/Icon";
 
 import { useTransition } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { GlassCard } from "@/components/ui/GlassCard";
+import { Card } from "@/components/ui/card";
 
 import { cn } from "@/lib/utils";
 
@@ -81,7 +81,7 @@ export function CategoryPills({ categories, facilitiesLabel }: CategoryPillsProp
                 isPending && "opacity-80 cursor-wait"
               )}
             >
-              <GlassCard 
+              <Card 
                 className={cn(
                   "p-6 text-center transition-all duration-300 border-white/5 group relative overflow-hidden h-full",
                   isActive 
@@ -113,7 +113,7 @@ export function CategoryPills({ categories, facilitiesLabel }: CategoryPillsProp
                     className="absolute bottom-0 left-0 right-0 h-1 bg-cyan-500"
                   />
                 )}
-              </GlassCard>
+              </Card>
             </button>
           </div>
         );

@@ -1,6 +1,6 @@
 import { Icon } from "@/components/ui/Icon";
 import { Skeleton } from "@/components/ui/skeleton"
-import { GlassCard } from "@/components/ui/GlassCard"
+import { Card } from "@/components/ui/card"
 export default function CartLoading() {
   return (
     <div className="container max-w-6xl mx-auto py-24 px-6 animate-pulse">
@@ -18,7 +18,7 @@ export default function CartLoading() {
 
           <div className="space-y-4">
             {[1, 2].map((i) => (
-              <GlassCard key={i} className="p-6 border-white/5 bg-gradient-to-r from-white/5 to-transparent">
+              <Card key={i} className="p-6 border-white/5 bg-gradient-to-r from-white/5 to-transparent">
                 <div className="flex flex-col md:flex-row items-center gap-8">
                   {/* Icon/Image Placeholder */}
                   <div className="w-20 h-20 rounded-2xl bg-white/5 flex items-center justify-center flex-shrink-0" />
@@ -36,14 +36,14 @@ export default function CartLoading() {
                   {/* Quantity Controls */}
                   <div className="w-32 h-14 bg-white/5 rounded-2xl flex-shrink-0" />
                 </div>
-              </GlassCard>
+              </Card>
             ))}
           </div>
         </div>
 
         {/* 📋 SUMMARY SKELETON */}
         <div className="w-full lg:w-96 flex-shrink-0 space-y-6 pt-12 lg:pt-0">
-          <GlassCard className="p-8 border-cyan-500/10 bg-slate-950/25 relative overflow-hidden space-y-8">
+          <Card className="p-8 border-cyan-500/10 bg-slate-950/25 relative overflow-hidden space-y-8">
             <div className="space-y-4">
               <Skeleton className="h-6 w-36 bg-white/5 rounded-lg" />
               <Skeleton className="h-10 w-28 bg-white/5 rounded-xl" />
@@ -61,7 +61,7 @@ export default function CartLoading() {
             </div>
 
             <Skeleton className="h-16 w-full bg-white/5 rounded-2xl pt-2" />
-          </GlassCard>
+          </Card>
         </div>
 
       </div>

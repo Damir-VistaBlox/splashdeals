@@ -1,6 +1,6 @@
  
  
-import { GlassCard } from "@/components/ui/GlassCard"
+import { Card } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Separator } from "@/components/ui/separator"
 
@@ -16,7 +16,7 @@ export default function ProfileLoading() {
         </div>
 
         <div className="flex-1 w-full space-y-12">
-          <GlassCard className="p-6">
+          <Card className="p-6">
             <div className="flex items-center gap-3 mb-8">
               <Skeleton className="size-10 rounded-lg bg-muted/30" />
               <div className="space-y-2">
@@ -29,7 +29,7 @@ export default function ProfileLoading() {
               <Separator className="bg-muted/30" />
               <Skeleton className="h-64 w-full rounded-xl bg-muted/30" />
             </div>
-          </GlassCard>
+          </Card>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
              <Skeleton className="h-48 w-full rounded-2xl bg-muted/30" />

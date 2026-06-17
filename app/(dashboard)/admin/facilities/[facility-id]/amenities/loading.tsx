@@ -1,9 +1,9 @@
 import { Skeleton } from "@/components/ui/skeleton";
-import { GlassCard } from "@/components/ui/GlassCard";
+import { Card } from "@/components/ui/card";
 
 export default function AmenitiesLoading() {
   return (
-    <GlassCard className="rounded-2xl border border-border/50 bg-muted/40 backdrop-blur-xl p-6 space-y-6 shadow-2xl relative overflow-hidden animate-pulse">
+    <Card className="rounded-2xl border border-border/50 bg-muted/40 backdrop-blur-xl p-6 space-y-6 shadow-2xl relative overflow-hidden animate-pulse">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="w-full max-w-md h-9 bg-background/40 rounded-lg border border-border/50" />
         <div className="flex items-center gap-3">
@@ -30,6 +30,6 @@ export default function AmenitiesLoading() {
           ))}
         </div>
       </div>
-    </GlassCard>
+    </Card>
   );
 }

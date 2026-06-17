@@ -3,7 +3,7 @@ import { Icon } from "@/components/ui/Icon";
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { GlassCard } from "@/components/ui/GlassCard";
+import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { LiquidButton } from "@/components/ui/LiquidButton";
 import { useCart } from "@/hooks/use-cart";
@@ -198,7 +198,7 @@ export function ShowcaseTicketGroups({ groups, facilityId, facilityName, categor
                   }}
                 />
               ) : activeGroup.tiers.length >= 5 ? (
-                <GlassCard className="p-8 border-white/5 overflow-visible">
+                <Card className="p-8 border-white/5 overflow-visible">
                   <TierGrid
                     prefix={prefix}
                     main={main}
@@ -209,9 +209,9 @@ export function ShowcaseTicketGroups({ groups, facilityId, facilityName, categor
                       setSelectedTicket(tier);
                     }}
                   />
-                </GlassCard>
+                </Card>
               ) : (
-                <GlassCard className="p-8 border-white/5 overflow-visible">
+                <Card className="p-8 border-white/5 overflow-visible">
                   <TierList
                     prefix={prefix}
                     main={main}
@@ -222,7 +222,7 @@ export function ShowcaseTicketGroups({ groups, facilityId, facilityName, categor
                       setSelectedTicket(tier);
                     }}
                   />
-                </GlassCard>
+                </Card>
               )}
             </div>
 
@@ -286,7 +286,7 @@ export function ShowcaseTicketGroups({ groups, facilityId, facilityName, categor
 
 function SingleTierCard({ group, tier, quantity, setQuantity, onAdd, prefix, main }: any) {
   return (
-    <GlassCard id={`ticket-${tier.id}`} className="p-12 flex flex-col md:flex-row items-center justify-between gap-12 group border-white/5">
+    <Card id={`ticket-${tier.id}`} className="p-12 flex flex-col md:flex-row items-center justify-between gap-12 group border-white/5">
       <div className="space-y-4 text-center md:text-left flex-1">
         <div className="flex flex-wrap gap-2 justify-center md:justify-start">
           <Badge className="bg-cyan-500/10 text-cyan-400 font-black uppercase tracking-widest text-[10px] border-cyan-500/20">
@@ -396,7 +396,7 @@ function SingleTierCard({ group, tier, quantity, setQuantity, onAdd, prefix, mai
           Dodaj u korpu
         </LiquidButton>
       </div>
-    </GlassCard>
+    </Card>
   );
 }
 

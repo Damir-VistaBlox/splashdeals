@@ -1,4 +1,4 @@
-import { GlassCard } from "@/components/ui/GlassCard";
+import { Card } from "@/components/ui/card";
 
 /**
  * 🦴 CategoryOrbSkeleton
@@ -6,7 +6,7 @@ import { GlassCard } from "@/components/ui/GlassCard";
  */
 export function CategoryOrbSkeleton() {
   return (
-    <GlassCard className="p-6 text-center border-white/5 relative overflow-hidden">
+    <Card className="p-6 text-center border-white/5 relative overflow-hidden">
       <div className="flex flex-col items-center">
         {/* Unit count placeholder */}
         <div className="h-2 w-16 bg-slate-800 rounded animate-pulse mb-3" />
@@ -18,7 +18,7 @@ export function CategoryOrbSkeleton() {
       <div className="absolute top-0 right-0 p-2 opacity-5">
          <div className="w-12 h-12 bg-white/20 rounded-full" />
       </div>
-    </GlassCard>
+    </Card>
   );
 }
 
@@ -28,7 +28,7 @@ export function CategoryOrbSkeleton() {
  */
 export function FacilityCardSkeleton() {
   return (
-    <GlassCard className="h-[400px] flex flex-col border-white/5 relative group overflow-hidden">
+    <Card className="h-[400px] flex flex-col border-white/5 relative group overflow-hidden">
       {/* Ghost Background Image */}
       <div className="absolute inset-0 bg-slate-900 group-hover:scale-110 transition-transform duration-1000" />
       <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" />
@@ -55,7 +55,7 @@ export function FacilityCardSkeleton() {
             </div>
          </div>
       </div>
-    </GlassCard>
+    </Card>
   );
 }
 

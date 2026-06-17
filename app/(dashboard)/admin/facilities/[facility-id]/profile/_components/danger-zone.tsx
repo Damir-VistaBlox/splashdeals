@@ -16,7 +16,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { GlassCard } from "@/components/ui/GlassCard"
+import { Card } from "@/components/ui/card"
 import { deleteFacilityAction } from "@/server/actions/facilities"
 
 interface DangerZoneProps {
@@ -70,7 +70,7 @@ export function DangerZone({
   }
 
   return (
-    <GlassCard className="p-6 border-rose-500/20 bg-rose-950/5 backdrop-blur-md space-y-6">
+    <Card className="p-6 border-rose-500/20 bg-rose-950/5 backdrop-blur-md space-y-6">
       <div className="flex items-center justify-between pb-4 border-b border-rose-500/10">
         <div className="flex items-center gap-2">
           <div className="p-2 rounded-lg bg-rose-500/10">
@@ -196,6 +196,6 @@ export function DangerZone({
           </div>
         )}
       </div>
-    </GlassCard>
+    </Card>
   )
 }

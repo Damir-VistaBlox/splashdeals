@@ -1,7 +1,7 @@
 import { Icon } from "@/components/ui/Icon";
 import { prisma } from "@/server/lib/prisma";
 import Link from "next/link";
-import { GlassCard } from "@/components/ui/GlassCard";
+import { Card } from "@/components/ui/card";
 
 interface CategoryGridProps {
   
@@ -42,7 +42,7 @@ export async function CategoryGrid({ facilitiesLabel }: CategoryGridProps) {
           className="transition-all duration-300"
         >
           <Link href={`/facilities/${cat.category.toLowerCase()}`}>
-            <GlassCard className="p-6 text-center hover:bg-cyan-500/10 transition-colors border-white/5 group relative overflow-hidden">
+            <Card className="p-6 text-center hover:bg-cyan-500/10 transition-colors border-white/5 group relative overflow-hidden">
               <div className="absolute top-0 right-0 p-2 opacity-5">
                  <Icon name="filter_list" className="text-[48px]" />
               </div>
@@ -52,7 +52,7 @@ export async function CategoryGrid({ facilitiesLabel }: CategoryGridProps) {
               <span className="text-lg font-black uppercase italic tracking-tighter text-white group-hover:text-cyan-400 transition-colors">
                 {getCategoryLabel(cat.category)}
               </span>
-            </GlassCard>
+            </Card>
           </Link>
         </div>
       ))}

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState, useCallback } from "react";
-import { GlassCard } from "./GlassCard";
+import { Card } from "@/components/ui/card";
 
 interface StatItem {
   id: string;
@@ -90,7 +90,7 @@ export function StatsGrid({ stats }: StatsGridProps) {
           className="animate-fade-in-up"
           style={{ animationDelay: `${index * 0.1}s` }}
         >
-          <GlassCard className="p-8 h-full flex flex-col justify-center items-center text-center group hover:border-cyan-500/50 transition-colors duration-500 overflow-hidden">
+          <Card className="p-8 h-full flex flex-col justify-center items-center text-center group hover:border-cyan-500/50 transition-colors duration-500 overflow-hidden">
             <div className="text-4xl md:text-5xl font-black mb-2 bg-gradient-to-br from-white to-slate-400 bg-clip-text text-transparent group-hover:from-cyan-400 group-hover:to-blue-500 transition-all flex items-baseline">
               <Counter value={stat.value} suffix={stat.suffix} />
             </div>
@@ -108,7 +108,7 @@ export function StatsGrid({ stats }: StatsGridProps) {
             
             {/* 💎 Glass shine effect */}
             <div className="absolute -inset-x-full top-0 h-full w-1/2 z-0 bg-gradient-to-r from-transparent via-white/5 to-transparent skew-x-[-25deg] group-hover:animate-shimmer transition-all" />
-          </GlassCard>
+          </Card>
         </div>
       ))}
       <style jsx>{`

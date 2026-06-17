@@ -1,9 +1,9 @@
 import { Skeleton } from "@/components/ui/skeleton"
-import { GlassCard } from "@/components/ui/GlassCard"
+import { Card } from "@/components/ui/card"
 
 export function TicketCardSkeleton() {
   return (
-    <GlassCard className="h-full flex flex-col border-white/5 overflow-hidden">
+    <Card className="h-full flex flex-col border-white/5 overflow-hidden">
       {/* Image Block Skeleton */}
       <div className="relative h-52 w-full overflow-hidden rounded-t-[1.5rem]">
         <Skeleton className="w-full h-full rounded-none" />
@@ -36,6 +36,6 @@ export function TicketCardSkeleton() {
           <Skeleton className="h-12 w-12 rounded-2xl" />
         </div>
       </div>
-    </GlassCard>
+    </Card>
   )
 }

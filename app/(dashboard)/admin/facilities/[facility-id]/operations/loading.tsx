@@ -1,5 +1,5 @@
 import { Skeleton } from "@/components/ui/skeleton"
-import { GlassCard } from "@/components/ui/GlassCard"
+import { Card } from "@/components/ui/card"
 
 export default function OperationsLoading() {
   return (
@@ -17,7 +17,7 @@ export default function OperationsLoading() {
       </div>
 
       {/* Table Container Skeleton */}
-      <GlassCard className="p-4 border border-border/50 bg-muted/20 rounded-2xl">
+      <Card className="p-4 border border-border/50 bg-muted/20 rounded-2xl">
         <div className="space-y-4">
           {/* Table Header Row Skeleton */}
           <div className="grid grid-cols-4 gap-4 pb-4 border-b border-border/50 px-4">
@@ -43,7 +43,7 @@ export default function OperationsLoading() {
             </div>
           ))}
         </div>
-      </GlassCard>
+      </Card>
     </div>
   )
 }

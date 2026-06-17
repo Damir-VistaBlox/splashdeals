@@ -2,7 +2,7 @@
 import { Icon } from "@/components/ui/Icon";
 
 import { useEffect } from "react"
-import { GlassCard } from "@/components/ui/GlassCard"
+import { Card } from "@/components/ui/card"
 import Link from "next/link"
 /**
  * 🛡️ Aquastream Admin Control Error Boundary
@@ -28,7 +28,7 @@ export default function AdminError({
          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-muted/10 rounded-full blur-[120px]" />
       </div>
 
-      <GlassCard className="max-w-xl w-full p-8 md:p-12 border-border/50 bg-background/50 relative z-10 text-center space-y-8">
+      <Card className="max-w-xl w-full p-8 md:p-12 border-border/50 bg-background/50 relative z-10 text-center space-y-8">
         <div className="relative inline-flex items-center justify-center h-20 w-20 rounded-full bg-muted/50 border border-border text-muted-foreground">
           <Icon name="gpp_maybe" className="text-[40px] stroke-[1.5]" />
         </div>
@@ -59,7 +59,7 @@ export default function AdminError({
               Kontrolna tabla
            </Link>
         </div>
-      </GlassCard>
+      </Card>
 
     </div>
   )

@@ -2,7 +2,7 @@
 import { Icon } from "@/components/ui/Icon";
 
 import { useEffect, useState } from "react"
-import { GlassCard } from "@/components/ui/GlassCard"
+import { Card } from "@/components/ui/card"
 import Link from "next/link"
 import { useParams } from "next/navigation"
 import { getClientDictionary } from "@/lib/client-dictionaries"
@@ -41,7 +41,7 @@ export default function FacilityError({
          </div>
       </div>
 
-      <GlassCard className="max-w-xl w-full p-8 md:p-16 border-red-500/10 bg-white/5 relative z-10 text-center space-y-8">
+      <Card className="max-w-xl w-full p-8 md:p-16 border-red-500/10 bg-white/5 relative z-10 text-center space-y-8">
         <div className="relative inline-flex items-center justify-center h-24 w-24 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 group">
           <Icon name="error" className="text-[48px] stroke-[1.5]" />
         </div>
@@ -72,7 +72,7 @@ export default function FacilityError({
              {dict.errors.back_home}
            </Link>
         </div>
-      </GlassCard>
+      </Card>
 
     </div>
   )

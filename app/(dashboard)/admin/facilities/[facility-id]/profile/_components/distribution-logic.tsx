@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { GlassCard } from "@/components/ui/GlassCard"
+import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import {
   Dialog,
@@ -212,7 +212,7 @@ export function DistributionLogic({ availableCities }: DistributionLogicProps) {
   }, [cityToPurge, selectedCityIds, setValue, router])
 
   return (
-    <GlassCard className="p-4 sm:p-6 overflow-hidden relative">
+    <Card className="p-4 sm:p-6 overflow-hidden relative">
       <div className="absolute top-0 right-0 size-32 bg-cyan-500/5 blur-3xl rounded-full -mr-16 -mt-16 animate-pulse" />
       
       <header className="flex items-center gap-3 mb-6 relative z-10">
@@ -467,6 +467,6 @@ export function DistributionLogic({ availableCities }: DistributionLogicProps) {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </GlassCard>
+    </Card>
   )
 }

@@ -3,7 +3,7 @@ import { Icon } from "@/components/ui/Icon";
 
 import { useEffect } from "react"
 import { Button } from "@/components/ui/button"
-import { GlassCard } from "@/components/ui/GlassCard"
+import { Card } from "@/components/ui/card"
 import Link from "next/link"
 
 export default function DiscoveryError({
@@ -22,7 +22,7 @@ export default function DiscoveryError({
       {/* Immersive ambient blur */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-rose-500/10 blur-[120px] rounded-full pointer-events-none" />
 
-      <GlassCard className="max-w-md w-full p-8 md:p-10 border-rose-500/20 bg-slate-900/40 backdrop-blur-xl relative z-10 text-center space-y-6">
+      <Card className="max-w-md w-full p-8 md:p-10 border-rose-500/20 bg-slate-900/40 backdrop-blur-xl relative z-10 text-center space-y-6">
         <div className="mx-auto w-16 h-16 rounded-full bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-400">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -69,7 +69,7 @@ export default function DiscoveryError({
             </Link>
           </Button>
         </div>
-      </GlassCard>
+      </Card>
     </div>
   )
 }

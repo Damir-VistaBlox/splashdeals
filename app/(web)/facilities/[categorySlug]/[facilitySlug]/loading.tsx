@@ -1,6 +1,6 @@
 import { Icon } from "@/components/ui/Icon";
 import { Skeleton } from "@/components/ui/skeleton"
-import { GlassCard } from "@/components/ui/GlassCard"
+import { Card } from "@/components/ui/card"
 
 /**
  * 🌊 AquastreamUI Skeleton Shell
@@ -31,13 +31,13 @@ export default function FacilityLoading() {
              </div>
            </div>
            <div className="md:col-span-4">
-              <GlassCard className="p-4 border-white/5 bg-white/5">
+              <Card className="p-4 border-white/5 bg-white/5">
                  <div className="flex gap-2">
                     <Skeleton className="h-20 w-32 rounded-xl bg-white/5" />
                     <Skeleton className="h-20 w-32 rounded-xl bg-white/5" />
                     <Skeleton className="h-20 w-32 rounded-xl bg-white/5" />
                  </div>
-              </GlassCard>
+              </Card>
            </div>
         </div>
       </section>

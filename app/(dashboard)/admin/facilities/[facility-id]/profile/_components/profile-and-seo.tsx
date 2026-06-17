@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { GlassCard } from "@/components/ui/GlassCard"
+import { Card } from "@/components/ui/card"
 import { checkSlugAvailabilityAction } from "@/server/actions/governance"
 import { cn } from "@/lib/utils"
 import type { UpdateFacilityGovernanceValues } from "@/server/lib/validations/facility"
@@ -55,7 +55,7 @@ export function ProfileAndSEO({ facilityId }: ProfileAndSEOProps) {
 
   return (
     <div className="space-y-4">
-      <GlassCard className="p-4 border-border/50 bg-background/40 space-y-4">
+      <Card className="p-4 border-border/50 bg-background/40 space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FormField
             control={control}
@@ -125,10 +125,10 @@ export function ProfileAndSEO({ facilityId }: ProfileAndSEOProps) {
             </FormItem>
           )}
         />
-      </GlassCard>
+      </Card>
 
       {/* SEO Discovery Module */}
-      <GlassCard className="p-4 border-border/50 bg-background/40 space-y-4">
+      <Card className="p-4 border-border/50 bg-background/40 space-y-4">
         <header className="flex items-center justify-between">
           <h3 className="text-[10px] font-black uppercase tracking-widest text-cyan-400">Search Engine Discovery (GEO)</h3>
           <Icon name="bar_chart" className="size-3.5 text-cyan-400 opacity-50" />
@@ -188,9 +188,9 @@ export function ProfileAndSEO({ facilityId }: ProfileAndSEOProps) {
             )}
           />
         </div>
-      </GlassCard>
+      </Card>
 
-      <GlassCard className="p-4 border-border/50 bg-background/40">
+      <Card className="p-4 border-border/50 bg-background/40">
         <FormField
           control={control}
           name="seoArticle"
@@ -214,7 +214,7 @@ export function ProfileAndSEO({ facilityId }: ProfileAndSEOProps) {
             </FormItem>
           )}
         />
-      </GlassCard>
+      </Card>
     </div>
   )
 }

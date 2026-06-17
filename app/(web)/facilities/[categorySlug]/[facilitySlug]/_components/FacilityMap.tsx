@@ -4,7 +4,7 @@ import { Icon } from "@/components/ui/Icon";
 import { useEffect, useRef } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { GlassCard } from "@/components/ui/GlassCard";
+import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
 interface FacilityMapProps {
@@ -120,7 +120,7 @@ export function FacilityMap({
   }, [lat, lng, facilityName]);
 
   return (
-    <GlassCard className="relative overflow-hidden p-6 md:p-8 border-cyan-500/10 shadow-2xl flex flex-col gap-6">
+    <Card className="relative overflow-hidden p-6 md:p-8 border-cyan-500/10 shadow-2xl flex flex-col gap-6">
       {/* Dynamic Keyframe Injection for the Glow effect */}
       <style jsx global>{`
         @keyframes map-pulsate {
@@ -180,6 +180,6 @@ export function FacilityMap({
           📍 {facilityName}
         </div>
       </div>
-    </GlassCard>
+    </Card>
   );
 }

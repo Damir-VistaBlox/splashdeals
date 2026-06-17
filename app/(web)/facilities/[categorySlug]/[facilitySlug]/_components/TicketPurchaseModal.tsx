@@ -2,7 +2,7 @@
 import { Icon } from "@/components/ui/Icon";
 
 import { useState, useEffect, useRef } from "react";
-import { GlassCard } from "@/components/ui/GlassCard";
+import { Card } from "@/components/ui/card";
 import { LiquidButton } from "@/components/ui/LiquidButton";
 import { useCart } from "@/hooks/use-cart";
 import { useUIState } from "@/hooks/use-ui-state";
@@ -237,7 +237,7 @@ export function TicketPurchaseModal({ isOpen, onClose, ticket, facility }: Ticke
             ref={modalRef}
             className="relative w-full max-w-lg md:max-w-xl z-10 overflow-visible animate-fade-in-up"
           >
-            <GlassCard className="p-8 md:p-10 overflow-visible border-white/10 relative z-10 flex flex-col gap-6 bg-gradient-to-br from-slate-900/95 via-slate-950/90 to-cyan-950/20 shadow-[0_30px_70px_rgba(0,0,0,0.85),_0_0_50px_rgba(6,182,212,0.05)] rounded-[2.2rem]">
+            <Card className="p-8 md:p-10 overflow-visible border-white/10 relative z-10 flex flex-col gap-6 bg-gradient-to-br from-slate-900/95 via-slate-950/90 to-cyan-950/20 shadow-[0_30px_70px_rgba(0,0,0,0.85),_0_0_50px_rgba(6,182,212,0.05)] rounded-[2.2rem]">
               
               {/* Decorative Top Glow (No Purple!) */}
               <div className="absolute -top-12 left-1/4 right-1/4 h-24 bg-cyan-500/10 rounded-full blur-[50px] pointer-events-none z-0" />
@@ -436,7 +436,7 @@ export function TicketPurchaseModal({ isOpen, onClose, ticket, facility }: Ticke
                 </button>
               </div>
 
-            </GlassCard>
+            </Card>
           </div>
         </div>
       )}

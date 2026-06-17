@@ -2,7 +2,7 @@
 import { Icon } from "@/components/ui/Icon";
 
 import { useEffect, useState } from "react";
-import { GlassCard } from "@/components/ui/GlassCard";
+import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { formatTime24h, DAYS_SR } from "@/lib/utils/date-time";
 
@@ -27,7 +27,7 @@ export function OperationalPortal({ hours = [] }: OperationalPortalProps) {
   }, []);
 
   return (
-    <GlassCard className="p-10 border-white/5 bg-gradient-to-br from-white/5 to-transparent rounded-[3rem]">
+    <Card className="p-10 border-white/5 bg-gradient-to-br from-white/5 to-transparent rounded-[3rem]">
       <h3 className="text-xl md:text-3xl font-black mb-6 flex items-center gap-4 text-white uppercase tracking-tighter italic">
         <Icon name="schedule" className="text-[24px] text-cyan-400" /> Radno Vreme
       </h3>
@@ -52,7 +52,7 @@ export function OperationalPortal({ hours = [] }: OperationalPortalProps) {
         {!hours?.length && <p className="text-slate-500 italic text-center py-4">Raspored dostupan na licu mesta.</p>}
       </div>
 
-    </GlassCard>
+    </Card>
   );
 }
 

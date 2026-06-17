@@ -2,7 +2,7 @@
 import { Icon } from "@/components/ui/Icon";
 
 import { useState, useMemo, useRef, useEffect } from "react";
-import { GlassCard } from "@/components/ui/GlassCard";
+import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { LiquidButton } from "@/components/ui/LiquidButton";
 import { useCart } from "@/hooks/use-cart";
@@ -173,7 +173,7 @@ export function ShowcaseTicketGrid({ tickets, facilityId, facilityName, category
                   key={t.id}
                   className="group flex-shrink-0 w-[340px] md:w-[420px] snap-start"
                 >
-                  <GlassCard className={cn(
+                  <Card className={cn(
                     "h-full p-8 border-white/5 relative overflow-hidden flex flex-col justify-between transition-all duration-500",
                     t.isFeatured ? "border-cyan-500/30 bg-cyan-500/5 shadow-[0_0_40px_rgba(6,182,212,0.1)]" : "hover:bg-white/5",
                     "hover:border-cyan-500/40 hover:shadow-[0_0_30px_rgba(6,182,212,0.15)] group-hover:scale-[1.03]"
@@ -352,7 +352,7 @@ export function ShowcaseTicketGrid({ tickets, facilityId, facilityName, category
                         </span>
                       </LiquidButton>
                     </div>
-                  </GlassCard>
+                  </Card>
                 </div>
               ))}
             {filteredTickets.length === 0 && (

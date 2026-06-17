@@ -1,6 +1,6 @@
 import { Icon } from "@/components/ui/Icon";
 import { Skeleton } from "@/components/ui/skeleton"
-import { GlassCard } from "@/components/ui/GlassCard"
+import { Card } from "@/components/ui/card"
 export default function TermsLoading() {
   return (
     <div className="min-h-screen pb-32 pt-32 px-6 sm:px-12 max-w-5xl mx-auto animate-pulse">
@@ -25,7 +25,7 @@ export default function TermsLoading() {
 
         <div className="grid gap-8">
           {[1, 2, 3].map((idx) => (
-            <GlassCard key={idx} className="p-8 border-white/5 bg-gradient-to-r from-white/5 to-transparent space-y-4">
+            <Card key={idx} className="p-8 border-white/5 bg-gradient-to-r from-white/5 to-transparent space-y-4">
               <h2 className="text-xl font-black uppercase italic tracking-tight text-white flex items-center gap-3">
                 <Icon name="keyboard_arrow_right" className="text-[20px] text-slate-700" />
                 <Skeleton className="h-6 w-52 bg-white/5 rounded-md" />
@@ -35,7 +35,7 @@ export default function TermsLoading() {
                 <Skeleton className="h-4 w-full bg-white/5 rounded-md" />
                 <Skeleton className="h-4 w-2/3 bg-white/5 rounded-md" />
               </div>
-            </GlassCard>
+            </Card>
           ))}
         </div>
       </div>

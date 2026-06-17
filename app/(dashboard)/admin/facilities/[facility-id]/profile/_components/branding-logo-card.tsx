@@ -9,7 +9,7 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form"
-import { GlassCard } from "@/components/ui/GlassCard"
+import { Card } from "@/components/ui/card"
 import { FacilityLogoUpload } from "./facility-logo-upload"
 import type { UpdateFacilityGovernanceValues } from "@/server/lib/validations/facility"
 
@@ -25,7 +25,7 @@ export function BrandingLogoCard({ facilityId }: BrandingLogoCardProps) {
   const { control } = useFormContext<UpdateFacilityGovernanceValues>()
 
   return (
-    <GlassCard className="p-5 border-border bg-muted/40 backdrop-blur-sm space-y-4">
+    <Card className="p-5 border-border bg-muted/40 backdrop-blur-sm space-y-4">
       <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-2">
           <div className="p-1.5 rounded-lg bg-cyan-500/10">
@@ -56,6 +56,6 @@ export function BrandingLogoCard({ facilityId }: BrandingLogoCardProps) {
           Upload a high-fidelity vector or high-resolution branding asset. Auto-optimized to WebP at 512x512 on hardware canvas.
         </p>
       </div>
-    </GlassCard>
+    </Card>
   )
 }

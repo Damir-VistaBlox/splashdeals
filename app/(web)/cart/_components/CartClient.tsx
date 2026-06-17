@@ -3,7 +3,7 @@ import { Icon } from "@/components/ui/Icon";
 
 import * as React from "react";
 import { useCart, MAX_QUANTITY_PER_ITEM } from "@/hooks/use-cart";
-import { GlassCard } from "@/components/ui/GlassCard";
+import { Card } from "@/components/ui/card";
 import { LiquidButton } from "@/components/ui/LiquidButton";
 import { IdentitySetupDialog } from "@/components/shared/IdentitySetupDialog";
 import Image from "next/image";
@@ -124,7 +124,7 @@ export function CartClient({ dict }: {  dict: Record<string, any> }) {
                  <div
                    key={item.id}
                  >
-                   <GlassCard className="p-6 border-white/5 bg-gradient-to-r from-white/5 to-transparent hover:border-white/10 transition-all group">
+                   <Card className="p-6 border-white/5 bg-gradient-to-r from-white/5 to-transparent hover:border-white/10 transition-all group">
                      <div className="flex flex-col md:flex-row items-center gap-8">
                        {/* Icon/Image Placeholder */}
                        <div className="w-20 h-20 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform relative overflow-hidden">
@@ -194,7 +194,7 @@ export function CartClient({ dict }: {  dict: Record<string, any> }) {
                           </button>
                        </div>
                      </div>
-                   </GlassCard>
+                   </Card>
                  </div>
                ))}
            </div>
@@ -202,7 +202,7 @@ export function CartClient({ dict }: {  dict: Record<string, any> }) {
 
         {/* 💳 SUMMARY SIDEBAR */}
         <div className="w-full lg:w-[400px] space-y-6">
-           <GlassCard className="p-8 border-white/5 bg-navy-deep/50 space-y-8 sticky top-24">
+           <Card className="p-8 border-white/5 bg-navy-deep/50 space-y-8 sticky top-24">
               <div className="space-y-4">
                  <h2 className="text-2xl font-black italic uppercase tracking-tighter text-white">Pregled porudžbine</h2>
                  <div className="space-y-3 pt-4 border-t border-white/5">
@@ -250,7 +250,7 @@ export function CartClient({ dict }: {  dict: Record<string, any> }) {
                  <Image src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/2560px-Visa_Inc._logo.svg.png" alt="Visa" width={64} height={12} className="h-3 w-auto" unoptimized />
                  <Image src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/1280px-Mastercard-logo.svg.png" alt="Mastercard" width={48} height={24} className="h-6 w-auto" unoptimized />
               </div>
-           </GlassCard>
+           </Card>
 
            <p className="text-[10px] text-center text-slate-600 font-bold px-8 leading-relaxed">
              Klikom na &quot;Nastavi na Plaćanje&quot;, prihvatate naše Uslove Korišćenja i Politiku Privatnosti. Sve prodaje digitalnih karata su konačne.
