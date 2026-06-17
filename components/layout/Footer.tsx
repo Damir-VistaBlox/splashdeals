@@ -265,7 +265,7 @@ function NewsletterForm({ dict }: { dict: any | null }) {
   React.useEffect(() => {
     if (state?.success) {
       // Reset email on success — this runs after render but is safe for form state
-      setEmail("");
+      setTimeout(() => setEmail(""));
     }
   }, [state]);
 
