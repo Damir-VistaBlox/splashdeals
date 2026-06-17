@@ -152,6 +152,7 @@ async function checkPage(path, label) {
     // Check for noindex — if noindex is set, it's a managed soft-404
     if (html.includes('content="noindex') || html.includes('name="robots" content="noindex')) {
       fail(WARN, "Status", path, `Soft-404 (200 with noindex) — ${label}`);
+      return;
     } else {
       fail(SEVERE, "Status", path, `Soft-404 (200 with 404 content, no noindex) — ${label}`);
     }
@@ -206,7 +207,6 @@ async function checkPage(path, label) {
   const robotsMatch = html.match(/<meta\s+name="robots"\s+content="([^"]*)"/i);
   if (robotsMatch && robotsMatch[1].includes("noindex")) {
     fail(WARN, "Meta", path, `noindex set: "${robotsMatch[1]}"`);
-    return; // skip remaining checks for noindex pages
   } else {
     pass("Meta", path, "no noindex");
   }
