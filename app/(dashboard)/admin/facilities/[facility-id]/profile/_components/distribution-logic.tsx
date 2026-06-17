@@ -59,8 +59,10 @@ export function DistributionLogic({ availableCities }: DistributionLogicProps) {
   // Sync handle auto-selection of newly created regions
   React.useEffect(() => {
     if (availableCities !== prevAvailableCities) {
-      setPrevAvailableCities(availableCities)
-      setLocalCities(availableCities)
+      setTimeout(() => {
+        setPrevAvailableCities(availableCities)
+        setLocalCities(availableCities)
+      })
     }
   }, [availableCities, prevAvailableCities])
 
