@@ -64,8 +64,10 @@ function SidebarNavItems({ userRole }: { userRole?: string | null }) {
     for (const item of data.navMain) {
       initial[item.title] = getStoredOpen(item.title)
     }
-    setOpenGroups(initial)
-    setInitialized(true)
+    requestAnimationFrame(() => {
+      setOpenGroups(initial)
+      setInitialized(true)
+    })
   }, [getStoredOpen])
 
   // Detect facility context from URL
