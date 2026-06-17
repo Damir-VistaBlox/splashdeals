@@ -84,8 +84,8 @@ export function CartClient({ dict }: {  dict: Record<string, any> }) {
       <div className="container max-w-4xl mx-auto py-32 px-6">
         <div className="flex flex-col items-center justify-center space-y-8 text-center">
           <div className="p-8 rounded-full bg-white/5 border border-white/5 relative">
-             <div className="absolute inset-0 bg-cyan-500 rounded-full blur-3xl opacity-10 animate-pulse" />
-             <Icon name="shopping_bag" className="w-16 h-16 text-cyan-400 relative z-10" />
+             <div className="absolute inset-0 bg-primary rounded-full blur-3xl opacity-10 animate-pulse" />
+             <Icon name="shopping_bag" className="w-16 h-16 text-primary relative z-10" />
           </div>
           <div className="space-y-4">
              <h1 className="text-4xl md:text-5xl font-black italic tracking-tighter uppercase text-white">Vaša korpa je prazna</h1>

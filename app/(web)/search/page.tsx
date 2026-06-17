@@ -44,7 +44,7 @@ export default async function SearchPage({
 }) {
   await connection();
   return (
-    <div className="min-h-screen bg-[#020617]">
+    <div className="min-h-screen bg-background">
       <JsonLd 
         id="search-schema"
         data={{
@@ -54,7 +54,7 @@ export default async function SearchPage({
           "description": "Pronađite akva parkove, bazene i spa centre u Srbiji."
         }} 
       />
-      <Suspense fallback={<div className="min-h-screen bg-[#020617]" />}>
+      <Suspense fallback={<div className="min-h-screen bg-background" />}>
         <GlobalSearch />
       </Suspense>
     </div>

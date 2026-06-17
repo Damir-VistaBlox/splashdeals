@@ -3,7 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Card } from "@/components/ui/card"
 export default function CartLoading() {
   return (
-    <div className="container max-w-6xl mx-auto py-24 px-6 animate-pulse">
+    <div className="container max-w-6xl mx-auto py-24 px-6">
       <div className="flex flex-col lg:flex-row gap-12">
         
         {/* 🛒 ITEM LIST SKELETON */}

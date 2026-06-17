@@ -28,11 +28,11 @@ export default function FacilityError({
   }, [error])
 
   if (!dict) {
-    return <div className="min-h-screen bg-[#020617]" />
+    return <div className="min-h-screen bg-background" />
   }
 
   return (
-    <div className="relative min-h-screen bg-[#020617] text-white flex items-center justify-center p-6 md:p-12 overflow-hidden selection:bg-red-500/20">
+    <div className="relative min-h-screen bg-background text-white flex items-center justify-center p-6 md:p-12 overflow-hidden selection:bg-red-500/20">
       
       <div className="absolute inset-0 z-0 opacity-20 pointer-events-none">
          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-red-500/10 rounded-full blur-[120px]" />

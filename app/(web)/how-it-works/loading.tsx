@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card"
 
 export default function HowItWorksLoading() {
   return (
-    <div className="min-h-screen pb-32 pt-32 px-6 sm:px-12 max-w-5xl mx-auto animate-pulse">
+    <div className="min-h-screen pb-32 pt-32 px-6 sm:px-12 max-w-5xl mx-auto">
       {/* 🏙️ HEADER SKELETON */}
       <header className="mb-20 text-center sm:text-left space-y-6">
         <div className="flex items-center justify-center sm:justify-start gap-3">

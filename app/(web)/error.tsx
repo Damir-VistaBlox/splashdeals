@@ -31,26 +31,26 @@ export default function GlobalWebError({
   // Fallback while dictionary loads (matching the style)
   if (!dict) {
     return (
-      <div className="min-h-screen bg-[#020617]">
+      <div className="min-h-screen bg-background">
         <meta name="robots" content="noindex" />
       </div>
     )
   }
 
   return (
-    <div className="relative min-h-screen bg-[#020617] text-white flex items-center justify-center p-6 md:p-12 overflow-hidden selection:bg-cyan-500/20">
+    <div className="relative min-h-screen bg-background text-white flex items-center justify-center p-6 md:p-12 overflow-hidden selection:bg-primary/20">
       <meta name="robots" content="noindex" />
       
       {/* 🌊 Atmospheric Background Particles */}
       <div className="absolute inset-0 z-0 opacity-20 pointer-events-none">
-         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-cyan-500/10 rounded-full blur-[120px]" />
+         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[120px]" />
          <div className="absolute inset-0 flex items-center justify-center">
             <Icon name="waves" className="w-[80vw] h-[80vw] text-slate-900 stroke-[0.1]" />
          </div>
       </div>
 
       <Card className="max-w-xl w-full p-8 md:p-16 border-cyan-500/10 bg-white/5 relative z-10 text-center space-y-8">
-        <div className="relative inline-flex items-center justify-center h-24 w-24 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400">
+        <div className="relative inline-flex items-center justify-center h-24 w-24 rounded-full bg-primary/10 border border-cyan-500/20 text-cyan-400">
           <Icon name="error" className="text-[48px] stroke-[1.5]" />
         </div>
 
@@ -74,7 +74,7 @@ export default function GlobalWebError({
            </button>
            <Link 
              href={``}
-             className="px-8 py-4 rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-[#020617] font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 shadow-2xl shadow-cyan-500/10 transition-all"
+             className="px-8 py-4 rounded-2xl bg-primary hover:bg-primary/90 text-background font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 shadow-2xl shadow-primary/10 transition-all"
            >
              <Icon name="home" className="text-[16px]" />
              {dict.errors.back_home}

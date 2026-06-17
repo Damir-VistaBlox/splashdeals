@@ -27,7 +27,7 @@ export default async function WebLayout({
   return (
     <>
       <WebVitals />
-      <React.Suspense fallback={<div className="min-h-screen bg-[#020617]" />}>
+      <React.Suspense fallback={<div className="min-h-screen bg-background" />}>
         <WebLayoutContent>
           {children}
           {modal}

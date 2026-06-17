@@ -3,7 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Card } from "@/components/ui/card"
 export default function PrivacyLoading() {
   return (
-    <div className="min-h-screen pb-32 pt-32 px-6 sm:px-12 max-w-5xl mx-auto animate-pulse">
+    <div className="min-h-screen pb-32 pt-32 px-6 sm:px-12 max-w-5xl mx-auto">
       {/* 🏙️ HEADER SKELETON */}
       <header className="mb-20 space-y-6">
         <div className="flex items-center gap-3">

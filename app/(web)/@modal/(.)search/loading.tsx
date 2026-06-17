@@ -2,7 +2,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 
 export default function InterceptedSearchLoading() {
   return (
-    <div className="fixed inset-0 z-50 bg-[#020617]/80 backdrop-blur-md flex items-start justify-center pt-32 px-6 animate-pulse">
+    <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-md flex items-start justify-center pt-32 px-6 animate-pulse">
       <div className="max-w-3xl w-full bg-navy-deep/90 border border-white/5 p-8 rounded-[2.5rem] shadow-2xl space-y-6">
         <Skeleton className="h-14 w-full bg-white/5 rounded-2xl" />
         <div className="space-y-3 pt-4">
