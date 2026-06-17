@@ -58,7 +58,7 @@ export function CreateUserForm() {
       } else {
         toast.error(result.error || "Failed to onboard admin")
       }
-    } catch (error) {
+    } catch {
       toast.error("An unexpected error occurred")
     } finally {
       setIsPending(false)
