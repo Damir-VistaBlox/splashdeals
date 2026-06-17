@@ -98,11 +98,31 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(canonicalUrl, { status: 301 });
   }
 
-  // 1. 🌐 i18n PREFIX REMOVAL
+  // 1. 🌐 i18n PREFIX REMOVAL (single-hop with facility redirect folding)
   const i18nMatch = pathname.match(/^\/(en|rs)(?:\/|$)(.*)/i);
   if (i18nMatch) {
     const [, , remainingPath] = i18nMatch;
-    const cleanPath = '/' + remainingPath;
+    let cleanPath = '/' + remainingPath;
+
+    // Fold facilities redirect into the same hop to avoid /en/facilities/X → /facilities/X → /X
+    if (cleanPath.startsWith('/facilities/')) {
+      const categorySlug = cleanPath.substring('/facilities/'.length).replace(/\/$/, "");
+      const CITY_SLUGS = new Set([
+        'beograd', 'belgrade', 'novi-sad', 'jagodina', 'vrnjacka-banja', 'subotica',
+        'nis', 'kragujevac', 'arandjelovac', 'soko-banja', 'uzice', 'backi-petrovac',
+        'petrovac-na-mlavi', 'zlatibor', 'vojvodina', 'central-serbia', 'apatin',
+        'valjevo', 'ruma', 'indjija', 'stara-pazova', 'veliko-gradiste', 'krusevac',
+        'cacak', 'leskovac', 'sabac', 'kikinda', 'mionica'
+      ]);
+      if (CITY_SLUGS.has(categorySlug.toLowerCase())) {
+        const redirectUrl = new URL('/search', request.url);
+        redirectUrl.searchParams.set('q', categorySlug);
+        request.nextUrl.searchParams.forEach((value, key) => redirectUrl.searchParams.set(key, value));
+        return NextResponse.redirect(redirectUrl, { status: 301 });
+      }
+      cleanPath = `/${categorySlug}`;
+    }
+
     const redirectUrl = new URL(cleanPath, request.url);
     request.nextUrl.searchParams.forEach((value, key) => redirectUrl.searchParams.set(key, value));
     return NextResponse.redirect(redirectUrl, { status: 301 });
