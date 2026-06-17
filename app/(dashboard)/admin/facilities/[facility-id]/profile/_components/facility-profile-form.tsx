@@ -175,7 +175,10 @@ export function FacilityProfileForm({
  
   // 🛡️ Persistence Pipeline: Data Loss Prevention
   const isDirtyRef = useRef(form.formState.isDirty)
-  isDirtyRef.current = form.formState.isDirty
+
+  useEffect(() => {
+    isDirtyRef.current = form.formState.isDirty
+  })
 
   useEffect(() => {
     const handleSyncOnWake = () => {
