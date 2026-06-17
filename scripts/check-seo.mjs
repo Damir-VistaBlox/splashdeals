@@ -106,7 +106,7 @@ async function checkRobotsTxt() {
     const text = await res.text();
     if (res.status !== 200) return fail(SEVERE, "Transport", "/robots.txt", `HTTP ${res.status}`);
     if (!text.includes("Sitemap:")) fail(WARN, "Transport", "/robots.txt", "Missing Sitemap directive");
-    if (text.includes("Disallow: /")) fail(WARN, "Transport", "/robots.txt", "Has Disallow: / — may block all crawling");
+    if (/^Disallow: \/$/m.test(text)) fail(WARN, "Transport", "/robots.txt", "Has Disallow: / — may block all crawling");
     pass("Transport", "/robots.txt", `OK (${text.split("\n").length} lines)`);
   } catch (err) {
     fail(SEVERE, "Transport", "/robots.txt", `Unreachable: ${err.message}`);
