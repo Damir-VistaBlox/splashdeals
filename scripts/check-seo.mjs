@@ -48,11 +48,11 @@ function pass(category, page, message) {
 }
 
 // ── HTTP helper with timeout ───────────────────────────────────────────────
-async function fetch(url, opts = {}) {
+async function httpFetch(url, opts = {}) {
   const ac = new AbortController();
   const timer = setTimeout(() => ac.abort(), opts.timeout || REQUEST_TIMEOUT);
   try {
-    const res = await fetch(url, { ...opts, signal: ac.signal, redirect: opts.redirect ?? "manual" });
+    const res = await globalThis.fetch(url, { ...opts, signal: ac.signal, redirect: opts.redirect ?? "manual" });
     return res;
   } finally {
     clearTimeout(timer);
@@ -102,7 +102,7 @@ async function startServer() {
 // ── Check: robots.txt ──────────────────────────────────────────────────────
 async function checkRobotsTxt() {
   try {
-    const res = await fetch(`${BASE}/robots.txt`);
+    const res = await httpFetch(`${BASE}/robots.txt`);
     const text = await res.text();
     if (res.status !== 200) return fail(SEVERE, "Transport", "/robots.txt", `HTTP ${res.status}`);
     if (!text.includes("Sitemap:")) fail(WARN, "Transport", "/robots.txt", "Missing Sitemap directive");
@@ -116,7 +116,7 @@ async function checkRobotsTxt() {
 // ── Check: sitemap.xml ─────────────────────────────────────────────────────
 async function checkSitemap() {
   try {
-    const res = await fetch(`${BASE}/sitemap.xml`);
+    const res = await httpFetch(`${BASE}/sitemap.xml`);
     const text = await res.text();
     if (res.status !== 200) return fail(SEVERE, "Transport", "/sitemap.xml", `HTTP ${res.status}`);
     // Count <loc> entries
@@ -135,7 +135,7 @@ async function checkPage(path, label) {
   const url = `${BASE}${path}`;
   let res;
   try {
-    res = await fetch(url);
+    res = await httpFetch(url);
   } catch (err) {
     return fail(SEVERE, "Transport", path, `Unreachable: ${err.message}`);
   }
@@ -273,6 +273,10 @@ async function main() {
   }
 
   // 2. Run checks sequentially
+  const criticalPages = [
+    { path: "/", label: "Homepage" },
+  ];
+
   try {
     log("─── Transport Layer ──────────────────────────");
     await checkRobotsTxt();
@@ -280,10 +284,6 @@ async function main() {
 
     console.log("");
     log("─── Critical Pages ───────────────────────────");
-    // Always check these core pages
-    const criticalPages = [
-      { path: "/", label: "Homepage" },
-    ];
 
     // Add top 10 pages from sitemap
     if (sitemapUrls.length > 0) {
@@ -302,6 +302,10 @@ async function main() {
       await checkPage(path, label);
     }
   } finally {
+    // 3. Shutdown
+    server.kill();
+    clearTimeout(overallTimeout);
+  }
     // 3. Shutdown
     server.kill();
     clearTimeout(overallTimeout);
