@@ -17,6 +17,10 @@ interface TicketTier {
   slug: string | null;
   label: string;
   labelSr: string | null;
+  title: string;
+  titleSr: string | null;
+  description: string | null;
+  descriptionSr: string | null;
   price: number;
   originalPrice: number | null;
   dayType: DayType | null;
@@ -60,7 +64,15 @@ interface ShowcaseTicketGroupsProps {
   facilityId: string;
   facilityName: string;
   category: string;
-  facility?: any;
+  facility?: {
+    id: string;
+    name: string;
+    category: string;
+    streetName: string;
+    streetNumber: string;
+    city: string;
+    slug: string | null;
+  };
 }
 
 export function ShowcaseTicketGroups({ groups, facilityId, facilityName, category, facility }: ShowcaseTicketGroupsProps) {
@@ -238,9 +250,9 @@ export function ShowcaseTicketGroups({ groups, facilityId, facilityName, categor
                     main={main}
                     tier={tier}
                     quantity={getQuantity(tier.id)}
-                    setQuantity={(q: number) => setQuantity(tier.id, q)}
+                    setQuantity={(id: string, q: number) => setQuantity(id, q)}
                     isHighlighted={isFeatured}
-                    onAdd={() => {
+                    onAdd={(tier: TicketTier) => {
                       setSelectedTicket(tier);
                     }}
                   />
@@ -284,7 +296,15 @@ export function ShowcaseTicketGroups({ groups, facilityId, facilityName, categor
   );
 }
 
-function SingleTierCard({ group, tier, quantity, setQuantity, onAdd, prefix, main }: any) {
+function SingleTierCard({ group, tier, quantity, setQuantity, onAdd, prefix, main }: {
+  group: TicketGroup;
+  tier: TicketTier;
+  quantity: number;
+  setQuantity: (qty: number) => void;
+  onAdd: () => void;
+  prefix: string;
+  main: string;
+}) {
   return (
     <Card id={`ticket-${tier.id}`} className="p-12 flex flex-col md:flex-row items-center justify-between gap-12 group border-white/5">
       <div className="space-y-4 text-center md:text-left flex-1">
@@ -400,10 +420,17 @@ function SingleTierCard({ group, tier, quantity, setQuantity, onAdd, prefix, mai
   );
 }
 
-function TierList({ tiers, quantities, setQuantity, onAdd, prefix, main }: any) {
+function TierList({ tiers, quantities, setQuantity, onAdd, prefix, main }: {
+  tiers: TicketTier[];
+  quantities: Record<string, number>;
+  setQuantity: (id: string, qty: number) => void;
+  onAdd: (tier: TicketTier) => void;
+  prefix: string;
+  main: string;
+}) {
   return (
     <div className="space-y-4">
-      {tiers.map((tier: any) => (
+      {tiers.map((tier: TicketTier) => (
         <div key={tier.id} id={`ticket-${tier.id}`} className="flex flex-col md:flex-row md:items-center justify-between gap-6 p-6 rounded-3xl bg-white/[0.02] border border-white/5 hover:bg-white/5 transition-all group">
           
           {/* Ticket Information */}
@@ -420,7 +447,7 @@ function TierList({ tiers, quantities, setQuantity, onAdd, prefix, main }: any) 
               {tier.timeSlot && tier.timeSlot !== 'FULL_DAY' && (
                 <span className="flex items-center gap-1.5">
                   <Icon name="schedule" className="text-[14px] text-cyan-500" />
-                  {tier.timeSlot === "AFTERNOON" ? "Poslepodne" : tier.timeSlot === "MORNING" ? "Prepodne" : "Celodnevna"}
+                  {tier.timeSlot === "AFTER_16H" ? "Poslepodne" : "Celodnevna"}
                 </span>
               )}
               {tier.maxPeople && tier.maxPeople > 1 && (
@@ -531,7 +558,14 @@ function TierList({ tiers, quantities, setQuantity, onAdd, prefix, main }: any) 
   );
 }
 
-function TierGrid({ tiers, quantities, setQuantity, onAdd, prefix, main }: any) {
+function TierGrid({ tiers, quantities, setQuantity, onAdd, prefix, main }: {
+  tiers: TicketTier[];
+  quantities: Record<string, number>;
+  setQuantity: (id: string, qty: number) => void;
+  onAdd: (tier: TicketTier) => void;
+  prefix: string;
+  main: string;
+}) {
   return (
     <div className="overflow-x-auto -mx-8 px-8">
       <table className="w-full text-left border-separate border-spacing-y-3">
@@ -545,7 +579,7 @@ function TierGrid({ tiers, quantities, setQuantity, onAdd, prefix, main }: any) 
           </tr>
         </thead>
         <tbody>
-          {tiers.map((tier: any) => (
+          {tiers.map((tier: TicketTier) => (
             <tr key={tier.id} id={`ticket-${tier.id}`} className="bg-white/[0.02] border border-white/5 hover:bg-white/5 transition-all group">
               <td className="py-4 pl-6 rounded-l-3xl">
                 <div className="font-black text-white uppercase italic tracking-tight">{tier.labelSr || tier.label}</div>
@@ -559,7 +593,7 @@ function TierGrid({ tiers, quantities, setQuantity, onAdd, prefix, main }: any) 
                   )}
                   {tier.timeSlot && tier.timeSlot !== 'FULL_DAY' && (
                     <Badge variant="outline" className="text-[8px] font-black border-cyan-500/20 text-cyan-400">
-                      {tier.timeSlot === "AFTERNOON" ? "Poslepodne" : tier.timeSlot === "MORNING" ? "Prepodne" : "Celodnevna"}
+                      {tier.timeSlot === "AFTER_16H" ? "Poslepodne" : "Celodnevna"}
                     </Badge>
                   )}
                 </div>
@@ -654,7 +688,15 @@ function TierGrid({ tiers, quantities, setQuantity, onAdd, prefix, main }: any) 
   );
 }
 
-function MobileTicketCard({ tier, quantity, setQuantity, onAdd, isHighlighted, prefix, main }: any) {
+function MobileTicketCard({ tier, quantity, setQuantity, onAdd, isHighlighted, prefix, main }: {
+  tier: TicketTier;
+  quantity: number;
+  setQuantity: (id: string, qty: number) => void;
+  onAdd: (tier: TicketTier) => void;
+  isHighlighted: boolean;
+  prefix: string;
+  main: string;
+}) {
   const hasDiscount = tier.originalPrice && Number(tier.originalPrice) > Number(tier.price);
   const discountPercent = hasDiscount 
     ? Math.round(((Number(tier.originalPrice) - Number(tier.price)) / Number(tier.originalPrice)) * 100)
@@ -690,7 +732,7 @@ function MobileTicketCard({ tier, quantity, setQuantity, onAdd, isHighlighted, p
           )}
           {tier.timeSlot && tier.timeSlot !== 'FULL_DAY' && (
             <Badge className="bg-cyan-500/10 text-cyan-400 text-[8px] font-black uppercase tracking-wider border-cyan-500/10">
-              {tier.timeSlot === "AFTERNOON" ? "Poslepodne" : tier.timeSlot === "MORNING" ? "Prepodne" : "Celodnevna"}
+              {tier.timeSlot === "AFTER_16H" ? "Poslepodne" : "Celodnevna"}
             </Badge>
           )}
           {tier.isSeasonPass && (
@@ -759,7 +801,7 @@ function MobileTicketCard({ tier, quantity, setQuantity, onAdd, isHighlighted, p
           </button>
         </div>
 
-        <LiquidButton onClick={onAdd} className="h-12 px-4 text-[10px] font-black uppercase tracking-[0.15em] flex-1">
+        <LiquidButton onClick={() => onAdd(tier)} className="h-12 px-4 text-[10px] font-black uppercase tracking-[0.15em]">
           Dodaj u korpu
         </LiquidButton>
       </div>

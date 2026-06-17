@@ -152,14 +152,14 @@ export async function getFacilityMetadata(facilitySlug: string, categorySlug: st
   const currentYear = new Date().getFullYear();
   const categoryLabel = catLabelMap[facility.category.toLowerCase()] ?? facility.category;
 
-  const activeTickets = (facility.tickets || []).filter((t: any) => t.isActive);
+  const activeTickets = (facility.tickets || []).filter((t: { isActive: boolean }) => t.isActive);
   const ticketCount = activeTickets.length;
   const ticketHint = ticketCount > 0 
     ? ` | ${ticketCount} vrsta ulaznica dostupno`
     : '';
 
   const minPrice = activeTickets.length > 0 
-    ? Math.min(...activeTickets.map((t: any) => Number(t.price)))
+    ? Math.min(...activeTickets.map((t: { price: number | { toString: () => string } }) => Number(t.price)))
     : null;
 
   const priceHint = minPrice 
@@ -196,9 +196,9 @@ export async function getFacilityMetadata(facilitySlug: string, categorySlug: st
   const baseDescription = facility.metaDescription || (facility.description?.slice(0, 140) || fallbackDescription);
   const finalDescription = baseDescription.includes("Već od") ? baseDescription : `${baseDescription}${priceHint}${ticketHint}`;
 
-  const ogImage = facility.media.find((m: any) => m.isHero && m.type === 'PHOTO')?.url 
-    || facility.media.find((m: any) => m.isCardBackground && m.type === 'PHOTO')?.url
-    || facility.media.find((m: any) => m.type === 'PHOTO')?.url
+  const ogImage = facility.media.find((m: { isHero: boolean; isCardBackground: boolean; type: string; url?: string }) => m.isHero && m.type === 'PHOTO')?.url 
+    || facility.media.find((m: { isHero: boolean; isCardBackground: boolean; type: string; url?: string }) => m.isCardBackground && m.type === 'PHOTO')?.url
+    || facility.media.find((m: { isHero: boolean; isCardBackground: boolean; type: string; url?: string }) => m.type === 'PHOTO')?.url
     || "/og-image.png";
 
   const canonicalUrl = subPath 
@@ -318,15 +318,37 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
   const categoryLabel = catLabelMap[facility.category.toLowerCase()] ?? facility.category;
 
   // Find all active tickets (used in either fallback or virtual group)
-  const activeTickets = (facility.tickets || []).filter((t: any) => t.isActive)
+  const activeTickets = (facility.tickets || []).filter((t: { isActive: boolean }) => t.isActive)
   const ticketCount = activeTickets.length
 
-  let mappedGroups: any[] = []
+  let mappedGroups: Array<{
+    id: string;
+    title: string;
+    titleSr: string;
+    description: string;
+    descriptionSr: string;
+    slug: string;
+    tiers: Array<{
+      id: string;
+      label: string;
+      labelSr: string;
+      price: number;
+      originalPrice: number | null;
+      minPeople: number;
+      maxPeople: number | null;
+      dayType: string | null;
+      timeSlot: string | null;
+      isSeasonPass: boolean;
+      requiresIdentity: boolean;
+      requiresPhoto: boolean;
+      imageUrl: string | null;
+    }>;
+  }> = []
 
   if (facility.ticketGroups && facility.ticketGroups.length > 0) {
-    mappedGroups = facility.ticketGroups.map((g: any) => ({
+    mappedGroups = facility.ticketGroups.map((g: { id: string; title: string; titleSr: string | null; description: string | null; descriptionSr: string | null; slug: string | null; tickets: Array<{ id: string; title: string; titleSr: string | null; groupId: string | null; price: number; originalPrice: number | null; minPeople: number; maxPeople: number | null; dayType: string | null; timeSlot: string | null; isSeasonPass: boolean; requiresIdentity: boolean; requiresPhoto: boolean }> }) => ({
       ...g,
-      tiers: g.tickets.map((t: any) => ({
+      tiers: g.tickets.map((t) => ({
         ...t,
         label: t.title,
         labelSr: t.titleSr || t.title,
@@ -334,12 +356,12 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
         originalPrice: t.originalPrice ? Number(t.originalPrice) : null,
         minPeople: t.minPeople || 1,
         maxPeople: t.maxPeople || null,
-        imageUrl: t.imageUrl || facility.media?.[0]?.url || null,
+        imageUrl: (t as { imageUrl?: string | null }).imageUrl || facility.media?.[0]?.url || null,
       }))
     }))
 
     // Fetch active tickets that have no group and bundle them into a virtual group
-    const ungroupedTickets = activeTickets.filter((t: any) => !t.groupId)
+    const ungroupedTickets = activeTickets.filter((t: { groupId: string | null }) => !t.groupId)
     if (ungroupedTickets.length > 0) {
       mappedGroups.push({
         id: "default-group",
@@ -348,7 +370,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
         description: "Standardne ponude i ulaznice koje nisu deo posebnih paketa.",
         descriptionSr: "Standardne ponude i ulaznice koje nisu deo posebnih paketa.",
         slug: "standardne-ponude",
-        tiers: ungroupedTickets.map((t: any) => ({
+        tiers: ungroupedTickets.map((t: { id: string; title: string; titleSr: string | null; price: number; originalPrice: number | null; minPeople: number; maxPeople: number | null; isSeasonPass: boolean; requiresIdentity: boolean; requiresPhoto: boolean; imageUrl?: string | null }) => ({
           ...t,
           label: t.title,
           labelSr: t.titleSr || t.title,
@@ -356,7 +378,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
           originalPrice: t.originalPrice ? Number(t.originalPrice) : null,
           minPeople: t.minPeople || 1,
           maxPeople: t.maxPeople || null,
-          imageUrl: t.imageUrl || facility.media?.[0]?.url || null,
+          imageUrl: (t as { imageUrl?: string | null }).imageUrl || facility.media?.[0]?.url || null,
         }))
       })
     }
@@ -378,7 +400,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
           originalPrice: t.originalPrice ? Number(t.originalPrice) : null,
           minPeople: t.minPeople || 1,
           maxPeople: t.maxPeople || null,
-          imageUrl: t.imageUrl || facility.media?.[0]?.url || null,
+          imageUrl: (t as { imageUrl?: string | null }).imageUrl || facility.media?.[0]?.url || null,
         }))
       }]
     }

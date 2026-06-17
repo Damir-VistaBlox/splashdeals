@@ -11,8 +11,34 @@ import { useRouter } from "next/navigation";
 interface TicketPurchaseModalProps {
   isOpen: boolean;
   onClose: () => void;
-  ticket: any;
-  facility: any;
+  ticket: {
+    id: string;
+    title: string;
+    titleSr: string | null;
+    price: number | { toString: () => string };
+    originalPrice: number | null | { toString: () => string };
+    dayType: string | null;
+    timeSlot: string | null;
+    minPeople: number;
+    maxPeople: number | null;
+    isSeasonPass: boolean;
+    requiresIdentity: boolean;
+    requiresPhoto: boolean;
+    slug: string | null;
+    description: string | null;
+    descriptionSr: string | null;
+    label: string;
+    labelSr: string | null;
+    imageUrl?: string | null;
+  } | null;
+  facility: {
+    id: string;
+    name: string;
+    category: string;
+    streetName?: string | null;
+    streetNumber?: string | null;
+    city?: string;
+  };
 }
 
 interface DateOption {
@@ -133,7 +159,7 @@ export function TicketPurchaseModal({ isOpen, onClose, ticket, facility }: Ticke
   }, [isOpen]);
 
   // Generate date options based on ticket configuration
-  const availableDates = ticket ? getAvailableDates(ticket.dayType) : [];
+  const availableDates = ticket ? getAvailableDates(ticket.dayType ?? "ALL") : [];
 
   // Derive active selected date. If current selectedDate is not available or empty, fall back to the first available date.
   const activeDate = selectedDate && availableDates.some((d) => d.dateStr === selectedDate)
