@@ -11,11 +11,11 @@ interface PageProps {
 
 export async function generateMetadata({ params: _params }: PageProps): Promise<Metadata> {
   return {
-    title: "Politika Kolačića i Upravljanje Podacima | Splashdeals",
+    title: "Politika Kolačića i Upravljanje Podacima",
     description: "Saznajte kako Splashdeals.rs koristi kolačiće za optimalan rad korpe i personalizaciju pretrage, i kako možete sami upravljati njima u pretraživaču.",
     alternates: { canonical: "https://www.splashdeals.rs/cookies" },
     openGraph: {
-      title: "Politika Kolačića i Upravljanje Podacima | Splashdeals",
+      title: "Politika Kolačića i Upravljanje Podacima",
       description: "Saznajte kako Splashdeals.rs koristi kolačiće za optimalan rad korpe i personalizaciju pretrage, i kako možete sami upravljati njima u pretraživaču.",
       images: ["/og-image.png"],
       locale: "sr_RS",
@@ -23,7 +23,7 @@ export async function generateMetadata({ params: _params }: PageProps): Promise<
     },
     twitter: {
       card: "summary_large_image",
-      title: "Politika Kolačića i Upravljanje Podacima | Splashdeals",
+      title: "Politika Kolačića i Upravljanje Podacima",
       description: "Saznajte kako Splashdeals.rs koristi kolačiće za optimalan rad korpe i personalizaciju pretrage, i kako možete sami upravljati njima u pretraživaču.",
       images: ["/og-image.png"],
     },
