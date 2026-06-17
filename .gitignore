@@ -40,6 +40,9 @@ data/seo/gsc-url-removal-list.txt
 # Build output
 # ──────────────────────────────────────────────
 
+# hermes
+.hermes/
+
 .next/
 /out/
 /build
