@@ -11,11 +11,11 @@ interface PageProps {
 
 export async function generateMetadata({ params: _params }: PageProps): Promise<Metadata> {
   return {
-    title: "Politika Privatnosti i Zaštita Podataka | Splashdeals",
+    title: "Politika Privatnosti i Zaštita Podataka",
     description: "Vaša privatnost nam je na prvom mestu. Saznajte kako Splashdeals.rs prikuplja, obrađuje i štiti vaše lične podatke u skladu sa ZZPL i GDPR.",
     alternates: { canonical: "https://www.splashdeals.rs/privacy" },
     openGraph: {
-      title: "Politika Privatnosti i Zaštita Podataka | Splashdeals",
+      title: "Politika Privatnosti i Zaštita Podataka",
       description: "Vaša privatnost nam je na prvom mestu. Saznajte kako Splashdeals.rs prikuplja, obrađuje i štiti vaše lične podatke u skladu sa ZZPL i GDPR.",
       images: ["/og-image.png"],
       locale: "sr_RS",
@@ -23,7 +23,7 @@ export async function generateMetadata({ params: _params }: PageProps): Promise<
     },
     twitter: {
       card: "summary_large_image",
-      title: "Politika Privatnosti i Zaštita Podataka | Splashdeals",
+      title: "Politika Privatnosti i Zaštita Podataka",
       description: "Vaša privatnost nam je na prvom mestu. Saznajte kako Splashdeals.rs prikuplja, obrađuje i štiti vaše lične podatke u skladu sa ZZPL i GDPR.",
       images: ["/og-image.png"],
     },
