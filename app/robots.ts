@@ -26,12 +26,11 @@ export default function robots(): MetadataRoute.Robots {
           '/*/admin',
           '/api/',
           '/*/api/',
-          
+
           // 🛠️ Block internal Next.js paths and data manifests
           '/_next/',
-          '/api/',
           '/middleware-manifest.json',
-          
+
           // 🔒 Block private user paths
           '/cart',
           '/*/cart',
@@ -39,7 +38,7 @@ export default function robots(): MetadataRoute.Robots {
           '/*/checkout',
           '/account',
           '/*/account',
-          
+
           // 💳 Block order confirmation pages
           '/success',
           '/*/success',
@@ -62,12 +61,11 @@ export default function robots(): MetadataRoute.Robots {
           '/*/admin',
           '/api/',
           '/*/api/',
-          
+
           // 🛠️ Block internal Next.js paths and data manifests
           '/_next/',
-          '/api/',
           '/middleware-manifest.json',
-          
+
           // 🔒 Block private user paths
           '/cart',
           '/*/cart',
@@ -75,7 +73,7 @@ export default function robots(): MetadataRoute.Robots {
           '/*/checkout',
           '/account',
           '/*/account',
-          
+
           // 💳 Block order confirmation pages
           '/success',
           '/*/success',

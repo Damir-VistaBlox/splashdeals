@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     'Stranica koju tražite ne postoji ili je premeštena. Vratite se na početnu stranicu da istražite najbolje akva parkove u Srbiji.',
   robots: {
     index: false,
-    follow: true,
+    follow: false,
   },
   alternates: {
     canonical: null,

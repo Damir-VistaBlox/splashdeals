@@ -16,7 +16,7 @@ async function resolveSlug(firstSlug: string) {
     select: { category: true }
   });
   if (hasCategory) {
-    return { type: "category", category: hasCategory.category };
+    return { type: "category", category: hasCategory.category.toLowerCase().replace(/\s+/g, '-') };
   }
 
   // 2. Check if facility

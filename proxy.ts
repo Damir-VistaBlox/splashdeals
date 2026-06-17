@@ -209,10 +209,11 @@ export async function proxy(request: NextRequest) {
     response.headers.set('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload');
   }
 
-  // 6. 🛡️ ROBOT PROTECTION: Admin/Cart/Auth/Success noindex
+  // 6. 🛡️ ROBOT PROTECTION: Admin/Cart/Checkout/Auth/Success noindex
   const noindexPaths = [
     pathname.startsWith('/admin'),
     pathname === '/cart' || pathname.startsWith('/cart/'),
+    pathname === '/checkout' || pathname.startsWith('/checkout/'),
     pathname === '/auth' || pathname.startsWith('/auth/'),
     pathname === '/success' || pathname.startsWith('/success/'),
   ];

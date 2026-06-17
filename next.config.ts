@@ -32,6 +32,10 @@ const nextConfig: NextConfig = {
 
   // Ensure Turbopack remains fast
   cacheComponents: true, // Enabled for Next.js 16 cache directives support
+
+  // 🏎️ ETag generation for conditional GET (304 Not Modified) support
+  // Reduces crawl budget waste by allowing bots to revalidate instead of re-downloading full payloads.
+  generateEtags: true,
   experimental: {
     optimizeCss: true, // Inlines critical CSS for better FCP
     serverActions: {
@@ -90,7 +94,7 @@ const nextConfig: NextConfig = {
             value: "camera=(), microphone=(), geolocation=(), payment=()",
           },
           {
-            key: "Content-Security-Policy-Report-Only",
+            key: "Content-Security-Policy",
             value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.splashdeals.rs https://f7t7eeiv4kcyjvws.public.blob.vercel-storage.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://www.splashdeals.rs https://f7t7eeiv4kcyjvws.public.blob.vercel-storage.com https://grainy-gradients.vercel.app; font-src 'self' data:; connect-src 'self' https://www.splashdeals.rs; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'",
           },
         ],

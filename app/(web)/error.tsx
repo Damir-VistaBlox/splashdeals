@@ -31,15 +31,12 @@ export default function GlobalWebError({
   // Fallback while dictionary loads (matching the style)
   if (!dict) {
     return (
-      <div className="min-h-screen bg-background">
-        <meta name="robots" content="noindex" />
-      </div>
+      <div className="min-h-screen bg-background" />
     )
   }
 
   return (
     <div className="relative min-h-screen bg-background text-white flex items-center justify-center p-6 md:p-12 overflow-hidden selection:bg-primary/20">
-      <meta name="robots" content="noindex" />
       
       {/* 🌊 Atmospheric Background Particles */}
       <div className="absolute inset-0 z-0 opacity-20 pointer-events-none">

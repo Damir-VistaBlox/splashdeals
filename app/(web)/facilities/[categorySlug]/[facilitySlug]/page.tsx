@@ -26,6 +26,8 @@ import {
   OperatingHours, 
   FacilityCity,
   City,
+  DayType,
+  TimeSlot,
   Prisma
 } from "@prisma/client"
 
@@ -365,15 +367,23 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
     slug: string;
     tiers: Array<{
       id: string;
+      slug: string | null;
       label: string;
       labelSr: string;
+      title: string;
+      titleSr: string;
+      description: string | null;
+      descriptionSr: string | null;
       price: number;
       originalPrice: number | null;
       minPeople: number;
       maxPeople: number | null;
-      dayType: string | null;
-      timeSlot: string | null;
+      dayType: DayType | null;
+      timeSlot: TimeSlot | null;
       isSeasonPass: boolean;
+      isActive: boolean;
+      seasonStart: Date | null;
+      seasonEnd: Date | null;
       requiresIdentity: boolean;
       requiresPhoto: boolean;
       imageUrl: string | null;
@@ -384,24 +394,31 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
     mappedGroups = facility.ticketGroups.map((g: { id: string; title: string; titleSr: string | null; description: string | null; descriptionSr: string | null; slug: string | null; tickets: TicketData[] }) => ({
       id: g.id,
       title: g.title,
-      titleSr: g.titleSr || g.title,
+      titleSr: (g.titleSr || g.title) as string,
       description: g.description,
       descriptionSr: g.descriptionSr || g.description,
       slug: g.slug || g.title.toLowerCase().replace(/\s+/g, "-"),
       tiers: g.tickets.map((t: TicketData) => ({
-        id: t.id,
+        ...t,
+        title: t.title,
+        titleSr: (t.titleSr || t.title) as string,
         label: t.title,
-        labelSr: t.titleSr || t.title,
+        labelSr: (t.titleSr || t.title) as string,
         price: Number(t.price),
         originalPrice: t.originalPrice ? Number(t.originalPrice) : null,
         minPeople: t.minPeople || 1,
         maxPeople: t.maxPeople || null,
-        dayType: t.dayType || null,
-        timeSlot: t.timeSlot || null,
+        dayType: (t.dayType || null) as DayType | null,
+        timeSlot: (t.timeSlot || null) as TimeSlot | null,
         isSeasonPass: Boolean(t.isSeasonPass),
         requiresIdentity: Boolean(t.requiresIdentity),
         requiresPhoto: Boolean(t.requiresPhoto),
         imageUrl: (t.imageUrl as string) || facility.media?.[0]?.url || null,
+        slug: null,
+        description: null,
+        descriptionSr: null,
+        seasonStart: null,
+        seasonEnd: null,
       }))
     }))
 
@@ -416,19 +433,26 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
         descriptionSr: "Standardne ponude i ulaznice koje nisu deo posebnih paketa.",
         slug: "standardne-ponude",
         tiers: ungroupedTickets.map((t) => ({
-          id: t.id,
+          ...t,
+          title: t.title,
+          titleSr: (t.titleSr || t.title) as string,
           label: t.title,
-          labelSr: t.titleSr || t.title,
+          labelSr: (t.titleSr || t.title) as string,
           price: Number(t.price),
           originalPrice: t.originalPrice ? Number(t.originalPrice) : null,
           minPeople: t.minPeople || 1,
           maxPeople: t.maxPeople || null,
-          dayType: t.dayType || null,
-          timeSlot: t.timeSlot || null,
+          dayType: (t.dayType || null) as DayType | null,
+          timeSlot: (t.timeSlot || null) as TimeSlot | null,
           isSeasonPass: t.isSeasonPass,
           requiresIdentity: t.requiresIdentity,
           requiresPhoto: t.requiresPhoto,
           imageUrl: t.imageUrl || facility.media?.[0]?.url || null,
+          slug: null,
+          description: null,
+          descriptionSr: null,
+          seasonStart: null,
+          seasonEnd: null,
         }))
       })
     }
@@ -444,13 +468,25 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
         slug: "standardne-ponude",
         tiers: activeTickets.map((t) => ({
           ...t,
+          title: t.title,
+          titleSr: (t.titleSr || t.title) as string,
           label: t.title,
-          labelSr: t.titleSr || t.title,
+          labelSr: (t.titleSr || t.title) as string,
           price: Number(t.price),
           originalPrice: t.originalPrice ? Number(t.originalPrice) : null,
           minPeople: t.minPeople || 1,
           maxPeople: t.maxPeople || null,
           imageUrl: t.imageUrl || facility.media?.[0]?.url || null,
+          slug: null,
+          description: null,
+          descriptionSr: null,
+          seasonStart: null,
+          seasonEnd: null,
+          dayType: null,
+          timeSlot: null,
+          isSeasonPass: false,
+          requiresIdentity: false,
+          requiresPhoto: false,
         }))
       }]
     }
@@ -462,7 +498,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
   const heroMedia = explicitHero || firstVideo || facility.media[0];
 
   // 🧠 Structured Data Block
-  const allTiers = mappedGroups.flatMap((group: any) => group.tiers || []);
+  const allTiers = mappedGroups.flatMap((group: { tiers: Array<unknown> }) => group.tiers || []);
 
   // Deterministic ratings removed — AggregateRating requires real user reviews,
   // not values computed from facility name hashes. Remove once a review system exists.
@@ -736,7 +772,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
            </div>
             <Suspense fallback={<TicketGridSkeleton />}>
                <ShowcaseTicketGroups 
-                  groups={mappedGroups as any} 
+                  groups={mappedGroups} 
                   facilityId={facility.id}
                   facilityName={facility.name}
                   category={facility.category}
