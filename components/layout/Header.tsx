@@ -54,8 +54,8 @@ export const Header = ({ dict, cities }: HeaderProps) => {
           flex flex-col justify-center px-4 md:px-12
           ${
             scrolled
-              ? "bg-[rgba(2,6,23,0.98)] backdrop-blur-[40px] border-white/[0.12]"
-              : "bg-[rgba(2,6,23,0.95)] backdrop-blur-[20px] border-white/[0.08]"
+              ? "bg-background/98 backdrop-blur-[40px] border-white/[0.12]"
+              : "bg-background/95 backdrop-blur-[20px] border-white/[0.08]"
           }
         `}
       >

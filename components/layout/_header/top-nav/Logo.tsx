@@ -14,7 +14,7 @@ interface LogoProps {
 export function Logo({ isTabActive, isReducedMotion, isHovered, setIsHovered }: LogoProps) {
   return (
     <Link
-      href={``}
+      href={"/"}
       className="group flex items-center"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}

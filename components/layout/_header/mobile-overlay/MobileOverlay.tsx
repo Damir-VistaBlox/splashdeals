@@ -86,10 +86,10 @@ export function MobileOverlay({
 
           <div className="mt-auto pt-6 border-t border-white/5 space-y-4">
             <LiquidButton className="w-full h-14 text-base" onClick={() => setIsMobileMenuOpen(false)}>
-              Get Your Pass
+              {dict?.nav?.get_pass || "Uzmi kartu"}
             </LiquidButton>
             <div className="text-center text-slate-500 text-xs font-bold uppercase tracking-widest">
-              Serbia&apos;s Best Water Parks
+              {dict?.home?.rights_reserved || "Srbijini najbolji akva parkovi"}
             </div>
           </div>
         </div>
