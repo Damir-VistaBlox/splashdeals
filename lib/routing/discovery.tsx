@@ -37,7 +37,8 @@ export async function getDiscoveryMetadata(categorySlug: string): Promise<Metada
     where: { category: { equals: categorySlug, mode: "insensitive" } },
   });
 
-  if (!hasCategory) {
+  // If no facilities in DB but category slug is known, still render (eg. CI/empty state)
+  if (!hasCategory && !catLabels[categorySlug.toLowerCase()]) {
     notFound();
   }
 
@@ -86,7 +87,8 @@ export async function DiscoveryTemplate({ params }: PageProps) {
     where: { category: { equals: categorySlug, mode: "insensitive" } },
   });
 
-  if (!hasCategory) {
+  // If no facilities in DB but category slug is known, still render (eg. CI/empty state)
+  if (!hasCategory && !catLabels[categorySlug.toLowerCase()]) {
     notFound();
   }
 
