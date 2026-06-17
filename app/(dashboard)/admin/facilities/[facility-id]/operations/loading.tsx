@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card"
 
 export default function OperationsLoading() {
   return (
-    <div className="flex flex-col gap-8 animate-pulse">
+    <div className="flex flex-col gap-8">
       {/* Header Block Skeleton */}
       <div className="flex items-center justify-between bg-muted/40 p-6 rounded-2xl border border-border/50 backdrop-blur-md">
         <div className="space-y-2">

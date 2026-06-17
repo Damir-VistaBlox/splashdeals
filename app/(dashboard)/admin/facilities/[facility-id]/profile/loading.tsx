@@ -1,12 +1,10 @@
- 
- 
 import { Card } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Separator } from "@/components/ui/separator"
 
 export default function ProfileLoading() {
   return (
-    <div className="space-y-6 pb-20 relative animate-pulse">
+    <div className="space-y-6 pb-20 relative">
       <div className="flex flex-col lg:flex-row gap-8 items-start relative mt-8">
         {/* 🧭 Nav Skeleton */}
         <div className="w-full lg:w-56 shrink-0 space-y-2">

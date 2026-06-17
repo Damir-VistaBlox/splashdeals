@@ -1,5 +1,3 @@
- 
- 
 "use client"
 
 import { SlotError } from "./_components/slot-error"

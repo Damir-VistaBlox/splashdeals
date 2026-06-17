@@ -52,7 +52,7 @@ export function createGroupColumns({ onEdit, onDelete }: CreateGroupColumnsProps
       header: "Naziv Grupe",
       cell: ({ row }) => (
         <div className="flex flex-col">
-          <span className="font-bold text-sm text-foreground group-hover:text-cyan-400 transition-colors italic">
+          <span className="font-bold text-sm text-foreground group-hover:text-primary transition-colors italic">
             {row.original.title}
           </span>
           <span className="text-[10px] text-muted-foreground font-mono tracking-tight mt-0.5">
@@ -66,7 +66,7 @@ export function createGroupColumns({ onEdit, onDelete }: CreateGroupColumnsProps
       header: "Varijante",
       cell: ({ row }) => (
         <div className="flex items-center gap-2">
-          <Badge variant="outline" className="bg-cyan-500/10 text-cyan-400 border-cyan-500/20 text-[10px] font-bold uppercase tracking-wider">
+          <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20 text-[10px] font-bold uppercase tracking-wider">
             {row.original.tiers.length} nivoa
           </Badge>
           <div className="flex -space-x-2">
@@ -109,7 +109,7 @@ export function createGroupColumns({ onEdit, onDelete }: CreateGroupColumnsProps
       cell: ({ row }) => (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-9 w-9 p-0 hover:bg-muted/30 rounded-xl transition-colors">
+            <Button variant="ghost" className="h-9 w-9 p-0 hover:bg-muted/30 rounded-xl transition-colors" aria-label="Opcije">
               <span className="sr-only">Opcije</span>
               <Icon name="more_horiz" className="text-[16px] text-muted-foreground" />
             </Button>
@@ -120,7 +120,7 @@ export function createGroupColumns({ onEdit, onDelete }: CreateGroupColumnsProps
               onClick={() => onEdit(row.original)}
               className="flex items-center gap-2 rounded-lg px-2 py-2 text-sm font-medium text-foreground hover:bg-muted/30 transition-all cursor-pointer"
             >
-              <Icon name="edit" className="text-[16px] text-cyan-400" />
+              <Icon name="edit" className="text-[16px] text-primary" />
               Izmeni Grupu
             </DropdownMenuItem>
             <DropdownMenuSeparator className="bg-muted/30" />
@@ -219,7 +219,7 @@ export const createColumns = ({
       const v = row.original.validityType
       return (
         <Badge variant={v === "FIXED_DATE" ? "outline" : "secondary"} className="gap-1.5 px-2 py-0.5 rounded-md border-border text-[10px] font-bold uppercase tracking-wider">
-          <Icon name="calendar_month" className="text-[12px] text-cyan-500" />
+          <Icon name="calendar_month" className="text-[12px] text-primary" />
           {v === "FIXED_DATE" ? "Fiksno" : "Flex"}
         </Badge>
       )
@@ -260,7 +260,7 @@ export const createColumns = ({
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-9 w-9 p-0 hover:bg-muted/30 rounded-xl transition-colors">
+            <Button variant="ghost" className="h-9 w-9 p-0 hover:bg-muted/30 rounded-xl transition-colors" aria-label="Opcije">
               <span className="sr-only">Opcije</span>
               <Icon name="more_horiz" className="text-[16px] text-muted-foreground" />
             </Button>
@@ -268,7 +268,7 @@ export const createColumns = ({
           <DropdownMenuContent align="end" className="w-56 bg-muted border-border rounded-xl p-2 shadow-2xl">
             <DropdownMenuLabel className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground px-2 py-1.5">Upravljanje</DropdownMenuLabel>
             <DropdownMenuItem onClick={() => onEdit(ticket)} className="cursor-pointer text-sm font-medium rounded-lg focus:bg-muted/30 gap-2">
-              <Icon name="edit" className="size-4 text-cyan-400" />
+              <Icon name="edit" className="size-4 text-primary" />
               Izmeni varijantu
             </DropdownMenuItem>
           </DropdownMenuContent>

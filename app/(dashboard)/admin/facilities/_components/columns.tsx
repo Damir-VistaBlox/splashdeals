@@ -180,10 +180,10 @@ export const columns: ColumnDef<Facility>[] = [
         <div className="relative z-30">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
-                <Icon name="more_horiz" className="text-[16px]" />
-              </Button>
+            <Button variant="ghost" className="h-8 w-8 p-0" aria-label="Open menu">
+              <span className="sr-only">Open menu</span>
+              <Icon name="more_horiz" className="text-[16px]" />
+            </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>

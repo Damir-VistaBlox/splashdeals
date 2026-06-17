@@ -288,7 +288,7 @@ export function TicketSheet({ facilityId, ticket, open, onOpenChange, ticketGrou
                     <FormItem>
                       <FormLabel className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Naziv Ulaznice</FormLabel>
                       <FormControl>
-                        <Input placeholder="npr. Dnevna karta - Odrasli" {...field} className="h-11 bg-muted/30 border-border rounded-xl font-bold text-foreground placeholder-slate-600 focus:border-cyan-500/50 transition-all" />
+                        <Input placeholder="npr. Dnevna karta - Odrasli" {...field} className="h-11 bg-muted/30 border-border rounded-xl font-bold text-foreground placeholder-slate-600 focus:border-primary/50 transition-all" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -302,7 +302,7 @@ export function TicketSheet({ facilityId, ticket, open, onOpenChange, ticketGrou
                     <FormItem>
                       <FormLabel className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Slug (URL Putanja)</FormLabel>
                       <FormControl>
-                        <Input placeholder="npr. odrasli-radni-dan" {...field} value={field.value || ""} className="h-10 bg-muted/30 border-border rounded-xl font-mono text-xs text-foreground/80 focus:border-cyan-500/50 transition-all" />
+                        <Input placeholder="npr. odrasli-radni-dan" {...field} value={field.value || ""} className="h-10 bg-muted/30 border-border rounded-xl font-mono text-xs text-foreground/80 focus:border-primary/50 transition-all" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -318,7 +318,7 @@ export function TicketSheet({ facilityId, ticket, open, onOpenChange, ticketGrou
                         <FormLabel className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Cena</FormLabel>
                         <FormControl>
                           <div className="relative">
-                            <Input type="number" {...field} value={field.value as string} className="h-11 pr-12 bg-muted/30 border-border rounded-xl text-sm font-mono font-bold text-cyan-400 focus:border-cyan-500/50 transition-all" />
+                            <Input type="number" {...field} value={field.value as string} className="h-11 pr-12 bg-muted/30 border-border rounded-xl text-sm font-mono font-bold text-primary focus:border-primary/50 transition-all" />
                             <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[10px] font-black text-muted-foreground pointer-events-none uppercase tracking-widest">
                               {currency}
                             </span>
@@ -337,7 +337,7 @@ export function TicketSheet({ facilityId, ticket, open, onOpenChange, ticketGrou
                         <FormLabel className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Gate Cena</FormLabel>
                         <FormControl>
                           <div className="relative">
-                            <Input type="number" {...field} value={String(field.value ?? "")} onChange={(e) => field.onChange(e.target.value === "" ? null : Number(e.target.value))} className="h-11 pr-12 bg-muted/30 border-border rounded-xl text-sm font-mono text-muted-foreground focus:border-cyan-500/50 transition-all opacity-85" />
+                            <Input type="number" {...field} value={String(field.value ?? "")} onChange={(e) => field.onChange(e.target.value === "" ? null : Number(e.target.value))} className="h-11 pr-12 bg-muted/30 border-border rounded-xl text-sm font-mono text-muted-foreground focus:border-primary/50 transition-all opacity-85" />
                             <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[10px] font-black text-muted-foreground pointer-events-none uppercase tracking-widest">
                               {currency}
                             </span>
@@ -356,13 +356,13 @@ export function TicketSheet({ facilityId, ticket, open, onOpenChange, ticketGrou
                         <FormLabel className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Tip Karte</FormLabel>
                         <Select onValueChange={field.onChange} value={field.value}>
                           <FormControl>
-                            <SelectTrigger className="h-11 bg-muted/30 border-border rounded-xl text-xs px-3.5 text-foreground/90 focus:border-cyan-500/50 transition-all">
+                            <SelectTrigger className="h-11 bg-muted/30 border-border rounded-xl text-xs px-3.5 text-foreground/90 focus:border-primary/50 transition-all">
                               <SelectValue placeholder="Tip" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent className="bg-muted border-border text-foreground/90">
                             {Object.values(TicketType).map((t) => (
-                              <SelectItem key={t} value={t} className="text-xs focus:bg-cyan-500/20 focus:text-foreground">
+                              <SelectItem key={t} value={t} className="text-xs focus:bg-primary/20 focus:text-foreground">
                                 {TICKET_TYPE_LABELS[t] || t.replace("_", " ")}
                               </SelectItem>
                             ))}
@@ -381,14 +381,14 @@ export function TicketSheet({ facilityId, ticket, open, onOpenChange, ticketGrou
                         <FormLabel className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Važenje</FormLabel>
                         <Select onValueChange={field.onChange} value={field.value}>
                           <FormControl>
-                            <SelectTrigger className="h-11 bg-muted/30 border-border rounded-xl text-xs px-3.5 text-foreground/90 focus:border-cyan-500/50 transition-all">
+                            <SelectTrigger className="h-11 bg-muted/30 border-border rounded-xl text-xs px-3.5 text-foreground/90 focus:border-primary/50 transition-all">
                               <SelectValue placeholder="Važenje" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent className="bg-muted border-border text-foreground/90">
-                            <SelectItem value="FIXED_DATE" className="text-xs focus:bg-cyan-500/20 focus:text-foreground">Fiksni Datum</SelectItem>
-                            <SelectItem value="FLEXIBLE_30_DAY" className="text-xs focus:bg-cyan-500/20 focus:text-foreground">30 Dana Flex</SelectItem>
-                            <SelectItem value="SUMMER_SEASON" className="text-xs focus:bg-cyan-500/20 focus:text-foreground">Letnja Sezona</SelectItem>
+                            <SelectItem value="FIXED_DATE" className="text-xs focus:bg-primary/20 focus:text-foreground">Fiksni Datum</SelectItem>
+                            <SelectItem value="FLEXIBLE_30_DAY" className="text-xs focus:bg-primary/20 focus:text-foreground">30 Dana Flex</SelectItem>
+                            <SelectItem value="SUMMER_SEASON" className="text-xs focus:bg-primary/20 focus:text-foreground">Letnja Sezona</SelectItem>
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -412,7 +412,7 @@ export function TicketSheet({ facilityId, ticket, open, onOpenChange, ticketGrou
                           </FormControl>
                           <SelectContent className="bg-muted border-border text-foreground/90">
                             {Object.values(DayType).map(v => (
-                              <SelectItem key={v} value={v} className="text-xs focus:bg-cyan-500/20">{v.replace('_', ' ')}</SelectItem>
+                              <SelectItem key={v} value={v} className="text-xs focus:bg-primary/20">{v.replace('_', ' ')}</SelectItem>
                             ))}
                           </SelectContent>
                         </Select>
@@ -434,7 +434,7 @@ export function TicketSheet({ facilityId, ticket, open, onOpenChange, ticketGrou
                           </FormControl>
                           <SelectContent className="bg-muted border-border text-foreground/90">
                             {Object.values(TimeSlot).map(v => (
-                              <SelectItem key={v} value={v} className="text-xs focus:bg-cyan-500/20">{v.replace('_', ' ')}</SelectItem>
+                              <SelectItem key={v} value={v} className="text-xs focus:bg-primary/20">{v.replace('_', ' ')}</SelectItem>
                             ))}
                           </SelectContent>
                         </Select>
@@ -535,9 +535,9 @@ export function TicketSheet({ facilityId, ticket, open, onOpenChange, ticketGrou
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent className="bg-muted border-border text-foreground/90">
-                              <SelectItem value="none" className="text-xs focus:bg-cyan-500/20">Nema grupe (Pojedinačna karta)</SelectItem>
+                              <SelectItem value="none" className="text-xs focus:bg-primary/20">Nema grupe (Pojedinačna karta)</SelectItem>
                               {ticketGroups?.map((g) => (
-                                <SelectItem key={g.id} value={g.id} className="text-xs focus:bg-cyan-500/20">
+                                <SelectItem key={g.id} value={g.id} className="text-xs focus:bg-primary/20">
                                   {g.title}
                                 </SelectItem>
                               ))}
@@ -593,7 +593,7 @@ export function TicketSheet({ facilityId, ticket, open, onOpenChange, ticketGrou
                         <FormItem className="space-y-1">
                           <FormLabel className="text-xs font-semibold text-muted-foreground">Opis Ponude</FormLabel>
                           <FormControl>
-                            <Textarea placeholder="Šta je uključeno u ovu kartu?" className="min-h-[90px] bg-background/60 border-border rounded-xl leading-relaxed text-sm text-foreground/90 placeholder-slate-600 focus:border-cyan-500/50" {...field} value={field.value || ""} />
+                            <Textarea placeholder="Šta je uključeno u ovu kartu?" className="min-h-[90px] bg-background/60 border-border rounded-xl leading-relaxed text-sm text-foreground/90 placeholder-slate-600 focus:border-primary/50" {...field} value={field.value || ""} />
                           </FormControl>
                         </FormItem>
                       )}
@@ -606,7 +606,7 @@ export function TicketSheet({ facilityId, ticket, open, onOpenChange, ticketGrou
                         <FormItem className="space-y-1">
                           <FormLabel className="text-xs font-semibold text-muted-foreground">Važne Napomene (Sitna slova)</FormLabel>
                           <FormControl>
-                            <Textarea placeholder="Npr. Nema povraćaja novca, samo radnim danima..." className="min-h-[70px] bg-background/60 border-border rounded-xl leading-relaxed text-xs text-foreground/80 placeholder-slate-600 focus:border-cyan-500/50" {...field} value={field.value || ""} />
+                            <Textarea placeholder="Npr. Nema povraćaja novca, samo radnim danima..." className="min-h-[70px] bg-background/60 border-border rounded-xl leading-relaxed text-xs text-foreground/80 placeholder-slate-600 focus:border-primary/50" {...field} value={field.value || ""} />
                           </FormControl>
                         </FormItem>
                       )}
@@ -619,11 +619,11 @@ export function TicketSheet({ facilityId, ticket, open, onOpenChange, ticketGrou
                   <AccordionTrigger className="text-sm font-bold hover:no-underline py-4 text-foreground/90">
                     <div className="flex items-center justify-between w-full pr-4">
                       <div className="flex items-center gap-3">
-                        <div className="h-2 w-2 rounded-full bg-cyan-500 shadow-[0_0_10px_rgba(6,182,212,0.5)]" />
+                        <div className="h-2 w-2 rounded-full bg-primary shadow-primary/50" />
                         Mediji i Sigurnost
                       </div>
                       {imageUrl && (
-                        <div className="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-[9px] font-black uppercase text-cyan-400 tracking-widest">
+                        <div className="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-primary/10 border border-primary/20 text-[9px] font-black uppercase text-primary tracking-widest">
                           Slika je dodata
                         </div>
                       )}
@@ -703,7 +703,7 @@ export function TicketSheet({ facilityId, ticket, open, onOpenChange, ticketGrou
                     Nesačuvane izmene detektovane
                   </div>
                 )}
-                <Button type="submit" className="w-full h-11 bg-cyan-500 text-slate-950 font-black uppercase tracking-widest text-xs rounded-xl hover:bg-cyan-400 transition-all" disabled={isSubmitting}>
+                <Button type="submit" className="w-full h-11 bg-primary text-primary-foreground font-black uppercase tracking-widest text-xs rounded-xl hover:bg-primary/90 transition-all" disabled={isSubmitting}>
                   <Icon name="save" className="mr-2 text-[16px]" />
                   {ticket ? "Sačuvaj Varijantu" : "Objavi Ulaznicu"}
                 </Button>

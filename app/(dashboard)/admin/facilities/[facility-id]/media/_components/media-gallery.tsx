@@ -595,6 +595,7 @@ export function MediaGallery({ facilityId, initialMedia }: MediaGalleryProps) {
             <button 
               onClick={() => setSearchQuery("")}
               className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+              aria-label="Clear search"
             >
               <Icon name="close" className="size-3.5" />
             </button>
@@ -883,6 +884,7 @@ function MediaItemCard({
                 onToggleFocalPoint?.()
               }}
               className="absolute bottom-2 right-2 size-5 rounded-md bg-muted/50 hover:bg-white/20 flex items-center justify-center text-foreground"
+              aria-label="Close focal point"
             >
               <Icon name="close" className="size-3" />
             </button>
@@ -987,6 +989,7 @@ function MediaItemCard({
             size="icon"
             onClick={(e) => { e.stopPropagation(); onDelete?.(); }}
             className="absolute bottom-3 right-3 size-8 rounded-xl opacity-60 group-hover:opacity-100 focus-visible:opacity-100 transition-all z-30"
+            aria-label="Delete media"
           >
             <Icon name="delete" className="size-4" />
           </Button>
@@ -1076,6 +1079,7 @@ function MediaItemCard({
                   item.originalUrl ? "text-cyan-400 border-cyan-500/20 bg-cyan-500/5" : "text-muted-foreground"
                 )}
                 title="Set focal point"
+                aria-label="Set focal point"
               >
                 <Icon name="gps_fixed" className="size-3.5" />
               </Button>
@@ -1085,6 +1089,7 @@ function MediaItemCard({
                 onClick={() => onCrop?.()}
                 className="size-7 rounded-lg hover:bg-cyan-500/10 text-muted-foreground hover:text-cyan-400 border border-border/50 transition-colors"
                 title="Crop image"
+                aria-label="Crop image"
               >
                 <Icon name="crop" className="size-3.5" />
               </Button>
@@ -1321,7 +1326,7 @@ function CropModal({
             <h3 className="text-lg font-black text-foreground uppercase tracking-tighter">Iseci fotografiju</h3>
             <p className="text-[10px] text-muted-foreground uppercase tracking-wider mt-0.5">Crop utility: re-encodes to high-density WebP</p>
           </div>
-          <Button variant="ghost" size="icon" onClick={onClose} className="rounded-xl size-8">
+          <Button variant="ghost" size="icon" onClick={onClose} className="rounded-xl size-8" aria-label="Close crop dialog">
             <Icon name="close" className="size-4" />
           </Button>
         </div>

@@ -238,7 +238,7 @@ export function TicketPanel({
       <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-4 py-4 border-b border-border/50 shrink-0">
         <div className="flex flex-col min-w-0">
           <div className="flex items-center gap-2">
-            <Icon name="confirmation_number" className="text-[14px] text-cyan-500 shrink-0" />
+            <Icon name="confirmation_number" className="text-[14px] text-primary shrink-0" />
             <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">
               {activeGroupId === "ALL"
                 ? "Sve Ulaznice"
@@ -263,7 +263,7 @@ export function TicketPanel({
           </div>
           <Button
             onClick={handleCreateNew}
-            className="h-9 px-4 bg-cyan-500 text-slate-950 font-black uppercase tracking-widest text-[10px] rounded-xl shadow-lg shadow-cyan-500/10 hover:bg-cyan-400 transition-all gap-1.5"
+            className="h-9 px-4 bg-primary text-primary-foreground font-black uppercase tracking-widest text-[10px] rounded-xl shadow-lg shadow-primary/10 hover:bg-primary/90 transition-all gap-1.5"
           >
             <Icon name="add" className="text-[14px]" />
             Nova Ulaznica
@@ -339,8 +339,8 @@ export function TicketPanel({
                           </div>
                         ) : (
                           <div className="flex flex-col items-center justify-center space-y-4 animate-in zoom-in-95 duration-500">
-                            <div className="p-6 rounded-full bg-cyan-500/5 border border-cyan-500/10 mb-4 animate-pulse">
-                              <Icon name="confirmation_number" className="text-[48px] text-cyan-900" />
+                            <div className="p-6 rounded-full bg-primary/5 border border-primary/10 mb-4 animate-pulse">
+                              <Icon name="confirmation_number" className="text-[48px] text-primary/60" />
                             </div>
                             <div className="space-y-2">
                               <p className="text-xl font-black text-foreground uppercase tracking-tighter italic">
@@ -353,7 +353,7 @@ export function TicketPanel({
                               </p>
                               <Button
                                 onClick={handleCreateNew}
-                                className="mt-4 h-10 px-6 bg-cyan-500 text-slate-950 font-black uppercase tracking-widest text-xs rounded-xl hover:bg-cyan-400"
+                                className="mt-4 h-10 px-6 bg-primary text-primary-foreground font-black uppercase tracking-widest text-xs rounded-xl hover:bg-primary/90"
                               >
                                 <Icon name="add" className="mr-2 text-[14px]" />
                                 Nova Ulaznica

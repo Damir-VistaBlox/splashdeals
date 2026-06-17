@@ -66,7 +66,7 @@ export function FacilityNav({ facility, counts }: FacilityNavProps) {
         {/* Left */}
         <div className="flex items-center gap-1 shrink-0">
           <SidebarTrigger className="size-8 rounded-lg hover:bg-accent hover:text-accent-foreground" />
-          <Button variant="ghost" size="icon" asChild className="size-8 rounded-lg text-muted-foreground hover:text-foreground">
+          <Button variant="ghost" size="icon" asChild className="size-8 rounded-lg text-muted-foreground hover:text-foreground" aria-label="Nazad na objekte">
             <Link href="/admin/facilities" title="Nazad na objekte">
               <Icon name="keyboard_arrow_left" className="size-4" />
             </Link>

@@ -42,14 +42,14 @@ import { toast } from "sonner"
 import { useRouter } from "next/navigation"
 import { DayType, TimeSlot } from "@prisma/client"
 import { Badge } from "@/components/ui/badge"
-import type { SerializedAdminTicket } from "./columns"
+import type { SerializedAdminTicket, SerializedTicketGroup } from "./columns"
 import { cn } from "@/lib/utils"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 
 interface TicketGroupSheetProps {
   facilityId: string
-  group: any | null
+  group: SerializedTicketGroup | null
   open: boolean
   onOpenChange: (open: boolean) => void
 }
@@ -136,7 +136,7 @@ export function TicketGroupSheet({ facilityId, group, open, onOpenChange }: Tick
               }}
             >
               <SheetHeader className="space-y-1">
-                <div className="flex items-center gap-2 text-cyan-400">
+                <div className="flex items-center gap-2 text-primary">
                   <Icon name="dashboard" className="text-[16px]" />
                   <Badge variant="outline" className="bg-muted/30 border-border text-[8px] font-black uppercase tracking-widest text-muted-foreground py-0.5 px-1.5 rounded">
                     {group ? "Edit Mode" : "Creation Mode"}
@@ -158,7 +158,7 @@ export function TicketGroupSheet({ facilityId, group, open, onOpenChange }: Tick
                     <FormItem className="space-y-2">
                       <FormLabel className="text-sm font-medium text-foreground/80">Naziv Grupe</FormLabel>
                       <FormControl>
-                        <Input placeholder="npr. Dnevne Ulaznice" className="h-11 bg-muted/30 border-border focus:border-cyan-500/50 transition-all font-bold text-sm rounded-xl" {...field} value={field.value || ""} />
+                        <Input placeholder="npr. Dnevne Ulaznice" className="h-11 bg-muted/30 border-border focus:border-primary/50 transition-all font-bold text-sm rounded-xl" {...field} value={field.value || ""} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -171,7 +171,7 @@ export function TicketGroupSheet({ facilityId, group, open, onOpenChange }: Tick
                     <FormItem className="space-y-2">
                       <FormLabel className="text-sm font-medium text-foreground/80">URL Putanja (Slug)</FormLabel>
                       <FormControl>
-                        <Input placeholder="npr. dnevne-ulaznice" className="h-11 bg-muted/30 border-border focus:border-cyan-500/50 transition-all font-mono text-sm rounded-xl" {...field} value={field.value || ""} />
+                        <Input placeholder="npr. dnevne-ulaznice" className="h-11 bg-muted/30 border-border focus:border-primary/50 transition-all font-mono text-sm rounded-xl" {...field} value={field.value || ""} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -184,7 +184,7 @@ export function TicketGroupSheet({ facilityId, group, open, onOpenChange }: Tick
                     <FormItem className="md:col-span-2 space-y-2">
                       <FormLabel className="text-sm font-medium text-foreground/80">Opis (Opciono)</FormLabel>
                       <FormControl>
-                        <Input placeholder="Kratak opis koji se vidi na sajtu..." className="h-11 bg-muted/30 border-border focus:border-cyan-500/50 transition-all text-sm rounded-xl" {...field} value={field.value || ""} />
+                        <Input placeholder="Kratak opis koji se vidi na sajtu..." className="h-11 bg-muted/30 border-border focus:border-primary/50 transition-all text-sm rounded-xl" {...field} value={field.value || ""} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -233,7 +233,7 @@ export function TicketGroupSheet({ facilityId, group, open, onOpenChange }: Tick
                       isActive: true,
                       displayOrder: fields.length 
                     })}
-                    className="border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/10 h-9 px-4 rounded-xl font-black uppercase text-[10px] tracking-widest"
+                    className="border-primary/30 text-primary hover:bg-primary/10 h-9 px-4 rounded-xl font-black uppercase text-[10px] tracking-widest"
                   >
                     <Icon name="add" className="text-[16px] mr-2" /> Dodaj Varijantu
                   </Button>
@@ -244,7 +244,7 @@ export function TicketGroupSheet({ facilityId, group, open, onOpenChange }: Tick
                       <div key={field.id} className="relative group/tier p-6 rounded-2xl bg-muted/20 border border-border/50 hover:border-border transition-all space-y-6">
                         <div className="flex items-start justify-between gap-4">
                            <div className="flex items-center gap-3 flex-1">
-                              <div className="cursor-grab active:cursor-grabbing p-1.5 text-muted-foreground/80 hover:text-cyan-400 transition-colors">
+                              <div className="cursor-grab active:cursor-grabbing p-1.5 text-muted-foreground/80 hover:text-primary transition-colors">
                                 <Icon name="drag_indicator" className="text-[20px]" />
                               </div>
                               <FormField
@@ -422,7 +422,7 @@ export function TicketGroupSheet({ facilityId, group, open, onOpenChange }: Tick
                <Button 
                 type="submit" 
                 disabled={isPending}
-                className="h-11 px-10 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black uppercase text-[10px] tracking-widest shadow-2xl shadow-cyan-500/20 transition-all"
+                className="h-11 px-10 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-black uppercase text-[10px] tracking-widest shadow-2xl shadow-primary/20 transition-all"
                >
                   {isPending ? (
                     <Icon name="progress_activity" className="text-[16px] animate-spin mr-2" />

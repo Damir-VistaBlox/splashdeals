@@ -1,10 +1,8 @@
- 
- 
 import { Skeleton } from "@/components/ui/skeleton"
 
 export default function MediaLoading() {
   return (
-    <div className="space-y-8 animate-pulse">
+    <div className="space-y-8">
       <Skeleton className="h-48 w-full rounded-xl bg-muted/30 border-2 border-dashed border-border/50" />
       
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">

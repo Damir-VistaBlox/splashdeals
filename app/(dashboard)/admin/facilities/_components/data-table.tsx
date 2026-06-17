@@ -163,7 +163,7 @@ export function DataTable<TData, TValue>({
               placeholder="Search registry..."
               value={globalFilter ?? ""}
               onChange={(event) => setGlobalFilter(event.target.value)}
-              className="pl-9 h-9 bg-background/40 border-border/50 focus-visible:ring-1 focus-visible:ring-cyan-500/30 text-xs font-semibold placeholder:text-muted-foreground"
+              className="pl-9 h-9 bg-background/40 border-border/50 focus-visible:ring-1 focus-visible:ring-primary/30 text-xs font-semibold placeholder:text-muted-foreground"
             />
           </div>
           
@@ -195,6 +195,7 @@ export function DataTable<TData, TValue>({
               className="h-9 w-9 text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-lg shrink-0"
               onClick={() => toggleDensity(density === "comfortable" ? "compact" : "comfortable")}
               title={density === "comfortable" ? "Switch to Compact View" : "Switch to Comfortable View"}
+              aria-label={density === "comfortable" ? "Switch to Compact View" : "Switch to Comfortable View"}
             >
               {density === "comfortable" ? <Icon name="table_rows" className="text-[16px]" /> : <Icon name="menu" className="text-[16px]" />}
             </Button>
@@ -233,6 +234,7 @@ export function DataTable<TData, TValue>({
               className="h-7 w-7 p-0 hover:bg-muted/50"
               onClick={() => setRowSelection({})}
               disabled={isPending}
+              aria-label="Clear selection"
             >
               <Icon name="cancel" className="text-[14px] text-muted-foreground" />
             </Button>
@@ -347,6 +349,7 @@ export function DataTable<TData, TValue>({
             className="h-8 w-8 p-0 bg-background/40 border-border/50"
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage <= 1}
+            aria-label="Previous page"
           >
             <Icon name="keyboard_arrow_left" className="text-[16px]" />
           </Button>
@@ -356,6 +359,7 @@ export function DataTable<TData, TValue>({
             className="h-8 w-8 p-0 bg-background/40 border-border/50"
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={currentPage >= totalPages}
+            aria-label="Next page"
           >
             <Icon name="keyboard_arrow_right" className="text-[16px]" />
           </Button>

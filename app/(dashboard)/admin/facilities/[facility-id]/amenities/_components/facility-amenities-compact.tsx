@@ -339,12 +339,12 @@ export function CompactAmenitiesTable({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search facility infrastructure, slides, features..."
-            className="pl-10 h-10 bg-background/40 border-border/50 text-foreground/80 focus-visible:ring-cyan-500 rounded-xl"
+            className="pl-10 h-10 bg-background/40 border-border/50 text-foreground/80 focus-visible:ring-primary rounded-xl"
           />
         </div>
         
         {isPending && (
-          <div className="flex items-center gap-2 text-cyan-400 text-xs font-bold uppercase tracking-widest px-3 py-1 bg-cyan-500/10 rounded-full border border-cyan-500/20">
+          <div className="flex items-center gap-2 text-primary text-xs font-bold uppercase tracking-widest px-3 py-1 bg-primary/10 rounded-full border border-primary/20">
             <Icon name="progress_activity" className="text-[14px] animate-spin" />
             Synchronizing...
           </div>
@@ -376,14 +376,14 @@ export function CompactAmenitiesTable({
                     <Switch
                       checked={item.checked}
                       onCheckedChange={(val) => handleToggleActive(item.id, val)}
-                      className="data-[state=checked]:bg-cyan-500 cursor-pointer"
+                      className="data-[state=checked]:bg-primary cursor-pointer"
                     />
                   </TableCell>
                   
                   {/* Amenity Name with Icon Dynamic Resolver */}
                   <TableCell className="font-medium text-foreground/90">
                     <div className="flex items-center gap-3">
-                      <div className="flex size-7 items-center justify-center rounded-lg bg-muted/30 border border-border text-cyan-400 shrink-0">
+                      <div className="flex size-7 items-center justify-center rounded-lg bg-muted/30 border border-border text-primary shrink-0">
                         <AmenityIcon iconName={item.icon} className="text-[14px]" />
                       </div>
                       <div className="flex flex-col min-w-0">
@@ -412,7 +412,7 @@ export function CompactAmenitiesTable({
                         onBlur={() => handleValueBlur(item.id)}
                         onKeyDown={(e) => handleValueKeyDown(e, item.id)}
                         placeholder={item.type === "QUANTIFIABLE" ? "e.g. 5 slides" : "e.g. Wi-Fi speed, extra details"}
-                        className="h-8 bg-background/40 border-border/50 text-xs text-foreground/90 focus-visible:ring-cyan-500 rounded-lg max-w-[180px]"
+                        className="h-8 bg-background/40 border-border/50 text-xs text-foreground/90 focus-visible:ring-primary rounded-lg max-w-[180px]"
                         aria-label={`${item.name} value`}
                       />
                     ) : item.checked ? (
@@ -435,7 +435,7 @@ export function CompactAmenitiesTable({
                             size="icon"
                             type="button"
                             onClick={() => handleToggleFeatured(item.id)}
-                            className="outline-none focus:ring-1 focus:ring-cyan-500 rounded p-1 group cursor-pointer"
+                            className="outline-none focus:ring-1 focus:ring-primary rounded p-1 group cursor-pointer"
                             aria-label={item.isFeatured ? "Unfeature amenity" : "Feature amenity"}
                           >
                             <Icon name="star" className={`text-[16px] transition-all duration-200 ${
@@ -508,7 +508,7 @@ export function CompactAmenitiesTable({
             value={newRow.name}
             onChange={(e) => setNewRow(prev => ({ ...prev, name: e.target.value }))}
             placeholder="Infrastructure Asset Name (e.g. Wave Generator)"
-            className="flex-1 h-9 bg-muted border-border/50 text-xs text-foreground/80 focus-visible:ring-cyan-500 rounded-lg"
+            className="flex-1 h-9 bg-muted border-border/50 text-xs text-foreground/80 focus-visible:ring-primary rounded-lg"
           />
 
           <Select
@@ -529,14 +529,14 @@ export function CompactAmenitiesTable({
             value={newRow.category}
             onChange={(e) => setNewRow(prev => ({ ...prev, category: e.target.value }))}
             placeholder="Category (e.g. Attractions)"
-            className="w-[160px] h-9 bg-muted border-border/50 text-xs text-foreground/80 focus-visible:ring-cyan-500 rounded-lg"
+            className="w-[160px] h-9 bg-muted border-border/50 text-xs text-foreground/80 focus-visible:ring-primary rounded-lg"
           />
 
           <Button
             type="button"
             onClick={handleCreateAmenity}
             disabled={isCreating || !newRow.name.trim()}
-            className="h-9 px-4 bg-cyan-500 hover:bg-cyan-400 disabled:bg-muted/30 disabled:text-muted-foreground/80 text-slate-950 text-xs font-black uppercase tracking-widest rounded-lg flex items-center gap-1.5 shrink-0"
+            className="h-9 px-4 bg-primary hover:bg-primary/90 disabled:bg-muted/30 disabled:text-muted-foreground/80 text-primary-foreground text-xs font-black uppercase tracking-widest rounded-lg flex items-center gap-1.5 shrink-0"
           >
             {isCreating ? (
               <Icon name="progress_activity" className="text-[14px] animate-spin" />

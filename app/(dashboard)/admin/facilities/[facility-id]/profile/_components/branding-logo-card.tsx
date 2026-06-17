@@ -28,7 +28,7 @@ export function BrandingLogoCard({ facilityId }: BrandingLogoCardProps) {
     <Card className="p-5 border-border bg-muted/40 backdrop-blur-sm space-y-4">
       <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-2">
-          <div className="p-1.5 rounded-lg bg-cyan-500/10">
+          <div className="p-1.5 rounded-lg bg-primary/10">
             <Icon name="image" className="text-[14px] text-primary" />
           </div>
           <h3 className="text-[10px] font-black uppercase tracking-widest text-foreground">Branding Logo Asset</h3>

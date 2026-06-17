@@ -85,7 +85,7 @@ function SortableGroupCard({
         className={cn(
           "group relative flex items-center gap-3 px-3 py-3 rounded-xl border transition-all duration-200 cursor-pointer select-none",
           isActive
-            ? "bg-cyan-500/10 border-cyan-500/30 shadow-[0_0_20px_rgba(6,182,212,0.12)]"
+            ? "bg-primary/10 border-primary/30 shadow-primary/12"
             : "bg-muted/40 border-border/50 hover:bg-white/[0.04] hover:border-border"
         )}
         onClick={onSelect}
@@ -102,7 +102,7 @@ function SortableGroupCard({
 
         {/* Active indicator bar */}
         {isActive && (
-          <div className="absolute left-0 top-2 bottom-2 w-0.5 rounded-full bg-cyan-500" />
+          <div className="absolute left-0 top-2 bottom-2 w-0.5 rounded-full bg-primary" />
         )}
 
         {/* Group info */}
@@ -110,7 +110,7 @@ function SortableGroupCard({
           <p
             className={cn(
               "text-xs font-bold truncate transition-colors",
-              isActive ? "text-cyan-300" : "text-foreground/90 group-hover:text-foreground"
+              isActive ? "text-primary/80" : "text-foreground/90 group-hover:text-foreground"
             )}
           >
             {group.title}
@@ -140,8 +140,9 @@ function SortableGroupCard({
             size="icon"
             type="button"
             onClick={onEdit}
-            className="size-6 rounded-md bg-muted/50 hover:bg-cyan-500/20 hover:text-cyan-400 flex items-center justify-center text-muted-foreground transition-colors"
+            className="size-6 rounded-md bg-muted/50 hover:bg-primary/20 hover:text-primary flex items-center justify-center text-muted-foreground transition-colors"
             title="Izmeni grupu"
+            aria-label="Izmeni grupu"
           >
             <Icon name="edit" className="text-[12px]" />
           </Button>
@@ -152,6 +153,7 @@ function SortableGroupCard({
             onClick={onDelete}
             className="size-6 rounded-md bg-muted/50 hover:bg-rose-500/20 hover:text-rose-400 flex items-center justify-center text-muted-foreground transition-colors"
             title="Obriši grupu"
+            aria-label="Obriši grupu"
           >
             <Icon name="delete" className="text-[12px]" />
           </Button>
@@ -258,7 +260,7 @@ export function GroupPanel({
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-4 border-b border-border/50 shrink-0">
         <div className="flex items-center gap-2">
-          <Icon name="dashboard" className="text-[14px] text-cyan-500" />
+          <Icon name="dashboard" className="text-[14px] text-primary" />
           <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">
             Grupe
           </span>
@@ -269,8 +271,9 @@ export function GroupPanel({
         <Button
           onClick={() => { setSelectedGroup(null); setIsSheetOpen(true) }}
           size="sm"
-          className="h-7 w-7 p-0 rounded-lg bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/20 text-cyan-400"
+          className="h-7 w-7 p-0 rounded-lg bg-primary/10 hover:bg-primary/20 border border-primary/20 text-primary"
           title="Nova Grupa"
+          aria-label="Nova Grupa"
         >
           <Icon name="add" className="text-[14px]" />
         </Button>
@@ -284,17 +287,17 @@ export function GroupPanel({
           className={cn(
             "flex items-center gap-3 px-3 py-3 rounded-xl border cursor-pointer transition-all duration-200",
             activeGroupId === "ALL"
-              ? "bg-cyan-500/10 border-cyan-500/30 shadow-[0_0_20px_rgba(6,182,212,0.12)]"
+              ? "bg-primary/10 border-primary/30 shadow-primary/12"
               : "bg-muted/40 border-border/50 hover:bg-white/[0.04] hover:border-border"
           )}
         >
           {activeGroupId === "ALL" && (
-            <div className="absolute left-0 top-2 bottom-2 w-0.5 rounded-full bg-cyan-500" />
+            <div className="absolute left-0 top-2 bottom-2 w-0.5 rounded-full bg-primary" />
           )}
           <div className="flex-1 min-w-0">
             <p className={cn(
               "text-xs font-bold",
-              activeGroupId === "ALL" ? "text-cyan-300" : "text-foreground/80"
+              activeGroupId === "ALL" ? "text-primary/80" : "text-foreground/80"
             )}>
               Sve Ulaznice
             </p>
@@ -302,7 +305,7 @@ export function GroupPanel({
               {groups.reduce((sum, g) => sum + g.tiers.length, 0)} ukupno
             </p>
           </div>
-          <div className="size-1.5 rounded-full bg-cyan-500" />
+          <div className="size-1.5 rounded-full bg-primary" />
         </div>
 
         {/* Draggable group cards */}
@@ -331,8 +334,8 @@ export function GroupPanel({
           </DndContext>
         ) : (
           <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
-            <div className="p-4 rounded-2xl bg-cyan-500/5 border border-cyan-500/10 mb-4">
-              <Icon name="dashboard" className="text-[32px] text-cyan-900" />
+            <div className="p-4 rounded-2xl bg-primary/5 border border-primary/10 mb-4">
+              <Icon name="dashboard" className="text-[32px] text-primary/60" />
             </div>
             <p className="text-xs font-black text-muted-foreground uppercase tracking-tight italic mb-1">
               Nema Grupa
