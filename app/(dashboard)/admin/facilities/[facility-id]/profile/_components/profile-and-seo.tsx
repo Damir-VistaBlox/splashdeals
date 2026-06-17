@@ -137,12 +137,12 @@ export function ProfileAndSEO({ facilityId }: ProfileAndSEOProps) {
           <Icon name="bar_chart" className="size-3.5 text-primary opacity-50" />
         </header>
 
-        <div className="bg-background/80 rounded-xl p-4 border border-border/50 group/serp relative overflow-hidden transition-all hover:border-cyan-500/20">
+        <div className="bg-background/80 rounded-xl p-4 border border-border/50 group/serp relative overflow-hidden transition-all hover:border-primary/20">
            <div className="flex items-center gap-2 mb-1.5 opacity-60">
              <Icon name="language" className="text-[12px] text-primary" />
              <span className="text-[9px] font-mono text-muted-foreground">splashdeals.rs <span className="text-primary/50">›</span> {facilitySlug}</span>
            </div>
-           <h4 className="text-sm font-bold text-blue-400 line-clamp-1 mb-1">
+           <h4 className="text-sm font-bold text-primary line-clamp-1 mb-1">
              {metaTitle || "Facility Title Placeholder"}
            </h4>
            <p className="text-[11px] leading-tight text-muted-foreground line-clamp-2">

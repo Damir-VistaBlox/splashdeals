@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { auth } from "@/server/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { connection } from "next/server";
 import type { Metadata } from "next";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
@@ -20,6 +21,7 @@ export const metadata: Metadata = {
 
 /** Suspense-wrapped session guard — marks this subtree as dynamic */
 async function AuthGuard({ children }: { children: ReactNode }) {
+  await connection();
   const session = await auth.api.getSession({
     headers: await headers(),
   });

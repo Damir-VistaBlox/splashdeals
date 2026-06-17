@@ -99,7 +99,7 @@ export function ApiKeysClient({ initialKeys }: { initialKeys: ApiKey[] }) {
                     placeholder="e.g. Facility Admin Agent" 
                     value={newKeyName}
                     onChange={(e) => setNewKeyName(e.target.value)}
-                    className="bg-muted/30 border-border focus:border-cyan-500/50"
+                    className="bg-muted/30 border-border focus:border-ring"
                   />
                 </div>
               </div>
@@ -118,7 +118,7 @@ export function ApiKeysClient({ initialKeys }: { initialKeys: ApiKey[] }) {
                   <Input 
                     value={generatedKey}
                     readOnly
-                    className="bg-muted/30 border-border font-mono text-xs pr-10 focus:ring-0 focus:border-cyan-500/50"
+                    className="bg-muted/30 border-border font-mono text-xs pr-10 focus:ring-0 focus:border-ring"
                   />
                   <button 
                     onClick={() => copyToClipboard(generatedKey)}

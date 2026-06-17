@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import { Icon } from "@/components/ui/Icon";
+import type { Dict } from "@/lib/types";
 
 interface BusinessPanelProps {
-  dict: any;
+  dict: Dict;
   onClose: () => void;
 }
 

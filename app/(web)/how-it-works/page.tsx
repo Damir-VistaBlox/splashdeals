@@ -42,22 +42,22 @@ export default async function HowItWorksPage({ params: _params }: PageProps) {
       title: dict.how_it_works_page.step1_title, 
       content: dict.how_it_works_page.step1_content,
       icon: "search",
-      color: "text-cyan-400",
-      bg: "bg-cyan-400/10"
+      color: "text-primary",
+      bg: "bg-primary/10"
     },
     { 
       title: dict.how_it_works_page.step2_title, 
       content: dict.how_it_works_page.step2_content,
       icon: "credit_card",
-      color: "text-teal-400",
-      bg: "bg-teal-400/10"
+      color: "text-primary",
+      bg: "bg-primary/10"
     },
     { 
       title: dict.how_it_works_page.step3_title, 
       content: dict.how_it_works_page.step3_content,
       icon: "confirmation_number",
-      color: "text-blue-400",
-      bg: "bg-blue-400/10"
+      color: "text-primary",
+      bg: "bg-primary/10"
     },
   ];
 

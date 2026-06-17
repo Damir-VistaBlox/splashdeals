@@ -48,8 +48,8 @@ export function SocialLinksWidget({ facilityId, initialSocialLinks }: SocialLink
     <Card className="p-5 border-border bg-muted/40 backdrop-blur-sm">
       <div className="flex items-center justify-between mb-5">
          <div className="flex items-center gap-2">
-           <div className="p-1.5 rounded-lg bg-pink-500/10">
-             <Icon name="photo_camera" className="text-[14px] text-pink-400" />
+           <div className="p-1.5 rounded-lg bg-primary/10">
+             <Icon name="photo_camera" className="text-[14px] text-primary" />
            </div>
            <h3 className="text-[10px] font-black uppercase tracking-widest text-foreground">Social Links</h3>
          </div>

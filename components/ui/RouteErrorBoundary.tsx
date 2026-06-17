@@ -5,6 +5,7 @@ import { useEffect, useState } from "react"
 import { Card } from "@/components/ui/card"
 import Link from "next/link"
 import { getClientDictionary } from "@/lib/client-dictionaries"
+import type { Dict } from "@/lib/types"
 
 interface RouteErrorBoundaryProps {
   error: Error & { digest?: string }
@@ -19,8 +20,7 @@ export function RouteErrorBoundary({
   subtitleKey,
   isModal = false,
 }: RouteErrorBoundaryProps) {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [dict, setDict] = useState<any | null>(null)
+  const [dict, setDict] = useState<Dict | null>(null)
 
   useEffect(() => {
     console.error("Route Error Boundary Captured:", error)

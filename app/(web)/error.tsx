@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/card"
 import Link from "next/link"
 import { useParams } from "next/navigation"
 import { getClientDictionary } from "@/lib/client-dictionaries"
+import type { Dict } from "@/lib/types"
 
 /**
  * 🛡️ Aquastream Global Web Error Boundary
@@ -20,8 +21,7 @@ export default function GlobalWebError({
 }) {
   const params = useParams()
   
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [dict, setDict] = useState<any | null>(null)
+  const [dict, setDict] = useState<Dict | null>(null)
 
   useEffect(() => {
     console.error("Global Web Error:", error)

@@ -6,6 +6,7 @@ import { Icon } from "@/components/ui/Icon";
 import { LiquidButton } from "@/components/ui/LiquidButton";
 import { MobileOverlayHeader } from "./MobileOverlayHeader";
 import { MobileCityPicker } from "./MobileCityPicker";
+import type { Dict } from "@/lib/types";
 
 interface City {
   id: string;
@@ -16,7 +17,7 @@ interface City {
 interface MobileOverlayProps {
   isMobileMenuOpen: boolean;
   setIsMobileMenuOpen: (v: boolean) => void;
-  dict: any;
+  dict: Dict;
   cities: City[];
   isReducedMotion: boolean;
   isTabActive: boolean;

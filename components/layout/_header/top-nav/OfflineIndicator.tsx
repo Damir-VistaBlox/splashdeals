@@ -2,10 +2,11 @@
 
 import React from "react";
 import { Icon } from "@/components/ui/Icon";
+import type { Dict } from "@/lib/types";
 
 interface OfflineIndicatorProps {
   isOnline: boolean;
-  dict: any;
+  dict: Dict;
 }
 
 export function OfflineIndicator({ isOnline, dict }: OfflineIndicatorProps) {

@@ -123,7 +123,7 @@ export async function uploadMediaAction(formData: FormData) {
     }
 
     revalidatePath(`/admin/facilities/${facilityId}/media`);
-    revalidatePath(`/facilities/[category]/[slug]`, "layout");
+    revalidatePath(`/facilities/[categorySlug]/[facilitySlug]`, "layout");
     return { success: true, media: results };
   } catch (error) {
     return handleServerActionError(error, "media-actions")
@@ -171,7 +171,7 @@ export async function updateMediaPurposeAction(mediaId: string, purpose: MediaPu
     }
 
     revalidatePath(`/admin/facilities/${media.facilityId}/media`);
-    revalidatePath(`/facilities/[category]/[slug]`, "layout");
+    revalidatePath(`/facilities/[categorySlug]/[facilitySlug]`, "layout");
 
     return { success: true, media: updated };
   } catch (error) {
@@ -265,7 +265,7 @@ export async function syncMediaAction(facilityId: string, blobUrl: string, conte
     });
 
     revalidatePath(`/admin/facilities/${facilityId}/media`);
-    revalidatePath(`/facilities/[category]/[slug]`, "layout");
+    revalidatePath(`/facilities/[categorySlug]/[facilitySlug]`, "layout");
 
     return { success: true, media };
   } catch (error) {
@@ -304,7 +304,7 @@ export async function toggleMediaHeroAction(mediaId: string, facilityId: string)
     });
 
     revalidatePath(`/admin/facilities/${facilityId}/media`);
-    revalidatePath(`/facilities/[category]/[slug]`, "layout");
+    revalidatePath(`/facilities/[categorySlug]/[facilitySlug]`, "layout");
     return { success: true, media: updated };
   } catch (error) {
     return handleServerActionError(error, "media-actions")
@@ -342,7 +342,7 @@ export async function toggleMediaCardBackgroundAction(mediaId: string, facilityI
     });
 
     revalidatePath(`/admin/facilities/${facilityId}/media`);
-    revalidatePath(`/facilities/[category]/[slug]`, "layout");
+    revalidatePath(`/facilities/[categorySlug]/[facilitySlug]`, "layout");
     return { success: true, media: updated };
   } catch (error) {
     return handleServerActionError(error, "media-actions")
@@ -368,7 +368,7 @@ export async function toggleMediaGalleryVisibilityAction(mediaId: string, facili
     });
 
     revalidatePath(`/admin/facilities/${facilityId}/media`);
-    revalidatePath(`/facilities/[category]/[slug]`, "layout");
+    revalidatePath(`/facilities/[categorySlug]/[facilitySlug]`, "layout");
     return { success: true, media: updated };
   } catch (error) {
     return handleServerActionError(error, "media-actions")
@@ -391,7 +391,7 @@ export async function updateMediaCaptionAction(mediaId: string, facilityId: stri
     });
 
     revalidatePath(`/admin/facilities/${facilityId}/media`);
-    revalidatePath(`/facilities/[category]/[slug]`, "layout");
+    revalidatePath(`/facilities/[categorySlug]/[facilitySlug]`, "layout");
 
     return { success: true, media: updated };
   } catch (error) {
@@ -415,7 +415,7 @@ export async function updateMediaFocalPointAction(mediaId: string, facilityId: s
     });
 
     revalidatePath(`/admin/facilities/${facilityId}/media`);
-    revalidatePath(`/facilities/[category]/[slug]`, "layout");
+    revalidatePath(`/facilities/[categorySlug]/[facilitySlug]`, "layout");
 
     return { success: true, media: updated };
   } catch (error) {
@@ -442,7 +442,7 @@ export async function bulkUpdateMediaCaptionAction(mediaIds: string[], facilityI
     });
 
     revalidatePath(`/admin/facilities/${facilityId}/media`);
-    revalidatePath(`/facilities/[category]/[slug]`, "layout");
+    revalidatePath(`/facilities/[categorySlug]/[facilitySlug]`, "layout");
 
     return { success: true };
   } catch (error) {

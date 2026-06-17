@@ -13,6 +13,7 @@ import {
   NavigationMenuTrigger,
   NavigationMenuContent,
 } from "@/components/ui/navigation-menu";
+import type { Dict } from "@/lib/types";
 
 interface City {
   id: string;
@@ -38,7 +39,7 @@ interface DiscoveryMenuData {
 }
 
 interface MegaMenuProps {
-  dict: any;
+  dict: Dict;
 }
 
 /**

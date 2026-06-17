@@ -453,14 +453,14 @@ export function MediaGallery({ facilityId, initialMedia }: MediaGalleryProps) {
       {/* 🌌 High-fidelity Glassmorphic Full-Screen Drag Overlay */}
       {isDragActive && (
         <div className="fixed inset-0 bg-background/80 backdrop-blur-xl z-[999] pointer-events-none flex flex-col items-center justify-center text-center animate-in fade-in duration-300">
-          <div className="p-12 rounded-3xl bg-muted/10 border border-cyan-500/30 shadow-[0_0_50px_rgba(6,182,212,0.15)] flex flex-col items-center max-w-md mx-4 animate-in zoom-in-95 duration-500">
-            <div className="p-6 rounded-3xl bg-cyan-500/10 border border-cyan-500/20 mb-8 animate-bounce">
-              <Icon name="upload" className="h-16 w-16 text-cyan-400" />
+          <div className="p-12 rounded-3xl bg-muted/10 border border-primary/30 shadow-[0_0_50px_rgba(6,182,212,0.15)] flex flex-col items-center max-w-md mx-4 animate-in zoom-in-95 duration-500">
+            <div className="p-6 rounded-3xl bg-primary/10 border border-primary/20 mb-8 animate-bounce">
+              <Icon name="upload" className="h-16 w-16 text-primary" />
             </div>
             <h3 className="text-2xl font-black text-foreground uppercase tracking-tighter mb-3">
               Spusti datoteke za otpremanje
             </h3>
-            <p className="text-xs font-semibold text-cyan-400 uppercase tracking-widest leading-relaxed mb-1">
+            <p className="text-xs font-semibold text-primary uppercase tracking-widest leading-relaxed mb-1">
               Splash Engine: High-Bandwidth Protocol
             </p>
             <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest leading-relaxed">
@@ -589,7 +589,7 @@ export function MediaGallery({ facilityId, initialMedia }: MediaGalleryProps) {
             placeholder="Pretraži medije po ALT oznaci ili nazivu..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-black/40 border border-border/50 rounded-xl pl-10 pr-4 py-2 text-xs font-medium text-foreground/90 placeholder:text-muted-foreground/80 focus:outline-none focus:border-cyan-500/50 transition-colors"
+            className="w-full bg-black/40 border border-border/50 rounded-xl pl-10 pr-4 py-2 text-xs font-medium text-foreground/90 placeholder:text-muted-foreground/80 focus:outline-none focus:border-ring transition-colors"
           />
           {searchQuery && (
             <button 
@@ -869,13 +869,13 @@ function MediaItemCard({
                 toast.error("Error setting focal point")
               }
             }}
-            className="absolute inset-0 bg-cyan-950/80 backdrop-blur-sm z-30 flex flex-col items-center justify-center text-center p-3 cursor-crosshair animate-in fade-in duration-200"
+            className="absolute inset-0 bg-primary/80 backdrop-blur-sm z-30 flex flex-col items-center justify-center text-center p-3 cursor-crosshair animate-in fade-in duration-200"
           >
-            <Icon name="gps_fixed" className="size-6 text-cyan-400 animate-pulse mb-1.5" />
+            <Icon name="gps_fixed" className="size-6 text-primary animate-pulse mb-1.5" />
             <span className="text-[10px] font-black text-foreground uppercase tracking-wider">
               Postavi Fokus
             </span>
-            <span className="text-[8px] font-medium text-cyan-300 uppercase tracking-widest mt-0.5 leading-tight max-w-[120px]">
+            <span className="text-[8px] font-medium text-primary/60 uppercase tracking-widest mt-0.5 leading-tight max-w-[120px]">
               Klikni bilo gde za pozicioniranje
             </span>
             <button
@@ -1066,7 +1066,7 @@ function MediaItemCard({
                 toast.error("Caption save error");
               }
             }}
-            className="w-full bg-black/20 border border-border/50 rounded-lg px-2.5 py-1 text-[10px] font-medium text-foreground/80 focus:outline-none focus:border-cyan-500/40 transition-colors placeholder:text-muted-foreground/80"
+            className="w-full bg-black/20 border border-border/50 rounded-lg px-2.5 py-1 text-[10px] font-medium text-foreground/80 focus:outline-none focus:border-ring transition-colors placeholder:text-muted-foreground/80"
           />
           {item.type === "PHOTO" && (
             <div className="flex gap-1 shrink-0">

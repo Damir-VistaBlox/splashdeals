@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input"
 import { useActionState } from "react"
 import { subscribeToNewsletter } from "@/server/lib/actions/newsletter"
 import { getClientDictionary } from "@/lib/client-dictionaries"
+import type { Dict } from "@/lib/types"
 
 /**
  * 🌊 Footer Component
@@ -16,7 +17,7 @@ import { getClientDictionary } from "@/lib/client-dictionaries"
 export function Footer() {
   const currentYear = 2026
   const [isHovered, setIsHovered] = React.useState(false)
-  const [dict, setDict] = React.useState<any>(null)
+  const [dict, setDict] = React.useState<Dict | null>(null)
 
   React.useEffect(() => {
     getClientDictionary().then(setDict)
@@ -185,19 +186,19 @@ export function Footer() {
 
             <div className="space-y-4">
               <div className="flex items-center gap-3 text-slate-400 group cursor-default">
-                <div className="p-2 rounded-lg bg-white/5 group-hover:bg-cyan-400/10 transition-colors">
-                  <Icon name="mail" className="text-[16px] group-hover:text-cyan-400" />
+                <div className="p-2 rounded-lg bg-white/5 group-hover:bg-primary/10 transition-colors">
+                  <Icon name="mail" className="text-[16px] group-hover:text-primary" />
                 </div>
                 <span 
-                  className="text-xs font-bold transition-colors group-hover:text-cyan-400"
+                  className="text-xs font-bold transition-colors group-hover:text-primary"
                   dangerouslySetInnerHTML={{ __html: "<!--email_off-->hq@splashdeals.rs<!--/email_off-->" }}
                 />
               </div>
               <div className="flex items-center gap-3 text-slate-400 group cursor-default">
-                <div className="p-2 rounded-lg bg-white/5 group-hover:bg-teal-400/10 transition-colors">
-                  <Icon name="location_on" className="text-[16px] group-hover:text-teal-400" />
+                <div className="p-2 rounded-lg bg-white/5 group-hover:bg-primary/10 transition-colors">
+                  <Icon name="location_on" className="text-[16px] group-hover:text-primary" />
                 </div>
-                <span className="text-xs font-bold transition-colors group-hover:text-teal-400">Belgrade Technology Park, SRB</span>
+                <span className="text-xs font-bold transition-colors group-hover:text-primary">Belgrade Technology Park, SRB</span>
               </div>
             </div>
           </div>
@@ -257,13 +258,13 @@ export function Footer() {
  * 📧 Newsletter Form Sub-component
  * Uses Server Actions & React 19 useActionState
  */
-function NewsletterForm({ dict }: { dict: any }) {
+function NewsletterForm({ dict }: { dict: Dict | null }) {
   const [state, formAction, isPending] = useActionState(subscribeToNewsletter, null);
   const [email, setEmail] = React.useState("");
 
   React.useEffect(() => {
     if (state?.success) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
+      // Reset email on success — this runs after render but is safe for form state
       setEmail("");
     }
   }, [state]);

@@ -54,7 +54,7 @@ export default async function FacilityOverviewPage({ params }: OverviewPageProps
       label: "Ulaznice", 
       value: facility._count.tickets, 
       icon: "confirmation_number", 
-      color: "text-blue-400",
+      color: "text-primary",
       href: `/admin/facilities/${facilityId}/tickets`
     },
     { 
@@ -79,7 +79,7 @@ export default async function FacilityOverviewPage({ params }: OverviewPageProps
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border/50 pb-8">
         <div className="flex flex-col gap-2">
           <div className="flex items-center gap-2">
-            <span className="px-2 py-0.5 rounded bg-blue-500/10 border border-blue-500/20 text-[10px] font-black text-blue-500 uppercase tracking-widest">
+            <span className="px-2 py-0.5 rounded bg-primary/10 border border-primary/20 text-[10px] font-black text-primary uppercase tracking-widest">
               {facility.status}
             </span>
             <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">

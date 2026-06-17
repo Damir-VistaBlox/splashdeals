@@ -75,7 +75,7 @@ export function CreateUserForm() {
             <FormItem>
               <FormLabel className="text-xs font-black uppercase tracking-widest text-muted-foreground">Full Name</FormLabel>
               <FormControl>
-                <Input placeholder="Damir K." className="bg-background border-border rounded-xl focus:border-cyan-500/50 transition-all h-11" {...field} />
+                <Input placeholder="Damir K." className="bg-background border-border rounded-xl focus:border-ring transition-all h-11" {...field} />
               </FormControl>
               <FormMessage className="text-[10px] font-bold uppercase tracking-tight text-red-400" />
             </FormItem>
@@ -89,7 +89,7 @@ export function CreateUserForm() {
             <FormItem>
               <FormLabel className="text-xs font-black uppercase tracking-widest text-muted-foreground">Corporate Email</FormLabel>
               <FormControl>
-                <Input placeholder="admin@splashdeals.rs" className="bg-background border-border rounded-xl focus:border-cyan-500/50 transition-all h-11" {...field} />
+                <Input placeholder="admin@splashdeals.rs" className="bg-background border-border rounded-xl focus:border-ring transition-all h-11" {...field} />
               </FormControl>
               <FormMessage className="text-[10px] font-bold uppercase tracking-tight text-red-400" />
             </FormItem>
@@ -103,7 +103,7 @@ export function CreateUserForm() {
             <FormItem>
               <FormLabel className="text-xs font-black uppercase tracking-widest text-muted-foreground">Temporary Password</FormLabel>
               <FormControl>
-                <Input type="password" placeholder="••••••••" className="bg-background border-border rounded-xl focus:border-cyan-500/50 transition-all h-11" {...field} />
+                <Input type="password" placeholder="••••••••" className="bg-background border-border rounded-xl focus:border-ring transition-all h-11" {...field} />
               </FormControl>
               <FormDescription className="text-[9px] text-muted-foreground uppercase tracking-tighter">Min 8 characters. User can reset this via email later.</FormDescription>
               <FormMessage className="text-[10px] font-bold uppercase tracking-tight text-red-400" />
@@ -119,7 +119,7 @@ export function CreateUserForm() {
               <FormLabel className="text-xs font-black uppercase tracking-widest text-muted-foreground">Access Level</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
-                  <SelectTrigger className="bg-background border-border rounded-xl focus:border-cyan-500/50 transition-all h-11">
+                  <SelectTrigger className="bg-background border-border rounded-xl focus:border-ring transition-all h-11">
                     <SelectValue placeholder="Select a role" />
                   </SelectTrigger>
                 </FormControl>

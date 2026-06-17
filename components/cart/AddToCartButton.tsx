@@ -65,8 +65,8 @@ export function AddToCartButton({ ticket, className }: AddToCartButtonProps) {
       className={cn(
         "relative z-30 h-14 w-14 rounded-2xl flex items-center justify-center transition-all duration-300 active:scale-95",
         added 
-          ? "bg-green-500 text-slate-950 scale-110 shadow-[0_0_20px_rgba(34,197,94,0.4)]" 
-          : "bg-white/5 text-slate-100 hover:bg-cyan-500 hover:text-slate-950 hover:scale-110",
+          ? "bg-emerald-500 text-slate-950 scale-110 shadow-[0_0_20px_rgba(34,197,94,0.4)]" 
+          : "bg-white/5 text-slate-100 hover:bg-primary hover:text-slate-950 hover:scale-110",
         className
       )}
       title={added ? "Dodato" : "Dodaj u korpu"}

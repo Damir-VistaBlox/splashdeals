@@ -23,8 +23,8 @@ export function LocationSection() {
     <Card className="p-5 border-border bg-muted/40 backdrop-blur-sm space-y-4">
       <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-2">
-          <div className="p-1.5 rounded-lg bg-blue-500/10">
-            <Icon name="location_on" className="text-[14px] text-blue-400" />
+          <div className="p-1.5 rounded-lg bg-primary/10">
+            <Icon name="location_on" className="text-[14px] text-primary" />
           </div>
           <h3 className="text-[10px] font-black uppercase tracking-widest text-foreground">Registry Geolocation</h3>
         </div>

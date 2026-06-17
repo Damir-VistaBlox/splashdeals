@@ -3,6 +3,7 @@ import { Geist } from "next/font/google";
 import * as React from "react";
 import "./globals.css";
 import { headers } from "next/headers";
+import { connection } from "next/server";
 
 export const viewport: Viewport = {
   themeColor: "#06b6d4",
@@ -93,6 +94,7 @@ export default async function WebLayout({
   params: Promise<Record<string, never>>;
 }) {
   
+  await connection();
   const dict = await getDictionary();
   const cities = await getActiveCities();
   

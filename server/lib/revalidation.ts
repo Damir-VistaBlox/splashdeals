@@ -13,8 +13,7 @@ export const ADMIN_PATHS = {
 } as const;
 
 export const PUBLIC_PATHS = {
-  facilityDetail: (slug: string) => `/facilities/[category]/${slug}` as const,
-  facilityById: (id: string) => `/${id}` as const,
+  facilityDetail: (slug: string) => `/${slug}` as const,
 } as const;
 
 export function revalidateAdmin(route: string, type?: "layout") {

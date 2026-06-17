@@ -5,9 +5,10 @@ import { useCart, initCartSync } from "@/hooks/use-cart";
 import { useUIState } from "@/hooks/use-ui-state";
 import { useBreadcrumb } from "@/hooks/use-breadcrumb";
 import { useHeaderScroll, DesktopTopNav, Breadcrumb, MobileOverlay } from "./_header";
+import type { Dict } from "@/lib/types";
 
 interface HeaderProps {
-  dict: any;
+  dict: Dict;
   cities: { id: string; name: string; slug: string }[];
 }
 
