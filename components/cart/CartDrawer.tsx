@@ -117,7 +117,7 @@ export const CartDrawer = () => {
                               }}
                               className="text-[10px] font-black uppercase text-red-400/50 hover:text-red-400 transition-colors tracking-widest"
                             >
-                              {dict?.cart?.remove ?? "Ukloni"}
+                              {(dict as any)?.cart?.remove ?? "Ukloni"}
                             </button>
                         </div>
                       </div>
