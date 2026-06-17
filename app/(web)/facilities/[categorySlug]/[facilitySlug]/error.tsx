@@ -24,7 +24,7 @@ export default function FacilityError({
 
   useEffect(() => {
     console.error("Facility Showcase Error:", error)
-    getClientDictionary().then(setDict)
+    getClientDictionary().then((d) => requestAnimationFrame(() => setDict(d)))
   }, [error])
 
   if (!dict) {
