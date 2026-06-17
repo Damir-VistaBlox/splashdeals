@@ -124,15 +124,11 @@ export function MegaMenu({ dict }: MegaMenuProps) {
                 className="text-[18px] transition-colors text-cyan-500/60 group-data-[state=open]:text-cyan-400"
               />
               {item.label}
-              <Icon
-                name="keyboard_arrow_down"
-                className="text-[16px] opacity-50 transition-transform duration-300 group-data-[state=open]:rotate-180 group-data-[state=open]:opacity-100 group-data-[state=open]:text-cyan-400"
-              />
             </NavigationMenuTrigger>
 
             <NavigationMenuContent
               className={cn(
-                "!absolute top-full mt-6 bg-[#020617] border border-white/10 shadow-[0_28px_70px_rgba(0,0,0,0.75),inset_0_1px_0_rgba(255,255,255,0.06)] rounded-[2.5rem] z-[120] outline-none overflow-hidden !p-0",
+                '!absolute top-full mt-6 bg-background border border-white/10 shadow-[0_28px_70px_rgba(0,0,0,0.75),inset_0_1px_0_rgba(255,255,255,0.06)] rounded-[2.5rem] z-[120] outline-none overflow-hidden !p-0',
                 "data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95",
                 item.width
               )}
