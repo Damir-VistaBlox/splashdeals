@@ -5,6 +5,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { OnboardFacilityForm } from "./_components/onboard-facility-form"
 import { Metadata } from "next"
+import { connection } from "next/server"
 import { requireSuperAdmin } from "@/server/lib/auth-guards"
 
 export const metadata: Metadata = {
@@ -13,6 +14,7 @@ export const metadata: Metadata = {
 }
 
 export default async function NewFacilityPage() {
+  await connection()
   await requireSuperAdmin({ redirect: true })
   
   return (

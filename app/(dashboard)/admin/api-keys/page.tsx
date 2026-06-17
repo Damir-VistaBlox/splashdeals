@@ -1,4 +1,5 @@
 import { Metadata } from "next"
+import { connection } from "next/server"
 import { prisma } from "@/server/lib/prisma"
 import { requireSuperAdmin } from "@/server/lib/auth-guards"
 import { ApiKeysClient } from "./api-keys-client"
@@ -9,6 +10,7 @@ export const metadata: Metadata = {
 }
 
 export default async function ApiKeysPage() {
+  await connection()
   await requireSuperAdmin({ redirect: true })
 
   const keys = await prisma.apiKey.findMany({

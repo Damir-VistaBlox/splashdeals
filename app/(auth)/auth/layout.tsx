@@ -1,5 +1,5 @@
 import "./globals.css";
-import { type ReactNode } from "react";
+import { type ReactNode, Suspense } from "react";
 import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { auth } from "@/server/lib/auth";
@@ -18,11 +18,8 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function AuthLayout({
-  children,
-}: {
-  children: ReactNode;
-}) {
+/** Suspense-wrapped session guard — marks this subtree as dynamic */
+async function AuthGuard({ children }: { children: ReactNode }) {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -31,6 +28,14 @@ export default async function AuthLayout({
     redirect("/admin");
   }
 
+  return <>{children}</>;
+}
+
+export default async function AuthLayout({
+  children,
+}: {
+  children: ReactNode;
+}) {
   return (
     <html lang="sr" className={cn("dark font-sans", geist.variable)}>
       <body className="min-h-screen antialiased">
@@ -53,7 +58,9 @@ export default async function AuthLayout({
               </h1>
             </div>
 
-            {children}
+            <Suspense fallback={null}>
+              <AuthGuard>{children}</AuthGuard>
+            </Suspense>
 
             <footer className="mt-12 text-center">
               <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-700">
