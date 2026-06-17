@@ -8,14 +8,19 @@ import { Icon } from "@/components/ui/Icon";
 /**
  * 🧭 BreadcrumbBar
  * Standalone full-width horizontal breadcrumb bar.
- * Sticky-positioned just below the fixed header, visible on all screen sizes.
- * Reads breadcrumb data from the Zustand store (set via BreadcrumbInjector).
+ * Fixed-positioned just below the top nav header (top-16 = 64px, same as header height).
+ * Visible on ALL pages — defaults to a "Početna" home link when no page-specific
+ * breadcrumbs are set via BreadcrumbInjector.
  */
 export function BreadcrumbBar() {
   const { items, backHref } = useBreadcrumb();
   const hasItems = items.length > 0;
 
-  if (!hasItems) return null;
+  // Always render at least the "Početna" (Home) breadcrumb
+  const displayItems = hasItems
+    ? items
+    : [{ label: "Početna" as const, href: "/" as const }];
+  const isLastItem = (idx: number) => idx === displayItems.length - 1;
 
   return (
     <div className="w-full border-b border-white/5 bg-background/98 backdrop-blur-[40px] sticky top-16 z-[100]">
@@ -34,12 +39,12 @@ export function BreadcrumbBar() {
 
         {/* Breadcrumb trail */}
         <div className="flex items-center gap-0 overflow-x-auto no-scrollbar w-full">
-          {items.map((item, idx) => (
+          {displayItems.map((item, idx) => (
             <React.Fragment key={idx}>
               {idx > 0 && (
                 <Icon name="keyboard_arrow_right" className="text-[12px] text-slate-600 shrink-0 mx-1.5" />
               )}
-              {item.href && idx < items.length - 1 ? (
+              {item.href && !isLastItem(idx) ? (
                 item.href === "/" ? (
                   <Link
                     href={item.href}
