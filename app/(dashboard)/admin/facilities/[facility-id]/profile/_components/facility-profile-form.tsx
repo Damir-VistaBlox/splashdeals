@@ -213,7 +213,8 @@ export function FacilityProfileForm({
         } else {
           toast.error(result.error || "Failed to update settings")
         }
-      } catch {
+      } catch (error: unknown) {
+        console.error("Failed to update facility:", error instanceof Error ? error.message : error);
         toast.error("A technical anomaly occurred.")
       }
     })

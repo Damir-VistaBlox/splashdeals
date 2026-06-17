@@ -33,7 +33,7 @@ export async function UsersList({ page, limit }: UsersListProps) {
 
   const successResult = result as {
     success: true
-    data: any[]
+    data: User[]
     totalCount: number
     page: number
     limit: number

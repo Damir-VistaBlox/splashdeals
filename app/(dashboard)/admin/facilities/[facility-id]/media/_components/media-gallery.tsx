@@ -923,7 +923,7 @@ function MediaItemCard({
               muted 
               playsInline 
               onMouseEnter={(e) => {
-                e.currentTarget.play().catch(err => console.log("Video autoplay blocked", err));
+                e.currentTarget.play().catch(err => console.warn("Video autoplay blocked", err));
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.pause();

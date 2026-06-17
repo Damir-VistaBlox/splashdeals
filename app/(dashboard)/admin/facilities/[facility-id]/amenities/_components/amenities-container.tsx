@@ -46,8 +46,24 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
 
 interface AmenitiesContainerProps {
   facilityId: string
-  allAmenities: any[]
-  initialFacilityAmenities: any[]
+  allAmenities: Array<{
+    id: string
+    name: string
+    icon: string
+    category: string | null
+    isSeeded: boolean
+    type: "BOOLEAN" | "QUANTIFIABLE" | "TEXT"
+  }>
+  initialFacilityAmenities: Array<{
+    facilityId: string
+    amenityId: string
+    value: string | null
+    imageUrl: string | null
+    displayOrder: number
+    isActive: boolean
+    isFeatured: boolean
+    scheduledAt: Date | null
+  }>
 }
 
 export function CompactAmenitiesTableContainer(props: AmenitiesContainerProps) {

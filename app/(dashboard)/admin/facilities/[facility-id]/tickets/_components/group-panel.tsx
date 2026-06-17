@@ -227,8 +227,9 @@ export function GroupPanel({
         toast.error("Greška pri čuvanju redosleda")
         setGroups(initialGroups)
       }
-    } catch {
-      toast.error("Doslo je do greške")
+    } catch (error: unknown) {
+      console.error("Failed to reorder ticket groups:", error instanceof Error ? error.message : error);
+      toast.error("Doslo je do greske")
       setGroups(initialGroups)
     }
   }

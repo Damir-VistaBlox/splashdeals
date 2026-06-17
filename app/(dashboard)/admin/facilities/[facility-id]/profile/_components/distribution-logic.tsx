@@ -158,7 +158,8 @@ export function DistributionLogic({ availableCities }: DistributionLogicProps) {
           toast.error(response.error || "Failed to create region")
           setPendingSlugToSelect(null)
         }
-      } catch {
+      } catch (error: unknown) {
+        console.error("Failed to create city:", error instanceof Error ? error.message : error);
         toast.error("Failed to communicate with registry")
         setPendingSlugToSelect(null)
       }

@@ -27,6 +27,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import { authClient } from "@/lib/auth-client"
+import { toast } from "sonner"
 import { useRouter } from "next/navigation"
 import { SearchForm } from "./search-form"
 import { APP_VERSION, BUILD_YEAR } from "@/lib/constants"
@@ -41,14 +42,18 @@ function SidebarNavItems({ userRole }: { userRole?: string | null }) {
     try {
       const stored = localStorage.getItem(`${sidebarId}-${title}`)
       if (stored !== null) return JSON.parse(stored)
-    } catch { /* ignore */ }
+    } catch (error: unknown) {
+      console.warn("Failed to read sidebar state from localStorage:", error instanceof Error ? error.message : error);
+    }
     return undefined
   }, [])
 
   const setStoredOpen = React.useCallback((title: string, open: boolean) => {
     try {
       localStorage.setItem(`${sidebarId}-${title}`, JSON.stringify(open))
-    } catch { /* ignore */ }
+    } catch (error: unknown) {
+      console.warn("Failed to save sidebar state to localStorage:", error instanceof Error ? error.message : error);
+    }
   }, [])
 
   const [openGroups, setOpenGroups] = React.useState<Record<string, boolean | undefined>>({})
@@ -241,7 +246,9 @@ export function AdminSidebar({ user, ...props }: AdminSidebarProps) {
           },
         },
       });
-    } catch {
+    } catch (error: unknown) {
+      console.error("Failed to sign out:", error instanceof Error ? error.message : error);
+      toast.error("Something went wrong. Please try again.");
       setIsLoggingOut(false);
     }
   };

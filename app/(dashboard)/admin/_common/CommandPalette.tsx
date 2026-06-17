@@ -16,10 +16,31 @@ import {
   CommandShortcut,
 } from "@/components/ui/command"
 
+interface FacilityResult {
+  id: string
+  name: string
+  city: string
+  category: string
+}
+
+interface TicketResult {
+  id: string
+  title: string
+  facilityId: string
+  facility: { name: string }
+  price: number
+}
+
+interface TransactionResult {
+  id: string
+  totalAmount: number
+  status: string
+}
+
 interface SearchResults {
-  facilities: any[]
-  tickets: any[]
-  transactions: any[]
+  facilities: FacilityResult[]
+  tickets: TicketResult[]
+  transactions: TransactionResult[]
 }
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json())

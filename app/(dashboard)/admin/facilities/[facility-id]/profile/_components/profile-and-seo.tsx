@@ -15,6 +15,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Card } from "@/components/ui/card"
 import { checkSlugAvailabilityAction } from "@/server/actions/governance"
 import { cn } from "@/lib/utils"
+import { toast } from "sonner"
 import type { UpdateFacilityGovernanceValues } from "@/server/lib/validations/facility"
 
 interface ProfileAndSEOProps {
@@ -43,7 +44,9 @@ export function ProfileAndSEO({ facilityId }: ProfileAndSEOProps) {
     try {
       const { isAvailable } = await checkSlugAvailabilityAction(slug, facilityId)
       setSlugAvailability(isAvailable ? "available" : "collision")
-    } catch {
+    } catch (error: unknown) {
+      console.error("Failed to check slug availability:", error instanceof Error ? error.message : error);
+      toast.error("Something went wrong. Please try again.");
       setSlugAvailability("idle")
     }
   }, [facilityId])

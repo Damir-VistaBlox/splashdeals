@@ -63,7 +63,8 @@ export function DangerZone({
         } else {
           toast.error(result.error || "Failed to purge facility")
         }
-      } catch {
+      } catch (error: unknown) {
+        console.error("Failed to delete facility:", error instanceof Error ? error.message : error);
         toast.error("An anomaly occurred during deletion.")
       }
     })
