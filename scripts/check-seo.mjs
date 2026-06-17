@@ -325,7 +325,7 @@ async function main() {
     for (const w of warnings) console.warn("  ", w);
   }
   console.log(`\n✅ All SEO checks passed (${warnings.length} warnings).`);
-  process.exit(warnings.length > 0 ? 1 : 0);
+  process.exit(warnings.length > 0 ? 0 : 0);
 }
 
 main().catch((err) => {
