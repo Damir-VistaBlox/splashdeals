@@ -206,6 +206,7 @@ async function checkPage(path, label) {
   const robotsMatch = html.match(/<meta\s+name="robots"\s+content="([^"]*)"/i);
   if (robotsMatch && robotsMatch[1].includes("noindex")) {
     fail(WARN, "Meta", path, `noindex set: "${robotsMatch[1]}"`);
+    return; // skip remaining checks for noindex pages
   } else {
     pass("Meta", path, "no noindex");
   }
