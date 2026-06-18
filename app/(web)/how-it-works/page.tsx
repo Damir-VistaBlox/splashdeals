@@ -67,15 +67,72 @@ export default async function HowItWorksPage({ params: _params }: PageProps) {
         id="how-it-works-schema"
         data={{
           "@context": "https://schema.org",
-          "@type": "HowTo",
-          "name": "Kako kupiti digitalne karte za akva parkove",
-          "description": "Saznajte kako da u 3 jednostavna koraka kupite online karte za akva parkove u Srbiji.",
-          "step": steps.map((step, index) => ({
-            "@type": "HowToStep",
-            "position": index + 1,
-            "name": step.title,
-            "text": step.content,
-          }))
+          "@graph": [
+            {
+              "@type": "HowTo",
+              "name": "Kako kupiti digitalne karte za akva parkove",
+              "description": "Saznajte kako da u 3 jednostavna koraka kupite online karte za akva parkove u Srbiji.",
+              "step": steps.map((step, index) => ({
+                "@type": "HowToStep",
+                "position": index + 1,
+                "name": step.title,
+                "text": step.content,
+              }))
+            },
+            {
+              "@type": "FAQPage",
+              "mainEntity": [
+                {
+                  "@type": "Question",
+                  "name": "Kako dobijam karte nakon uplate?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Odmah nakon uspešne uplate, digitalne ulaznice stižu direktno na vašu email adresu i postaju dostupne unutar vašeg korisničkog naloga. Možete ih sačuvati u Apple ili Google Wallet za lak pristup."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "Da li mogu da otkažem ili promenim karte?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Politika otkaza zavisi od objekta i vrste ulaznice. Detaljne informacije o uslovima otkaza i zamene su prikazane pre nego što potvrdite kupovinu na stranici svakog objekta."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "Kako koristim QR kod na ulazu?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Kada stignete na ulaz, jednostavno otvorite digitalnu kartu na svom telefonu i pokažite QR kod osoblju. Oni će ga skenirati i možete momentalno ući — bez štampanja i bez čekanja u redu."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "Koje metode plaćanja prihvatate?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Prihvatamo sve glavne platne kartice (Visa, Mastercard, Maestro) putem bezbednog plaćanja. Transakcije su zaštićene SSL/TLS enkripcijom. Nije potrebna registracija za kupovinu."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "Da li deca dobijaju popust ili besplatan ulaz?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Cene za decu variraju od objekta do objekta. Prilikom izbora ulaznica, prikazane su sve dostupne kategorije uključujući dečije, porodične i grupne karte sa odgovarajućim cenama."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "Mogu li kupiti karte za nekog drugog?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Da, možete kupiti više karata u jednoj transakciji i proslediti ih drugim osobama. Svaka karta ima jedinstveni QR kod koji se može koristiti nezavisno."
+                  }
+                }
+              ]
+            }
+          ]
         }} 
       />
       {/* 🏙️ HEADER */}
