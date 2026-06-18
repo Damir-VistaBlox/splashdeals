@@ -32,7 +32,12 @@ export function TicketImageUpload({ value, onChange, facilityId }: TicketImageUp
 
     const uploadPromise = (async () => {
       // Step 1: Optimize and resize directly on client (Canvas 1.91:1 WebP)
-      const optimizedBlob = await optimizeImageOnClient(file, { mode: "exact", width: 1200, height: 630, quality: 0.85 })
+      // Timeout after 30s to prevent hanging on large/corrupted files
+      const optimizePromise = optimizeImageOnClient(file, { mode: "exact", width: 1200, height: 630, quality: 0.85 })
+      const timeoutPromise = new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error("Optimizacija je predugo trajala — probajte sa manjom slikom")), 30000)
+      )
+      const optimizedBlob = await Promise.race([optimizePromise, timeoutPromise])
       const optimizedFile = new File(
         [optimizedBlob],
         `${file.name.split(".")[0] || "ticket"}-${Date.now()}.webp`,
