@@ -4,16 +4,7 @@ import { prisma } from "@/server/lib/prisma";
 import { FacilityShowcaseTemplate, getFacilityMetadata } from "@/app/(web)/facilities/[categorySlug]/[facilitySlug]/page";
 import { DiscoveryTemplate, getDiscoveryMetadata } from "@/lib/routing/discovery";
 
-// Known category slugs mapped to their display labels
-const KNOWN_CATEGORIES: Record<string, string> = {
-  "akva-parkovi": "Akva Parkovi",
-  "bazeni": "Bazeni",
-  "wellness-i-spa": "Wellness i Spa",
-};
 
-export function generateStaticParams() {
-  return Object.keys(KNOWN_CATEGORIES).map((categorySlug) => ({ categorySlug }));
-}
 
 interface PageProps {
   params: Promise<{ categorySlug: string }>;
@@ -23,7 +14,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { categorySlug } = await params;
 
   // 1. Try as category
-  if (KNOWN_CATEGORIES[categorySlug.toLowerCase()]) {
+  const catLabels: Record<string, string> = {
+    "akva-parkovi": "Akva Parkovi",
+    "bazeni": "Bazeni",
+    "wellness-i-spa": "Wellness i Spa",
+  };
+
+  if (catLabels[categorySlug.toLowerCase()]) {
     return await getDiscoveryMetadata(categorySlug);
   }
 
