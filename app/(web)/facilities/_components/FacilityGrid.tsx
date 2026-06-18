@@ -78,14 +78,14 @@ export async function FacilityGrid({ dict,
 
   if (processedFacilities.length === 0 && noFacilitiesLabel) {
     return (
-      <div className="text-center py-24 bg-white/5 rounded-[2.5rem] border border-white/5 backdrop-blur-sm">
+      <div className="text-center py-24 bg-muted/50 rounded-[2.5rem] border border-border backdrop-blur-sm">
         <div
            className="flex flex-col items-center gap-4"
         >
           <div className="w-16 h-16 rounded-full bg-slate-900 flex items-center justify-center border border-white/10">
              <span className="text-2xl">🌊</span>
           </div>
-          <span className="text-slate-500 font-black uppercase tracking-[0.3em] text-xs">
+          <span className="text-muted-foreground font-black uppercase tracking-[0.3em] text-xs">
             {noFacilitiesLabel}
           </span>
           <span className="text-slate-600 text-[10px] uppercase font-bold tracking-widest max-w-xs leading-relaxed">

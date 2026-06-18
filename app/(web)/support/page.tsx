@@ -87,7 +87,7 @@ export default async function SupportPage({ params: _params }: PageProps) {
             {dict.support.title}
           </h1>
           
-          <div className="flex items-center gap-4 text-xs font-bold text-slate-500 uppercase tracking-widest">
+          <div className="flex items-center gap-4 text-xs font-bold text-muted-foreground uppercase tracking-widest">
             <Icon name="schedule" className="text-[12px]" />
             <span>{dict.support.updated}</span>
             <div className="h-1 w-1 rounded-full bg-slate-800" />
@@ -99,7 +99,7 @@ export default async function SupportPage({ params: _params }: PageProps) {
       {/* 📜 CONTENT GRID */}
       <div className="space-y-12">
         <div
-          className="text-lg text-slate-300 leading-relaxed font-medium transition-opacity duration-500"
+          className="text-lg text-foreground/80 leading-relaxed font-medium transition-opacity duration-500"
         >
           {dict.support.intro}
         </div>

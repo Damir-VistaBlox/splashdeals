@@ -43,10 +43,10 @@ export async function LocationGrid({ facilitiesLabel }: LocationGridProps) {
               <div className="absolute top-0 right-0 p-2 opacity-5">
                  <Icon name="location_on" className="text-[48px]" />
               </div>
-              <span className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2">
+              <span className="block text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-2">
                 {city._count.facilities} {facilitiesLabel}
               </span>
-              <span className="text-lg font-black uppercase italic tracking-tighter text-white group-hover:text-cyan-400 transition-colors">
+              <span className="text-lg font-black uppercase italic tracking-tighter text-foreground group-hover:text-primary transition-colors">
                 {city.name}
               </span>
             </Card>

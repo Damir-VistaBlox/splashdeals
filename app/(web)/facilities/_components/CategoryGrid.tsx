@@ -42,14 +42,14 @@ export async function CategoryGrid({ facilitiesLabel }: CategoryGridProps) {
           className="transition-all duration-300"
         >
           <Link href={`/facilities/${cat.category.toLowerCase()}`}>
-            <Card className="p-6 text-center hover:bg-cyan-500/10 transition-colors border-white/5 group relative overflow-hidden">
+            <Card className="p-6 text-center hover:bg-cyan-500/10 transition-colors border-border group relative overflow-hidden">
               <div className="absolute top-0 right-0 p-2 opacity-5">
                  <Icon name="filter_list" className="text-[48px]" />
               </div>
-              <span className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2">
+              <span className="block text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-2">
                 {cat._count.id} {facilitiesLabel}
               </span>
-              <span className="text-lg font-black uppercase italic tracking-tighter text-white group-hover:text-cyan-400 transition-colors">
+              <span className="text-lg font-black uppercase italic tracking-tighter text-foreground group-hover:text-primary transition-colors">
                 {getCategoryLabel(cat.category)}
               </span>
             </Card>

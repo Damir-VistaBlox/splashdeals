@@ -133,19 +133,19 @@ export function ShowcaseAmenities({ amenities, dict }: ShowcaseAmenitiesProps) {
           return (
             <div
               key={fa.amenityId}
-              className="relative group flex flex-row items-center gap-3 p-4 min-h-[76px] rounded-2xl border border-white/5 bg-slate-950/20 backdrop-blur-md hover:border-cyan-500/30 hover:bg-white/[0.02] transition-all duration-500 cursor-default overflow-hidden sm:flex-col sm:items-center sm:justify-center sm:text-center sm:p-8 sm:min-h-[170px]"
+              className="relative group flex flex-row items-center gap-3 p-4 min-h-[76px] rounded-2xl border border-border bg-card/40 backdrop-blur-md hover:border-primary/30 hover:bg-muted/20 transition-all duration-500 cursor-default overflow-hidden sm:flex-col sm:items-center sm:justify-center sm:text-center sm:p-8 sm:min-h-[170px]"
             >
               {/* 🔮 Glow Hover Effect */}
               <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
               {/* 🧿 Icon Container (Neon Glassmorphism) */}
-              <div className="relative z-10 flex items-center justify-center shrink-0 w-10 h-10 rounded-xl bg-white/[0.03] text-cyan-400 border border-white/5 shadow-inner backdrop-blur-md transition-all duration-500 group-hover:scale-110 sm:w-14 sm:h-14 sm:rounded-2xl sm:mb-4">
+              <div className="relative z-10 flex items-center justify-center shrink-0 w-10 h-10 rounded-xl bg-white/[0.03] text-cyan-400 border border-border shadow-inner backdrop-blur-md transition-all duration-500 group-hover:scale-110 sm:w-14 sm:h-14 sm:rounded-2xl sm:mb-4">
                 <Icon name={iconName} className="text-[20px] text-cyan-400 sm:text-[24px]" />
               </div>
 
               {/* 🏷️ Info Container */}
               <div className="relative z-10 flex flex-col justify-center text-left space-y-1 sm:items-center sm:text-center">
-                <h4 className="text-[11px] xs:text-xs font-black uppercase tracking-wider text-slate-200 group-hover:text-white transition-colors leading-snug line-clamp-2 sm:line-clamp-none max-w-[130px] sm:max-w-[180px]">
+                <h4 className="text-[11px] xs:text-xs font-black uppercase tracking-wider text-foreground/80 group-hover:text-white transition-colors leading-snug line-clamp-2 sm:line-clamp-none max-w-[130px] sm:max-w-[180px]">
                   {getTranslatedName(fa.amenity.name)}
                 </h4>
                 

@@ -101,13 +101,13 @@ export default async function PrivacyPage({ params: _params }: PageProps) {
               key={idx}
               className="transition-all duration-300"
             >
-              <Card className="p-8 border-white/5 hover:border-primary/20 transition-colors group">
-                <h2 className="text-xl font-black uppercase italic tracking-tight text-white mb-6 flex items-center gap-3">
+              <Card className="p-8 border-border hover:border-primary/20 transition-colors group">
+                <h2 className="text-xl font-black uppercase italic tracking-tight text-foreground mb-6 flex items-center gap-3">
                   <Icon name="keyboard_arrow_right" className="text-[20px] text-primary group-hover:translate-x-1 transition-transform" />
                   {section.title}
                 </h2>
                 <div 
-                  className="text-slate-400 leading-relaxed whitespace-pre-line text-sm sm:text-base"
+                  className="text-muted-foreground leading-relaxed whitespace-pre-line text-sm sm:text-base"
                   dangerouslySetInnerHTML={{ __html: section.content }}
                 />
               </Card>
@@ -122,11 +122,11 @@ export default async function PrivacyPage({ params: _params }: PageProps) {
           <Card className="p-8 border-primary/20 bg-primary/5">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
               <div className="space-y-2">
-                <h3 className="text-xl font-black uppercase italic tracking-tight text-white flex items-center gap-2">
+                <h3 className="text-xl font-black uppercase italic tracking-tight text-foreground flex items-center gap-2">
                   <Icon name="visibility" className="text-[20px] text-primary" />
                   Transparency First
                 </h3>
-                <p className="text-slate-400 text-sm">We believe in minimal data collection and maximum security. Your data is your property.</p>
+                <p className="text-muted-foreground text-sm">We believe in minimal data collection and maximum security. Your data is your property.</p>
               </div>
               
               <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-[10px] font-black uppercase tracking-widest">

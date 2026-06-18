@@ -83,13 +83,13 @@ export function CartClient({ dict }: {  dict: Record<string, any> }) {
     return (
       <div className="container max-w-4xl mx-auto py-32 px-6">
         <div className="flex flex-col items-center justify-center space-y-8 text-center">
-          <div className="p-8 rounded-full bg-white/5 border border-white/5 relative">
+          <div className="p-8 rounded-full bg-muted/50 border border-border relative">
              <div className="absolute inset-0 bg-primary rounded-full blur-3xl opacity-10 animate-pulse" />
              <Icon name="shopping_bag" className="w-16 h-16 text-primary relative z-10" />
           </div>
           <div className="space-y-4">
-             <h1 className="text-4xl md:text-5xl font-black italic tracking-tighter uppercase text-white">Vaša korpa je prazna</h1>
-             <p className="text-slate-400 font-bold">Izgleda da još uvek niste dodali nijednu Splash ponudu.</p>
+             <h1 className="text-4xl md:text-5xl font-black italic tracking-tighter uppercase text-foreground">Vaša korpa je prazna</h1>
+             <p className="text-muted-foreground font-bold">Izgleda da još uvek niste dodali nijednu Splash ponudu.</p>
           </div>
           <Link href={`/akva-parkovi`}>
             <Button className="h-16 px-12 font-black uppercase tracking-widest text-xs rounded-full bg-primary text-black hover:bg-primary/90">
@@ -112,11 +112,11 @@ export function CartClient({ dict }: {  dict: Record<string, any> }) {
         {/* 🛒 ITEM LIST */}
         <div className="flex-grow space-y-8">
            <div className="flex items-center justify-between">
-              <Link href={`/akva-parkovi`} className="flex items-center gap-2 text-slate-500 hover:text-white transition-colors group">
+              <Link href={`/akva-parkovi`} className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors group">
                  <Icon name="arrow_back" className="text-[16px] group-hover:-translate-x-1 transition-transform" />
                  <span className="text-[10px] uppercase font-black tracking-widest">Nazad na karte</span>
               </Link>
-              <h2 className="text-3xl font-black italic uppercase tracking-tighter text-white">Korpa za kupovinu</h2>
+              <h2 className="text-3xl font-black italic uppercase tracking-tighter text-foreground">Korpa za kupovinu</h2>
            </div>
 
            <div className="space-y-4">
@@ -124,7 +124,7 @@ export function CartClient({ dict }: {  dict: Record<string, any> }) {
                  <div
                    key={item.id}
                  >
-                   <Card className="p-6 border-white/5 bg-gradient-to-r from-white/5 to-transparent hover:border-white/10 transition-all group">
+                   <Card className="p-6 border-border bg-gradient-to-r from-white/5 to-transparent hover:border-white/10 transition-all group">
                      <div className="flex flex-col md:flex-row items-center gap-8">
                        {/* Icon/Image Placeholder */}
                        <div className="w-20 h-20 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform relative overflow-hidden">
@@ -149,30 +149,30 @@ export function CartClient({ dict }: {  dict: Record<string, any> }) {
                                <span className="text-[8px] bg-amber-500/20 text-amber-400 px-2 py-0.5 rounded-full font-black uppercase tracking-tighter">Sezonska karta</span>
                              )}
                           </div>
-                          <h3 className="text-xl font-black text-white italic tracking-tight">{item.title}</h3>
-                          <div className="text-sm font-bold text-slate-500">{formatPrice(item.price)} {item.currency} / po stavci</div>
+                          <h3 className="text-xl font-black text-foreground italic tracking-tight">{item.title}</h3>
+                          <div className="text-sm font-bold text-muted-foreground">{formatPrice(item.price)} {item.currency} / po stavci</div>
                        </div>
 
                        {/* Quantity Controls */}
-                       <div className="flex items-center gap-6 bg-white/5 p-2 rounded-2xl border border-white/5">
+                       <div className="flex items-center gap-6 bg-muted/50 p-2 rounded-2xl border border-border">
                           <button 
                             disabled={isCheckingOut || item.quantity <= 1}
                             onClick={() => {
                               if (typeof navigator !== 'undefined' && "vibrate" in navigator) navigator.vibrate(10);
                               updateQuantity(item.id, item.quantity - 1);
                             }}
-                            className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-white/10 text-slate-400 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                            className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-white/10 text-muted-foreground transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                           >
                              <Icon name="remove" className="text-[16px]" />
                           </button>
-                          <span className="font-black text-xl text-white w-6 text-center">{item.quantity}</span>
+                          <span className="font-black text-xl text-foreground w-6 text-center">{item.quantity}</span>
                           <button 
                             disabled={isCheckingOut || item.quantity >= MAX_QUANTITY_PER_ITEM}
                             onClick={() => {
                               if (typeof navigator !== 'undefined' && "vibrate" in navigator) navigator.vibrate(10);
                               updateQuantity(item.id, item.quantity + 1);
                             }}
-                            className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-white/10 text-slate-400 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                            className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-white/10 text-muted-foreground transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                           >
                              <Icon name="add" className="text-[16px]" />
                           </button>
@@ -180,7 +180,7 @@ export function CartClient({ dict }: {  dict: Record<string, any> }) {
 
                        {/* Price & Remove */}
                        <div className="flex flex-col items-end gap-2 pr-4 min-w-[120px]">
-                          <div className="text-2xl font-black text-white">{formatPrice(item.price * item.quantity)} <span className="text-xs opacity-40 ml-1">{item.currency}</span></div>
+                          <div className="text-2xl font-black text-foreground">{formatPrice(item.price * item.quantity)} <span className="text-xs opacity-40 ml-1">{item.currency}</span></div>
                           <button 
                             disabled={isCheckingOut}
                             onClick={() => {
@@ -202,20 +202,20 @@ export function CartClient({ dict }: {  dict: Record<string, any> }) {
 
         {/* 💳 SUMMARY SIDEBAR */}
         <div className="w-full lg:w-[400px] space-y-6">
-           <Card className="p-8 border-white/5 bg-navy-deep/50 space-y-8 sticky top-24">
+           <Card className="p-8 border-border bg-navy-deep/50 space-y-8 sticky top-24">
               <div className="space-y-4">
-                 <h2 className="text-2xl font-black italic uppercase tracking-tighter text-white">Pregled porudžbine</h2>
-                 <div className="space-y-3 pt-4 border-t border-white/5">
+                 <h2 className="text-2xl font-black italic uppercase tracking-tighter text-foreground">Pregled porudžbine</h2>
+                 <div className="space-y-3 pt-4 border-t border-border">
                     <div className="flex justify-between text-sm">
-                       <span className="text-slate-500 font-bold">Međuzbir</span>
-                       <span className="text-white font-black">{formatPrice(total)} RSD</span>
+                       <span className="text-muted-foreground font-bold">Međuzbir</span>
+                       <span className="text-foreground font-black">{formatPrice(total)} RSD</span>
                     </div>
                     <div className="flex justify-between text-sm">
-                       <span className="text-slate-500 font-bold">Naknada za obradu</span>
+                       <span className="text-muted-foreground font-bold">Naknada za obradu</span>
                        <span className="text-emerald-400 font-black">0 %</span>
                     </div>
-                    <div className="flex justify-between text-2xl pt-4 border-t border-white/5">
-                       <span className="font-black italic uppercase tracking-tighter text-white">Ukupno</span>
+                    <div className="flex justify-between text-2xl pt-4 border-t border-border">
+                       <span className="font-black italic uppercase tracking-tighter text-foreground">Ukupno</span>
                        <span className="font-black text-splash">{formatPrice(total)} RSD</span>
                     </div>
                  </div>
@@ -240,11 +240,11 @@ export function CartClient({ dict }: {  dict: Record<string, any> }) {
                  </Button>
 
                  <div className="flex flex-col gap-3">
-                    <div className="flex items-center gap-2 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                    <div className="flex items-center gap-2 text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
                        <Icon name="security" className="text-[16px] text-emerald-400" />
                        Šifrovana i Bezbedna Transakcija
                     </div>
-                    <div className="flex items-center gap-2 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                    <div className="flex items-center gap-2 text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
                        <Icon name="bolt" className="text-[16px] text-amber-400" />
                        Instant Isporuka Karata
                     </div>

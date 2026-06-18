@@ -153,7 +153,7 @@ export function FacilityMap({
             <Icon name="explore" className="text-[14px] animate-pulse" />
             <span>Geolokacija Objekta</span>
           </div>
-          <h3 className="text-xl md:text-3xl font-black italic text-white uppercase tracking-tight">
+          <h3 className="text-xl md:text-3xl font-black italic text-foreground uppercase tracking-tight">
             Pronađi Nas Na <span className="text-cyan-400">Mapi.</span>
           </h3>
           <p className="text-slate-400 text-xs font-semibold flex items-center gap-1.5 mt-1">
@@ -176,7 +176,7 @@ export function FacilityMap({
         <div ref={mapContainerRef} className="w-full h-full z-10 bg-slate-200" />
         
         {/* Subtle glass overlay inside corner */}
-        <div className="absolute top-4 left-4 z-20 pointer-events-none px-4 py-2 rounded-xl backdrop-blur-md bg-slate-950/60 border border-white/5 text-[10px] font-black uppercase tracking-wider text-cyan-400">
+        <div className="absolute top-4 left-4 z-20 pointer-events-none px-4 py-2 rounded-xl backdrop-blur-md bg-background/60 border border-white/5 text-[10px] font-black uppercase tracking-wider text-cyan-400">
           📍 {facilityName}
         </div>
       </div>

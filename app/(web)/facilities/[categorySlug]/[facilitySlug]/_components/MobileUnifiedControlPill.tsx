@@ -91,14 +91,14 @@ export function MobileUnifiedControlPill({
 
   return (
     <div
-      className="flex items-center justify-between w-full max-w-md mx-auto h-16 bg-slate-950/40 backdrop-blur-xl border border-white/10 rounded-full px-5 shadow-2xl relative select-none animate-fade-in-up"
+      className="flex items-center justify-between w-full max-w-md mx-auto h-16 bg-background/80 backdrop-blur-xl border border-border rounded-full px-5 shadow-2xl relative select-none animate-fade-in-up"
     >
       {/* 🌤️ Segment 1: Weather */}
       <div className="flex items-center gap-2.5 px-2 flex-1 justify-center">
         {weather ? (
           <>
             {getWeatherIcon(weather.weathercode)}
-            <span className="text-base font-black text-white tracking-tight font-sans">
+            <span className="text-base font-black text-foreground tracking-tight font-sans">
               {Math.round(weather.temperature)}°C
             </span>
           </>
@@ -113,7 +113,7 @@ export function MobileUnifiedControlPill({
       {/* ⏰ Segment 2: Operating Hours */}
       <div className="flex items-center gap-2.5 px-3 flex-1 justify-center">
         <Icon name="schedule" className="text-[24px] text-cyan-400 flex-shrink-0" />
-        <span className="text-base font-black text-white tracking-tight font-mono">
+        <span className="text-base font-black text-foreground tracking-tight font-mono">
           {todayHours ? (
             todayHours.isClosed ? (
               <span className="text-red-400">Zatvoreno</span>
@@ -138,7 +138,7 @@ export function MobileUnifiedControlPill({
       >
         <Icon name="navigation" className="text-[24px] fill-current animate-pulse text-cyan-400 flex-shrink-0 group-hover:scale-110 transition-transform duration-300" />
         {distance !== null ? (
-          <span className="text-sm font-black tracking-tight text-white font-mono">
+          <span className="text-sm font-black tracking-tight text-foreground font-mono">
             {distance.toFixed(0)} km
           </span>
         ) : (

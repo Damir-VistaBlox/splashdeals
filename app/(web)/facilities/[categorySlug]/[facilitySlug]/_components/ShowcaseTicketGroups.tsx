@@ -141,7 +141,7 @@ export function ShowcaseTicketGroups({ groups, facilityId, facilityName, categor
     return (
       <div className="w-full py-24 text-center space-y-4">
         <Icon name="shopping_bag" className="text-[48px] text-slate-800 mx-auto" />
-        <p className="text-slate-500 italic">Trenutno nema dostupnih ponuda.</p>
+        <p className="text-muted-foreground italic">Trenutno nema dostupnih ponuda.</p>
       </div>
     );
   }
@@ -154,7 +154,7 @@ export function ShowcaseTicketGroups({ groups, facilityId, facilityName, categor
       <div className="relative w-full mb-8">
         {/* Right fade gradient overlay for mobile scroll indications */}
         <div className="absolute right-[-24px] top-0 bottom-0 w-16 bg-gradient-to-l from-slate-950 via-slate-950/60 to-transparent pointer-events-none z-10 md:hidden" />
-        <div className="overflow-x-auto no-scrollbar scroll-smooth flex gap-2 pb-2 pt-1 px-6 -mx-6 md:mx-0 md:px-1 md:py-1 bg-transparent md:bg-white/5 md:backdrop-blur-md rounded-none md:rounded-full border-none md:border md:border-white/5">
+        <div className="overflow-x-auto no-scrollbar scroll-smooth flex gap-2 pb-2 pt-1 px-6 -mx-6 md:mx-0 md:px-1 md:py-1 bg-transparent md:bg-muted/50 md:backdrop-blur-md rounded-none md:rounded-full border-none md:border md:border-border">
           {groups.map((group) => {
             const isActive = group.id === activeGroupId;
             return (
@@ -165,7 +165,7 @@ export function ShowcaseTicketGroups({ groups, facilityId, facilityName, categor
                   "relative px-6 py-3 rounded-full text-xs font-black uppercase tracking-widest transition-all duration-300 shrink-0 select-none",
                   isActive 
                     ? "text-slate-950" 
-                    : "text-slate-400 hover:text-white bg-white/5 md:bg-transparent border border-white/5 md:border-none"
+                    : "text-muted-foreground hover:text-foreground bg-muted/50 md:bg-transparent border border-border md:border-none"
                 )}
               >
                 {isActive && (
@@ -189,7 +189,7 @@ export function ShowcaseTicketGroups({ groups, facilityId, facilityName, categor
             {/* Description of active group if present */}
             {(activeGroup.descriptionSr || activeGroup.description) && (
               <div className="px-2 md:hidden">
-                <p className="text-slate-400 text-sm font-medium italic">
+                <p className="text-muted-foreground text-sm font-medium italic">
                   {activeGroup.descriptionSr || activeGroup.description}
                 </p>
               </div>
@@ -210,7 +210,7 @@ export function ShowcaseTicketGroups({ groups, facilityId, facilityName, categor
                   }}
                 />
               ) : activeGroup.tiers.length >= 5 ? (
-                <Card className="p-8 border-white/5 overflow-visible">
+                <Card className="p-8 border-border overflow-visible">
                   <TierGrid
                     prefix={prefix}
                     main={main}
@@ -223,7 +223,7 @@ export function ShowcaseTicketGroups({ groups, facilityId, facilityName, categor
                   />
                 </Card>
               ) : (
-                <Card className="p-8 border-white/5 overflow-visible">
+                <Card className="p-8 border-border overflow-visible">
                   <TierList
                     prefix={prefix}
                     main={main}
@@ -265,12 +265,12 @@ export function ShowcaseTicketGroups({ groups, facilityId, facilityName, categor
       {/* Dynamic Sticky Checkout Drawer on Mobile */}
       {totalItems > 0 && (
         <div className="fixed bottom-4 left-4 right-4 z-50 md:hidden animate-in slide-in-from-bottom duration-300">
-          <div className="backdrop-blur-xl bg-slate-950/80 border border-white/10 rounded-3xl p-4 shadow-[0_10px_50px_rgba(0,0,0,0.5)] flex items-center justify-between gap-4">
+          <div className="backdrop-blur-xl bg-slate-950/80 border border-border rounded-3xl p-4 shadow-[0_10px_50px_rgba(0,0,0,0.5)] flex items-center justify-between gap-4">
             <div className="space-y-0.5">
-              <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">Izabrano</span>
+              <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Izabrano</span>
               <div className="flex items-baseline gap-2">
-                <span className="text-sm font-black text-white">{totalItems} {totalItems === 1 ? 'ulaznica' : 'ulaznice'}</span>
-                <span className="text-xs font-bold text-cyan-400">{totalPrice} RSD</span>
+                <span className="text-sm font-black text-foreground">{totalItems} {totalItems === 1 ? 'ulaznica' : 'ulaznice'}</span>
+                <span className="text-xs font-bold text-primary">{totalPrice} RSD</span>
               </div>
             </div>
             
@@ -306,10 +306,10 @@ function SingleTierCard({ group, tier, quantity, setQuantity, onAdd, prefix, mai
   main: string;
 }) {
   return (
-    <Card id={`ticket-${tier.id}`} className="p-12 flex flex-col md:flex-row items-center justify-between gap-12 group border-white/5">
+    <Card id={`ticket-${tier.id}`} className="p-12 flex flex-col md:flex-row items-center justify-between gap-12 group border-border">
       <div className="space-y-4 text-center md:text-left flex-1">
         <div className="flex flex-wrap gap-2 justify-center md:justify-start">
-          <Badge className="bg-cyan-500/10 text-cyan-400 font-black uppercase tracking-widest text-[10px] border-cyan-500/20">
+          <Badge className="bg-primary/10 text-primary font-black uppercase tracking-widest text-[10px] border-primary/20">
             {tier.isSeasonPass ? "Sezonska karta" : "Ulaznica"}
           </Badge>
           {tier.maxPeople && tier.maxPeople > 1 && (
@@ -318,15 +318,15 @@ function SingleTierCard({ group, tier, quantity, setQuantity, onAdd, prefix, mai
             </Badge>
           )}
         </div>
-        <h3 className="text-xl md:text-3xl font-black text-white italic tracking-tighter uppercase leading-none group-hover:text-cyan-400 transition-colors">
+        <h3 className="text-xl md:text-3xl font-black text-foreground italic tracking-tighter uppercase leading-none group-hover:text-primary transition-colors">
           {group.titleSr || group.title}
         </h3>
-        <p className="text-slate-400 font-medium max-w-md italic">
+        <p className="text-muted-foreground font-medium max-w-md italic">
           {group.descriptionSr || group.description || "Digitalna ulaznica za premium pristup sadržajima parka."}
         </p>
       </div>
 
-      <div className="w-full md:w-auto space-y-8 bg-white/5 p-8 rounded-[2.5rem] border border-white/5 backdrop-blur-3xl min-w-[320px]">
+      <div className="w-full md:w-auto space-y-8 bg-muted/50 p-8 rounded-[2.5rem] border border-border backdrop-blur-3xl min-w-[320px]">
         {/* Mobile Viewport (Concept B - Capsules) */}
         <div className="flex md:hidden items-center justify-between gap-4">
           {tier.originalPrice && Number(tier.originalPrice) > Number(tier.price) ? (
@@ -337,24 +337,24 @@ function SingleTierCard({ group, tier, quantity, setQuantity, onAdd, prefix, mai
                   {prefix && <span className="sr-only">{prefix} </span>}
                   {main} cene
                 </span>
-                <span className="relative text-sm font-bold text-slate-400 leading-none">
-                  {tier.originalPrice} <span className="text-[9px] text-slate-500">RSD</span>
+                <span className="relative text-sm font-bold text-muted-foreground leading-none">
+                  {tier.originalPrice} <span className="text-[9px] text-muted-foreground">RSD</span>
                   <span className="absolute left-[-2px] right-[-2px] top-1/2 h-[1.5px] bg-rose-500 -rotate-12 pointer-events-none" />
                 </span>
               </div>
 
               {/* Online Price Capsule */}
-              <div className="bg-cyan-500/10 border border-cyan-500/30 px-3 py-1.5 rounded-xl flex flex-col items-center justify-center min-w-[110px] flex-1 shadow-[0_0_15px_rgba(6,182,212,0.1)]">
-                <span className="text-[8px] font-black text-cyan-400 uppercase tracking-widest leading-none mb-1">Kupi online</span>
-                <span className="text-base font-black text-white leading-none">{tier.price} RSD</span>
+              <div className="bg-primary/10 border border-cyan-500/30 px-3 py-1.5 rounded-xl flex flex-col items-center justify-center min-w-[110px] flex-1 shadow-[0_0_15px_rgba(6,182,212,0.1)]">
+                <span className="text-[8px] font-black text-primary uppercase tracking-widest leading-none mb-1">Kupi online</span>
+                <span className="text-base font-black text-foreground leading-none">{tier.price} RSD</span>
               </div>
             </div>
           ) : (
             <div className="space-y-1">
-              <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Cena</span>
+              <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Cena</span>
               <div className="flex items-baseline gap-2">
-                <span className="text-4xl font-black text-white tracking-tighter">{tier.price}</span>
-                <span className="text-xs font-black text-cyan-400 uppercase">RSD</span>
+                <span className="text-4xl font-black text-foreground tracking-tighter">{tier.price}</span>
+                <span className="text-xs font-black text-primary uppercase">RSD</span>
               </div>
             </div>
           )}
@@ -366,15 +366,15 @@ function SingleTierCard({ group, tier, quantity, setQuantity, onAdd, prefix, mai
             <div className="flex items-end justify-between w-full">
               {/* Gate Price (Na ulazu) */}
               <div className="space-y-1.5 pr-2">
-                <span className="text-[9px] font-black uppercase tracking-wider text-slate-500 block">
+                <span className="text-[9px] font-black uppercase tracking-wider text-muted-foreground block">
                   {prefix && <span className="sr-only md:not-sr-only">{prefix} </span>}
                   {main} cene
                 </span>
                 <div className="relative inline-flex items-center">
-                  <span className="text-3xl font-black text-slate-500 italic tracking-tight opacity-70">
+                  <span className="text-3xl font-black text-muted-foreground italic tracking-tight opacity-70">
                     {tier.originalPrice}
                   </span>
-                  <span className="text-[10px] text-slate-500 font-bold ml-1 opacity-70">RSD</span>
+                  <span className="text-[10px] text-muted-foreground font-bold ml-1 opacity-70">RSD</span>
                   <span 
                     className="absolute left-[-4px] right-[-4px] top-1/2 h-[3px] bg-rose-500 -rotate-12 origin-center pointer-events-none shadow-[0_0_8px_rgba(244,63,94,0.6)]" 
                     aria-hidden="true" 
@@ -384,30 +384,30 @@ function SingleTierCard({ group, tier, quantity, setQuantity, onAdd, prefix, mai
 
               {/* Online Price (Kupi online) */}
               <div className="space-y-1 text-right">
-                <span className="text-[9px] font-black uppercase tracking-wider text-cyan-400 block animate-pulse">Kupi online & uštedi</span>
+                <span className="text-[9px] font-black uppercase tracking-wider text-primary block animate-pulse">Kupi online & uštedi</span>
                 <div className="flex items-baseline gap-1.5 justify-end">
-                  <span className="text-5xl font-black text-white tracking-tighter bg-gradient-to-r from-white to-slate-200 bg-clip-text text-transparent">{tier.price}</span>
-                  <span className="text-xs font-black text-cyan-400 uppercase">RSD</span>
+                  <span className="text-5xl font-black text-foreground tracking-tighter bg-gradient-to-r from-foreground to-muted-foreground/40 bg-clip-text text-transparent">{tier.price}</span>
+                  <span className="text-xs font-black text-primary uppercase">RSD</span>
                 </div>
               </div>
             </div>
           ) : (
             <div className="space-y-1">
-              <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Cena</span>
+              <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Cena</span>
               <div className="flex items-baseline gap-2">
-                <span className="text-5xl font-black text-white tracking-tighter">{tier.price}</span>
-                <span className="text-xs font-black text-cyan-400 uppercase">RSD</span>
+                <span className="text-5xl font-black text-foreground tracking-tighter">{tier.price}</span>
+                <span className="text-xs font-black text-primary uppercase">RSD</span>
               </div>
             </div>
           )}
         </div>
 
-        <div className="flex items-center justify-between bg-black/20 rounded-2xl p-2 border border-white/5">
-          <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="w-12 h-12 flex items-center justify-center hover:bg-white/5 rounded-xl transition-colors text-slate-400">
+        <div className="flex items-center justify-between bg-black/20 rounded-2xl p-2 border border-border">
+          <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="w-12 h-12 flex items-center justify-center hover:bg-muted/50 rounded-xl transition-colors text-muted-foreground">
             <Icon name="remove" className="text-[20px]" />
           </button>
-          <span className="text-2xl font-black text-white">{quantity}</span>
-          <button onClick={() => setQuantity(quantity + 1)} className="w-12 h-12 flex items-center justify-center hover:bg-white/5 rounded-xl transition-colors text-slate-400">
+          <span className="text-2xl font-black text-foreground">{quantity}</span>
+          <button onClick={() => setQuantity(quantity + 1)} className="w-12 h-12 flex items-center justify-center hover:bg-muted/50 rounded-xl transition-colors text-muted-foreground">
             <Icon name="add" className="text-[20px]" />
           </button>
         </div>
@@ -431,34 +431,34 @@ function TierList({ tiers, quantities, setQuantity, onAdd, prefix, main }: {
   return (
     <div className="space-y-4">
       {tiers.map((tier: TicketTier) => (
-        <div key={tier.id} id={`ticket-${tier.id}`} className="flex flex-col md:flex-row md:items-center justify-between gap-6 p-6 rounded-3xl bg-white/[0.02] border border-white/5 hover:bg-white/5 transition-all group">
+        <div key={tier.id} id={`ticket-${tier.id}`} className="flex flex-col md:flex-row md:items-center justify-between gap-6 p-6 rounded-3xl bg-muted/20 border border-border hover:bg-muted/50 transition-all group">
           
           {/* Ticket Information */}
           <div className="flex-1 space-y-2 text-center md:text-left w-full">
             <div className="flex items-center justify-center md:justify-start gap-3 flex-wrap">
-              <h4 className="text-base md:text-lg font-black text-white uppercase italic tracking-tight">{tier.labelSr || tier.label}</h4>
+              <h4 className="text-base md:text-lg font-black text-foreground uppercase italic tracking-tight">{tier.labelSr || tier.label}</h4>
               {tier.dayType && tier.dayType !== 'ALL' && (
-                <Badge className="bg-slate-500/10 text-slate-400 text-[9px] font-black uppercase tracking-tighter border-slate-500/20">
+                <Badge className="bg-slate-500/10 text-muted-foreground text-[9px] font-black uppercase tracking-tighter border-slate-500/20">
                   {tier.dayType === 'WEEKDAY' ? 'Radni dan' : 'Vikend'}
                 </Badge>
               )}
             </div>
-            <div className="flex flex-wrap justify-center md:justify-start gap-4 text-xs font-bold text-slate-500">
+            <div className="flex flex-wrap justify-center md:justify-start gap-4 text-xs font-bold text-muted-foreground">
               {tier.timeSlot && tier.timeSlot !== 'FULL_DAY' && (
                 <span className="flex items-center gap-1.5">
-                  <Icon name="schedule" className="text-[14px] text-cyan-500" />
+                  <Icon name="schedule" className="text-[14px] text-primary" />
                   {tier.timeSlot === "AFTER_16H" ? "Poslepodne" : "Celodnevna"}
                 </span>
               )}
               {tier.maxPeople && tier.maxPeople > 1 && (
                 <span className="flex items-center gap-1.5">
-                  <Icon name="group" className="text-[14px] text-cyan-500" />
+                  <Icon name="group" className="text-[14px] text-primary" />
                   Do {tier.maxPeople} osoba
                 </span>
               )}
               {tier.isSeasonPass && (
                 <span className="flex items-center gap-1.5">
-                  <Icon name="calendar_month" className="text-[14px] text-cyan-500" />
+                  <Icon name="calendar_month" className="text-[14px] text-primary" />
                   Sezonska karta
                 </span>
               )}
@@ -474,15 +474,15 @@ function TierList({ tiers, quantities, setQuantity, onAdd, prefix, main }: {
                 <div className="flex items-center gap-4 text-right">
                   {/* Gate Price */}
                   <div className="flex flex-col items-end">
-                    <span className="text-[8px] font-black uppercase tracking-wider text-slate-500 leading-none mb-1">
+                    <span className="text-[8px] font-black uppercase tracking-wider text-muted-foreground leading-none mb-1">
                       {prefix && <span className="sr-only md:not-sr-only">{prefix} </span>}
                       {main} cene
                     </span>
                     <div className="relative inline-flex items-center">
-                      <span className="text-lg font-black text-slate-500 italic tracking-tight opacity-70">
+                      <span className="text-lg font-black text-muted-foreground italic tracking-tight opacity-70">
                         {tier.originalPrice}
                       </span>
-                      <span className="text-[9px] text-slate-500 font-bold ml-0.5 opacity-70">RSD</span>
+                      <span className="text-[9px] text-muted-foreground font-bold ml-0.5 opacity-70">RSD</span>
                       <span 
                         className="absolute left-[-3px] right-[-3px] top-1/2 h-[2px] bg-rose-500 -rotate-12 origin-center pointer-events-none shadow-[0_0_6px_rgba(244,63,94,0.6)]" 
                         aria-hidden="true" 
@@ -492,15 +492,15 @@ function TierList({ tiers, quantities, setQuantity, onAdd, prefix, main }: {
 
                   {/* Online Price */}
                   <div className="flex flex-col items-end">
-                    <span className="text-[8px] font-black uppercase tracking-wider text-cyan-400 leading-none mb-1 animate-pulse">Kupi online</span>
-                    <div className="text-2xl font-black text-white leading-none">
-                      {tier.price} <span className="text-[10px] text-cyan-400 font-black uppercase">RSD</span>
+                    <span className="text-[8px] font-black uppercase tracking-wider text-primary leading-none mb-1 animate-pulse">Kupi online</span>
+                    <div className="text-2xl font-black text-foreground leading-none">
+                      {tier.price} <span className="text-[10px] text-primary font-black uppercase">RSD</span>
                     </div>
                   </div>
                 </div>
               ) : (
                 <div className="text-right">
-                  <div className="text-2xl font-black text-white leading-none">{tier.price} <span className="text-[10px] text-slate-500">RSD</span></div>
+                  <div className="text-2xl font-black text-foreground leading-none">{tier.price} <span className="text-[10px] text-muted-foreground">RSD</span></div>
                 </div>
               )}
             </div>
@@ -515,33 +515,33 @@ function TierList({ tiers, quantities, setQuantity, onAdd, prefix, main }: {
                       {prefix && <span className="sr-only">{prefix} </span>}
                       {main} cene
                     </span>
-                    <span className="relative text-sm font-bold text-slate-400 leading-none">
-                      {tier.originalPrice} <span className="text-[10px] text-slate-500">RSD</span>
+                    <span className="relative text-sm font-bold text-muted-foreground leading-none">
+                      {tier.originalPrice} <span className="text-[10px] text-muted-foreground">RSD</span>
                       <span className="absolute left-[-2px] right-[-2px] top-1/2 h-[1.5px] bg-rose-500 -rotate-12 pointer-events-none" />
                     </span>
                   </div>
 
                   {/* Online Price Capsule */}
-                  <div className="bg-cyan-500/10 border border-cyan-500/30 px-3.5 py-1.5 rounded-xl flex flex-col items-center justify-center min-w-[110px] flex-1 shadow-[0_0_12px_rgba(6,182,212,0.08)]">
-                    <span className="text-[8px] font-black text-cyan-400 uppercase tracking-widest leading-none mb-1">Kupi online</span>
-                    <span className="text-sm font-black text-white leading-none">{tier.price} RSD</span>
+                  <div className="bg-primary/10 border border-cyan-500/30 px-3.5 py-1.5 rounded-xl flex flex-col items-center justify-center min-w-[110px] flex-1 shadow-[0_0_12px_rgba(6,182,212,0.08)]">
+                    <span className="text-[8px] font-black text-primary uppercase tracking-widest leading-none mb-1">Kupi online</span>
+                    <span className="text-sm font-black text-foreground leading-none">{tier.price} RSD</span>
                   </div>
                 </>
               ) : (
                 <div className="text-center w-full">
-                  <div className="text-2xl font-black text-white leading-none">{tier.price} <span className="text-[10px] text-slate-500 uppercase">RSD</span></div>
+                  <div className="text-2xl font-black text-foreground leading-none">{tier.price} <span className="text-[10px] text-muted-foreground uppercase">RSD</span></div>
                 </div>
               )}
             </div>
 
             {/* Mobile/Desktop Quantity and CTA controls */}
             <div className="flex items-center justify-between md:justify-end gap-4 w-full md:w-auto">
-              <div className="flex items-center bg-black/20 rounded-xl p-1 border border-white/5 shrink-0">
-                <button onClick={() => setQuantity(tier.id, Math.max(1, (quantities[tier.id] || 1) - 1))} className="w-8 h-8 flex items-center justify-center hover:bg-white/5 rounded-lg transition-colors text-slate-500">
+              <div className="flex items-center bg-black/20 rounded-xl p-1 border border-border shrink-0">
+                <button onClick={() => setQuantity(tier.id, Math.max(1, (quantities[tier.id] || 1) - 1))} className="w-8 h-8 flex items-center justify-center hover:bg-muted/50 rounded-lg transition-colors text-muted-foreground">
                   <Icon name="remove" className="text-[14px]" />
                 </button>
-                <span className="w-8 text-center font-black text-white text-base">{quantities[tier.id] || 1}</span>
-                <button onClick={() => setQuantity(tier.id, (quantities[tier.id] || 1) + 1)} className="w-8 h-8 flex items-center justify-center hover:bg-white/5 rounded-lg transition-colors text-slate-500">
+                <span className="w-8 text-center font-black text-foreground text-base">{quantities[tier.id] || 1}</span>
+                <button onClick={() => setQuantity(tier.id, (quantities[tier.id] || 1) + 1)} className="w-8 h-8 flex items-center justify-center hover:bg-muted/50 rounded-lg transition-colors text-muted-foreground">
                   <Icon name="add" className="text-[14px]" />
                 </button>
               </div>
@@ -570,7 +570,7 @@ function TierGrid({ tiers, quantities, setQuantity, onAdd, prefix, main }: {
     <div className="overflow-x-auto -mx-8 px-8">
       <table className="w-full text-left border-separate border-spacing-y-3">
         <thead>
-          <tr className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">
+          <tr className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">
             <th className="pb-4 pl-6">Kategorija</th>
             <th className="pb-4">Uslovi</th>
             <th className="pb-4 text-right">Cena</th>
@@ -580,19 +580,19 @@ function TierGrid({ tiers, quantities, setQuantity, onAdd, prefix, main }: {
         </thead>
         <tbody>
           {tiers.map((tier: TicketTier) => (
-            <tr key={tier.id} id={`ticket-${tier.id}`} className="bg-white/[0.02] border border-white/5 hover:bg-white/5 transition-all group">
+            <tr key={tier.id} id={`ticket-${tier.id}`} className="bg-muted/20 border border-border hover:bg-muted/50 transition-all group">
               <td className="py-4 pl-6 rounded-l-3xl">
-                <div className="font-black text-white uppercase italic tracking-tight">{tier.labelSr || tier.label}</div>
+                <div className="font-black text-foreground uppercase italic tracking-tight">{tier.labelSr || tier.label}</div>
               </td>
               <td className="py-4">
                 <div className="flex flex-wrap gap-2">
                   {tier.dayType && tier.dayType !== 'ALL' && (
-                    <Badge variant="outline" className="text-[8px] font-black border-white/10 text-slate-400">
+                    <Badge variant="outline" className="text-[8px] font-black border-border text-muted-foreground">
                       {tier.dayType === "WEEKDAY" ? "Radni dan" : tier.dayType === "WEEKEND" ? "Vikend" : "Svi dani"}
                     </Badge>
                   )}
                   {tier.timeSlot && tier.timeSlot !== 'FULL_DAY' && (
-                    <Badge variant="outline" className="text-[8px] font-black border-cyan-500/20 text-cyan-400">
+                    <Badge variant="outline" className="text-[8px] font-black border-primary/20 text-primary">
                       {tier.timeSlot === "AFTER_16H" ? "Poslepodne" : "Celodnevna"}
                     </Badge>
                   )}
@@ -609,20 +609,20 @@ function TierGrid({ tiers, quantities, setQuantity, onAdd, prefix, main }: {
                           {prefix && <span className="sr-only">{prefix} </span>}
                           {main} cene
                         </span>
-                        <span className="relative text-[10px] font-bold text-slate-400 leading-none">
+                        <span className="relative text-[10px] font-bold text-muted-foreground leading-none">
                           {tier.originalPrice}
                           <span className="absolute left-[-1px] right-[-1px] top-1/2 h-[1px] bg-rose-500 -rotate-12 pointer-events-none" />
                         </span>
                       </div>
 
                       {/* Online Price Capsule */}
-                      <div className="bg-cyan-500/10 border border-cyan-500/30 px-2 py-0.5 rounded-lg flex flex-col items-center justify-center min-w-[65px]">
-                        <span className="text-[6px] font-black text-cyan-400 uppercase tracking-widest leading-none mb-0.5">Online</span>
-                        <span className="text-[11px] font-black text-white leading-none">{tier.price} RSD</span>
+                      <div className="bg-primary/10 border border-cyan-500/30 px-2 py-0.5 rounded-lg flex flex-col items-center justify-center min-w-[65px]">
+                        <span className="text-[6px] font-black text-primary uppercase tracking-widest leading-none mb-0.5">Online</span>
+                        <span className="text-[11px] font-black text-foreground leading-none">{tier.price} RSD</span>
                       </div>
                     </>
                   ) : (
-                    <div className="font-black text-white text-xs">{tier.price} <span className="text-[9px] text-slate-500 uppercase">RSD</span></div>
+                    <div className="font-black text-foreground text-xs">{tier.price} <span className="text-[9px] text-muted-foreground uppercase">RSD</span></div>
                   )}
                 </div>
 
@@ -632,15 +632,15 @@ function TierGrid({ tiers, quantities, setQuantity, onAdd, prefix, main }: {
                     <div className="flex items-center gap-3 text-right">
                       {/* Gate Price */}
                       <div className="flex flex-col items-end">
-                        <span className="text-[8px] font-black uppercase tracking-wider text-slate-500 leading-none mb-0.5">
+                        <span className="text-[8px] font-black uppercase tracking-wider text-muted-foreground leading-none mb-0.5">
                           {prefix && <span className="sr-only md:not-sr-only">{prefix} </span>}
                           {main} cene
                         </span>
                         <div className="relative inline-flex items-center">
-                          <span className="text-sm font-black text-slate-500 italic tracking-tight opacity-70">
+                          <span className="text-sm font-black text-muted-foreground italic tracking-tight opacity-70">
                             {tier.originalPrice}
                           </span>
-                          <span className="text-[8px] text-slate-500 font-bold ml-0.5 opacity-70">RSD</span>
+                          <span className="text-[8px] text-muted-foreground font-bold ml-0.5 opacity-70">RSD</span>
                           <span 
                             className="absolute left-[-2px] right-[-2px] top-1/2 h-[1.5px] bg-rose-500 -rotate-12 origin-center pointer-events-none" 
                             aria-hidden="true" 
@@ -650,24 +650,24 @@ function TierGrid({ tiers, quantities, setQuantity, onAdd, prefix, main }: {
 
                       {/* Online Price */}
                       <div className="flex flex-col items-end">
-                        <span className="text-[8px] font-black uppercase tracking-wider text-cyan-400 leading-none mb-0.5">Kupi online</span>
-                        <div className="font-black text-white">
-                          {tier.price} <span className="text-[10px] text-cyan-400 font-black uppercase">RSD</span>
+                        <span className="text-[8px] font-black uppercase tracking-wider text-primary leading-none mb-0.5">Kupi online</span>
+                        <div className="font-black text-foreground">
+                          {tier.price} <span className="text-[10px] text-primary font-black uppercase">RSD</span>
                         </div>
                       </div>
                     </div>
                   ) : (
-                    <div className="font-black text-white">{tier.price} <span className="text-[10px] text-slate-500 uppercase">RSD</span></div>
+                    <div className="font-black text-foreground">{tier.price} <span className="text-[10px] text-muted-foreground uppercase">RSD</span></div>
                   )}
                 </div>
               </td>
               <td className="py-4">
                 <div className="flex items-center justify-center gap-3">
-                  <button onClick={() => setQuantity(tier.id, Math.max(1, (quantities[tier.id] || 1) - 1))} className="w-6 h-6 flex items-center justify-center hover:bg-white/10 rounded-md text-slate-500">
+                  <button onClick={() => setQuantity(tier.id, Math.max(1, (quantities[tier.id] || 1) - 1))} className="w-6 h-6 flex items-center justify-center hover:bg-white/10 rounded-md text-muted-foreground">
                     <Icon name="remove" className="text-[12px]" />
                   </button>
-                  <span className="font-black text-white text-sm">{quantities[tier.id] || 1}</span>
-                  <button onClick={() => setQuantity(tier.id, (quantities[tier.id] || 1) + 1)} className="w-6 h-6 flex items-center justify-center hover:bg-white/10 rounded-md text-slate-500">
+                  <span className="font-black text-foreground text-sm">{quantities[tier.id] || 1}</span>
+                  <button onClick={() => setQuantity(tier.id, (quantities[tier.id] || 1) + 1)} className="w-6 h-6 flex items-center justify-center hover:bg-white/10 rounded-md text-muted-foreground">
                     <Icon name="add" className="text-[12px]" />
                   </button>
                 </div>
@@ -675,7 +675,7 @@ function TierGrid({ tiers, quantities, setQuantity, onAdd, prefix, main }: {
               <td className="py-4 text-right pr-6 rounded-r-3xl">
                 <button 
                   onClick={() => onAdd(tier)}
-                  className="bg-cyan-500 text-navy-deep p-2 rounded-xl hover:scale-110 active:scale-95 transition-all shadow-lg shadow-cyan-500/20"
+                  className="bg-primary text-navy-deep p-2 rounded-xl hover:scale-110 active:scale-95 transition-all shadow-lg shadow-cyan-500/20"
                 >
                   <Icon name="shopping_bag" className="text-[16px]" />
                 </button>
@@ -709,7 +709,7 @@ function MobileTicketCard({ tier, quantity, setQuantity, onAdd, isHighlighted, p
         "relative p-6 rounded-3xl transition-all duration-300 flex flex-col gap-5 border text-left",
         isHighlighted 
           ? "bg-gradient-to-br from-cyan-950/20 to-slate-900/40 border-cyan-500/40 shadow-[0_0_25px_rgba(6,182,212,0.12)]" 
-          : "bg-white/[0.02] border-white/5 hover:bg-white/5"
+          : "bg-muted/20 border-border hover:bg-muted/50"
       )}
     >
       {isHighlighted && (
@@ -720,18 +720,18 @@ function MobileTicketCard({ tier, quantity, setQuantity, onAdd, isHighlighted, p
 
       {/* Title & Info */}
       <div className="space-y-2">
-        <h4 className="text-base md:text-lg font-black text-white uppercase italic tracking-tight leading-tight">
+        <h4 className="text-base md:text-lg font-black text-foreground uppercase italic tracking-tight leading-tight">
           {tier.labelSr || tier.label}
         </h4>
         
         <div className="flex flex-wrap gap-2">
           {tier.dayType && tier.dayType !== 'ALL' && (
-            <Badge className="bg-white/5 text-slate-300 text-[8px] font-black uppercase tracking-wider border-white/5">
+            <Badge className="bg-muted/50 text-foreground/80 text-[8px] font-black uppercase tracking-wider border-border">
               {tier.dayType === 'WEEKDAY' ? 'Radni dan' : 'Vikend'}
             </Badge>
           )}
           {tier.timeSlot && tier.timeSlot !== 'FULL_DAY' && (
-            <Badge className="bg-cyan-500/10 text-cyan-400 text-[8px] font-black uppercase tracking-wider border-cyan-500/10">
+            <Badge className="bg-primary/10 text-primary text-[8px] font-black uppercase tracking-wider border-cyan-500/10">
               {tier.timeSlot === "AFTER_16H" ? "Poslepodne" : "Celodnevna"}
             </Badge>
           )}
@@ -744,17 +744,17 @@ function MobileTicketCard({ tier, quantity, setQuantity, onAdd, isHighlighted, p
       </div>
 
       {/* Pricing Row */}
-      <div className="flex items-center justify-between border-t border-white/5 pt-4">
+      <div className="flex items-center justify-between border-t border-border pt-4">
         {hasDiscount ? (
           <div className="flex items-center gap-3">
             {/* Gate Price (Na ulazu) */}
             <div className="flex flex-col">
-              <span className="text-[8px] font-black uppercase tracking-wider text-slate-500 leading-none mb-1">
+              <span className="text-[8px] font-black uppercase tracking-wider text-muted-foreground leading-none mb-1">
                 {prefix && <span className="sr-only">{prefix} </span>}
                 {main} cene
               </span>
               <div className="relative inline-flex items-center">
-                <span className="text-sm font-bold text-slate-500 line-through opacity-70">
+                <span className="text-sm font-bold text-muted-foreground line-through opacity-70">
                   {tier.originalPrice} RSD
                 </span>
               </div>
@@ -762,9 +762,9 @@ function MobileTicketCard({ tier, quantity, setQuantity, onAdd, isHighlighted, p
 
             {/* Online Price (Kupi online) */}
             <div className="flex flex-col">
-              <span className="text-[8px] font-black uppercase tracking-wider text-cyan-400 leading-none mb-1 animate-pulse">Kupi online</span>
-              <span className="text-xl font-black text-white leading-none">
-                {tier.price} <span className="text-[10px] text-cyan-400 font-black">RSD</span>
+              <span className="text-[8px] font-black uppercase tracking-wider text-primary leading-none mb-1 animate-pulse">Kupi online</span>
+              <span className="text-xl font-black text-foreground leading-none">
+                {tier.price} <span className="text-[10px] text-primary font-black">RSD</span>
               </span>
             </div>
 
@@ -775,27 +775,27 @@ function MobileTicketCard({ tier, quantity, setQuantity, onAdd, isHighlighted, p
           </div>
         ) : (
           <div className="flex flex-col">
-            <span className="text-[8px] font-black uppercase tracking-wider text-slate-500 leading-none mb-1">Cena</span>
-            <span className="text-xl font-black text-white">
-              {tier.price} <span className="text-[10px] text-slate-400">RSD</span>
+            <span className="text-[8px] font-black uppercase tracking-wider text-muted-foreground leading-none mb-1">Cena</span>
+            <span className="text-xl font-black text-foreground">
+              {tier.price} <span className="text-[10px] text-muted-foreground">RSD</span>
             </span>
           </div>
         )}
       </div>
 
       {/* Quantity & CTA */}
-      <div className="flex items-center gap-3 border-t border-white/5 pt-4">
-        <div className="flex items-center bg-black/35 rounded-2xl p-1 border border-white/5 shrink-0">
+      <div className="flex items-center gap-3 border-t border-border pt-4">
+        <div className="flex items-center bg-black/35 rounded-2xl p-1 border border-border shrink-0">
           <button 
             onClick={() => setQuantity(tier.id, Math.max(1, quantity - 1))} 
-            className="w-10 h-10 flex items-center justify-center hover:bg-white/5 rounded-xl transition-colors text-slate-400"
+            className="w-10 h-10 flex items-center justify-center hover:bg-muted/50 rounded-xl transition-colors text-muted-foreground"
           >
             <Icon name="remove" className="text-[16px]" />
           </button>
-          <span className="w-8 text-center font-black text-white text-base">{quantity}</span>
+          <span className="w-8 text-center font-black text-foreground text-base">{quantity}</span>
           <button 
             onClick={() => setQuantity(tier.id, quantity + 1)} 
-            className="w-10 h-10 flex items-center justify-center hover:bg-white/5 rounded-xl transition-colors text-slate-400"
+            className="w-10 h-10 flex items-center justify-center hover:bg-muted/50 rounded-xl transition-colors text-muted-foreground"
           >
             <Icon name="add" className="text-[16px]" />
           </button>

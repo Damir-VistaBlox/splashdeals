@@ -87,7 +87,7 @@ export function DistanceCalculator({ destLat, destLng, facilityName }: DistanceC
         "flex items-center gap-2 px-5 py-2.5 rounded-2xl backdrop-blur-md border transition-all duration-500 group font-black text-xs uppercase tracking-widest cursor-pointer",
         distance !== null 
           ? "bg-cyan-500/10 border-cyan-500/20 text-cyan-400 hover:bg-cyan-500/20 hover:scale-105 shadow-[0_0_20px_rgba(6,182,212,0.1)]" 
-          : "bg-white/5 border-white/5 text-slate-300 hover:bg-white/10 hover:text-white active:scale-95"
+          : "bg-white/5 border-border text-slate-300 hover:bg-white/10 hover:text-foreground active:scale-95"
       )}
     >
       {loading ? (

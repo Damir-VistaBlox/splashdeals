@@ -141,10 +141,10 @@ export default async function HowItWorksPage({ params: _params }: PageProps) {
           className="space-y-6"
         >
           <div className="flex items-center justify-center sm:justify-start gap-3">
-            <div className="p-2 rounded-lg bg-cyan-500/10 border border-cyan-500/20">
-              <Icon name="check_circle" className="text-[20px] text-cyan-400" />
+            <div className="p-2 rounded-lg bg-primary/10 border border-primary/20">
+              <Icon name="check_circle" className="text-[20px] text-primary" />
             </div>
-            <span className="text-cyan-500 text-[10px] font-black uppercase tracking-[0.4em]">
+            <span className="text-primary text-[10px] font-black uppercase tracking-[0.4em]">
               The Splash Protocol
             </span>
           </div>
@@ -168,7 +168,7 @@ export default async function HowItWorksPage({ params: _params }: PageProps) {
       >
         <Link 
           href={`/facilities`}
-          className="inline-flex items-center gap-4 px-10 py-5 rounded-2xl bg-cyan-500 text-slate-950 font-black uppercase italic tracking-tighter text-xl hover:bg-cyan-400 hover:scale-105 transition-all active:scale-95 shadow-[0_0_40px_rgba(6,182,212,0.3)]"
+          className="inline-flex items-center gap-4 px-10 py-5 rounded-2xl bg-primary text-primary-foreground font-black uppercase italic tracking-tighter text-xl hover:bg-primary/90 hover:scale-105 transition-all active:scale-95 shadow-[0_0_40px_hsl(var(--primary)/0.3)]"
         >
           {dict.how_it_works_page.cta}
           <Icon name="arrow_forward" className="text-[24px]" />

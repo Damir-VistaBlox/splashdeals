@@ -56,7 +56,7 @@ export function NotFoundClient() {
           </h1>
           
           <p
-            className="text-xl text-slate-400 font-medium leading-relaxed mb-4 max-w-lg"
+            className="text-xl text-muted-foreground font-medium leading-relaxed mb-4 max-w-lg"
           >
             {dict.not_found.desc}
           </p>

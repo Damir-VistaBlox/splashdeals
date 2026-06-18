@@ -69,12 +69,12 @@ export function FilterBar({ cities, dict }: FilterBarProps) {
 
   return (
     <div
-      className="flex flex-wrap items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/5 backdrop-blur-md mb-8 relative"
+      className="flex flex-wrap items-center gap-4 p-4 rounded-2xl bg-muted/50 border border-border backdrop-blur-md mb-8 relative"
       aria-busy={isPending}
     >
       <div className="flex items-center gap-2 mr-2">
-        <Icon name="tune" className="text-[16px] text-cyan-500" />
-        <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">
+        <Icon name="tune" className="text-[16px] text-primary" />
+        <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
           {dict.filters.filters_label || "Filteri"}
         </span>
       </div>
@@ -86,13 +86,13 @@ export function FilterBar({ cities, dict }: FilterBarProps) {
           value={searchParams.get("city") || "all"} 
           onValueChange={(val) => updateParams({ city: val === "all" ? null : val })}
         >
-          <SelectTrigger id="city-filter" className="w-full sm:w-[180px] bg-slate-900/50 border-white/10 text-white font-bold uppercase text-[10px] tracking-widest h-12 sm:h-10">
+          <SelectTrigger id="city-filter" className="w-full sm:w-[180px] bg-slate-900/50 border-white/10 text-foreground font-bold uppercase text-[10px] tracking-widest h-12 sm:h-10">
             <div className="flex items-center gap-2">
-              <Icon name="location_on" className="text-[12px] text-cyan-400" />
+              <Icon name="location_on" className="text-[12px] text-primary" />
               <SelectValue placeholder={dict.filters.all_cities} />
             </div>
           </SelectTrigger>
-          <SelectContent className="bg-slate-950 border-white/10 text-white font-bold uppercase text-[10px] tracking-widest">
+          <SelectContent className="bg-popover border-border text-foreground font-bold uppercase text-[10px] tracking-widest">
             <SelectItem value="all">{dict.filters.all_cities}</SelectItem>
             {cities.map((city) => (
               <SelectItem key={city.id} value={city.slug}>
@@ -107,7 +107,7 @@ export function FilterBar({ cities, dict }: FilterBarProps) {
       <div className="flex items-center gap-2 w-full sm:w-auto">
         <div className="relative group flex-1 sm:flex-none">
           <Label htmlFor="min-price" className="sr-only">{dict.filters.min_price}</Label>
-          <Icon name="payments" className="absolute left-3 top-1/2 -translate-y-1/2 text-[12px] text-slate-500 group-focus-within:text-cyan-400 transition-colors" />
+          <Icon name="payments" className="absolute left-3 top-1/2 -translate-y-1/2 text-[12px] text-muted-foreground group-focus-within:text-primary transition-colors" />
           <Input 
             id="min-price"
             type="number"
@@ -115,13 +115,13 @@ export function FilterBar({ cities, dict }: FilterBarProps) {
             value={minPrice}
             onChange={(e) => setMinPrice(e.target.value)}
             onBlur={() => updateParams({ minPrice })}
-            className="w-full sm:w-28 pl-8 h-12 sm:h-10 bg-slate-900/50 border-white/10 text-white font-bold text-[10px] uppercase tracking-widest focus:border-ring transition-all placeholder:text-slate-600"
+            className="w-full sm:w-28 pl-8 h-12 sm:h-10 bg-slate-900/50 border-white/10 text-foreground font-bold text-[10px] uppercase tracking-widest focus:border-ring transition-all placeholder:text-slate-600"
           />
         </div>
         <span className="text-slate-700 font-bold">-</span>
         <div className="relative group flex-1 sm:flex-none">
           <Label htmlFor="max-price" className="sr-only">{dict.filters.max_price}</Label>
-          <Icon name="payments" className="absolute left-3 top-1/2 -translate-y-1/2 text-[12px] text-slate-500 group-focus-within:text-cyan-400 transition-colors" />
+          <Icon name="payments" className="absolute left-3 top-1/2 -translate-y-1/2 text-[12px] text-muted-foreground group-focus-within:text-primary transition-colors" />
           <Input 
             id="max-price"
             type="number"
@@ -129,12 +129,12 @@ export function FilterBar({ cities, dict }: FilterBarProps) {
             value={maxPrice}
             onChange={(e) => setMaxPrice(e.target.value)}
             onBlur={() => updateParams({ maxPrice })}
-            className="w-full sm:w-28 pl-8 h-12 sm:h-10 bg-slate-900/50 border-white/10 text-white font-bold text-[10px] uppercase tracking-widest focus:border-ring transition-all placeholder:text-slate-600"
+            className="w-full sm:w-28 pl-8 h-12 sm:h-10 bg-slate-900/50 border-white/10 text-foreground font-bold text-[10px] uppercase tracking-widest focus:border-ring transition-all placeholder:text-slate-600"
           />
         </div>
       </div>
 
-      <div className="hidden sm:block w-px h-6 bg-white/5" />
+      <div className="hidden sm:block w-px h-6 bg-muted/50" />
 
       {/* 🔃 Sort Select */}
       <div className="w-full sm:w-auto">
@@ -143,13 +143,13 @@ export function FilterBar({ cities, dict }: FilterBarProps) {
           value={searchParams.get("sort") || "newest"} 
           onValueChange={(val) => updateParams({ sort: val })}
         >
-          <SelectTrigger id="sort-filter" className="w-full sm:w-[200px] bg-slate-900/50 border-white/10 text-white font-bold uppercase text-[10px] tracking-widest h-12 sm:h-10">
+          <SelectTrigger id="sort-filter" className="w-full sm:w-[200px] bg-slate-900/50 border-white/10 text-foreground font-bold uppercase text-[10px] tracking-widest h-12 sm:h-10">
             <div className="flex items-center gap-2">
-              <Icon name="swap_vert" className="text-[12px] text-cyan-400" />
+              <Icon name="swap_vert" className="text-[12px] text-primary" />
               <SelectValue placeholder={dict.filters.sort_by} />
             </div>
           </SelectTrigger>
-          <SelectContent className="bg-slate-950 border-white/10 text-white font-bold uppercase text-[10px] tracking-widest">
+          <SelectContent className="bg-popover border-border text-foreground font-bold uppercase text-[10px] tracking-widest">
             <SelectItem value="newest">{dict.filters.sort_newest || "Najnoviji"}</SelectItem>
             <SelectItem value="price_asc">{dict.filters.sort_price_asc}</SelectItem>
             <SelectItem value="price_desc">{dict.filters.sort_price_desc}</SelectItem>
@@ -166,7 +166,7 @@ export function FilterBar({ cities, dict }: FilterBarProps) {
           <Button 
             variant="ghost" 
             onClick={handleClearFilters}
-            className="w-full sm:w-auto text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-white transition-colors h-12 sm:h-10 gap-2"
+            className="w-full sm:w-auto text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors h-12 sm:h-10 gap-2"
           >
             <Icon name="close" className="text-[14px]" />
             {dict.filters.clear_filters}
@@ -175,7 +175,7 @@ export function FilterBar({ cities, dict }: FilterBarProps) {
       )}
 
       {isPending && (
-        <div className="absolute inset-0 bg-slate-950/20 backdrop-blur-[1px] flex items-center justify-center rounded-2xl" aria-live="polite">
+        <div className="absolute inset-0 bg-background/20 backdrop-blur-[1px] flex items-center justify-center rounded-2xl" aria-live="polite">
           <div className="w-4 h-4 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin" />
         </div>
       )}

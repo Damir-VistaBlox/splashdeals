@@ -26,7 +26,7 @@ export function MediaGallery({ media, dict }: MediaGalleryProps) {
   return (
     <section id="gallery" className="space-y-12">
         <div className="space-y-4 text-center max-w-2xl mx-auto">
-          <div className="flex items-center justify-center gap-3 text-cyan-400 font-extrabold uppercase tracking-widest text-xs">
+          <div className="flex items-center justify-center gap-3 text-primary font-extrabold uppercase tracking-widest text-xs">
               <Icon name="photo_camera" className="text-[16px]" />
               {dict?.media_gallery?.eyebrow || "Galerija"}
           </div>
@@ -45,7 +45,7 @@ export function MediaGallery({ media, dict }: MediaGalleryProps) {
                 return fullTitle;
               })()}
           </h2>
-          <p className="text-slate-400 font-medium">Uronite u atmosferu naše destinacije kroz objektiv naših posetilaca.</p>
+          <p className="text-muted-foreground font-medium">Uronite u atmosferu naše destinacije kroz objektiv naših posetilaca.</p>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 auto-rows-[250px]">
@@ -53,7 +53,7 @@ export function MediaGallery({ media, dict }: MediaGalleryProps) {
             <div
               key={m.id}
               onClick={() => setSelectedIdx(i)}
-              className="relative group rounded-[2.5rem] overflow-hidden bg-white/[0.02] border border-white/5 cursor-pointer animate-fade-in-up"
+              className="relative group rounded-[2.5rem] overflow-hidden bg-white/[0.02] border border-border cursor-pointer animate-fade-in-up"
               style={{ animationDelay: `${i * 0.05}s`, animationFillMode: "both" }}
             >
               {m.type === "VIDEO" ? (
@@ -79,7 +79,7 @@ export function MediaGallery({ media, dict }: MediaGalleryProps) {
               <div className="absolute inset-0 bg-gradient-to-t from-[#020617]/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 p-8 flex flex-col justify-end">
                 <div className="space-y-2 translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
                     <p className="font-bold text-white text-lg">{m.caption || (dict?.media_gallery?.fallback_caption || "Letnji Užitak")}</p>
-                    <div className="flex items-center gap-2 text-cyan-400 text-xs font-black uppercase tracking-widest">
+                    <div className="flex items-center gap-2 text-primary text-xs font-black uppercase tracking-widest">
                       <Icon name="open_in_full" className="text-[16px]" />
                       {m.type === "VIDEO" 
                         ? (dict?.media_gallery?.play_video || "Pusti Video") 
@@ -101,14 +101,14 @@ export function MediaGallery({ media, dict }: MediaGalleryProps) {
             onClick={() => setSelectedIdx(null)}
           >
             <button
-              className="absolute top-8 right-8 z-[2010] p-4 rounded-full bg-white/5 border border-white/10 text-white hover:bg-white/10"
+              className="absolute top-8 right-8 z-[2010] p-4 rounded-full bg-white/5 border border-border text-white hover:bg-white/10"
               onClick={() => setSelectedIdx(null)}
             >
               <Icon name="close" className="text-[24px]" />
             </button>
 
             <div
-              className="relative max-w-6xl w-full aspect-video rounded-[3rem] overflow-hidden shadow-2xl border border-white/10 bg-black animate-scale-in"
+              className="relative max-w-6xl w-full aspect-video rounded-[3rem] overflow-hidden shadow-2xl border border-border bg-black animate-scale-in"
               onClick={(e) => e.stopPropagation()}
             >
                 {galleryMedia[selectedIdx].type === "VIDEO" ? (

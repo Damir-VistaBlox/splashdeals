@@ -28,14 +28,14 @@ export function OperationalPortal({ hours = [] }: OperationalPortalProps) {
 
   return (
     <Card className="p-10 border-white/5 bg-gradient-to-br from-white/5 to-transparent rounded-[3rem]">
-      <h3 className="text-xl md:text-3xl font-black mb-6 flex items-center gap-4 text-white uppercase tracking-tighter italic">
+      <h3 className="text-xl md:text-3xl font-black mb-6 flex items-center gap-4 text-foreground uppercase tracking-tighter italic">
         <Icon name="schedule" className="text-[24px] text-cyan-400" /> Radno Vreme
       </h3>
       <div className="space-y-1">
         {hours?.sort((a, b) => a.dayOfWeek - b.dayOfWeek).map((h: OperatingHours) => (
           <div key={h.id} className={cn(
             "flex items-center justify-between p-2.5 rounded-2xl transition-all",
-            h.dayOfWeek === todayIdx ? "bg-cyan-500/10 border border-cyan-500/20 text-white font-black" : "text-slate-500 opacity-60 font-bold"
+            h.dayOfWeek === todayIdx ? "bg-cyan-500/10 border border-cyan-500/20 text-foreground font-black" : "text-slate-500 opacity-60 font-bold"
           )}>
             <span className="text-[10px] uppercase tracking-widest">{DAYS_SR[h.dayOfWeek]}</span>
             <span className="text-sm font-mono tracking-tight">

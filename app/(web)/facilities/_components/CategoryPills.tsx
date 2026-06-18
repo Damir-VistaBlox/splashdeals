@@ -83,7 +83,7 @@ export function CategoryPills({ categories, facilitiesLabel }: CategoryPillsProp
             >
               <Card 
                 className={cn(
-                  "p-6 text-center transition-all duration-300 border-white/5 group relative overflow-hidden h-full",
+                  "p-6 text-center transition-all duration-300 border-border group relative overflow-hidden h-full",
                   isActive 
                     ? "bg-cyan-500/20 border-cyan-500/40 ring-1 ring-cyan-500/20" 
                     : "hover:bg-cyan-500/10"
@@ -93,17 +93,17 @@ export function CategoryPills({ categories, facilitiesLabel }: CategoryPillsProp
                   "absolute top-0 right-0 p-2 transition-opacity duration-300",
                   isActive ? "opacity-20" : "opacity-5"
                 )}>
-                   <Icon name="filter_list" className={cn("text-[48px]", isActive ? "text-cyan-400" : "text-white")} />
+                   <Icon name="filter_list" className={cn("text-[48px]", isActive ? "text-primary" : "text-foreground")} />
                 </div>
                 <span className={cn(
                   "block text-[10px] font-black uppercase tracking-[0.2em] mb-2 transition-colors",
-                  isActive ? "text-cyan-400" : "text-slate-500"
+                  isActive ? "text-primary" : "text-muted-foreground"
                 )}>
                   {cat._count.id} {facilitiesLabel}
                 </span>
                 <span className={cn(
                   "text-lg font-black uppercase italic tracking-tighter transition-colors",
-                  isActive ? "text-cyan-400" : "text-white group-hover:text-cyan-400"
+                  isActive ? "text-primary" : "text-foreground group-hover:text-primary"
                 )}>
                   {getCategoryLabel(cat.category)}
                 </span>

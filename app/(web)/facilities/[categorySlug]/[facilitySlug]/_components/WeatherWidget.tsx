@@ -32,7 +32,7 @@ export function SidebarWeatherWidget({ weather }: { weather: DetailedWeather | n
       <div className="flex items-center gap-4 mb-4 relative z-10">
          {details.icon}
          <div>
-            <div className="text-4xl font-black text-white tracking-tighter">{Math.round(weather.temperature)}°C</div>
+            <div className="text-4xl font-black text-foreground tracking-tighter">{Math.round(weather.temperature)}°C</div>
             <p className="text-[10px] uppercase font-black text-cyan-400 tracking-widest">{details.text}</p>
          </div>
       </div>

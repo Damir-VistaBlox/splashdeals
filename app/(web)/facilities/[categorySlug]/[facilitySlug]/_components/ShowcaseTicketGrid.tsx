@@ -111,21 +111,21 @@ export function ShowcaseTicketGrid({ tickets, facilityId, facilityName, category
 
           {/* 🎫 NAVIGATION & FILTERS */}
           <div className="flex flex-col md:flex-row items-center gap-6 md:gap-8 justify-between w-full">
-            <div className="flex items-center gap-2 bg-white/[0.03] p-1.5 rounded-2xl border border-white/5 shadow-2xl backdrop-blur-xl">
+            <div className="flex items-center gap-2 bg-white/[0.03] p-1.5 rounded-2xl border border-border shadow-2xl backdrop-blur-xl">
               {(["ALL", ...VALIDITY_TYPES] as const).map((f) => (
                 <button 
                   key={f}
                   onClick={() => setFilter(f)}
                   className={cn(
                     "px-6 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] transition-all relative overflow-hidden",
-                    filter === f ? "bg-cyan-500 text-navy-deep shadow-[0_0_20px_rgba(6,182,212,0.3)]" : "text-slate-400 hover:text-white"
+                    filter === f ? "bg-primary text-navy-deep shadow-[0_0_20px_rgba(6,182,212,0.3)]" : "text-muted-foreground hover:text-foreground"
                   )}
                   aria-pressed={filter === f}
                   aria-label={`Filtriraj po: ${f === "ALL" ? "Sve" : f === "FIXED_DATE" ? "Datum" : f === "SUMMER_SEASON" ? "Sezona" : "Flex"}`}
                 >
                   {f === "ALL" ? "Sve" : f === "FIXED_DATE" ? "Datum" : f === "SUMMER_SEASON" ? "Sezona" : "Flex"}
                   {filter === f && (
-                    <div className="absolute inset-0 bg-cyan-500 -z-10" />
+                    <div className="absolute inset-0 bg-primary -z-10" />
                   )}
                 </button>
               ))}
@@ -142,7 +142,7 @@ export function ShowcaseTicketGrid({ tickets, facilityId, facilityName, category
                 />
                 <button
                   onClick={() => scroll(-420)}
-                  className="absolute left-6 top-1/2 -translate-y-1/2 z-20 w-14 h-14 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl flex items-center justify-center text-white shadow-3xl hover:bg-cyan-500 hover:text-navy-deep hover:scale-110 transition-all hidden md:flex active:scale-95"
+                  className="absolute left-6 top-1/2 -translate-y-1/2 z-20 w-14 h-14 rounded-2xl bg-muted/50 border border-border backdrop-blur-xl flex items-center justify-center text-foreground shadow-3xl hover:bg-primary hover:text-navy-deep hover:scale-110 transition-all hidden md:flex active:scale-95"
                 >
                   <Icon name="keyboard_arrow_left" className="text-[24px]" />
                 </button>
@@ -157,7 +157,7 @@ export function ShowcaseTicketGrid({ tickets, facilityId, facilityName, category
                 />
                 <button
                   onClick={() => scroll(420)}
-                  className="absolute right-6 top-1/2 -translate-y-1/2 z-20 w-14 h-14 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl flex items-center justify-center text-white shadow-3xl hover:bg-cyan-500 hover:text-navy-deep hover:scale-110 transition-all hidden md:flex active:scale-95"
+                  className="absolute right-6 top-1/2 -translate-y-1/2 z-20 w-14 h-14 rounded-2xl bg-muted/50 border border-border backdrop-blur-xl flex items-center justify-center text-foreground shadow-3xl hover:bg-primary hover:text-navy-deep hover:scale-110 transition-all hidden md:flex active:scale-95"
                 >
                   <Icon name="keyboard_arrow_right" className="text-[24px]" />
                 </button>
@@ -174,8 +174,8 @@ export function ShowcaseTicketGrid({ tickets, facilityId, facilityName, category
                   className="group flex-shrink-0 w-[340px] md:w-[420px] snap-start"
                 >
                   <Card className={cn(
-                    "h-full p-8 border-white/5 relative overflow-hidden flex flex-col justify-between transition-all duration-500",
-                    t.isFeatured ? "border-cyan-500/30 bg-cyan-500/5 shadow-[0_0_40px_rgba(6,182,212,0.1)]" : "hover:bg-white/5",
+                    "h-full p-8 border-border relative overflow-hidden flex flex-col justify-between transition-all duration-500",
+                    t.isFeatured ? "border-cyan-500/30 bg-primary/5 shadow-[0_0_40px_rgba(6,182,212,0.1)]" : "hover:bg-muted/50",
                     "hover:border-cyan-500/40 hover:shadow-[0_0_30px_rgba(6,182,212,0.15)] group-hover:scale-[1.03]"
                   )}>
                     {/* Energy Splash Background */}
@@ -184,7 +184,7 @@ export function ShowcaseTicketGrid({ tickets, facilityId, facilityName, category
                     <div className="space-y-6 relative z-10">
                       <div className="flex justify-between items-start">
                         <div className="space-y-1">
-                          <Badge className="bg-cyan-500/10 text-cyan-400 text-[10px] font-black uppercase tracking-widest p-1 px-2 border-cyan-500/20">
+                          <Badge className="bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest p-1 px-2 border-primary/20">
                             {t.type === "ADULT" ? "Odrasli" : t.type === "CHILD" ? "Deca" : t.type === "FAMILY_BUNDLE" ? "Porodični paket" : "Standardna"}
                           </Badge>
                           {t.isFeatured && (
@@ -211,22 +211,22 @@ export function ShowcaseTicketGrid({ tickets, facilityId, facilityName, category
                                     {prefix && <span className="sr-only">{prefix} </span>}
                                     {main} cene
                                   </span>
-                                  <span className="relative text-[10px] font-bold text-slate-400 leading-none">
+                                  <span className="relative text-[10px] font-bold text-muted-foreground leading-none">
                                     {t.originalPrice}
                                     <span className="absolute left-[-2px] right-[-2px] top-1/2 h-[1px] bg-rose-500 -rotate-12 pointer-events-none" />
                                   </span>
                                 </div>
 
                                 {/* Online Price Capsule */}
-                                <div className="bg-cyan-500/10 border border-cyan-500/30 px-2 py-0.5 rounded-lg flex flex-col items-center justify-center min-w-[75px] shadow-[0_0_8px_rgba(6,182,212,0.06)]">
-                                  <span className="text-[6px] font-black text-cyan-400 uppercase tracking-widest leading-none mb-0.5">Online</span>
-                                  <span className="text-xs font-black text-white leading-none">{t.price} {t.currency}</span>
+                                <div className="bg-primary/10 border border-cyan-500/30 px-2 py-0.5 rounded-lg flex flex-col items-center justify-center min-w-[75px] shadow-[0_0_8px_rgba(6,182,212,0.06)]">
+                                  <span className="text-[6px] font-black text-primary uppercase tracking-widest leading-none mb-0.5">Online</span>
+                                  <span className="text-xs font-black text-foreground leading-none">{t.price} {t.currency}</span>
                                 </div>
                               </>
                             ) : (
                               <div className="text-right">
-                                <div className="text-2xl font-black text-white leading-none">{t.price}</div>
-                                <div className="text-[9px] font-bold text-slate-500 uppercase tracking-widest leading-none mt-0.5">{t.currency}</div>
+                                <div className="text-2xl font-black text-foreground leading-none">{t.price}</div>
+                                <div className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest leading-none mt-0.5">{t.currency}</div>
                               </div>
                             )}
                           </div>
@@ -237,15 +237,15 @@ export function ShowcaseTicketGrid({ tickets, facilityId, facilityName, category
                               <div className="flex items-center gap-3 text-right">
                                 {/* Gate Price */}
                                 <div className="flex flex-col items-end">
-                                  <span className="text-[8px] font-black uppercase tracking-wider text-slate-500 leading-none mb-0.5">
+                                  <span className="text-[8px] font-black uppercase tracking-wider text-muted-foreground leading-none mb-0.5">
                                     {prefix && <span className="sr-only md:not-sr-only">{prefix} </span>}
                                     {main} cene
                                   </span>
                                   <div className="relative inline-flex items-center">
-                                    <span className="text-sm font-black text-slate-500 italic tracking-tight opacity-70">
+                                    <span className="text-sm font-black text-muted-foreground italic tracking-tight opacity-70">
                                       {t.originalPrice}
                                     </span>
-                                    <span className="text-[8px] text-slate-500 font-bold ml-0.5 opacity-70">{t.currency}</span>
+                                    <span className="text-[8px] text-muted-foreground font-bold ml-0.5 opacity-70">{t.currency}</span>
                                     <span 
                                       className="absolute left-[-2px] right-[-2px] top-1/2 h-[1.5px] bg-rose-500 -rotate-12 origin-center pointer-events-none shadow-[0_0_4px_rgba(244,63,94,0.6)]" 
                                       aria-hidden="true" 
@@ -255,16 +255,16 @@ export function ShowcaseTicketGrid({ tickets, facilityId, facilityName, category
 
                                 {/* Online Price */}
                                 <div className="flex flex-col items-end">
-                                  <span className="text-[8px] font-black uppercase tracking-wider text-cyan-400 leading-none mb-0.5 animate-pulse">Kupi online</span>
-                                  <div className="font-black text-white text-lg">
-                                    {t.price} <span className="text-[10px] text-cyan-400 font-black uppercase">{t.currency}</span>
+                                  <span className="text-[8px] font-black uppercase tracking-wider text-primary leading-none mb-0.5 animate-pulse">Kupi online</span>
+                                  <div className="font-black text-foreground text-lg">
+                                    {t.price} <span className="text-[10px] text-primary font-black uppercase">{t.currency}</span>
                                   </div>
                                 </div>
                               </div>
                             ) : (
                               <div className="text-right flex flex-col items-end">
-                                <div className="text-2xl font-black text-white leading-none">{t.price}</div>
-                                <div className="text-[9px] font-bold text-slate-500 uppercase tracking-widest leading-none mt-0.5">{t.currency}</div>
+                                <div className="text-2xl font-black text-foreground leading-none">{t.price}</div>
+                                <div className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest leading-none mt-0.5">{t.currency}</div>
                               </div>
                             )}
                           </div>
@@ -272,37 +272,37 @@ export function ShowcaseTicketGrid({ tickets, facilityId, facilityName, category
                       </div>
  
                       <div className="space-y-4">
-                        <h4 className="text-base md:text-lg font-black group-hover:text-cyan-400 transition-colors uppercase leading-[0.9] tracking-tight text-white">{t.titleSr || t.title}</h4>
-                        <p className="text-sm text-slate-400 line-clamp-3 leading-relaxed">
+                        <h4 className="text-base md:text-lg font-black group-hover:text-primary transition-colors uppercase leading-[0.9] tracking-tight text-foreground">{t.titleSr || t.title}</h4>
+                        <p className="text-sm text-muted-foreground line-clamp-3 leading-relaxed">
                           {t.descriptionSr || t.description || "Zgrabite vašu kartu za nezaboravan dan. Ulaz obuhvata pristup svim standardnim sadržajima."}
                         </p>
                       </div>
  
                       <div className="space-y-3 pt-6">
-                        <div className="flex items-center gap-2 text-xs font-bold text-slate-500">
-                          <Icon name="auto_awesome" className="text-[14px] text-cyan-400" />
+                        <div className="flex items-center gap-2 text-xs font-bold text-muted-foreground">
+                          <Icon name="auto_awesome" className="text-[14px] text-primary" />
                           Instant digitalna isporuka
                         </div>
-                        <div className="flex items-center gap-2 text-xs font-bold text-slate-500">
-                          <Icon name="calendar_month" className="text-[14px] text-cyan-400" />
+                        <div className="flex items-center gap-2 text-xs font-bold text-muted-foreground">
+                          <Icon name="calendar_month" className="text-[14px] text-primary" />
                           {t.validityType === 'SUMMER_SEASON' ? 'Važi do kraja sezone' : 'Fleksibilan termin korišćenja'}
                         </div>
                       </div>
                     </div>
  
                     <div className="mt-auto pt-8 relative z-10 space-y-4">
-                      <div className="flex items-center justify-between bg-white/5 rounded-2xl p-2 border border-white/5">
+                      <div className="flex items-center justify-between bg-muted/50 rounded-2xl p-2 border border-border">
                         <button 
                           onClick={() => setQuantity(t.id, getQuantity(t.id) - 1)}
-                          className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-white/10 text-slate-400 transition-colors"
+                          className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-white/10 text-muted-foreground transition-colors"
                           aria-label={`Smanji količinu za ${t.title}`}
                         >
                           <Icon name="remove" className="text-[16px]" />
                         </button>
-                        <span className="font-black text-xl text-white w-8 text-center" aria-live="polite">{getQuantity(t.id)}</span>
+                        <span className="font-black text-xl text-foreground w-8 text-center" aria-live="polite">{getQuantity(t.id)}</span>
                         <button 
                           onClick={() => setQuantity(t.id, getQuantity(t.id) + 1)}
-                          className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-white/10 text-slate-400 transition-colors"
+                          className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-white/10 text-muted-foreground transition-colors"
                           aria-label={`Povećaj količinu za ${t.title}`}
                         >
                           <Icon name="add" className="text-[16px]" />
@@ -360,7 +360,7 @@ export function ShowcaseTicketGrid({ tickets, facilityId, facilityName, category
                 className="w-full py-24 text-center space-y-4"
               >
                 <Icon name="filter_list" className="text-[48px] text-slate-800 mx-auto" />
-                <p className="text-slate-500 italic">Nema karata u ovoj kategoriji.</p>
+                <p className="text-muted-foreground italic">Nema karata u ovoj kategoriji.</p>
               </div>
             )}
             </div>
@@ -368,13 +368,13 @@ export function ShowcaseTicketGrid({ tickets, facilityId, facilityName, category
 
           {/* 💧 LIQUID PROGRESS BAR */}
           <div className="w-full max-w-md mx-auto space-y-4">
-             <div className="h-1 w-full bg-white/5 rounded-full relative overflow-hidden">
+             <div className="h-1 w-full bg-muted/50 rounded-full relative overflow-hidden">
                 <div 
                   className="absolute inset-y-0 left-0 bg-gradient-to-r from-cyan-500 to-cyan-200 shadow-[0_0_15px_rgba(6,182,212,0.4)]"
                   style={{ width: `${scrollProgress}%` }}
                 />
              </div>
-             <div className="flex justify-between items-center text-[9px] font-black uppercase tracking-widest text-slate-500 px-1 opacity-60">
+             <div className="flex justify-between items-center text-[9px] font-black uppercase tracking-widest text-muted-foreground px-1 opacity-60">
                 <span>Splash Izbor</span>
                 <span>{Math.round(scrollProgress)}% Pregledano</span>
              </div>

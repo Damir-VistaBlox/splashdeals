@@ -271,7 +271,7 @@ export function TicketPurchaseModal({ isOpen, onClose, ticket, facility }: Ticke
               {/* Close Button */}
               <button
                 onClick={onClose}
-                className="absolute top-6 right-6 w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 active:scale-90 transition-all z-30 shadow-sm"
+                className="absolute top-6 right-6 w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 hover:text-foreground hover:bg-white/10 active:scale-90 transition-all z-30 shadow-sm"
                 aria-label="Zatvori"
               >
                 <Icon name="close" className="text-[18px]" />
@@ -288,13 +288,13 @@ export function TicketPurchaseModal({ isOpen, onClose, ticket, facility }: Ticke
                     </span>
                   </div>
                   {hasDiscount && (
-                    <span className="bg-gradient-to-r from-rose-500 to-orange-500 text-white font-black text-[9px] uppercase tracking-widest px-3 py-1 rounded-full shadow-[0_0_15px_rgba(244,63,94,0.3)] animate-pulse shrink-0">
+                    <span className="bg-gradient-to-r from-rose-500 to-orange-500 text-foreground font-black text-[9px] uppercase tracking-widest px-3 py-1 rounded-full shadow-[0_0_15px_rgba(244,63,94,0.3)] animate-pulse shrink-0">
                       Ušteda {discountPercent}%
                     </span>
                   )}
                 </div>
                 
-                <h2 className="text-2xl md:text-3xl font-black text-white italic tracking-tight uppercase leading-tight">
+                <h2 className="text-2xl md:text-3xl font-black text-foreground italic tracking-tight uppercase leading-tight">
                   {ticket.labelSr || ticket.label || ticket.titleSr || ticket.title}
                 </h2>
 
@@ -376,7 +376,7 @@ export function TicketPurchaseModal({ isOpen, onClose, ticket, facility }: Ticke
                   <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Cena ulaznice</span>
                   
                   <div className="flex items-baseline gap-2">
-                    <span className="text-3xl md:text-4xl font-black text-white tracking-tight bg-gradient-to-r from-white via-slate-100 to-cyan-100 bg-clip-text text-transparent">
+                    <span className="text-3xl md:text-4xl font-black text-foreground tracking-tight bg-gradient-to-r from-white via-slate-100 to-cyan-100 bg-clip-text text-transparent">
                       {price}
                     </span>
                     <span className="text-xs font-black text-cyan-400 uppercase tracking-wider">RSD</span>
@@ -393,16 +393,16 @@ export function TicketPurchaseModal({ isOpen, onClose, ticket, facility }: Ticke
                 <div className="flex items-center bg-slate-900/60 rounded-2xl p-1 border border-white/10 shadow-inner shrink-0">
                   <button 
                     onClick={() => handleQuantityChange(quantity - 1)} 
-                    className="w-9 h-9 flex items-center justify-center hover:bg-white/5 active:bg-white/10 rounded-xl transition-all text-slate-400 hover:text-white active:scale-90"
+                    className="w-9 h-9 flex items-center justify-center hover:bg-white/5 active:bg-white/10 rounded-xl transition-all text-slate-400 hover:text-foreground active:scale-90"
                     aria-label="Smanji količinu"
                     disabled={isAdding || isAdded || isCheckingOut}
                   >
                     <Icon name="remove" className="text-[14px]" />
                   </button>
-                  <span className="w-8 text-center font-black text-white text-base select-none">{quantity}</span>
+                  <span className="w-8 text-center font-black text-foreground text-base select-none">{quantity}</span>
                   <button 
                     onClick={() => handleQuantityChange(quantity + 1)} 
-                    className="w-9 h-9 flex items-center justify-center hover:bg-white/5 active:bg-white/10 rounded-xl transition-all text-slate-400 hover:text-white active:scale-90"
+                    className="w-9 h-9 flex items-center justify-center hover:bg-white/5 active:bg-white/10 rounded-xl transition-all text-slate-400 hover:text-foreground active:scale-90"
                     aria-label="Povećaj količinu"
                     disabled={isAdding || isAdded || isCheckingOut}
                   >
