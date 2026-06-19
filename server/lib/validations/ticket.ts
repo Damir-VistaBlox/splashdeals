@@ -39,7 +39,7 @@ export const ticketSchema = z.object({
 
 export type TicketFormValues = z.input<typeof ticketSchema>
 
-export const upsertTicketSchema = ticketSchema.extend({
+export const upsertTicketSchema = ticketSchema.safeExtend({
   id: z.string().optional(),
   facilityId: z.string(),
 })
@@ -48,7 +48,7 @@ export type UpsertTicketValues = z.input<typeof upsertTicketSchema>
 
 // --- TicketGroup & TicketTier Schemas ---
 
-export const groupTicketSchema = ticketSchema.extend({
+export const groupTicketSchema = ticketSchema.safeExtend({
   id: z.string().optional(),
   facilityId: z.string().optional(),
   groupId: z.string().optional(),
