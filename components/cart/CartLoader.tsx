@@ -2,7 +2,7 @@
 
 import { useCart } from "@/hooks/use-cart";
 import dynamic from "next/dynamic";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense } from "react";
 
 const CartDrawer = dynamic(
   () => import("@/components/cart/CartDrawer").then((mod) => ({ default: mod.CartDrawer })),
@@ -18,13 +18,7 @@ const CartDrawer = dynamic(
  */
 export function CartLoader() {
   const items = useCart((state) => state.items);
-  const [hasItems, setHasItems] = useState(false);
-
-  useEffect(() => {
-    if (items.length > 0) {
-      setHasItems(true);
-    }
-  }, [items.length]);
+  const hasItems = items.length > 0;
 
   if (!hasItems) return null;
 
