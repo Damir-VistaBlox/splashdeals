@@ -3,6 +3,7 @@
   "framework": "nextjs",
   "cleanUrls": true,
   "trailingSlash": false,
+  "cache": [],
   "redirects": [
     {
       "source": "/explore/:path*",
