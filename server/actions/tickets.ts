@@ -2,7 +2,7 @@
 
 import { prisma } from "@/server/lib/prisma"
 import { revalidatePath } from "next/cache"
-import { put } from "@vercel/blob"
+import { put, del } from "@vercel/blob"
 import { processTicketImage } from "@/server/lib/media"
 import { 
   upsertTicketSchema, 
@@ -88,7 +88,6 @@ export async function renameTicketImageAction(
     })
 
     // Clean up old blob
-    const { del } = await import("@vercel/blob")
     await del(url).catch(() => {
       // Non-critical — old blob becomes orphaned if delete fails
       console.warn("Failed to delete old ticket image blob:", url)
