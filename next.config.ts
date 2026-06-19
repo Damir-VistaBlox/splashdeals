@@ -35,9 +35,6 @@ const nextConfig: NextConfig = {
   // Reduces crawl budget waste by allowing bots to revalidate instead of re-downloading full payloads.
   generateEtags: true,
 
-  // 🏗️ Build timestamp — invalidates Turbopack cache each deploy
-  env: { BUILD_TIMESTAMP: new Date().toISOString() },
-
   experimental: {
     optimizeCss: true, // Inlines critical CSS for better FCP
     serverActions: {

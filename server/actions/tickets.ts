@@ -18,6 +18,7 @@ import { validateFacilityAccess } from "@/server/lib/auth-guards"
 import { handleServerActionError } from "@/server/lib/server-action-error"
 import { withFacilityAccess } from "@/server/lib/with-facility-access"
 import { renameTicketImageSchema } from "@/server/lib/validations/image"
+import { processTicketImage } from "@/server/lib/media"
 
 /**
  * 🌊 High-Density Ticket Upload Action
@@ -34,7 +35,6 @@ export async function uploadTicketImageAction(formData: FormData) {
     await validateFacilityAccess(facilityId)
     const buffer = Buffer.from(await file.arrayBuffer());
     
-    const { processTicketImage } = await import("@/server/lib/media");
     const processedBuffer = await processTicketImage(buffer);
     const filename = `facilities/${facilityId}/tickets/${Date.now()}-${file.name.split('.')[0]}.webp`;
     
