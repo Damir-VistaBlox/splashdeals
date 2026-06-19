@@ -6,10 +6,7 @@ import { GlobalAmbient } from "@/components/ui/GlobalAmbient";
 import { getDictionary } from "@/lib/dictionaries";
 import { getActiveCities } from "@/server/lib/data/discovery";
 import dynamic from "next/dynamic";
-
-const CartDrawer = dynamic(() =>
-  import("@/components/cart/CartDrawer").then((mod) => mod.CartDrawer)
-);
+import { CartLoader } from "@/components/cart/CartLoader";
 
 const Footer = dynamic(
   () => import("@/components/layout/Footer").then((mod) => mod.Footer),
@@ -69,7 +66,7 @@ async function WebLayoutContent({
       <React.Suspense fallback={null}>{modal}</React.Suspense>
 
       <Footer />
-      <CartDrawer />
+      <CartLoader />
     </div>
   );
 }

@@ -6,9 +6,9 @@ import { ThemeProvider } from "@/components/providers/ThemeProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
-  subsets: ["latin", "latin-ext"],
+  subsets: ["latin"],
   weight: "variable",
-  display: "swap",
+  display: "optional",
 });
 
 export const viewport: Viewport = {
@@ -72,6 +72,11 @@ export default function RootLayout({
     <html lang="sr" suppressHydrationWarning data-scroll-behavior="smooth">
       <head>
         <link rel="preconnect" href="https://grainy-gradients.vercel.app" />
+        <link
+          rel="preload"
+          as="image"
+          href="https://grainy-gradients.vercel.app/noise.svg"
+        />
         <link
           rel="preconnect"
           href="https://f7t7eeiv4kcyjvws.public.blob.vercel-storage.com"
