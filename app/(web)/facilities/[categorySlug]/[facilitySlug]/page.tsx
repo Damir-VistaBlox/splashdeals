@@ -607,6 +607,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
           "@type": "LocalBusiness",
           "name": facility.name,
           "image": facility.media?.[0]?.url || undefined,
+          priceRange: "RSD",
           ...(facility.publicPhone ? { telephone: facility.publicPhone } : {}),
           "address": {
             "@type": "PostalAddress",
