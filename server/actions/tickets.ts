@@ -3,7 +3,6 @@
 import { prisma } from "@/server/lib/prisma"
 import { revalidatePath } from "next/cache"
 import { put, del } from "@vercel/blob"
-import { processTicketImage } from "@/server/lib/media"
 import { 
   upsertTicketSchema, 
   type UpsertTicketValues,
@@ -35,6 +34,7 @@ export async function uploadTicketImageAction(formData: FormData) {
     await validateFacilityAccess(facilityId)
     const buffer = Buffer.from(await file.arrayBuffer());
     
+    const { processTicketImage } = await import("@/server/lib/media");
     const processedBuffer = await processTicketImage(buffer);
     const filename = `facilities/${facilityId}/tickets/${Date.now()}-${file.name.split('.')[0]}.webp`;
     
