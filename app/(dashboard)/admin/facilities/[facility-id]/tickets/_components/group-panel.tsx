@@ -162,19 +162,18 @@ export function GroupPanel({
   activeGroupId,
   onGroupSelect,
 }: GroupPanelProps) {
-  const [groups, setGroups] = React.useState(initialGroups)
+  const [localReorder, setLocalReorder] = React.useState<typeof initialGroups | null>(null)
   const [groupToDelete, setGroupToDelete] = React.useState<string | null>(null)
   const sensors = useDnDSensors()
+
+  // Derived: use local drag-reorder when set, otherwise server data.
+  // No sync effect needed — when server refreshes initialGroups,
+  // localReorder is discarded and the new server data is used directly.
+  const groups = localReorder ?? initialGroups
 
   // Deep link: ?editGroupId=
   const { selectedItem: selectedGroup, setSelectedItem: setSelectedGroup, isOpen: isSheetOpen, setIsOpen: setIsSheetOpen } =
     useDeepLink(initialGroups, "editGroupId")
-
-  // Sync when server refreshes data
-  React.useEffect(() => {
-    // eslint-disable-next-line react-compiler/react-compiler
-    setGroups(initialGroups)
-  }, [initialGroups])
 
   const handleDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event
@@ -183,7 +182,7 @@ export function GroupPanel({
     const oldIndex = groups.findIndex((g) => g.id === active.id)
     const newIndex = groups.findIndex((g) => g.id === over.id)
     const reordered = arrayMove(groups, oldIndex, newIndex)
-    setGroups(reordered)
+    setLocalReorder(reordered)
 
     try {
       const result = await reorderTicketGroupsAction({
@@ -192,12 +191,12 @@ export function GroupPanel({
       })
       if (!result.success) {
         toast.error("Greška pri čuvanju redosleda")
-        setGroups(initialGroups)
+        setLocalReorder(null)
       }
     } catch (error: unknown) {
       console.error("Failed to reorder ticket groups:", error instanceof Error ? error.message : error);
       toast.error("Doslo je do greske")
-      setGroups(initialGroups)
+      setLocalReorder(null)
     }
   }
 
@@ -225,7 +224,7 @@ export function GroupPanel({
       return
     }
 
-    setGroups((prev) => prev.filter((g) => g.id !== deletedId))
+    setLocalReorder(null)
     toast.success("Grupa obrisana")
 
     // Reset active group if the deleted one was selected

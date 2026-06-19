@@ -117,19 +117,17 @@ export function TicketPanel({
   activeGroupId,
   activeGroup,
 }: TicketPanelProps) {
-  const [tickets, setTickets] = React.useState(initialTickets)
+  const [localReorder, setLocalReorder] = React.useState<typeof initialTickets | null>(null)
   const [globalFilter, setGlobalFilter] = React.useState("")
   const sensors = useDnDSensors()
+
+  // Derived: use local drag-reorder when set, otherwise server data.
+  // No sync effect needed — server refresh naturally flows through.
+  const tickets = localReorder ?? initialTickets
 
   // Deep link: ?editTicketId=
   const { selectedItem: selectedTicket, setSelectedItem: setSelectedTicket, isOpen: isSheetOpen, setIsOpen: setIsSheetOpen } =
     useDeepLink(initialTickets, "editTicketId")
-
-  // Sync with server refreshes
-  React.useEffect(() => {
-    // eslint-disable-next-line react-compiler/react-compiler
-    setTickets(initialTickets)
-  }, [initialTickets])
 
   // ── Group filter: client-side ───────────────────────────────────────────────
   const displayedTickets = React.useMemo(() => {
@@ -167,14 +165,11 @@ export function TicketPanel({
     const reordered = arrayMove(displayedTickets, oldIndex, newIndex)
 
     // Merge back into full list preserving other groups
-    setTickets((prev) => {
-      const otherTickets = activeGroupId === "ALL"
-        ? []
-        : prev.filter((t) => t.groupId !== activeGroupId)
-      return activeGroupId === "ALL"
-        ? reordered
-        : [...otherTickets, ...reordered].sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0))
-    })
+    const fullList = tickets.filter((t) => t.groupId !== activeGroupId)
+    const merged = activeGroupId === "ALL"
+      ? reordered
+      : [...fullList, ...reordered].sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0))
+    setLocalReorder(merged)
 
     reorderTicketsAction({
       facilityId,
