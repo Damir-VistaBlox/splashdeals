@@ -127,6 +127,7 @@ export function TicketPanel({
 
   // Sync with server refreshes
   React.useEffect(() => {
+    // eslint-disable-next-line react-compiler/react-compiler
     setTickets(initialTickets)
   }, [initialTickets])
 

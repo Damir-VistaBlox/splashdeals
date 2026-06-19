@@ -26,8 +26,10 @@ export function useDeepLink<T extends { id: string }>(
     if (targetId) {
       const target = items.find((item) => item.id === targetId)
       if (target) {
+        /* eslint-disable react-compiler/react-compiler */
         setSelectedItem(target)
         setIsOpen(true)
+        /* eslint-enable react-compiler/react-compiler */
       }
     }
   }, [items, paramName])

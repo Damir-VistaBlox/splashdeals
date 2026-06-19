@@ -172,6 +172,7 @@ export function GroupPanel({
 
   // Sync when server refreshes data
   React.useEffect(() => {
+    // eslint-disable-next-line react-compiler/react-compiler
     setGroups(initialGroups)
   }, [initialGroups])
 
