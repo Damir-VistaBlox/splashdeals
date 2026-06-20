@@ -27,32 +27,34 @@ export function CartButton({ dict, isOnline, mounted, totalItems, openCart }: Ca
         </div>
       )}
 
-      <LiquidButton
-        variant="primary"
-        size="sm"
-        className={cn(
-          "px-5 group h-11 transition-all",
-          !isOnline && "opacity-50 grayscale cursor-not-allowed"
-        )}
-        onClick={() => {
-          if (!isOnline) return;
-          openCart();
-          if ("vibrate" in navigator) navigator.vibrate(10);
-        }}
-        aria-label={isOnline ? `Otvorite korpu - ${totalItems}` : (dict.nav.offline || "Nema Mreže")}
-      >
-        <div className="relative">
-          <Icon name="shopping_bag" className="text-[16px]" />
-          {(mounted && totalItems > 0) && (
+      {(mounted && totalItems > 0) ? (
+        <LiquidButton
+          variant="primary"
+          size="sm"
+          className={cn(
+            "px-5 group h-11 transition-all",
+            !isOnline && "opacity-50 grayscale cursor-not-allowed"
+          )}
+          onClick={() => {
+            if (!isOnline) return;
+            openCart();
+            if ("vibrate" in navigator) navigator.vibrate(10);
+          }}
+          aria-label={`Otvorite korpu - ${totalItems}`}
+        >
+          <div className="relative">
+            <Icon name="shopping_bag" className="text-[16px]" />
             <span
               className="absolute -top-3 -right-3 bg-white text-background text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow-lg transition-all duration-300"
             >
               {totalItems}
             </span>
-          )}
-        </div>
-        <span className="hidden sm:inline">{dict.nav.checkout || "Korpa"}</span>
-      </LiquidButton>
+          </div>
+          <span className="hidden sm:inline">{dict.nav.checkout || "Korpa"}</span>
+        </LiquidButton>
+      ) : (
+        <div className="h-11 w-[106px] invisible" />
+      )}
     </div>
   );
 }

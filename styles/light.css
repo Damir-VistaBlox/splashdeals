@@ -4,7 +4,7 @@
   --foreground: oklch(0.15 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.15 0 0);
-  --popover: oklch(1 0 0);
+  --popover: oklch(0.92 0 0);
   --popover-foreground: oklch(0.15 0 0);
 
   /* Aqua/Cyan palette (Hue 210) */
