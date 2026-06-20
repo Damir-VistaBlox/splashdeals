@@ -78,6 +78,11 @@ body {
   font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
 }
 
+/* Mobile UX: enforce pointer cursor on all interactive elements */
+a, button, [role="button"], select, summary, [type="checkbox"], [type="radio"], label {
+  cursor: pointer;
+}
+
 /* Glass UI Utilities */
 .glass-frost {
   background: var(--glass-bg);

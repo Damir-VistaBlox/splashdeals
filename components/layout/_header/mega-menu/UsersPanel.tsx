@@ -1,115 +1,84 @@
-"use client";
+"use client"
 
-import Link from "next/link";
-import { Icon } from "@/components/ui/Icon";
-
+import Link from "next/link"
+import { Icon } from "@/components/ui/Icon"
+import { NavigationMenuLink } from "@/components/ui/navigation-menu"
 
 interface UsersPanelProps {
-  dict: any;
-  onClose: () => void;
+  dict: any
 }
 
-export function UsersPanel({ dict, onClose }: UsersPanelProps) {
+export function UsersPanel({ dict }: UsersPanelProps) {
+  const links = [
+    {
+      href: "/how-it-works",
+      icon: "explore" as const,
+      title: "Kako funkcioniše platforma?",
+      desc: "Vodič za brzu kupovinu karata i čuvanje u Apple & Google Wallet novčanik.",
+    },
+    {
+      href: "/support",
+      icon: "help_outline" as const,
+      title: "Centar za Pomoć & FAQ",
+      desc: "Brzi odgovori na pitanja o refundacijama, slanju ulaznica i radnom vremenu.",
+    },
+    {
+      href: "/terms",
+      icon: "verified_user" as const,
+      title: "Pravila i sigurnost kupovine",
+      desc: "Bezbedno 3D Secure procesiranje platnih kartica i zaštita potrošača u Srbiji.",
+    },
+  ]
+
   return (
-    <div className="grid grid-cols-12 gap-10 items-stretch">
-      {/* Wallet Pass Mockup (Col 1-5) */}
-      <div className="col-span-5 flex min-h-[300px]">
-        <div className="w-full bg-slate-950/40 border border-white/5 rounded-[1.75rem] p-7 flex flex-col justify-between relative group/loyalty overflow-hidden shadow-2xl items-center text-center">
-          <div className="w-full max-w-[160px] aspect-[2/3] bg-gradient-to-br from-cyan-600/30 to-slate-950 border border-white/10 rounded-2xl p-4 flex flex-col justify-between shadow-2xl relative overflow-hidden group-hover/loyalty:scale-[1.03] transition-all duration-500">
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-cyan-500/10 via-transparent to-transparent pointer-events-none" />
-
-            <div className="flex items-center justify-between border-b border-white/10 pb-2">
-              <span className="text-[9px] font-black text-primary uppercase tracking-wider">
-                Splash Club
-              </span>
-              <Icon name="waves" className="text-[12px] text-primary" />
-            </div>
-
-            <div className="space-y-1.5 my-2">
-              <span className="text-[8px] font-bold text-slate-400 uppercase tracking-widest block leading-none">
-                Članska Kartica
-              </span>
-              <span className="text-xs font-black text-white uppercase italic leading-none">
-                PREMIUM PRO
-              </span>
-            </div>
-
-            <div className="border-t border-white/10 pt-2.5 flex flex-col items-center">
-              <Icon name="qr_code" className="text-[36px] text-white opacity-85" />
-              <span className="text-[6px] font-mono text-slate-500 mt-1.5">
-                #SPLASH-PASS
-              </span>
-            </div>
+    <div className="grid grid-cols-[1fr_1.5fr] gap-6">
+      {/* Wallet Pass Mockup */}
+      <div className="flex flex-col items-center justify-center rounded-lg border bg-muted/20 p-6 text-center gap-3">
+        <div className="w-32 aspect-[2/3] rounded-xl bg-gradient-to-b from-primary/20 to-background border p-3 flex flex-col justify-between shadow-sm">
+          <div className="flex items-center justify-between border-b pb-1.5">
+            <span className="text-[8px] font-bold text-primary uppercase">Splash Club</span>
+            <Icon name="waves" className="size-2.5 text-primary" />
           </div>
-
-          <Link
-            href="/support"
-            onClick={onClose}
-            className="w-full h-12 rounded-xl bg-primary text-slate-950 text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg group-hover/loyalty:bg-white transition-all duration-300 mt-4"
-          >
-            Splash Club <Icon name="auto_awesome" className="text-[16px]" />
-          </Link>
+          <div className="text-center">
+            <span className="text-[7px] font-medium text-muted-foreground uppercase block">Članska Kartica</span>
+            <span className="text-[10px] font-bold uppercase block mt-0.5">PREMIUM PRO</span>
+          </div>
+          <div className="border-t pt-1.5 flex flex-col items-center">
+            <Icon name="qr_code" className="size-6" />
+            <span className="text-[5px] text-muted-foreground mt-0.5">#SPLASH-PASS</span>
+          </div>
         </div>
+        <span className="inline-flex items-center gap-1.5 text-xs font-medium text-primary bg-primary/5 px-2.5 py-1 rounded-full">
+          Splash Club
+          <Icon name="auto_awesome" className="size-3" />
+        </span>
       </div>
 
-      {/* User Portal Links (Col 6-12) */}
-      <div className="col-span-7 flex flex-col justify-between pl-6">
-        <div>
-          <div className="border-b border-white/5 pb-4 mb-6">
-            <span className="text-[13px] font-black text-slate-500 uppercase tracking-[0.2em] leading-none">
-              Korisnički Portal
-            </span>
-          </div>
-
-          <div className="flex flex-col gap-7">
-            {[
-              {
-                href: "/how-it-works",
-                icon: "explore",
-                title: "Kako funkcioniše platforma?",
-                desc: "Vodič za brzu kupovinu karata i čuvanje u Apple & Google Wallet novčanik.",
-              },
-              {
-                href: "/support",
-                icon: "help_outline",
-                title: "Centar za Pomoć & FAQ",
-                desc: "Brzi odgovori na pitanja o refundacijama, slanju ulaznica i radnom vremenu.",
-              },
-              {
-                href: "/terms",
-                icon: "verified_user",
-                title: "Pravila i sigurnost kupovine",
-                desc: "Bezbedno 3D Secure procesiranje platnih kartica i zaštita potrošača u Srbiji.",
-              },
-            ].map(({ href, icon: iconName, title, desc }) => (
-              <Link
-                key={href}
-                href={href}
-                onClick={onClose}
-                className="flex flex-col gap-1.5 group/sublink"
-              >
-                <span className="text-sm font-black italic uppercase text-slate-200 group-hover/sublink:text-primary transition-colors flex items-center gap-3">
-                  <Icon
-                    name={iconName}
-                    className="text-[20px] text-primary shrink-0"
-                  />
-                  {title}
-                </span>
-                <span className="text-xs text-slate-400 font-medium pl-8 leading-relaxed">
-                  {desc}
-                </span>
-              </Link>
-            ))}
-          </div>
-        </div>
-
-        <div className="pt-4 border-t border-white/5 mt-6">
-          <span className="text-xs font-bold text-slate-500 uppercase tracking-widest leading-none flex items-center gap-2">
-            <Icon name="waves" className="text-[14px] text-primary animate-pulse" />{" "}
+      {/* User Links */}
+      <div className="flex flex-col gap-4">
+        <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+          Korisnički Portal
+        </span>
+        {links.map(({ href, icon: iconName, title, desc }) => (
+          <NavigationMenuLink key={href} asChild>
+            <Link href={href} className="block rounded-md p-2 hover:bg-muted transition-colors">
+              <div className="flex items-start gap-3">
+                <Icon name={iconName} className="size-5 text-primary shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-sm font-medium">{title}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">{desc}</p>
+                </div>
+              </div>
+            </Link>
+          </NavigationMenuLink>
+        ))}
+        <div className="pt-3 border-t mt-auto">
+          <span className="text-xs text-muted-foreground flex items-center gap-1.5">
+            <Icon name="waves" className="size-3 text-primary" />
             100% digitalne ulaznice na telefonu
           </span>
         </div>
       </div>
     </div>
-  );
+  )
 }

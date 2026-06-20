@@ -18,7 +18,7 @@ export function Logo({ isTabActive, isReducedMotion, isHovered, setIsHovered }: 
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       className={cn(
-        "flex items-center gap-2.5 group relative",
+        "flex items-center gap-2.5 group relative min-h-[44px] py-1",
         isTabActive && "opacity-100"
       )}
       aria-label="Splashdeals početna"

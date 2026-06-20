@@ -71,6 +71,9 @@ export default function RootLayout({
   return (
     <html lang="sr" suppressHydrationWarning data-scroll-behavior="smooth">
       <head>
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-title" content="Splashdeals" />
         <link rel="preconnect" href="https://grainy-gradients.vercel.app" />
         <link
           rel="preload"
@@ -85,6 +88,7 @@ export default function RootLayout({
       </head>
       <body
         className={`${geistSans.variable} antialiased selection:bg-primary/20 bg-background scroll-smooth`}
+        style={{ paddingTop: 'env(safe-area-inset-top)', paddingBottom: 'env(safe-area-inset-bottom)', paddingLeft: 'env(safe-area-inset-left)', paddingRight: 'env(safe-area-inset-right)' }}
       >
         <ThemeProvider>{children}</ThemeProvider>
       </body>

@@ -1,29 +1,28 @@
-"use client";
+"use client"
 
-import Link from "next/link";
-import { Icon } from "@/components/ui/Icon";
-import { cn } from "@/lib/utils";
-import { CityGrid } from "./CityGrid";
-
+import Link from "next/link"
+import { cn } from "@/lib/utils"
+import { Icon } from "@/components/ui/Icon"
+import { NavigationMenuLink } from "@/components/ui/navigation-menu"
+import { CityGrid } from "./CityGrid"
 
 interface FeaturedFacility {
-  id: string;
-  name: string;
-  slug: string;
-  category: string;
-  city: string;
-  canonicalPath: string;
-  imageUrl: string;
-  startingPrice: number | null;
-  description: string;
+  id: string
+  name: string
+  slug: string
+  category: string
+  city: string
+  canonicalPath: string
+  imageUrl: string
+  startingPrice: number | null
+  description: string
 }
 
 interface ExplorePanelProps {
-  featured: FeaturedFacility | null;
-  cities: { id: string; name: string; slug: string }[];
-  loading: boolean;
-  dict: any;
-  onClose: () => void;
+  featured: FeaturedFacility | null
+  cities: { id: string; name: string; slug: string }[]
+  loading: boolean
+  dict: any
 }
 
 export function ExplorePanel({
@@ -31,150 +30,71 @@ export function ExplorePanel({
   cities,
   loading,
   dict,
-  onClose,
 }: ExplorePanelProps) {
+  const categories = [
+    { href: "/facilities/waterpark", icon: "waves" as const, label: "Akva Parkovi" },
+    { href: "/facilities/swimming-pool", icon: "waves" as const, label: "Bazeni" },
+    { href: "/facilities/wellness", icon: "auto_awesome" as const, label: "Wellness & Spa" },
+    { href: "/#deals", icon: "local_fire_department" as const, label: "Sve Akcije" },
+  ]
+
   return (
-    <div className="grid grid-cols-12 gap-10 items-stretch">
-      {/* Visual Promo Showcase (Col 1-4) */}
-      <div className="col-span-4 flex min-h-[320px]">
+    <div className="grid grid-cols-[1fr_2fr_1fr] gap-4">
+      {/* Featured Promo */}
+      <div className="flex flex-col gap-2">
         {featured ? (
           <Link
             href={featured.canonicalPath}
-            onClick={onClose}
-            className="w-full flex flex-col justify-end p-6 rounded-[1.75rem] overflow-hidden relative group/promo border border-white/5 hover:border-primary/30 transition-all duration-500 shadow-2xl"
+            className="group relative flex flex-col justify-end rounded-lg overflow-hidden border bg-muted/30 hover:bg-muted/50 transition-colors min-h-[280px] p-4"
           >
-            <div className="absolute inset-0 z-0">
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-transparent z-10 transition-all duration-500 group-hover/promo:via-slate-950/40" />
-              {featured.imageUrl.endsWith(".mp4") ? (
-                <video
-                  src={featured.imageUrl}
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  className="w-full h-full object-cover scale-105 group-hover/promo:scale-100 transition-transform duration-700 blur-[0.5px]"
-                />
-              ) : (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={featured.imageUrl}
-                  alt={featured.name}
-                  className="w-full h-full object-cover scale-105 group-hover/promo:scale-100 transition-transform duration-700"
-                />
-              )}
-            </div>
-
-            <div className="relative z-20 space-y-4">
-              <div className="flex justify-between items-start gap-2">
-                <span className="px-3.5 py-1.5 rounded-full bg-primary/20 border border-cyan-400/30 backdrop-blur-md text-[9px] font-black uppercase tracking-widest text-cyan-300 shadow-[0_0_12px_rgba(6,182,212,0.15)] leading-none">
-                  Hit Ponuda
-                </span>
-                {featured.startingPrice && (
-                  <span className="text-white text-sm font-black bg-slate-950/70 border border-white/5 px-3 py-1.5 rounded-lg backdrop-blur-md">
-                    od{" "}
-                    <span className="text-primary text-base">
-                      {featured.startingPrice} RSD
-                    </span>
-                  </span>
-                )}
-              </div>
-
-              <div className="space-y-1.5">
-                <h3 className="text-lg font-black italic uppercase tracking-tight text-white leading-tight">
-                  {featured.name}
-                </h3>
-                <p className="text-xs text-slate-300 leading-relaxed font-medium opacity-90 line-clamp-2">
-                  {featured.description}
-                </p>
-              </div>
-
-              <div className="w-full h-11 rounded-xl bg-primary text-slate-950 text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg group-hover/promo:bg-white transition-all duration-300">
-                <Icon name="local_fire_department" className="text-[16px] animate-pulse" />{" "}
-                Kupi Karte
-              </div>
-            </div>
+            <span className="text-xs font-bold text-primary uppercase tracking-wider">Istaknuto</span>
+            <h3 className="text-sm font-bold mt-1 leading-tight">{featured.name}</h3>
+            {featured.startingPrice && (
+              <span className="text-xs text-muted-foreground mt-1">
+                od {featured.startingPrice} RSD
+              </span>
+            )}
           </Link>
         ) : (
-          <div className="w-full bg-white/[0.02] border border-dashed border-white/10 rounded-[1.75rem] flex flex-col items-center justify-center p-8 text-center">
-            <Icon
-              name="auto_awesome"
-              className="text-[40px] text-slate-600 mb-3 animate-pulse"
-            />
-            <span className="text-sm font-bold text-slate-400">
-              Splashdeals Premium
-            </span>
+          <div className="flex items-center justify-center rounded-lg border border-dashed bg-muted/10 min-h-[280px] p-4">
+            <p className="text-xs text-muted-foreground text-center">
+              Premium ponuda
+            </p>
           </div>
         )}
       </div>
 
-      {/* Cities Grid (Col 5-10) */}
-      <div className="col-span-6 flex flex-col gap-5">
-        <CityGrid cities={cities} loading={loading} onCityClick={onClose} dict={dict} />
+      {/* City Grid */}
+      <div>
+        <CityGrid cities={cities} loading={loading} dict={dict} />
       </div>
 
-      {/* Categories Links (Col 11-12) */}
-      <div className="col-span-2 flex flex-col justify-between border-l border-white/5 pl-9">
-        <div className="space-y-1">
-          <div className="border-b border-white/5 pb-4 mb-3">
-            <span className="text-[13px] font-black text-slate-500 uppercase tracking-[0.2em] leading-none">
-              Kategorije
-            </span>
-          </div>
-
-          <div className="flex flex-col">
-            {[
-              {
-                href: "/facilities/waterpark",
-                icon: "waves",
-                label: "Akva Parkovi",
-                cls: "group-hover/link:animate-bounce",
-              },
-              {
-                href: "/facilities/swimming-pool",
-                icon: "waves",
-                label: "Bazeni",
-                cls: "group-hover/link:animate-pulse",
-              },
-              {
-                href: "/facilities/wellness",
-                icon: "auto_awesome",
-                label: "Wellness & Spa",
-                cls: "group-hover/link:animate-spin",
-              },
-            ].map(({ href, icon: iconName, label, cls }) => (
-              <Link
-                key={href}
-                href={href}
-                onClick={onClose}
-                className="flex items-center gap-3 py-3.5 text-sm font-black italic uppercase tracking-wide text-slate-300 hover:text-primary transition-colors group/link cursor-pointer"
-              >
-                <Icon name={iconName} className={cn("text-[20px] text-primary", cls)} />
-                <span>{label}</span>
-              </Link>
-            ))}
-
+      {/* Categories */}
+      <div className="flex flex-col gap-1">
+        <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+          Kategorije
+        </span>
+        {categories.map(({ href, icon: iconName, label }) => (
+          <NavigationMenuLink key={href} asChild>
             <Link
-              href="/#deals"
-              onClick={onClose}
-              className="flex items-center gap-3 py-3.5 text-sm font-black italic uppercase tracking-wide text-primary hover:text-white transition-colors group/link cursor-pointer"
+              href={href}
+              className="flex items-center gap-2 rounded-md p-2 text-sm hover:bg-muted transition-colors"
             >
-              <Icon name="local_fire_department" className="text-[20px] text-primary" />
-              <span>Sve Akcije</span>
+              <Icon name={iconName} className="size-4 text-primary shrink-0" />
+              <span>{label}</span>
             </Link>
-          </div>
-        </div>
-
-        <div className="pt-5 border-t border-white/5">
+          </NavigationMenuLink>
+        ))}
+        <NavigationMenuLink asChild>
           <Link
             href="/support"
-            onClick={onClose}
-            className="flex items-center gap-2 text-xs font-bold text-slate-500 hover:text-white transition-colors cursor-pointer"
+            className="flex items-center gap-2 rounded-md p-2 text-sm text-muted-foreground hover:bg-muted transition-colors mt-2"
           >
-            <Icon name="help" className="text-[16px] text-slate-600" />
+            <Icon name="help" className="size-4 shrink-0" />
             <span>Korisnička Pomoć</span>
           </Link>
-        </div>
+        </NavigationMenuLink>
       </div>
     </div>
-  );
+  )
 }
