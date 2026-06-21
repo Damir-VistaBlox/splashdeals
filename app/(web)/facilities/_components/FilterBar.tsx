@@ -13,7 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-import { useState, useTransition, useEffect } from "react";
+import { useTransition } from "react";
 
 interface FilterBarProps {
   cities: { id: string; name: string; slug: string }[];
@@ -30,17 +30,6 @@ export function FilterBar({ cities, dict }: FilterBarProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
-
-  // Local state for immediate UI feedback on inputs
-  const [minPrice, setMinPrice] = useState(searchParams.get("minPrice") || "");
-  const [maxPrice, setMaxPrice] = useState(searchParams.get("maxPrice") || "");
-
-  // Sync local state when searchParams change (avoids render-phase setState)
-
-  useEffect(() => {
-    setMinPrice(searchParams.get("minPrice") || "");
-    setMaxPrice(searchParams.get("maxPrice") || "");
-  }, [searchParams]);
 
   const updateParams = (updates: Record<string, string | null>) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -111,9 +100,9 @@ export function FilterBar({ cities, dict }: FilterBarProps) {
             id="min-price"
             type="number"
             placeholder={dict.filters.min_price}
-            value={minPrice}
-            onChange={(e) => setMinPrice(e.target.value)}
-            onBlur={() => updateParams({ minPrice })}
+            defaultValue={searchParams.get("minPrice") || ""}
+            key={`min-${searchParams.get("minPrice") || ""}`}
+            onBlur={(e) => updateParams({ minPrice: e.target.value })}
             className="w-full sm:w-28 pl-8 h-12 sm:h-10 bg-muted/50 border-border text-foreground font-bold text-[10px] uppercase tracking-widest focus:border-ring transition-all placeholder:text-muted-foreground/60"
           />
         </div>
@@ -125,9 +114,9 @@ export function FilterBar({ cities, dict }: FilterBarProps) {
             id="max-price"
             type="number"
             placeholder={dict.filters.max_price}
-            value={maxPrice}
-            onChange={(e) => setMaxPrice(e.target.value)}
-            onBlur={() => updateParams({ maxPrice })}
+            defaultValue={searchParams.get("maxPrice") || ""}
+            key={`max-${searchParams.get("maxPrice") || ""}`}
+            onBlur={(e) => updateParams({ maxPrice: e.target.value })}
             className="w-full sm:w-28 pl-8 h-12 sm:h-10 bg-muted/50 border-border text-foreground font-bold text-[10px] uppercase tracking-widest focus:border-ring transition-all placeholder:text-muted-foreground/60"
           />
         </div>
