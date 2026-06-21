@@ -532,7 +532,8 @@ function ProductImageSection({
 }) {
   const [uploading, setUploading] = React.useState(false)
   const [renaming, setRenaming] = React.useState(false)
-  const [newName, setNewName] = React.useState("")
+  const currentFileName = imageUrl ? imageUrl.split("/").pop()?.replace(/\.webp$/, "") ?? "" : ""
+  const [newName, setNewName] = React.useState(currentFileName)
   const fileRef = React.useRef<HTMLInputElement>(null)
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {

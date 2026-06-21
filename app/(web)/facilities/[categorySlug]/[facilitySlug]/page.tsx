@@ -430,7 +430,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
         isSeasonPass: prod.isSeasonPass,
         requiresIdentity: prod.requiresIdentity,
         requiresPhoto: prod.requiresPhoto,
-        imageUrl: facility.media?.[0]?.url || null,
+        imageUrl: prod.imageUrl || facility.media?.[0]?.url || null,
         slug: null,
         description: null,
         descriptionSr: null,

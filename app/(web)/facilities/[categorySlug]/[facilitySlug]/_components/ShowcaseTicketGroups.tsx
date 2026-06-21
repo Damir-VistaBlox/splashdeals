@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/hooks/use-cart";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 import type { DayType, TimeSlot } from "@prisma/client";
 import { TicketPurchaseModal } from "./TicketPurchaseModal";
 
@@ -323,6 +324,17 @@ function SingleTierCard({ group, tier, quantity, setQuantity, onAdd, prefix, mai
         <p className="text-muted-foreground font-medium max-w-md italic">
           {group.descriptionSr || group.description || "Digitalna ulaznica za premium pristup sadržajima parka."}
         </p>
+        {tier.imageUrl && (
+          <div className="relative w-full aspect-[16/9] rounded-xl overflow-hidden border border-border/50">
+            <Image
+              src={tier.imageUrl}
+              alt={tier.titleSr || tier.title}
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, 400px"
+            />
+          </div>
+        )}
       </div>
 
       <div className="w-full md:w-auto space-y-8 bg-muted/50 p-8 rounded-[2.5rem] border border-border backdrop-blur-3xl min-w-[320px]">

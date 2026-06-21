@@ -69,6 +69,7 @@ interface ProductOption {
   maxPeople: number | null;
   isSeasonPass: boolean;
   validityType: string;
+  imageUrl?: string | null;
   prices: PriceOption[];
 }
 
@@ -195,7 +196,7 @@ export function TicketPurchaseModal({ isOpen, onClose, facilitySlug, initialProd
       validityType: activeProduct.isSeasonPass ? "SUMMER_SEASON" : "FLEXIBLE_30_DAY",
       minPeople: activeProduct.minPeople,
       maxPeople: activeProduct.maxPeople,
-      imageUrl: null,
+      imageUrl: activeProduct.imageUrl || null,
     });
 
     setIsAdding(true);
@@ -226,7 +227,7 @@ export function TicketPurchaseModal({ isOpen, onClose, facilitySlug, initialProd
       validityType: activeProduct.isSeasonPass ? "SUMMER_SEASON" : "FLEXIBLE_30_DAY",
       minPeople: activeProduct.minPeople,
       maxPeople: activeProduct.maxPeople,
-      imageUrl: null,
+      imageUrl: activeProduct.imageUrl || null,
     });
 
     onClose();

@@ -57,6 +57,7 @@ export async function GET(
       maxPeople: prod.maxPeople,
       isSeasonPass: prod.isSeasonPass,
       validityType: prod.validityType,
+      imageUrl: prod.imageUrl,
       prices: prod.prices.map((p) => ({
         id: p.id,
         label: p.label,
