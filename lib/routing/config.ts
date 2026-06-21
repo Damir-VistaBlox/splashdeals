@@ -16,7 +16,7 @@ export const ROUTING_CONFIG = {
     {
       // /explore -> /facilities
       pattern: /\/explore/,
-      destination: (match: RegExpMatchArray) => '/',
+      destination: () => '/',
       permanent: true,
       type: 'redirect'
     },

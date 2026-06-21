@@ -172,7 +172,7 @@ export function CompactAmenitiesTable({
           duration: 1500,
         })
         router.refresh()
-      } catch (err) {
+      } catch (_err) {
         toast.error("Auto-sync Failed", {
           description: "Failed to persist changes to the infrastructure grid.",
         })
@@ -214,7 +214,7 @@ export function CompactAmenitiesTable({
     }
   }
 
-  const handleValueKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, id: string) => {
+  const handleValueKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, _id: string) => {
     if (e.key === "Enter") {
       e.preventDefault()
       e.currentTarget.blur()
@@ -243,7 +243,7 @@ export function CompactAmenitiesTable({
         } else {
           throw new Error("Failed to delete custom amenity")
         }
-      } catch (err) {
+      } catch (_err) {
         toast.error("Deletion Rejected", {
           description: "This custom asset is still tied to operational dependencies.",
         })
@@ -306,7 +306,7 @@ export function CompactAmenitiesTable({
       } else {
         throw new Error("API rejection")
       }
-    } catch (err) {
+    } catch (_err) {
       toast.error("Registration Failed", {
         description: "Verify name uniqueness and schema limits.",
       })

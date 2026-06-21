@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input"
 import { useActionState } from "react"
 import { subscribeToNewsletter } from "@/server/lib/actions/newsletter"
 import { getClientDictionary } from "@/lib/client-dictionaries"
+import type { Dict } from "@/lib/types"
 
 
 /**
@@ -15,9 +16,8 @@ import { getClientDictionary } from "@/lib/client-dictionaries"
  * Integrated with Aquastream design system.
  */
 export function Footer() {
-  const currentYear = 2026
   const [isHovered, setIsHovered] = React.useState(false)
-  const [dict, setDict] = React.useState<any | null>(null)
+  const [dict, setDict] = React.useState<Dict | null>(null)
 
   React.useEffect(() => {
     getClientDictionary().then(setDict)
@@ -258,7 +258,7 @@ export function Footer() {
  * 📧 Newsletter Form Sub-component
  * Uses Server Actions & React 19 useActionState
  */
-function NewsletterForm({ dict }: { dict: any | null }) {
+function NewsletterForm({ dict }: { dict: Dict | null }) {
   const [state, formAction, isPending] = useActionState(subscribeToNewsletter, null);
   const [email, setEmail] = React.useState("");
 

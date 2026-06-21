@@ -1,5 +1,3 @@
-import { Skeleton } from "@/components/ui/skeleton"
-
 export default function OverviewLoading() {
   return (
     <div className="space-y-6 animate-pulse">

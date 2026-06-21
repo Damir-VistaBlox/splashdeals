@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import * as React from "react";
 import { Header } from "@/components/layout/Header";
 import { BreadcrumbBar } from "@/components/layout/BreadcrumbBar";

@@ -230,8 +230,6 @@ export function MediaGallery({ facilityId, initialMedia }: MediaGalleryProps) {
             const optimizedFile = optimizedBlob instanceof File ? optimizedBlob : new File([optimizedBlob], file.name.replace(/\.[^.]+$/, ".webp"), { type: "image/webp" })
             const optimizedSize = optimizedFile.size
             const savedBytes = originalSize - optimizedSize
-            const savedPercent = originalSize > 0 ? Math.round((savedBytes / originalSize) * 100) : 0
-            const savedKb = Math.round(savedBytes / 1024)
 
             const formData = new FormData()
             formData.append("facilityId", facilityId)
@@ -663,7 +661,7 @@ export function MediaGallery({ facilityId, initialMedia }: MediaGalleryProps) {
               variant={activeFilter === filt.id ? "default" : "outline"}
               size="sm"
               type="button"
-              onClick={() => setActiveFilter(filt.id as any)}
+              onClick={() => setActiveFilter(filt.id as typeof activeFilter)}
               className={cn(
                 "h-7 px-3 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all",
                 activeFilter === filt.id
@@ -1478,7 +1476,7 @@ function CropModal({
                   variant={aspectRatio === ratio.id ? "default" : "outline"}
                   size="sm"
                   type="button"
-                  onClick={() => setAspectRatio(ratio.id as any)}
+                  onClick={() => setAspectRatio(ratio.id as typeof aspectRatio)}
                   className={cn(
                     "py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all",
                     aspectRatio === ratio.id 

@@ -1,4 +1,4 @@
-import { notFound, permanentRedirect, redirect } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { Metadata } from "next";
 import { connection } from "next/server";
 import { prisma } from "@/server/lib/prisma";

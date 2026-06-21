@@ -43,9 +43,6 @@ import { useRouter } from "next/navigation"
 import { TicketType, ValidityType, DayType, TimeSlot } from "@prisma/client"
 import { Badge } from "@/components/ui/badge"
 import type { SerializedAdminTicket, SerializedTicketGroup } from "./columns"
-import { cn } from "@/lib/utils"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Separator } from "@/components/ui/separator"
 
 interface TicketGroupSheetProps {
   facilityId: string

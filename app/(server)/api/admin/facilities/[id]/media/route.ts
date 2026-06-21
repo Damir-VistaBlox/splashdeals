@@ -239,8 +239,8 @@ export async function POST(
     })
 
     return NextResponse.json(media, { status: 201 })
-  } catch (error: any) {
-    if (error.message === "DOWNLOAD_TIMEOUT") {
+  } catch (error: unknown) {
+    if (error instanceof Error && error.message === "DOWNLOAD_TIMEOUT") {
       return NextResponse.json({
         success: false,
         error: "Isteklo je vreme za preuzimanje slike (10s)",

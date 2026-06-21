@@ -1,7 +1,7 @@
-import { Icon } from "@/components/ui/Icon";
 import { Metadata } from "next";
 import { getDictionary } from "@/lib/dictionaries";
 import { connection } from "next/server";
+import { Icon } from "@/components/ui/Icon";
 import Link from "next/link";
 import { JsonLd } from "@/components/SEO/JsonLd";
 

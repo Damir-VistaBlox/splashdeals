@@ -44,6 +44,7 @@ export function useHeaderScroll(): UseHeaderScrollReturn {
       document.addEventListener("visibilitychange", handleVisibility);
 
       // 4. Network Information API (Save Data Protocol)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const connection = (navigator as any).connection || (navigator as any).mozConnection || (navigator as any).webkitConnection;
       if (connection?.saveData) Promise.resolve().then(() => setIsReducedMotion(true));
 

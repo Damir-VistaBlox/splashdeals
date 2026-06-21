@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { getClientDictionary } from "@/lib/client-dictionaries"
+import type { Dict } from "@/lib/types"
 
 
 /**
@@ -19,9 +20,9 @@ export function GlobalSearch() {
 
   const [prevQ, setPrevQ] = React.useState(q)
   const [query, setQuery] = React.useState(q)
-  const [results, setResults] = React.useState<any[]>([])
+  const [results, setResults] = React.useState<Dict[]>([])
   const [isLoading, setIsLoading] = React.useState(false)
-  const [dict, setDict] = React.useState<any | null>(null)
+  const [dict, setDict] = React.useState<Dict | null>(null)
 
   React.useEffect(() => {
     getClientDictionary().then(setDict)
@@ -76,7 +77,7 @@ export function GlobalSearch() {
         <div className="relative p-6 border-b border-white/5">
           <Icon name="search" className="absolute left-10 top-1/2 -translate-y-1/2 text-[20px] text-cyan-500" />
           <label htmlFor="global-search" className="sr-only">
-            {dict?.search?.sr_label || "Pretražite akva parkove, gradove ili akcije"}
+            {(dict as Dict)?.search?.sr_label || "Pretražite akva parkove, gradove ili akcije"}
           </label>
           <Input
             id="global-search"

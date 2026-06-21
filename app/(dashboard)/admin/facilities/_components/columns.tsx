@@ -18,7 +18,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import Link from "next/link"
-import { cn } from "@/lib/utils"
 import { StatusToggle } from "@/app/(dashboard)/admin/_common/StatusToggle"
 
 // Using a static wrapper component for rendering cells that might trigger non-deterministic behavior

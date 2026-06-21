@@ -1,7 +1,6 @@
 import { Icon } from "@/components/ui/Icon";
-import { notFound, redirect, permanentRedirect } from "next/navigation"
+import { notFound, permanentRedirect } from "next/navigation"
 import { Metadata } from "next"
-import Image from "next/image"
 import { prisma } from "@/server/lib/prisma"
 import Link from "next/link"
 import { connection } from "next/server"
@@ -21,10 +20,7 @@ function isDeletedFacility(slug: string): boolean {
   return DELETED_FACILITY_SLUGS.has(slug);
 }
 import { 
-  Ticket, 
   OperatingHours, 
-  FacilityCity,
-  City,
   DayType,
   TimeSlot,
   Prisma
@@ -57,21 +53,12 @@ const MobileUnifiedControlPill = dynamic(() => import("./_components/MobileUnifi
 });
 
 import { Card } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
 import { PartnerBranding } from "./_components/PartnerBranding"
-import { SidebarWeatherWidget, DetailedWeather } from "./_components/WeatherWidget"
+import { SidebarWeatherWidget } from "./_components/WeatherWidget"
 import { ScrollManager } from "./_components/ScrollManager"
 import { BreadcrumbInjector } from "./_components/BreadcrumbInjector"
 
-import { 
-  Breadcrumb, 
-  BreadcrumbItem, 
-  BreadcrumbLink, 
-  BreadcrumbList, 
-  BreadcrumbPage, 
-  BreadcrumbSeparator 
-} from "@/components/ui/breadcrumb";
 
 import { serialize } from "@/lib/serialize"
 import { ShareButton } from "./_components/ShareButton"

@@ -6,11 +6,6 @@ import { Card } from "@/components/ui/card"
 import Link from "next/link"
 import { getClientDictionary } from "@/lib/client-dictionaries"
 
-
-/**
- * 🛡️ Aquastream Global Web Error Boundary
- * Catch-all for the entire (web) route group.
- */
 export default function GlobalWebError({
   error,
   reset,
@@ -19,13 +14,13 @@ export default function GlobalWebError({
   reset: () => void
 }) {
   
-  const [dict, setDict] = useState<any | null>(null)
+  const [dict, setDict] = useState<Record<string, unknown> | null>(null)
 
   useEffect(() => {
     console.error("Global Web Error:", error)
     let mounted = true
     getClientDictionary().then((d) => {
-      if (mounted) setTimeout(() => setDict(d), 0)
+      if (mounted) setTimeout(() => setDict(d as Record<string, unknown>), 0)
     })
     return () => { mounted = false }
   }, [error])

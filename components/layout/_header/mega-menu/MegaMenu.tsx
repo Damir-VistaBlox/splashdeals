@@ -36,8 +36,10 @@ interface DiscoveryMenuData {
   featured: FeaturedFacility | null
 }
 
+import type { Dict } from "@/lib/types"
+
 interface MegaMenuProps {
-  dict: any
+  dict: Dict
 }
 
 const POPULAR_CITY_SLUGS = [

@@ -5,11 +5,7 @@ import { JsonLd } from "@/components/SEO/JsonLd";
 
 import { connection } from "next/server";
 
-interface PageProps {
-  params: Promise<Record<string, never>>;
-}
-
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata(): Promise<Metadata> {
   
   const dict = await getDictionary();
 
@@ -29,7 +25,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-export default async function CartPage({ params }: PageProps) {
+export default async function CartPage() {
   await connection();
   
   const dict = await getDictionary();

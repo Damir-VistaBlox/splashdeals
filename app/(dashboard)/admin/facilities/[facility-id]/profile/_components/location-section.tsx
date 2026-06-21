@@ -17,7 +17,7 @@ import { Textarea } from "@/components/ui/textarea"
 import type { UpdateFacilityGovernanceValues } from "@/server/lib/validations/facility"
 
 export function LocationSection() {
-  const { control, getValues, formState: { dirtyFields } } = useFormContext<UpdateFacilityGovernanceValues>()
+  const { control, getValues } = useFormContext<UpdateFacilityGovernanceValues>()
 
   return (
     <Card className="p-5 border-border bg-muted/40 backdrop-blur-sm space-y-4">

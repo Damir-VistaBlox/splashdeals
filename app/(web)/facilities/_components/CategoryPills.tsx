@@ -65,7 +65,7 @@ export function CategoryPills({ categories, facilitiesLabel }: CategoryPillsProp
       aria-busy={isPending}
       aria-label="Filtriraj po kategoriji"
     >
-      {categories.map((cat, i) => {
+      {categories.map((cat) => {
         const isActive = activeCategory?.toLowerCase() === cat.category.toLowerCase();
         
         return (

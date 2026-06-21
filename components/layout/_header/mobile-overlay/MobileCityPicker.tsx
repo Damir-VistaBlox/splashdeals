@@ -12,9 +12,11 @@ interface City {
   slug: string;
 }
 
+import type { Dict } from "@/lib/types";
+
 interface MobileCityPickerProps {
   cities: City[];
-  dict: any;
+  dict: Dict;
   onCitySelect: () => void;
 }
 

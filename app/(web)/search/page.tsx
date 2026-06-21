@@ -6,11 +6,7 @@ import { Suspense } from "react";
 import { connection } from "next/server";
 import { getDictionary } from "@/lib/dictionaries";
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<Record<string, never>>;
-}): Promise<Metadata> {
+export async function generateMetadata(): Promise<Metadata> {
   const dict = await getDictionary();
   const title = dict.seo?.search?.title || "Pretraga Akva Parkova";
   const description = dict.seo?.search?.description || "Pronađite najbolje akva parkove, bazene i spa centre u Srbiji.";
@@ -37,11 +33,7 @@ export async function generateMetadata({
  * 🔍 Direct Search Page
  * Fallback for direct navigation or hard refreshes on /search.
  */
-export default async function SearchPage({
-  params,
-}: {
-  params: Promise<Record<string, never>>
-}) {
+export default async function SearchPage() {
   await connection();
   return (
     <div className="min-h-screen bg-background">

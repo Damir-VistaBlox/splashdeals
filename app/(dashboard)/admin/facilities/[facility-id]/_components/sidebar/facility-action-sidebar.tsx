@@ -2,7 +2,6 @@
 
 import { SocialLinksWidget } from "./social-links-widget"
 import { PublicContactWidget } from "./public-contact-widget"
-import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
 
 interface FacilityActionSidebarProps {

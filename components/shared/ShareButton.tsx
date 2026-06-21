@@ -1,13 +1,14 @@
 "use client";
 import { Icon } from "@/components/ui/Icon";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
 interface ShareButtonProps {
   title: string;
   text?: string;
+  url?: string;
 }
 
 export function ShareButton({ title, text }: ShareButtonProps) {

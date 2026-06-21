@@ -63,29 +63,6 @@ export function PostsListClient({
   const [sorting, setSorting] = useState<SortingState>([{ id: "createdAt", desc: true }])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
 
-  // Add checkbox column as first column
-  const checkboxColumn: ColumnDef<PostRow> = {
-    id: "select",
-    header: ({ table }) => (
-      <input
-        type="checkbox"
-        className="size-4 cursor-pointer"
-        checked={table.getIsAllRowsSelected()}
-        onChange={table.getToggleAllRowsSelectedHandler()}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <input
-        type="checkbox"
-        className="size-4 cursor-pointer"
-        checked={row.getIsSelected()}
-        onChange={row.getToggleSelectedHandler()}
-        aria-label={`Select ${row.original.title}`}
-      />
-    ),
-  }
-
   const handleDelete = useCallback(async (id: string) => {
     if (!confirm("Da li ste sigurni da želite da obrišete ovu objavu?")) return
     const result = await deleteBlogPostAction(id)

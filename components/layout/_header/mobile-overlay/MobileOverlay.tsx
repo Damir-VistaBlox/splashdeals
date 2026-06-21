@@ -14,10 +14,12 @@ interface City {
   slug: string;
 }
 
+import type { Dict } from "@/lib/types";
+
 interface MobileOverlayProps {
   isMobileMenuOpen: boolean;
   setIsMobileMenuOpen: (v: boolean) => void;
-  dict: any;
+  dict: Dict;
   cities: City[];
   isReducedMotion: boolean;
   isTabActive: boolean;

@@ -35,7 +35,7 @@ export async function POST(request: Request) {
     const facility = await prisma.facility.create({
       data: {
         ...validated,
-        cityId: (validated as any).cityId || validated.city,
+        cityId: validated.cityId || validated.city,
       }
     })
     

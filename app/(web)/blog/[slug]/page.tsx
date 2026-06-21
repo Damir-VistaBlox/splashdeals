@@ -3,6 +3,7 @@ import { notFound } from "next/navigation"
 import Link from "next/link"
 import { Icon } from "@/components/ui/Icon"
 import type { Metadata } from "next"
+import { connection } from "next/server"
 
 interface BlogPostPageProps {
   params: Promise<{ slug: string }>

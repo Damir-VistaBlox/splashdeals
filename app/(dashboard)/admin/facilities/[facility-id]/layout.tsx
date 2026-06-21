@@ -99,7 +99,7 @@ export default async function FacilityManagementLayout({
 
           <aside className="xl:col-span-3 sticky top-8 hidden xl:block">
             <Suspense fallback={<FacilityActionSidebarSkeleton />}>
-              <FacilityActionSidebar facility={facility as any} />
+              <FacilityActionSidebar facility={facility as { id: string; socialLinks?: Record<string, string | undefined>; publicPhone?: string | null; publicEmail?: string | null }} />
             </Suspense>
           </aside>
         </div>

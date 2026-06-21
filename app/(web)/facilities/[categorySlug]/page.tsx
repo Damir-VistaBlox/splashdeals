@@ -14,7 +14,6 @@ import {
 } from "@/components/ui/breadcrumb";
 import Link from "next/link";
 import { prisma } from "@/server/lib/prisma";
-import { notFound } from "next/navigation";
 import { JsonLd } from "@/components/SEO/JsonLd";
 
 // Re-export shared discovery functions from lib/routing

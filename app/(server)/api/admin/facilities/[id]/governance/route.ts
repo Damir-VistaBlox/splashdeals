@@ -4,10 +4,6 @@ import { authenticateRequest } from "@/server/lib/api-key-auth"
 import { requireSuperAdmin, validateFacilityAccess } from "@/server/lib/auth-guards"
 import { updateFacilityGovernanceSchema } from "@/server/lib/validations/facility"
 import { handleServerActionError } from "@/server/lib/server-action-error"
-
-/**
- * 🏢 Facility Governance API - Patch Profile
- */
 export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -43,7 +39,7 @@ export async function PATCH(
           postalCode: validated.postalCode,
           publicPhone: validated.publicPhone,
           publicEmail: validated.publicEmail,
-          socialLinks: validated.socialLinks as any,
+          socialLinks: validated.socialLinks,
           metaTitle: validated.metaTitle,
           metaDescription: validated.metaDescription,
           logoUrl: validated.logoUrl,

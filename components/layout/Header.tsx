@@ -5,16 +5,16 @@ import { useCart, initCartSync } from "@/hooks/use-cart";
 import { useUIState } from "@/hooks/use-ui-state";
 import { useBreadcrumb } from "@/hooks/use-breadcrumb";
 import { useHeaderScroll, DesktopTopNav, MobileOverlay } from "./_header";
+import type { Dict } from "@/lib/types";
 ;
 
 interface HeaderProps {
-  dict: any;
+  dict: Dict;
   cities: { id: string; name: string; slug: string }[];
 }
 
 export const Header = ({ dict, cities }: HeaderProps) => {
-  const { items: breadcrumbItems, backHref } = useBreadcrumb();
-  const hasBreadcrumbs = breadcrumbItems.length > 0;
+  const { items: breadcrumbItems } = useBreadcrumb();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const openCart = useUIState((state) => state.openCart);

@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import { prisma } from "@/server/lib/prisma";
 import { FacilityShowcaseTemplate, getFacilityMetadata } from "@/app/(web)/facilities/[categorySlug]/[facilitySlug]/page";
 import { DiscoveryTemplate, getDiscoveryMetadata } from "@/lib/routing/discovery";
