@@ -4,7 +4,6 @@ import { Icon } from "@/components/ui/Icon";
 import { useEffect, useState } from "react"
 import { Card } from "@/components/ui/card"
 import Link from "next/link"
-import { useParams } from "next/navigation"
 import { getClientDictionary } from "@/lib/client-dictionaries"
 
 
@@ -19,13 +18,16 @@ export default function GlobalWebError({
   error: Error & { digest?: string }
   reset: () => void
 }) {
-  const params = useParams()
   
   const [dict, setDict] = useState<any | null>(null)
 
   useEffect(() => {
     console.error("Global Web Error:", error)
-    getClientDictionary().then((d) => requestAnimationFrame(() => setDict(d)))
+    let mounted = true
+    getClientDictionary().then((d) => {
+      if (mounted) setDict(d)
+    })
+    return () => { mounted = false }
   }, [error])
 
   // Fallback while dictionary loads (matching the style)
@@ -70,7 +72,7 @@ export default function GlobalWebError({
              {dict.errors.try_again}
            </button>
            <Link 
-             href={``}
+             href="/"
              className="px-8 py-4 rounded-2xl bg-primary hover:bg-primary/90 text-background font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 shadow-2xl shadow-primary/10 transition-all"
            >
              <Icon name="home" className="text-[16px]" />
