@@ -36,6 +36,8 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
   const [showNewProd, setShowNewProd] = React.useState(false)
   const [editingCatId, setEditingCatId] = React.useState<string | null>(null)
   const [editCatTitle, setEditCatTitle] = React.useState("")
+  const [editingProductId, setEditingProductId] = React.useState<string | null>(null)
+  const [editProductTitle, setEditProductTitle] = React.useState("")
   const [draggedProductId, setDraggedProductId] = React.useState<string | null>(null)
 
   const selectedCategory = categories.find((c) => c.id === selectedCategoryId) ?? null
@@ -129,6 +131,32 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
   const handleCancelEditCategory = () => {
     setEditingCatId(null);
     setEditCatTitle("");
+  }
+
+  const handleStartEditProduct = (prod: { id: string; title: string }) => {
+    setEditingProductId(prod.id);
+    setEditProductTitle(prod.title);
+  }
+
+  const handleSaveProduct = async () => {
+    if (!editingProductId || !editProductTitle.trim()) return;
+    const { updateProduct } = await import("../_lib/ticket-admin-actions")
+    await updateProduct(editingProductId, { title: editProductTitle.trim() })
+    setCategories((prev) =>
+      prev.map((c) => ({
+        ...c,
+        products: c.products.map((p) =>
+          p.id === editingProductId ? { ...p, title: editProductTitle.trim() } : p
+        ),
+      }))
+    )
+    setEditingProductId(null);
+    setEditProductTitle("");
+  }
+
+  const handleCancelEditProduct = () => {
+    setEditingProductId(null);
+    setEditProductTitle("");
   }
 
   const handleMoveProduct = async (productId: string, fromCatId: string, toCatId: string) => {
@@ -324,13 +352,37 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
               onClick={() => { setSelectedProductId(prod.id); setMobileView("prices") }}
             >
               <div className="flex items-center justify-between mb-1">
-                <span className="text-sm font-bold text-foreground">{prod.title}</span>
-                <button
-                  onClick={(e) => { e.stopPropagation(); handleDeleteProduct(prod.id) }}
-                  className="w-5 h-5 rounded flex items-center justify-center text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all"
-                >
-                  <Icon name="close" className="text-[10px]" />
-                </button>
+                {editingProductId === prod.id ? (
+                  <input
+                    value={editProductTitle}
+                    onChange={(e) => setEditProductTitle(e.target.value)}
+                    onKeyDown={(e) => {
+                      e.stopPropagation();
+                      if (e.key === "Enter") handleSaveProduct();
+                      if (e.key === "Escape") handleCancelEditProduct();
+                    }}
+                    onBlur={handleSaveProduct}
+                    className="flex-1 h-7 px-1.5 rounded bg-background border border-primary/40 text-sm font-bold text-foreground outline-none"
+                    autoFocus
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                ) : (
+                  <span className="text-sm font-bold text-foreground">{prod.title}</span>
+                )}
+                <div className="flex items-center gap-0.5 shrink-0">
+                  <button
+                    onClick={(e) => { e.stopPropagation(); handleStartEditProduct(prod) }}
+                    className="w-5 h-5 rounded flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all"
+                  >
+                    <Icon name="edit" className="text-[10px]" />
+                  </button>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); handleDeleteProduct(prod.id) }}
+                    className="w-5 h-5 rounded flex items-center justify-center text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all"
+                  >
+                    <Icon name="close" className="text-[10px]" />
+                  </button>
+                </div>
               </div>
               <div className="flex flex-wrap gap-1">
                 {prod.requiresPhoto && (
