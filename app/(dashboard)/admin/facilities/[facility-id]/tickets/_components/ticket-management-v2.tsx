@@ -34,6 +34,8 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
   const [newProdTitle, setNewProdTitle] = React.useState("")
   const [showNewCat, setShowNewCat] = React.useState(false)
   const [showNewProd, setShowNewProd] = React.useState(false)
+  const [editingCatId, setEditingCatId] = React.useState<string | null>(null)
+  const [editCatTitle, setEditCatTitle] = React.useState("")
 
   const selectedCategory = categories.find((c) => c.id === selectedCategoryId) ?? null
   const selectedProduct = selectedCategory?.products.find((p) => p.id === selectedProductId) ?? null
@@ -107,6 +109,27 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
     }
   }
 
+  const handleStartEditCategory = (cat: SerializedCategory) => {
+    setEditingCatId(cat.id);
+    setEditCatTitle(cat.title);
+  }
+
+  const handleSaveCategory = async () => {
+    if (!editingCatId || !editCatTitle.trim()) return;
+    const { updateCategory } = await import("../_lib/ticket-admin-actions")
+    await updateCategory(editingCatId, { title: editCatTitle.trim() })
+    setCategories((prev) =>
+      prev.map((c) => (c.id === editingCatId ? { ...c, title: editCatTitle.trim() } : c))
+    )
+    setEditingCatId(null);
+    setEditCatTitle("");
+  }
+
+  const handleCancelEditCategory = () => {
+    setEditingCatId(null);
+    setEditCatTitle("");
+  }
+
   const handleDeleteProduct = async (id: string) => {
     const { deleteProduct } = await import("../_lib/ticket-admin-actions")
     await deleteProduct(id)
@@ -176,13 +199,37 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
                   : "text-muted-foreground hover:text-foreground hover:bg-muted/20 border border-transparent"
               )}
             >
-              <span>📁 {cat.title}</span>
-              <button
-                onClick={(e) => { e.stopPropagation(); handleDeleteCategory(cat.id) }}
-                className="opacity-0 group-hover:opacity-100 w-5 h-5 rounded flex items-center justify-center text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all"
-              >
-                <Icon name="close" className="text-[10px]" />
-              </button>
+              {editingCatId === cat.id ? (
+                <input
+                  value={editCatTitle}
+                  onChange={(e) => setEditCatTitle(e.target.value)}
+                  onKeyDown={(e) => {
+                    e.stopPropagation();
+                    if (e.key === "Enter") handleSaveCategory();
+                    if (e.key === "Escape") handleCancelEditCategory();
+                  }}
+                  onBlur={handleSaveCategory}
+                  className="flex-1 h-6 px-1.5 rounded bg-background border border-primary/40 text-xs font-bold text-foreground outline-none"
+                  autoFocus
+                  onClick={(e) => e.stopPropagation()}
+                />
+              ) : (
+                <span className="flex-1 text-left">📁 {cat.title}</span>
+              )}
+              <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-all">
+                <button
+                  onClick={(e) => { e.stopPropagation(); handleStartEditCategory(cat) }}
+                  className="w-5 h-5 rounded flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all"
+                >
+                  <Icon name="edit" className="text-[10px]" />
+                </button>
+                <button
+                  onClick={(e) => { e.stopPropagation(); handleDeleteCategory(cat.id) }}
+                  className="w-5 h-5 rounded flex items-center justify-center text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all"
+                >
+                  <Icon name="close" className="text-[10px]" />
+                </button>
+              </div>
             </button>
           ))}
         </div>
