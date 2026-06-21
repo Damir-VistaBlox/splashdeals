@@ -275,7 +275,7 @@ export function MobileUnifiedControlPill({
           aria-label={distance !== null ? `Udaljenost ${distance.toFixed(0)} km. Dodirni za otvaranje mape.` : "Prikaži rutu na mapi"}
         >
           <Icon
-            name="navigation"
+            name="location_on"
             className="text-[22px] text-muted-foreground group-hover:text-primary transition-colors shrink-0"
           />
           {distance !== null ? (
