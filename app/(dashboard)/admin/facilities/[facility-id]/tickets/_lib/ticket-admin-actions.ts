@@ -30,6 +30,7 @@ export interface SerializedProduct {
   validityType: string
   displayOrder: number
   isActive: boolean
+  imageUrl: string | null
   prices: SerializedPrice[]
 }
 
@@ -86,6 +87,7 @@ export async function getTicketHierarchy(facilityId: string): Promise<Serialized
       validityType: prod.validityType,
       displayOrder: prod.displayOrder,
       isActive: prod.isActive,
+      imageUrl: prod.imageUrl,
       prices: prod.prices.map((p) => ({
         id: p.id,
         ticketProductId: p.ticketTypeId,
@@ -190,6 +192,7 @@ export async function updateProduct(
     maxPeople?: number | null
     isActive?: boolean
     categoryId?: string
+    imageUrl?: string | null
   }
 ) {
   await prisma.ticketProduct.update({ where: { id }, data })

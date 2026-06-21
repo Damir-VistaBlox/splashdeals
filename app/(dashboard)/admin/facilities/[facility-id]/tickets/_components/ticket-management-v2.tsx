@@ -90,6 +90,7 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
                   validityType: prod.validityType,
                   displayOrder: prod.displayOrder,
                   isActive: prod.isActive,
+                  imageUrl: prod.imageUrl ?? null,
                   prices: [],
                 },
               ],
@@ -384,6 +385,15 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
                   </button>
                 </div>
               </div>
+              {prod.imageUrl && (
+                <div className="mb-2 -mx-1">
+                  <img
+                    src={prod.imageUrl}
+                    alt={prod.title}
+                    className="w-full h-24 object-cover rounded-lg border border-border/50"
+                  />
+                </div>
+              )}
               <div className="flex flex-wrap gap-1">
                 {prod.requiresPhoto && (
                   <span className="text-[8px] font-bold px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400">📸</span>
@@ -429,6 +439,23 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
             </button>
           )}
         </div>
+        {selectedProduct && (
+          <ProductImageSection
+            productId={selectedProduct.id}
+            imageUrl={selectedProduct.imageUrl}
+            productTitle={selectedProduct.title}
+            onImageChange={(url: string | null) => {
+              setCategories((prev) =>
+                prev.map((c) => ({
+                  ...c,
+                  products: c.products.map((p) =>
+                    p.id === selectedProduct.id ? { ...p, imageUrl: url } : p
+                  ),
+                }))
+              )
+            }}
+          />
+        )}
         <div className="flex-1 overflow-y-auto p-4">
           {!selectedProduct && (
             <p className="text-sm text-muted-foreground p-8 text-center">Izaberite kategoriju i tip da biste videli cene</p>
@@ -487,6 +514,136 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
           />
         ))}
       </div>
+    </div>
+  )
+}
+
+// ─── Product Image Section ──────────────────────────
+function ProductImageSection({
+  productId,
+  imageUrl,
+  productTitle,
+  onImageChange,
+}: {
+  productId: string
+  imageUrl: string | null
+  productTitle: string
+  onImageChange: (url: string | null) => void
+}) {
+  const [uploading, setUploading] = React.useState(false)
+  const [renaming, setRenaming] = React.useState(false)
+  const [newName, setNewName] = React.useState("")
+  const fileRef = React.useRef<HTMLInputElement>(null)
+
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setUploading(true)
+    try {
+      const formData = new FormData()
+      formData.append("file", file)
+      const { uploadProductImage } = await import("../_lib/ticket-image-actions")
+      const result = await uploadProductImage(productId, formData)
+      if (result.success && result.url) {
+        onImageChange(result.url)
+      }
+    } finally {
+      setUploading(false)
+      if (fileRef.current) fileRef.current.value = ""
+    }
+  }
+
+  const handleDelete = async () => {
+    if (!imageUrl) return
+    const { deleteProductImage } = await import("../_lib/ticket-image-actions")
+    const result = await deleteProductImage(productId, imageUrl)
+    if (result.success) onImageChange(null)
+  }
+
+  const handleRename = async () => {
+    if (!imageUrl || !newName.trim()) return
+    setRenaming(true)
+    try {
+      const { renameProductImage } = await import("../_lib/ticket-image-actions")
+      const result = await renameProductImage(productId, imageUrl, newName.trim())
+      if (result.success && result.url) {
+        onImageChange(result.url)
+        setNewName("")
+      }
+    } finally {
+      setRenaming(false)
+    }
+  }
+
+  return (
+    <div className="border-b border-border/50 p-3 space-y-2">
+      <input
+        ref={fileRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={handleUpload}
+      />
+      <div className="flex items-center justify-between">
+        <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">
+          Slika
+        </span>
+        {!imageUrl && (
+          <button
+            onClick={() => fileRef.current?.click()}
+            disabled={uploading}
+            className="h-7 px-3 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 flex items-center gap-1 text-[10px] font-bold transition-all disabled:opacity-50"
+          >
+            <Icon name="add_photo" className="text-[12px]" />
+            {uploading ? "Otpremanje..." : "Dodaj sliku"}
+          </button>
+        )}
+      </div>
+      {imageUrl ? (
+        <div>
+          <div className="relative group rounded-lg overflow-hidden border border-border/50 mb-2">
+            <img
+              src={imageUrl}
+              alt={productTitle}
+              className="w-full h-32 object-cover"
+            />
+            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100">
+              <button
+                onClick={() => fileRef.current?.click()}
+                disabled={uploading}
+                className="w-8 h-8 rounded-full bg-white/90 flex items-center justify-center text-foreground hover:bg-white transition-all"
+              >
+                <Icon name="refresh" className="text-[14px]" />
+              </button>
+              <button
+                onClick={handleDelete}
+                className="w-8 h-8 rounded-full bg-white/90 flex items-center justify-center text-destructive hover:bg-white transition-all"
+              >
+                <Icon name="delete" className="text-[14px]" />
+              </button>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <input
+              value={newName}
+              onChange={(e) => setNewName(e.target.value)}
+              placeholder="Novi naziv fajla..."
+              className="flex-1 h-8 px-2 rounded-lg bg-muted/30 border border-border text-xs text-foreground outline-none focus:border-primary/40"
+              onKeyDown={(e) => e.key === "Enter" && handleRename()}
+            />
+            <Button
+              size="sm"
+              className="h-8 text-[10px] px-2 shrink-0"
+              onClick={handleRename}
+              disabled={renaming || !newName.trim()}
+            >
+              {renaming ? "..." : "Preimenuj"}
+            </Button>
+          </div>
+        </div>
+      ) : uploading ? (
+        <p className="text-xs text-muted-foreground">Otpremanje slike...</p>
+      ) : null}
     </div>
   )
 }

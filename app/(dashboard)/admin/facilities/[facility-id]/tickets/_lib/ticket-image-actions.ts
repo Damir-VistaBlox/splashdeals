@@ -1,35 +1,103 @@
 "use server"
 
-export async function uploadTicketImageAction(formData: FormData) {
-  const facilityId = formData.get("facilityId") as string;
-  const file = formData.get("file") as File;
-  if (!file || !facilityId) return { success: false, error: "Missing file or facilityId" };
+import sharp from "sharp"
+import { prisma } from "@/server/lib/prisma"
+
+const MAX_FILE_SIZE = 25 * 1024 * 1024 // 25MB
+const ALLOWED_TYPES = [
+  "image/jpeg", "image/png", "image/gif", "image/webp",
+  "image/avif", "image/tiff", "image/bmp", "image/svg+xml",
+  "image/heic", "image/heif",
+]
+
+export async function uploadProductImage(productId: string, formData: FormData) {
+  const file = formData.get("file") as File | null
+  if (!file) return { success: false, error: "Missing file" }
+
+  if (file.size > MAX_FILE_SIZE) {
+    return { success: false, error: "Fajl je prevelik. Maksimalna veličina je 25MB." }
+  }
+
+  if (!ALLOWED_TYPES.includes(file.type)) {
+    return { success: false, error: "Nepodržan format fajla. Prihvatamo sve slikovne formate." }
+  }
 
   try {
-    const { put } = await import("@vercel/blob");
-    const blob = await put(`tickets/${facilityId}/${file.name}`, file, {
+    // Convert to WebP via sharp
+    const buffer = Buffer.from(await file.arrayBuffer())
+    const webpBuffer = await sharp(buffer).webp({ quality: 85 }).toBuffer()
+
+    const { put } = await import("@vercel/blob")
+    const fileName = `tickets/products/${productId}/${Date.now()}.webp`
+    const blob = await put(fileName, webpBuffer, {
       access: "public",
-      addRandomSuffix: true,
-    });
-    return { success: true, url: blob.url };
+      contentType: "image/webp",
+      addRandomSuffix: false,
+    })
+
+    // Delete old image if exists
+    const product = await prisma.ticketProduct.findUnique({
+      where: { id: productId },
+      select: { imageUrl: true },
+    })
+    if (product?.imageUrl) {
+      const { del } = await import("@vercel/blob")
+      await del(product.imageUrl).catch(() => {})
+    }
+
+    // Update product with new imageUrl
+    await prisma.ticketProduct.update({
+      where: { id: productId },
+      data: { imageUrl: blob.url },
+    })
+
+    return { success: true, url: blob.url }
   } catch (e) {
-    return { success: false, error: e instanceof Error ? e.message : "Upload failed" };
+    return { success: false, error: e instanceof Error ? e.message : "Upload failed" }
   }
 }
 
-export async function renameTicketImageAction(facilityId: string, oldUrl: string, newName: string) {
+export async function deleteProductImage(productId: string, imageUrl: string) {
   try {
-    const { put, del } = await import("@vercel/blob");
-    const response = await fetch(oldUrl);
-    const blob = await response.blob();
-    const file = new File([blob], `${newName}.webp`, { type: "image/webp" });
-    const newBlob = await put(`tickets/${facilityId}/${newName}.webp`, file, {
-      access: "public",
-      addRandomSuffix: false,
-    });
-    await del(oldUrl).catch(() => {});
-    return { success: true, url: newBlob.url };
+    const { del } = await import("@vercel/blob")
+    await del(imageUrl).catch(() => {})
+    await prisma.ticketProduct.update({
+      where: { id: productId },
+      data: { imageUrl: null },
+    })
+    return { success: true }
   } catch (e) {
-    return { success: false, error: e instanceof Error ? e.message : "Rename failed" };
+    return { success: false, error: e instanceof Error ? e.message : "Delete failed" }
+  }
+}
+
+export async function renameProductImage(productId: string, oldUrl: string, newName: string) {
+  try {
+    // Fetch the existing WebP
+    const response = await fetch(oldUrl)
+    if (!response.ok) return { success: false, error: "Failed to fetch existing image" }
+    const buffer = Buffer.from(await response.arrayBuffer())
+
+    // Upload with new name (no suffix)
+    const { put, del } = await import("@vercel/blob")
+    const newFileName = `tickets/products/${productId}/${newName.replace(/[^a-zA-Z0-9_-]/g, "_")}.webp`
+    const newBlob = await put(newFileName, buffer, {
+      access: "public",
+      contentType: "image/webp",
+      addRandomSuffix: false,
+    })
+
+    // Delete old
+    await del(oldUrl).catch(() => {})
+
+    // Update product
+    await prisma.ticketProduct.update({
+      where: { id: productId },
+      data: { imageUrl: newBlob.url },
+    })
+
+    return { success: true, url: newBlob.url }
+  } catch (e) {
+    return { success: false, error: e instanceof Error ? e.message : "Rename failed" }
   }
 }
