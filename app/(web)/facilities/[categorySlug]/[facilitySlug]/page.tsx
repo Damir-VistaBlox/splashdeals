@@ -330,14 +330,25 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
 
   // Fetch weather data for the unified mobile pill
   let weather = null;
+  let dailyForecast = null;
   if (facility.lat && facility.lng) {
     try {
-      const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${facility.lat}&longitude=${facility.lng}&current_weather=true`, { 
-        next: { revalidate: 3600 } 
-      });
+      const res = await fetch(
+        `https://api.open-meteo.com/v1/forecast?latitude=${facility.lat}&longitude=${facility.lng}&current_weather=true&daily=temperature_2m_max,temperature_2m_min,weathercode&timezone=auto`,
+        { next: { revalidate: 3600 } }
+      );
       const data = await res.json();
       weather = data.current_weather;
-    } catch { 
+      if (data.daily) {
+        const dayNames = ["Ned", "Pon", "Uto", "Sre", "Čet", "Pet", "Sub"];
+        dailyForecast = data.daily.time.map((dateStr: string, i: number) => ({
+          day: dayNames[new Date(dateStr).getDay()],
+          weathercode: data.daily.weathercode[i],
+          tempHigh: Math.round(data.daily.temperature_2m_max[i]),
+          tempLow: Math.round(data.daily.temperature_2m_min[i]),
+        }));
+      }
+    } catch {
       weather = null;
     }
   }
@@ -699,6 +710,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
                 <div className="block md:hidden w-full pt-2">
                    <MobileUnifiedControlPill 
                       weather={weather}
+                      dailyForecast={dailyForecast}
                       hours={facility.hours}
                       destLat={Number(facility.lat)}
                       destLng={Number(facility.lng)}
