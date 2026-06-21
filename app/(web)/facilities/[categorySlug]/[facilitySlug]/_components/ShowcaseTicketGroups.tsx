@@ -456,31 +456,31 @@ function TierList({ tiers, quantities, setQuantity, onAdd, prefix, main }: {
   return (
     <div className="space-y-4">
       {tiers.map((tier: TicketTier) => (
-        <div key={tier.id} id={`ticket-${tier.id}`} className="flex flex-col md:flex-row md:items-center justify-between gap-6 p-6 rounded-3xl bg-muted/20 border border-border hover:bg-muted/50 transition-all group">
+        <div key={tier.id} id={`ticket-${tier.id}`} className="flex flex-col md:flex-row md:items-center justify-between gap-3 p-3 rounded-2xl bg-muted/20 border border-border hover:bg-muted/50 transition-all group">
           
           {/* Ticket Information */}
-          <div className="flex-1 flex items-start gap-4 w-full">
+          <div className="flex-1 flex items-start gap-2 w-full">
             {tier.imageUrl && (
-              <div className="relative w-20 h-20 shrink-0 rounded-xl overflow-hidden border border-border/50">
+              <div className="relative w-14 h-14 shrink-0 rounded-xl overflow-hidden border border-border/50">
                 <Image
                   src={tier.imageUrl}
                   alt={tier.labelSr || tier.label}
                   fill
                   className="object-cover"
-                  sizes="80px"
+                  sizes="56px"
                 />
               </div>
             )}
-            <div className="space-y-2 text-center md:text-left w-full">
-            <div className="flex items-center justify-center md:justify-start gap-3 flex-wrap">
-              <h4 className="text-base md:text-lg font-black text-foreground uppercase italic tracking-tight">{tier.labelSr || tier.label}</h4>
+            <div className="flex-1 space-y-1 text-center md:text-left w-full">
+            <div className="flex items-center justify-center md:justify-start gap-1.5 flex-wrap">
+              <h4 className="text-sm md:text-base font-black text-foreground uppercase italic tracking-tight">{tier.labelSr || tier.label}</h4>
               {tier.dayType && tier.dayType !== 'ALL' && (
                 <Badge className="bg-slate-500/10 text-muted-foreground text-[9px] font-black uppercase tracking-tighter border-slate-500/20">
                   {tier.dayType === 'WEEKDAY' ? 'Radni dan' : 'Vikend'}
                 </Badge>
               )}
             </div>
-            <div className="flex flex-wrap justify-center md:justify-start gap-4 text-xs font-bold text-muted-foreground">
+            <div className="flex flex-wrap justify-center md:justify-start gap-2 text-[10px] font-bold text-muted-foreground">
               {tier.timeSlot && tier.timeSlot !== 'FULL_DAY' && (
                 <span className="flex items-center gap-1.5">
                   <Icon name="schedule" className="text-[14px] text-primary" />
@@ -504,7 +504,7 @@ function TierList({ tiers, quantities, setQuantity, onAdd, prefix, main }: {
           </div>
 
           {/* Pricing & Actions Section */}
-          <div className="w-full md:w-auto flex flex-col md:flex-row items-center gap-6">
+          <div className="w-full md:w-auto flex flex-col md:flex-row items-center gap-3">
             
             {/* Desktop Pricing (Concept A) */}
             <div className="hidden md:flex items-center gap-6">
@@ -531,14 +531,14 @@ function TierList({ tiers, quantities, setQuantity, onAdd, prefix, main }: {
                   {/* Online Price */}
                   <div className="flex flex-col items-end">
                     <span className="text-[8px] font-black uppercase tracking-wider text-primary leading-none mb-1 animate-pulse">Kupi online</span>
-                    <div className="text-2xl font-black text-foreground leading-none">
+                    <div className="text-xl font-black text-foreground leading-none">
                       {tier.price} <span className="text-[10px] text-primary font-black uppercase">RSD</span>
                     </div>
                   </div>
                 </div>
               ) : (
                 <div className="text-right">
-                  <div className="text-2xl font-black text-foreground leading-none">{tier.price} <span className="text-[10px] text-muted-foreground">RSD</span></div>
+                  <div className="text-xl font-black text-foreground leading-none">{tier.price} <span className="text-[10px]">RSD</span></div>
                 </div>
               )}
             </div>
@@ -567,24 +567,24 @@ function TierList({ tiers, quantities, setQuantity, onAdd, prefix, main }: {
                 </>
               ) : (
                 <div className="text-center w-full">
-                  <div className="text-2xl font-black text-foreground leading-none">{tier.price} <span className="text-[10px] text-muted-foreground uppercase">RSD</span></div>
+                  <div className="text-xl font-black text-foreground leading-none">{tier.price} <span className="text-[10px]">RSD</span></div>
                 </div>
               )}
             </div>
 
             {/* Mobile/Desktop Quantity and CTA controls */}
-            <div className="flex items-center justify-between md:justify-end gap-4 w-full md:w-auto">
-              <div className="flex items-center bg-black/20 rounded-xl p-1 border border-border shrink-0">
-                <button onClick={() => setQuantity(tier.id, Math.max(1, (quantities[tier.id] || 1) - 1))} className="w-8 h-8 flex items-center justify-center hover:bg-muted/50 rounded-lg transition-colors text-muted-foreground">
+            <div className="flex items-center justify-between md:justify-end gap-2 w-full md:w-auto">
+              <div className="flex items-center bg-black/20 rounded-lg p-0.5 border border-border shrink-0">
+                <button onClick={() => setQuantity(tier.id, Math.max(1, (quantities[tier.id] || 1) - 1))} className="w-6 h-6 flex items-center justify-center hover:bg-muted/50 rounded-lg transition-colors text-muted-foreground">
                   <Icon name="remove" className="text-[14px]" />
                 </button>
-                <span className="w-8 text-center font-black text-foreground text-base">{quantities[tier.id] || 1}</span>
-                <button onClick={() => setQuantity(tier.id, (quantities[tier.id] || 1) + 1)} className="w-8 h-8 flex items-center justify-center hover:bg-muted/50 rounded-lg transition-colors text-muted-foreground">
+                <span className="w-6 text-center font-black text-foreground text-sm">{quantities[tier.id] || 1}</span>
+                <button onClick={() => setQuantity(tier.id, (quantities[tier.id] || 1) + 1)} className="w-6 h-6 flex items-center justify-center hover:bg-muted/50 rounded-lg transition-colors text-muted-foreground">
                   <Icon name="add" className="text-[14px]" />
                 </button>
               </div>
 
-              <Button onClick={() => onAdd(tier)} className="h-11 px-6 text-[10px] font-black uppercase tracking-widest flex-1 md:flex-initial min-w-[140px] md:min-w-[120px] bg-primary text-black hover:bg-primary/90 rounded-full">
+              <Button onClick={() => onAdd(tier)} className="h-9 px-4 text-[9px] font-black uppercase tracking-widest flex-1 md:flex-initial min-w-[100px] md:min-w-[90px] bg-primary text-black hover:bg-primary/90 rounded-full">
                 Dodaj
               </Button>
             </div>
@@ -758,7 +758,7 @@ function MobileTicketCard({ tier, quantity, setQuantity, onAdd, isHighlighted, p
 
       {/* Title & Info */}
       <div className="space-y-2">
-        <h4 className="text-base md:text-lg font-black text-foreground uppercase italic tracking-tight leading-tight">
+        <h4 className="text-sm md:text-base font-black text-foreground uppercase italic tracking-tight leading-tight">
           {tier.labelSr || tier.label}
         </h4>
         
@@ -830,7 +830,7 @@ function MobileTicketCard({ tier, quantity, setQuantity, onAdd, isHighlighted, p
           >
             <Icon name="remove" className="text-[16px]" />
           </button>
-          <span className="w-8 text-center font-black text-foreground text-base">{quantity}</span>
+          <span className="w-6 text-center font-black text-foreground text-sm">{quantity}</span>
           <button 
             onClick={() => setQuantity(tier.id, quantity + 1)} 
             className="w-10 h-10 flex items-center justify-center hover:bg-muted/50 rounded-xl transition-colors text-muted-foreground"
