@@ -24,7 +24,10 @@ export default async function TicketsPageV2({
   })
   if (!facility) return notFound()
 
-  const hierarchy = await getTicketHierarchy(facilityId)
+  const hierarchy = await getTicketHierarchy(facilityId).catch((e) => {
+    console.error("getTicketHierarchy failed:", e instanceof Error ? e.message : e);
+    throw e;
+  })
 
   return (
     <div className="flex flex-col h-full">

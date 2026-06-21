@@ -141,7 +141,7 @@ export default async function FacilityOverviewPage({ params }: OverviewPageProps
           <div className="rounded-2xl border border-border/50 bg-muted/20 overflow-hidden">
             {recentTickets.length > 0 ? (
               <div className="divide-y divide-border/50">
-                {recentTickets.map((ticket) => (
+                {recentTickets.map((ticket: { id: string; ticketType?: { title?: string } | null; price: { toString: () => string }; updatedAt: string | Date }) => (
                   <div key={ticket.id} className="flex items-center justify-between p-4 hover:bg-muted/10 transition-colors">
                     <div className="flex flex-col gap-1">
                       <span className="text-sm font-bold text-foreground/90">{ticket.ticketType?.title || "Ulaznica"}</span>
