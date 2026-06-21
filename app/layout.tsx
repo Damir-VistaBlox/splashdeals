@@ -13,6 +13,9 @@ const geistSans = Geist({
 
 export const viewport: Viewport = {
   themeColor: "#06b6d4",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export async function generateMetadata(): Promise<Metadata> {
