@@ -318,21 +318,35 @@ function SingleTierCard({ group, tier, quantity, setQuantity, onAdd, prefix, mai
             </Badge>
           )}
         </div>
-        <h3 className="text-xl md:text-3xl font-black text-foreground italic tracking-tighter uppercase leading-none group-hover:text-primary transition-colors">
-          {group.titleSr || group.title}
-        </h3>
-        <p className="text-muted-foreground font-medium max-w-md italic">
-          {group.descriptionSr || group.description || "Digitalna ulaznica za premium pristup sadržajima parka."}
-        </p>
         {tier.imageUrl && (
-          <div className="relative w-full aspect-[16/9] rounded-xl overflow-hidden border border-border/50">
-            <Image
-              src={tier.imageUrl}
-              alt={tier.titleSr || tier.title}
-              fill
-              className="object-cover"
-              sizes="(max-width: 768px) 100vw, 400px"
-            />
+          <div className="flex items-start gap-4">
+            <div className="relative w-24 h-24 shrink-0 rounded-xl overflow-hidden border border-border/50">
+              <Image
+                src={tier.imageUrl}
+                alt={tier.titleSr || tier.title}
+                fill
+                className="object-cover"
+                sizes="96px"
+              />
+            </div>
+            <div className="space-y-2">
+              <h3 className="text-xl md:text-3xl font-black text-foreground italic tracking-tighter uppercase leading-none group-hover:text-primary transition-colors">
+                {group.titleSr || group.title}
+              </h3>
+              <p className="text-muted-foreground font-medium max-w-md italic">
+                {group.descriptionSr || group.description || "Digitalna ulaznica za premium pristup sadržajima parka."}
+              </p>
+            </div>
+          </div>
+        )}
+        {!tier.imageUrl && (
+          <div className="space-y-2">
+            <h3 className="text-xl md:text-3xl font-black text-foreground italic tracking-tighter uppercase leading-none group-hover:text-primary transition-colors">
+              {group.titleSr || group.title}
+            </h3>
+            <p className="text-muted-foreground font-medium max-w-md italic">
+              {group.descriptionSr || group.description || "Digitalna ulaznica za premium pristup sadržajima parka."}
+            </p>
           </div>
         )}
       </div>
