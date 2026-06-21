@@ -56,7 +56,7 @@ export default async function FacilityOverviewPage({ params }: OverviewPageProps
   const stats = [
     { 
       label: "Total Tickets",
-      value: await prisma.ticketPrice.count({ where: { ticketType: { category: { facilityId } } } }),
+      value: ticketCount,
       icon: "confirmation_number",
       color: "text-primary",
       href: `/admin/facilities/${facilityId}/tickets`

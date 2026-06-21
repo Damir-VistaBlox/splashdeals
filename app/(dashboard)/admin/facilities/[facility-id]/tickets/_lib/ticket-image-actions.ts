@@ -1,7 +1,5 @@
 "use server"
 
-import { revalidatePath } from "next/cache"
-
 export async function uploadTicketImageAction(formData: FormData) {
   const facilityId = formData.get("facilityId") as string;
   const file = formData.get("file") as File;
