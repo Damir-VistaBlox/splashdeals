@@ -36,6 +36,7 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
   const [showNewProd, setShowNewProd] = React.useState(false)
   const [editingCatId, setEditingCatId] = React.useState<string | null>(null)
   const [editCatTitle, setEditCatTitle] = React.useState("")
+  const [draggedProductId, setDraggedProductId] = React.useState<string | null>(null)
 
   const selectedCategory = categories.find((c) => c.id === selectedCategoryId) ?? null
   const selectedProduct = selectedCategory?.products.find((p) => p.id === selectedProductId) ?? null
@@ -130,6 +131,23 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
     setEditCatTitle("");
   }
 
+  const handleMoveProduct = async (productId: string, fromCatId: string, toCatId: string) => {
+    if (fromCatId === toCatId) return;
+    const { updateProduct } = await import("../_lib/ticket-admin-actions")
+    await updateProduct(productId, { categoryId: toCatId })
+    setCategories((prev) =>
+      prev.map((c) => {
+        if (c.id === fromCatId) return { ...c, products: c.products.filter((p) => p.id !== productId) }
+        if (c.id === toCatId) {
+          const product = prev.find((x) => x.id === fromCatId)?.products.find((p) => p.id === productId)
+          if (!product) return c
+          return { ...c, products: [...c.products, { ...product, categoryId: toCatId }] }
+        }
+        return c
+      })
+    )
+  }
+
   const handleDeleteProduct = async (id: string) => {
     const { deleteProduct } = await import("../_lib/ticket-admin-actions")
     await deleteProduct(id)
@@ -192,6 +210,18 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
             <button
               key={cat.id}
               onClick={() => { setSelectedCategoryId(cat.id); setMobileView("prods") }}
+              onDragOver={(e) => { e.preventDefault(); e.currentTarget.style.borderColor = "hsl(var(--primary))" }}
+              onDragLeave={(e) => { e.currentTarget.style.borderColor = "" }}
+              onDrop={(e) => {
+                e.preventDefault();
+                e.currentTarget.style.borderColor = "";
+                const prodId = e.dataTransfer.getData("text/product-id");
+                if (prodId) {
+                  const fromCat = categories.find((c) => c.products.some((p) => p.id === prodId));
+                  if (fromCat) handleMoveProduct(prodId, fromCat.id, cat.id);
+                }
+                setDraggedProductId(null);
+              }}
               className={cn(
                 "w-full text-left px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-between group",
                 selectedCategoryId === cat.id
@@ -278,8 +308,15 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
           {selectedCategory?.products.map((prod) => (
             <div
               key={prod.id}
+              draggable
+              onDragStart={(e) => {
+                setDraggedProductId(prod.id);
+                e.dataTransfer.setData("text/product-id", prod.id);
+                e.dataTransfer.effectAllowed = "move";
+              }}
+              onDragEnd={() => setDraggedProductId(null)}
               className={cn(
-                "rounded-xl border p-3 transition-all cursor-pointer",
+                "rounded-xl border p-3 transition-all cursor-grab active:cursor-grabbing",
                 selectedProductId === prod.id
                   ? "bg-primary/5 border-primary/30"
                   : "bg-muted/5 border-border hover:border-primary/20"

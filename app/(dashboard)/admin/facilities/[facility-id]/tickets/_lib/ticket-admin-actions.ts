@@ -189,6 +189,7 @@ export async function updateProduct(
     minPeople?: number
     maxPeople?: number | null
     isActive?: boolean
+    categoryId?: string
   }
 ) {
   await prisma.ticketProduct.update({ where: { id }, data })
