@@ -43,14 +43,11 @@ export async function GET(
   const result = categories.map((cat) => ({
     id: cat.id,
     title: cat.title,
-    titleSr: cat.titleSr,
     slug: cat.slug,
     products: cat.types.map((prod) => ({
       id: prod.id,
       title: prod.title,
-      titleSr: prod.titleSr,
       label: prod.label,
-      labelSr: prod.labelSr,
       requiresIdentity: prod.requiresIdentity,
       requiresPhoto: prod.requiresPhoto,
       minPeople: prod.minPeople,
@@ -61,7 +58,6 @@ export async function GET(
       prices: prod.prices.map((p) => ({
         id: p.id,
         label: p.label,
-        labelSr: p.labelSr,
         price: Number(p.price),
         originalPrice: p.originalPrice ? Number(p.originalPrice) : null,
         dayType: p.dayType,

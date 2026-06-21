@@ -18,7 +18,6 @@ interface TicketPurchaseModalProps {
   ticket?: {
     id: string;
     title: string;
-    titleSr: string | null;
     price: number;
     originalPrice: number | null;
     dayType: string | null;
@@ -30,9 +29,7 @@ interface TicketPurchaseModalProps {
     requiresPhoto: boolean;
     slug: string | null;
     description: string | null;
-    descriptionSr: string | null;
     label: string;
-    labelSr: string | null;
     imageUrl?: string | null;
   } | null;
   facility: {
@@ -48,7 +45,6 @@ interface TicketPurchaseModalProps {
 interface PriceOption {
   id: string;
   label: string | null;
-  labelSr: string | null;
   price: number;
   originalPrice: number | null;
   dayType: string | null;
@@ -60,9 +56,7 @@ interface PriceOption {
 interface ProductOption {
   id: string;
   title: string;
-  titleSr: string | null;
   label: string | null;
-  labelSr: string | null;
   requiresIdentity: boolean;
   requiresPhoto: boolean;
   minPeople: number;
@@ -76,7 +70,6 @@ interface ProductOption {
 interface CategoryOption {
   id: string;
   title: string;
-  titleSr: string | null;
   slug: string | null;
   products: ProductOption[];
 }

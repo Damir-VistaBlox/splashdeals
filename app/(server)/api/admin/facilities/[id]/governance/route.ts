@@ -32,7 +32,6 @@ export async function PATCH(
           name: validated.name,
           slug: validated.slug,
           description: validated.description,
-          descriptionSr: validated.descriptionSr,
           city: validated.city,
           streetName: validated.streetName,
           streetNumber: validated.streetNumber,

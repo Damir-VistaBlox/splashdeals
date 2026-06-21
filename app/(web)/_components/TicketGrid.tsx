@@ -39,7 +39,6 @@ async function getTickets() {
     return {
       id: ticketPrice.id,
       title: ticketType?.title || "Ulaznica",
-      titleSr: ticketType?.titleSr || null,
       type: null,
       price: Number(ticketPrice.price),
       originalPrice: ticketPrice.originalPrice ? Number(ticketPrice.originalPrice) : null,
@@ -49,7 +48,6 @@ async function getTickets() {
       isFeatured: false,
       displayOrder: ticketPrice.displayOrder,
       description: null,
-      descriptionSr: null,
       slug: null,
       imageUrl: null,
       finePrint: null,
@@ -153,10 +151,10 @@ export async function TicketGrid({ dict }: { dict: Record<string, any>; }) {
                   tabIndex={-1}
                 />
                 <h3 className="text-xl font-black leading-tight uppercase tracking-tight mb-3 group-hover:text-primary transition-colors">
-                   {ticket.titleSr || ticket.title}
+                   {ticket.title}
                 </h3>
                 <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed font-medium mb-6">
-                  {ticket.descriptionSr || ticket.description || dict.home.default_ticket_desc}
+                  {ticket.description || dict.home.default_ticket_desc}
                 </p>
 
                 <div className="mt-auto pt-6 flex justify-between items-end border-t border-border group-hover:border-border transition-colors relative z-20">
@@ -169,7 +167,7 @@ export async function TicketGrid({ dict }: { dict: Record<string, any>; }) {
                   
                   <AddToCartButton ticket={{
                     id: ticket.id,
-                    title: `${ticket.facility.name} - ${ticket.titleSr || ticket.title}`,
+                    title: `${ticket.facility.name} - ${ticket.title}`,
                     price: ticket.price,
                     currency: ticket.currency,
                     validityType: ticket.validityType,

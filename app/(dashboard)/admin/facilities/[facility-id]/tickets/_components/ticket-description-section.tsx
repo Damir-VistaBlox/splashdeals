@@ -38,24 +38,6 @@ export function TicketDescriptionSection<T extends FieldValues>({
       <AccordionContent className="pb-5 space-y-4">
         <FormField
           control={control}
-          name={"descriptionSr" as Path<T>}
-          render={({ field }) => (
-            <FormItem className="space-y-1">
-              <FormLabel className="text-xs font-semibold text-muted-foreground">Opis Ponude</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Šta je uključeno u ovu kartu?"
-                  className="min-h-[90px] bg-background/60 border-border rounded-xl leading-relaxed text-sm text-foreground/90 placeholder-slate-600 focus:border-primary/50"
-                  {...field}
-                  value={field.value || ""}
-                />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={control}
           name={"finePrint" as Path<T>}
           render={({ field }) => (
             <FormItem className="space-y-1">

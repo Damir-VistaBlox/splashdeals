@@ -52,7 +52,6 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
       {
         id: cat.id,
         title: cat.title,
-        titleSr: cat.titleSr,
         slug: cat.slug,
         displayOrder: cat.displayOrder,
         isActive: cat.isActive,
@@ -79,9 +78,7 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
                   id: prod.id,
                   categoryId: prod.categoryId,
                   title: prod.title,
-                  titleSr: prod.titleSr,
                   label: prod.label,
-                  labelSr: prod.labelSr,
                   requiresIdentity: prod.requiresIdentity,
                   requiresPhoto: prod.requiresPhoto,
                   minPeople: prod.minPeople,
@@ -665,7 +662,6 @@ function PriceCard({
   const [editing, setEditing] = React.useState(false)
   const [form, setForm] = React.useState({
     label: price.label ?? "",
-    labelSr: price.labelSr ?? "",
     price: price.price.toString(),
     originalPrice: price.originalPrice?.toString() ?? "",
     dayType: price.dayType ?? "ALL",
@@ -676,7 +672,6 @@ function PriceCard({
     const { updatePrice } = await import("../_lib/ticket-admin-actions")
     await updatePrice(price.id, {
       label: form.label || null,
-      labelSr: form.labelSr || null,
       price: parseFloat(form.price) || 0,
       originalPrice: form.originalPrice ? parseFloat(form.originalPrice) : null,
       dayType: form.dayType,
@@ -700,11 +695,6 @@ function PriceCard({
             <div>
               <label className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Labela</label>
               <input value={form.label} onChange={(e) => setForm((f) => ({ ...f, label: e.target.value }))}
-                className="w-full h-8 px-2 rounded-lg bg-muted/20 border border-border text-xs outline-none focus:border-primary/40" />
-            </div>
-            <div>
-              <label className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Labela (SR)</label>
-              <input value={form.labelSr} onChange={(e) => setForm((f) => ({ ...f, labelSr: e.target.value }))}
                 className="w-full h-8 px-2 rounded-lg bg-muted/20 border border-border text-xs outline-none focus:border-primary/40" />
             </div>
           </div>

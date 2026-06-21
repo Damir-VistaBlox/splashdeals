@@ -8,7 +8,6 @@ import type { ValidityType, DayType, TimeSlot } from "@prisma/client"
 export interface SerializedCategory {
   id: string
   title: string
-  titleSr: string | null
   slug: string | null
   displayOrder: number
   isActive: boolean
@@ -19,9 +18,7 @@ export interface SerializedProduct {
   id: string
   categoryId: string
   title: string
-  titleSr: string | null
   label: string | null
-  labelSr: string | null
   requiresIdentity: boolean
   requiresPhoto: boolean
   minPeople: number
@@ -38,7 +35,6 @@ export interface SerializedPrice {
   id: string
   ticketProductId: string
   label: string | null
-  labelSr: string | null
   price: number
   originalPrice: number | null
   dayType: string | null
@@ -68,7 +64,6 @@ export async function getTicketHierarchy(facilityId: string): Promise<Serialized
   return categories.map((cat) => ({
     id: cat.id,
     title: cat.title,
-    titleSr: cat.titleSr,
     slug: cat.slug,
     displayOrder: cat.displayOrder,
     isActive: cat.isActive,
@@ -76,9 +71,7 @@ export async function getTicketHierarchy(facilityId: string): Promise<Serialized
       id: prod.id,
       categoryId: prod.categoryId,
       title: prod.title,
-      titleSr: prod.titleSr,
       label: prod.label,
-      labelSr: prod.labelSr,
       requiresIdentity: prod.requiresIdentity,
       requiresPhoto: prod.requiresPhoto,
       minPeople: prod.minPeople,
@@ -92,7 +85,6 @@ export async function getTicketHierarchy(facilityId: string): Promise<Serialized
         id: p.id,
         ticketProductId: p.ticketTypeId,
         label: p.label,
-        labelSr: p.labelSr,
         price: Number(p.price),
         originalPrice: p.originalPrice ? Number(p.originalPrice) : null,
         dayType: p.dayType,
@@ -108,7 +100,7 @@ export async function getTicketHierarchy(facilityId: string): Promise<Serialized
 
 // ─── CRUD: Category ──────────────────────────────────
 
-export async function createCategory(facilityId: string, title: string, titleSr?: string) {
+export async function createCategory(facilityId: string, title: string) {
   const maxOrder = await prisma.ticketCategory.aggregate({
     where: { facilityId },
     _max: { displayOrder: true },
@@ -117,7 +109,6 @@ export async function createCategory(facilityId: string, title: string, titleSr?
     data: {
       facilityId,
       title,
-      titleSr: titleSr || null,
       slug: title.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, ""),
       displayOrder: (maxOrder._max.displayOrder ?? -1) + 1,
     },
@@ -128,7 +119,7 @@ export async function createCategory(facilityId: string, title: string, titleSr?
 
 // ─── Image Upload ─────────────────────────────────────
 
-export async function updateCategory(id: string, data: { title?: string; titleSr?: string | null; isActive?: boolean }) {
+export async function updateCategory(id: string, data: { title?: string; isActive?: boolean }) {
   await prisma.ticketCategory.update({ where: { id }, data })
   revalidatePath(`/admin/facilities/*/tickets`)
 }
@@ -144,9 +135,7 @@ export async function createProduct(
   categoryId: string,
   data: {
     title: string
-    titleSr?: string
     label?: string
-    labelSr?: string
     requiresIdentity?: boolean
     requiresPhoto?: boolean
     minPeople?: number
@@ -163,9 +152,7 @@ export async function createProduct(
     data: {
       categoryId,
       title: data.title,
-      titleSr: data.titleSr || null,
       label: data.label || null,
-      labelSr: data.labelSr || null,
       requiresIdentity: data.requiresIdentity ?? false,
       requiresPhoto: data.requiresPhoto ?? false,
       minPeople: data.minPeople ?? 1,
@@ -183,9 +170,7 @@ export async function updateProduct(
   id: string,
   data: {
     title?: string
-    titleSr?: string | null
     label?: string | null
-    labelSr?: string | null
     requiresIdentity?: boolean
     requiresPhoto?: boolean
     minPeople?: number
@@ -212,7 +197,6 @@ export async function createPrice(
     price: number
     originalPrice?: number | null
     label?: string
-    labelSr?: string
     dayType?: string
     timeSlot?: string
     validFrom?: Date | null
@@ -229,7 +213,6 @@ export async function createPrice(
       price: data.price,
       originalPrice: data.originalPrice ?? null,
       label: data.label || null,
-      labelSr: data.labelSr || null,
       dayType: data.dayType as DayType ?? "ALL",
       timeSlot: data.timeSlot as TimeSlot ?? "FULL_DAY",
       validFrom: data.validFrom ?? null,
@@ -247,7 +230,6 @@ export async function updatePrice(
     price?: number
     originalPrice?: number | null
     label?: string | null
-    labelSr?: string | null
     dayType?: string | null
     timeSlot?: string | null
     isActive?: boolean
@@ -259,7 +241,6 @@ export async function updatePrice(
       ...(data.price !== undefined ? { price: data.price } : {}),
       ...(data.originalPrice !== undefined ? { originalPrice: data.originalPrice } : {}),
       ...(data.label !== undefined ? { label: data.label } : {}),
-      ...(data.labelSr !== undefined ? { labelSr: data.labelSr } : {}),
       ...(data.dayType !== undefined ? { dayType: data.dayType as DayType } : {}),
       ...(data.timeSlot !== undefined ? { timeSlot: data.timeSlot as TimeSlot } : {}),
       ...(data.isActive !== undefined ? { isActive: data.isActive } : {}),

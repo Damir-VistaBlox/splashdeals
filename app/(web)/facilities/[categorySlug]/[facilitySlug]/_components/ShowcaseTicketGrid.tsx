@@ -29,7 +29,6 @@ const parseFacilityName = (name: string) => {
 export interface SerializedTicket {
   id: string;
   title: string;
-  titleSr: string | null;
   type: TicketType;
   price: number;
   originalPrice: number | null;
@@ -37,7 +36,6 @@ export interface SerializedTicket {
   validityType: ValidityType;
   isFeatured: boolean;
   description: string | null;
-  descriptionSr: string | null;
   requiresIdentity: boolean;
   requiresPhoto: boolean;
   minPeople: number;
@@ -274,9 +272,9 @@ export function ShowcaseTicketGrid({ tickets, facilityId, facilityName, category
                       </div>
  
                       <div className="space-y-4">
-                        <h4 className="text-base md:text-lg font-black group-hover:text-primary transition-colors uppercase leading-[0.9] tracking-tight text-foreground">{t.titleSr || t.title}</h4>
+                        <h4 className="text-base md:text-lg font-black group-hover:text-primary transition-colors uppercase leading-[0.9] tracking-tight text-foreground">{t.title}</h4>
                         <p className="text-sm text-muted-foreground line-clamp-3 leading-relaxed">
-                          {t.descriptionSr || t.description || "Zgrabite vašu kartu za nezaboravan dan. Ulaz obuhvata pristup svim standardnim sadržajima."}
+                          {t.description || "Zgrabite vašu kartu za nezaboravan dan. Ulaz obuhvata pristup svim standardnim sadržajima."}
                         </p>
                       </div>
  
@@ -322,7 +320,7 @@ export function ShowcaseTicketGrid({ tickets, facilityId, facilityName, category
                             facilityName,
                             category,
                             quantity: getQuantity(t.id),
-                            title: `${facilityName} - ${t.titleSr || t.title}`,
+                            title: `${facilityName} - ${t.title}`,
                             price: t.price,
                             currency: t.currency,
                             requiresIdentity: t.requiresIdentity,

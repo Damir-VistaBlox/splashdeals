@@ -15,14 +15,11 @@ import { TicketPurchaseModal } from "./TicketPurchaseModal";
 interface TicketTier {
   id: string;
   slug: string | null;
-  label: string;
-  labelSr: string | null;
   title: string;
-  titleSr: string | null;
-  description: string | null;
-  descriptionSr: string | null;
+  label: string;
   price: number;
   originalPrice: number | null;
+  description: string | null;
   dayType: DayType | null;
   timeSlot: TimeSlot | null;
   minPeople: number;
@@ -52,10 +49,7 @@ const parseFacilityName = (name: string) => {
 interface TicketGroup {
   id: string;
   title: string;
-  titleSr: string | null;
   description: string | null;
-  descriptionSr: string | null;
-  slug: string | null;
   tiers: TicketTier[];
 }
 
@@ -171,7 +165,7 @@ export function ShowcaseTicketGroups({ groups, facilityId, facilitySlug, facilit
                     className="absolute inset-0 bg-primary rounded-full"
                   />
                 )}
-                <span className="relative z-10">{group.titleSr || group.title}</span>
+                <span className="relative z-10">{group.title}</span>
               </button>
             );
           })}
@@ -185,10 +179,10 @@ export function ShowcaseTicketGroups({ groups, facilityId, facilitySlug, facilit
           className="w-full space-y-6"
         >
             {/* Description of active group if present */}
-            {(activeGroup.descriptionSr || activeGroup.description) && (
+            {(activeGroup.description) && (
               <div className="px-2 md:hidden">
                 <p className="text-muted-foreground text-sm font-medium italic">
-                  {activeGroup.descriptionSr || activeGroup.description}
+                  {activeGroup.description}
                 </p>
               </div>
             )}
@@ -239,7 +233,7 @@ export function ShowcaseTicketGroups({ groups, facilityId, facilitySlug, facilit
             {/* Mobile Viewports Layout: Stack of high-density Adaptive Mobile Cards */}
             <div className="block md:hidden space-y-4">
               {activeGroup.tiers.map((tier: TicketTier) => {
-                const label = (tier.labelSr || tier.label || "").toLowerCase();
+                const label = (tier.label || "").toLowerCase();
                 const isFeatured = label.includes("porodičn") || label.includes("paket") || label.includes("sezonsk") || label.includes("grupa");
                 return (
                   <MobileTicketCard
@@ -323,7 +317,7 @@ function SingleTierCard({ group, tier, quantity, setQuantity, onAdd, prefix, mai
             <div className="relative w-24 h-24 shrink-0 rounded-xl overflow-hidden border border-border/50">
               <Image
                 src={tier.imageUrl}
-                alt={tier.titleSr || tier.title}
+                alt={tier.title || tier.label}
                 fill
                 className="object-cover"
                 sizes="96px"
@@ -331,10 +325,10 @@ function SingleTierCard({ group, tier, quantity, setQuantity, onAdd, prefix, mai
             </div>
             <div className="space-y-2">
               <h3 className="text-xl md:text-3xl font-black text-foreground italic tracking-tighter uppercase leading-none group-hover:text-primary transition-colors">
-                {group.titleSr || group.title}
+                {group.title}
               </h3>
               <p className="text-muted-foreground font-medium max-w-md italic">
-                {group.descriptionSr || group.description || "Digitalna ulaznica za premium pristup sadržajima parka."}
+                {group.description || "Digitalna ulaznica za premium pristup sadržajima parka."}
               </p>
             </div>
           </div>
@@ -342,10 +336,10 @@ function SingleTierCard({ group, tier, quantity, setQuantity, onAdd, prefix, mai
         {!tier.imageUrl && (
           <div className="space-y-2">
             <h3 className="text-xl md:text-3xl font-black text-foreground italic tracking-tighter uppercase leading-none group-hover:text-primary transition-colors">
-              {group.titleSr || group.title}
+              {group.title}
             </h3>
             <p className="text-muted-foreground font-medium max-w-md italic">
-              {group.descriptionSr || group.description || "Digitalna ulaznica za premium pristup sadržajima parka."}
+              {group.description || "Digitalna ulaznica za premium pristup sadržajima parka."}
             </p>
           </div>
         )}
@@ -464,7 +458,7 @@ function TierList({ tiers, quantities, setQuantity, onAdd, prefix, main }: {
               <div className="relative w-14 h-14 shrink-0 rounded-xl overflow-hidden border border-border/50">
                 <Image
                   src={tier.imageUrl}
-                  alt={tier.labelSr || tier.label}
+                  alt={tier.label || tier.title}
                   fill
                   className="object-cover"
                   sizes="56px"
@@ -473,7 +467,7 @@ function TierList({ tiers, quantities, setQuantity, onAdd, prefix, main }: {
             )}
             <div className="flex-1 space-y-1 text-center md:text-left w-full">
             <div className="flex items-center justify-center md:justify-start gap-1.5 flex-wrap">
-              <h4 className="text-sm md:text-base font-black text-foreground uppercase italic tracking-tight">{tier.labelSr || tier.label}</h4>
+              <h4 className="text-sm md:text-base font-black text-foreground uppercase italic tracking-tight">{tier.label}</h4>
               {tier.dayType && tier.dayType !== 'ALL' && (
                 <Badge className="bg-slate-500/10 text-muted-foreground text-[9px] font-black uppercase tracking-tighter border-slate-500/20">
                   {tier.dayType === 'WEEKDAY' ? 'Radni dan' : 'Vikend'}
@@ -620,7 +614,7 @@ function TierGrid({ tiers, quantities, setQuantity, onAdd, prefix, main }: {
           {tiers.map((tier: TicketTier) => (
             <tr key={tier.id} id={`ticket-${tier.id}`} className="bg-muted/20 border border-border hover:bg-muted/50 transition-all group">
               <td className="py-4 pl-6 rounded-l-3xl">
-                <div className="font-black text-foreground uppercase italic tracking-tight">{tier.labelSr || tier.label}</div>
+                <div className="font-black text-foreground uppercase italic tracking-tight">{tier.label}</div>
               </td>
               <td className="py-4">
                 <div className="flex flex-wrap gap-2">
@@ -759,7 +753,7 @@ function MobileTicketCard({ tier, quantity, setQuantity, onAdd, isHighlighted, p
       {/* Title & Info */}
       <div className="space-y-2">
         <h4 className="text-sm md:text-base font-black text-foreground uppercase italic tracking-tight leading-tight">
-          {tier.labelSr || tier.label}
+          {tier.label}
         </h4>
         
         <div className="flex flex-wrap gap-2">

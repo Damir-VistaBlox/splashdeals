@@ -50,7 +50,7 @@ export async function PATCH(
 
     // Explicitly reject governance and sub-resource fields to guide programmatic callers
     const disallowedFields = [
-      "description", "descriptionSr", "publicPhone", "publicEmail", 
+      "description", "publicPhone", "publicEmail", 
       "socialLinks", "hours", "amenities", "targetCityIds", 
       "logoUrl", "emergencyContact", "seoArticle", "transitGuide", 
       "lat", "lng"

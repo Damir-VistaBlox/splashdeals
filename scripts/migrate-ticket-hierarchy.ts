@@ -44,7 +44,6 @@ async function main() {
         data: {
           facilityId: facility.id,
           title: "Ulaznice",
-          titleSr: "Ulaznice",
           slug: "ulaznice",
           displayOrder: 0,
         },
@@ -96,7 +95,6 @@ async function main() {
         data: {
           categoryId: category!.id,
           title: productTitle,
-          titleSr: productTitle,
           requiresIdentity: first.requiresIdentity,
           requiresPhoto: first.requiresPhoto,
           minPeople: first.minPeople,
@@ -131,7 +129,6 @@ async function main() {
           data: {
             ticketTypeId: product.id,
             label: labelStr,
-            labelSr: labelStr,
             price: ticket.price,
             originalPrice: ticket.originalPrice,
             dayType: ticket.dayType ?? "ALL",

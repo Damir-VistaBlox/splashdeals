@@ -21,9 +21,6 @@ export const updateFacilityGovernanceSchema = z.object({
   description: z.string().trim().max(2000).refine(val => val.length === 0 || val.length >= 10, {
     message: "Description must be at least 10 characters"
   }),
-  descriptionSr: z.string().trim().max(2000).refine(val => !val || val.length === 0 || val.length >= 10, {
-    message: "Description must be at least 10 characters"
-  }).nullish(),
   city: z.string().trim().min(2, "City is required"),
   streetName: z.string().trim().min(2, "Street name is required"),
   streetNumber: z.string().trim().min(1, "Number is required"),

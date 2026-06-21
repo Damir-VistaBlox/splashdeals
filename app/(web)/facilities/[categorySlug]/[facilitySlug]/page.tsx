@@ -71,13 +71,12 @@ import {
   buildBusinessSchema, 
   buildProductSchema, 
   buildVideoSchema, 
-  buildBreadcrumbSchema 
+  buildBreadcrumbSchema
 } from "./_schemas";
 
 interface TicketData {
   id: string;
   title: string;
-  titleSr: string | null;
   price: number | { toString: () => string };
   originalPrice: number | null | { toString: () => string };
   dayType: string | null;
@@ -355,11 +354,8 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
       (prod.prices || []).filter((p: any) => p.isActive).map((p: any) => ({
         ...p,
         catTitle: cat.title,
-        catTitleSr: cat.titleSr,
         prodTitle: prod.title,
-        prodTitleSr: prod.titleSr,
         prodDescription: prod.description,
-        prodDescriptionSr: prod.descriptionSr,
         requiresIdentity: prod.requiresIdentity,
         requiresPhoto: prod.requiresPhoto,
         minPeople: prod.minPeople,
@@ -374,19 +370,14 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
   let mappedGroups: Array<{
     id: string;
         title: string;
-    titleSr: string;
     description: string | null;
-    descriptionSr: string | null;
     slug: string;
     tiers: Array<{
       id: string;
       slug: string | null;
       label: string;
-      labelSr: string;
       title: string;
-      titleSr: string;
       description: string | null;
-      descriptionSr: string | null;
       price: number;
       originalPrice: number | null;
       minPeople: number;
@@ -410,17 +401,13 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
     mappedGroups = facility.ticketCategories.map((cat: any) => ({
       id: cat.id,
       title: cat.title,
-      titleSr: cat.titleSr || cat.title,
       description: null,
-      descriptionSr: null,
-      slug: cat.slug || cat.title.toLowerCase().replace(/\\s+/g, "-"),
+      slug: cat.slug || cat.title.toLowerCase().replace(/\s+/g, "-"),
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       tiers: (cat.types || []).filter((prod: any) => prod.isActive).map((prod: any) => ({
         id: prod.id,
         title: prod.title,
-        titleSr: prod.titleSr || prod.title,
         label: prod.title,
-        labelSr: prod.titleSr || prod.title,
         price: Math.min(...(prod.prices || []).filter((p: any) => p.isActive).map((p: any) => Number(p.price))),
         originalPrice: null,
         minPeople: prod.minPeople || 1,
@@ -433,7 +420,6 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
         imageUrl: prod.imageUrl || facility.media?.[0]?.url || null,
         slug: null,
         description: null,
-        descriptionSr: null,
         seasonStart: null,
         seasonEnd: null,
         isActive: true,
@@ -444,17 +430,13 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
     mappedGroups = [{
       id: "default-group",
       title: "Standardne Ponude",
-      titleSr: "Standardne Ponude",
       description: "Standardne ponude i ulaznice koje nisu deo posebnih paketa.",
-      descriptionSr: "Standardne ponude i ulaznice koje nisu deo posebnih paketa.",
       slug: "standardne-ponude",
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       tiers: allPrices.map((p: any) => ({
         id: p.id,
         title: p.prodTitle,
-        titleSr: p.prodTitleSr || p.prodTitle,
         label: p.prodTitle,
-        labelSr: p.prodTitleSr || p.prodTitle,
         price: Number(p.price),
         originalPrice: p.originalPrice ? Number(p.originalPrice) : null,
         minPeople: p.minPeople || 1,
@@ -467,7 +449,6 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
         imageUrl: facility.media?.[0]?.url || null,
         slug: null,
         description: null,
-        descriptionSr: null,
         seasonStart: null,
         seasonEnd: null,
         isActive: true,
@@ -567,7 +548,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
       return {
         "@type": "Offer",
         "@id": `https://www.splashdeals.rs/${facilitySlug}#ticket-${tier.id}`,
-        "name": tier.labelSr || tier.label,
+        "name": tier.label,
         "price": Number(tier.price),
         "priceCurrency": "RSD",
         "priceSpecification": priceSpecification,

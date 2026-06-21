@@ -632,7 +632,6 @@ async function main() {
         lng: f.lng,
         status: f.status as FacilityStatus,
         description: f.description,
-        descriptionSr: f.description, // Default to Serbian description
       }
     })
 
@@ -683,7 +682,6 @@ async function main() {
       data: f.tickets.map((t, idx) => ({
         facilityId: facility.id,
         title: t.title,
-        titleSr: t.title, // Default to same for seed
         type: t.type as TicketType,
         price: t.price,
         originalPrice: t.price + 200, // Show a "was" price for marketing density
@@ -693,7 +691,6 @@ async function main() {
         isFeatured: idx === 0, // Feature the first ticket of each facility
         displayOrder: idx,
         description: `Kompletan pristup za ${facility.name} uključujući sve aktivne sadržaje. Važi za jednu osobu.`,
-        descriptionSr: `Kompletan pristup za ${facility.name} uključujući sve aktivne sadržaje. Važi za jednu osobu.`,
         requiresIdentity: false,
         requiresPhoto: false,
       }))
