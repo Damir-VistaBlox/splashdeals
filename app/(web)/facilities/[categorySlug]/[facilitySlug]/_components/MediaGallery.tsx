@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 
 interface MediaGalleryProps {
   media: FacilityMedia[];
-  dict?: Record<string, unknown>;
+  dict?: Record<string, any>;
 }
 
 /**

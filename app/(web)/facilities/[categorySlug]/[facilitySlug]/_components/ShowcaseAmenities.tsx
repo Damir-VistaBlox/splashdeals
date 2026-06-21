@@ -23,7 +23,7 @@ interface FacilityAmenity {
 
 interface ShowcaseAmenitiesProps {
   amenities: FacilityAmenity[]
-  dict: Record<string, unknown>
+  dict: Record<string, any>
 }
 
 /**

@@ -519,7 +519,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
       "applicableCountry": "RS",
       "returnPolicyCategory": "https://schema.org/NoReturns"
     },
-    "offers": allTiers.map((tier: Record<string, unknown>) => {
+    "offers": allTiers.map((tier: any) => {
       const hasDiscount = tier.originalPrice && Number(tier.originalPrice) > Number(tier.price);
       
       const priceSpecification = hasDiscount ? [
@@ -772,7 +772,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
               )}
 
               <ShowcaseAmenities 
-                amenities={serialize(facility.amenities)} 
+                amenities={serialize(facility.amenities) as any} 
                 dict={dict} 
               />
            </div>

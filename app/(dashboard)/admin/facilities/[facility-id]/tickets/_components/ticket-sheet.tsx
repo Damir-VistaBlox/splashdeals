@@ -50,7 +50,7 @@ export function TicketSheet({ facilityId, ticket, open, onOpenChange, ticketGrou
   const router = useRouter()
 
   const form = useForm<TicketFormValues>({
-    resolver: zodResolver(ticketSchema) as unknown as Parameters<typeof useForm<TicketFormValues>>[0]["resolver"],
+    resolver: zodResolver(ticketSchema) as any,
     defaultValues: {
       title: ticket?.titleSr || ticket?.title || "",
       type: ticket?.type || "ADULT",
