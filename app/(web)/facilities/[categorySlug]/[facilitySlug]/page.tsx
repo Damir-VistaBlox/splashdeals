@@ -63,7 +63,6 @@ import { BreadcrumbInjector } from "./_components/BreadcrumbInjector"
 
 import { serialize } from "@/lib/serialize"
 import { ShareButton } from "./_components/ShareButton";
-import { ScrollToTicketsButton } from "./_components/ScrollToTicketsButton";
 import { JsonLd } from "@/components/SEO/JsonLd";
 import { validateDiscoverySlug } from "@/server/lib/data/discovery";
 import { calculateMaxDiscount } from "@/lib/utils/pricing";
@@ -722,13 +721,8 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
                    />
                 </div>
              </div>
-
-                {/* Mobile: Scroll-to-tickets CTA */}
-                <div className="block md:hidden w-full pt-4">
-                  <ScrollToTicketsButton />
-                </div>
-           </div>
-        </div>
+             </div>
+             </div>
       </section>
 
       <main className="max-w-7xl mx-auto px-6 md:px-12 -mt-16 md:mt-20 relative z-20 space-y-12 sm:space-y-32 pb-24 sm:pb-48">
