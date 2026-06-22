@@ -32,19 +32,26 @@ export function DesktopTopNav({
 }: DesktopTopNavProps) {
   return (
     <div className="h-16 flex items-center w-full">
-      <nav className="max-w-7xl mx-auto w-full flex items-center justify-between">
-        <Logo
-          isTabActive={isTabActive}
-          isReducedMotion={isReducedMotion}
-          isHovered={isHovered}
-          setIsHovered={setIsHovered}
-        />
+      <nav className="max-w-7xl mx-auto w-full flex items-center justify-between relative">
+        {/* Center — Logo */}
+        <div className="absolute left-1/2 -translate-x-1/2 z-10">
+          <Logo
+            isTabActive={isTabActive}
+            isReducedMotion={isReducedMotion}
+            isHovered={isHovered}
+            setIsHovered={setIsHovered}
+          />
+        </div>
 
-        <React.Suspense fallback={<DesktopNavSkeleton />}>
-          <MegaMenu />
-        </React.Suspense>
+        {/* Left — MegaMenu on desktop */}
+        <div className="flex-1">
+          <React.Suspense fallback={<DesktopNavSkeleton />}>
+            <MegaMenu />
+          </React.Suspense>
+        </div>
 
-        <div className="flex items-center gap-1.5 md:gap-3">
+        {/* Right — ThemeToggle + CartButton on desktop */}
+        <div className="flex items-center gap-1.5 md:gap-3 flex-1 justify-end">
           <ThemeToggle />
           <div className="hidden md:flex">
           <CartButton

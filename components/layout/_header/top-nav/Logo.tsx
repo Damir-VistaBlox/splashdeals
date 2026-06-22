@@ -31,7 +31,7 @@ export function Logo({ isTabActive, isReducedMotion, isHovered, setIsHovered }: 
         width={331}
         height={112}
         className={cn(
-          "h-9 sm:h-12 w-auto object-contain",
+          "h-12 w-auto object-contain",
           "transition-all duration-300",
           isHovered && "scale-105 brightness-110",
           isReducedMotion && "transition-none"
