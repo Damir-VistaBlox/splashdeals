@@ -30,17 +30,13 @@ export default async function ProfilePage({ params }: { params: Promise<{ 'facil
   const { 'facility-id': facilityId } = await params
   await connection()
   
-  const [facility, availableCities, transactionCount, session] = await Promise.all([
+  const [facility, transactionCount, session] = await Promise.all([
     prisma.facility.findUnique({
       where: { id: facilityId },
       include: { 
         hours: { orderBy: { dayOfWeek: "asc" } },
-        marketplaceCities: true,
         closures: { orderBy: { startDate: "asc" } }
       }
-    }),
-    prisma.city.findMany({
-      orderBy: { name: "asc" }
     }),
     prisma.transaction.count({
       where: { facilityId }
@@ -63,7 +59,6 @@ export default async function ProfilePage({ params }: { params: Promise<{ 'facil
       </Button>
       <FacilityProfileForm 
         facility={facility} 
-        availableCities={availableCities} 
         userRole={userRole}
         transactionCount={transactionCount}
       />

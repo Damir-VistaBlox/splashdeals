@@ -31,7 +31,6 @@ export const updateFacilityGovernanceSchema = z.object({
     closeTime: z.string().regex(/^([01]\d|2[0-3]):([0-5]\d)$/, "Invalid close time format (HH:mm)"),
     isClosed: z.boolean().default(false),
   })),
-  targetCityIds: z.array(z.string().trim()).default([]),
   status: z.enum(["DRAFT", "ACTIVE", "CLOSED", "EMERGENCY_SHUTDOWN"]).optional(),
   metaTitle: z.string().trim().max(70, "SEO Title is too long (max 70 chars)").nullish(),
   metaDescription: z.string().trim().max(160, "SEO Description is too long").nullish(),

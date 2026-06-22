@@ -16,7 +16,6 @@ import { cn } from "@/lib/utils"
 
 import { updateFacilityGovernanceSchema, type UpdateFacilityGovernanceValues } from "@/server/lib/validations/facility"
 import { updateFacilityGovernanceAction } from "@/server/actions/governance"
-import { DistributionLogic } from "./distribution-logic"
 import { ProfileAndSEO } from "./profile-and-seo"
 import { BrandingLogoCard } from "./branding-logo-card"
 import { LocationSection } from "./location-section"
@@ -40,9 +39,6 @@ interface FacilityProfileFormProps {
       closeTime: string
       isClosed: boolean
     }>
-    marketplaceCities: Array<{
-      cityId: string
-    }>
     metaTitle: string | null
     metaDescription: string | null
     seoArticle: string | null
@@ -60,11 +56,6 @@ interface FacilityProfileFormProps {
     }>
     updatedAt: Date
   }
-  availableCities: Array<{
-    id: string
-    name: string
-    slug: string
-  }>
   userRole: string
   transactionCount: number
 }
@@ -78,7 +69,6 @@ interface FacilityProfileFormProps {
  */
 export function FacilityProfileForm({ 
   facility, 
-  availableCities, 
   userRole,
   transactionCount
 }: FacilityProfileFormProps) {
@@ -135,7 +125,6 @@ export function FacilityProfileForm({
       streetNumber: facility.streetNumber,
       postalCode: facility.postalCode,
       hours: initialHours,
-      targetCityIds: (facility.marketplaceCities || []).map(mc => mc.cityId),
       metaTitle: facility.metaTitle || "",
       metaDescription: facility.metaDescription || "",
       seoArticle: facility.seoArticle || "",
@@ -293,14 +282,6 @@ export function FacilityProfileForm({
           </div>
 
           <div className="xl:col-span-4 space-y-6">
-            {/* Marketplace Distribution */}
-            <section id="marketplace" className="scroll-mt-32 space-y-4">
-              <div className="flex items-center gap-3">
-                <Icon name="label" className="size-4 text-emerald-400" />
-                <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-foreground/70">Marketplace Reach</h2>
-              </div>
-              <DistributionLogic availableCities={availableCities} />
-            </section>
           </div>
         </div>
 
