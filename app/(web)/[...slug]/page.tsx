@@ -3,29 +3,28 @@ import { Metadata } from "next";
 import { prisma } from "@/server/lib/prisma";
 import { FacilityShowcaseTemplate, getFacilityMetadata } from "../facilities/[categorySlug]/[facilitySlug]/page";
 import { DiscoveryTemplate, getDiscoveryMetadata } from "@/lib/routing/discovery";
+import { slugToDbValue, isKnownCategory, dbValueToSlug } from "@/lib/routing/categories";
 
 /**
  * 🏝️ Dynamic Short-URL Resolver Helper
  * Checks the nature of the first path segment against the database.
  */
-const KNOWN_CATEGORIES = new Set([
-  "akva-parkovi",
-  "bazeni",
-  "wellness-i-spa",
-]);
-
 async function resolveSlug(firstSlug: string) {
-  // 1. Check if category (DB has facilities with this category)
-  const hasCategory = await prisma.facility.findFirst({
-    where: { category: { equals: firstSlug, mode: "insensitive" } },
-    select: { category: true }
-  });
-  if (hasCategory) {
-    return { type: "category", category: hasCategory.category.toLowerCase().replace(/\s+/g, '-') };
+  const dbValue = slugToDbValue(firstSlug);
+
+  // 1. Check if category (DB has facilities matching the mapped value)
+  if (dbValue) {
+    const hasCategory = await prisma.facility.findFirst({
+      where: { category: { equals: dbValue, mode: "insensitive" } },
+      select: { category: true }
+    });
+    if (hasCategory) {
+      return { type: "category", category: firstSlug.toLowerCase() };
+    }
   }
 
-  // 1b. Check known category labels (works even when DB is empty, e.g. CI)
-  if (KNOWN_CATEGORIES.has(firstSlug.toLowerCase())) {
+  // 1b. Check known category slugs (works even when DB is empty, e.g. CI)
+  if (isKnownCategory(firstSlug.toLowerCase())) {
     return { type: "category", category: firstSlug.toLowerCase() };
   }
 
@@ -35,7 +34,8 @@ async function resolveSlug(firstSlug: string) {
     select: { slug: true, category: true }
   });
   if (facility) {
-    return { type: "facility", category: facility.category.toLowerCase().replace(/\s+/g, '-') };
+    const catSlug = dbValueToSlug(facility.category!) ?? facility.category!.toLowerCase().replace(/\s+/g, '-');
+    return { type: "facility", category: catSlug };
   }
 
   return null;

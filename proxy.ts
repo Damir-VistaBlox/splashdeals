@@ -19,63 +19,6 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(redirectUrl, { status: 301 });
   }
 
-  // 0.4 🗑️ PERMANENTLY DELETED PATHS — 410 Gone (checked before any redirect)
-  const DELETED_PROXY_PATHS = new Set([
-    '/waterpark/petroland',
-    '/facilities/waterpark/petroland',
-    '/en/facilities/waterpark/petroland',
-    '/rs/facilities/waterpark/petroland',
-    '/waterpark',
-    '/en/waterpark',
-    '/rs/waterpark',
-    '/facilities/waterpark',
-    '/en/facilities/waterpark',
-    '/rs/facilities/waterpark',
-  ]);
-  if (DELETED_PROXY_PATHS.has(pathname)) {
-    return new NextResponse(
-      '<html><head><title>410 Gone</title><meta name="robots" content="noindex,nofollow"/></head><body><h1>410 Gone</h1><p>This page has been permanently deleted.</p></body></html>',
-      {
-        status: 410,
-        headers: {
-          'Content-Type': 'text/html; charset=utf-8',
-          'Cache-Control': 'public, max-age=86400, immutable',
-          'X-Robots-Tag': 'noindex, nofollow',
-        },
-      }
-    );
-  }
-
-  // 0.5 🚀 SERVER-SIDE 301 EDGE REDIRECTS FOR FACILITIES
-  if (pathname === '/facilities' || pathname === '/facilities/') {
-    const redirectUrl = new URL('/', request.url);
-    request.nextUrl.searchParams.forEach((value, key) => redirectUrl.searchParams.set(key, value));
-    return NextResponse.redirect(redirectUrl, { status: 301 });
-  }
-
-  if (pathname.startsWith('/facilities/')) {
-    const categorySlug = pathname.substring('/facilities/'.length).replace(/\/$/, "");
-    const categorySlugLower = categorySlug.toLowerCase();
-
-    const CITY_SLUGS = new Set([
-      'beograd', 'belgrade', 'novi-sad', 'jagodina', 'vrnjacka-banja', 'subotica',
-      'nis', 'kragujevac', 'arandjelovac', 'soko-banja', 'uzice', 'backi-petrovac',
-      'petrovac-na-mlavi', 'zlatibor', 'vojvodina', 'central-serbia', 'apatin',
-      'valjevo', 'ruma', 'indjija', 'stara-pazova', 'veliko-gradiste', 'krusevac',
-      'cacak', 'leskovac', 'sabac', 'kikinda', 'mionica'
-    ]);
-
-    if (CITY_SLUGS.has(categorySlugLower)) {
-      const redirectUrl = new URL('/search', request.url);
-      redirectUrl.searchParams.set('q', categorySlug);
-      return NextResponse.redirect(redirectUrl, { status: 301 });
-    }
-
-    const redirectUrl = new URL(`/${categorySlug}`, request.url);
-    request.nextUrl.searchParams.forEach((value, key) => redirectUrl.searchParams.set(key, value));
-    return NextResponse.redirect(redirectUrl, { status: 301 });
-  }
-
   // 0. 🏰 CANONICAL DOMAIN ENFORCEMENT (Apex -> WWW)
   if (process.env.NODE_ENV === 'production' && host === 'splashdeals.rs') {
     const canonicalUrl = new URL(pathname, `https://www.splashdeals.rs`);
@@ -89,43 +32,7 @@ export async function proxy(request: NextRequest) {
       }
     }
 
-    // Strip i18n prefixes from canonical redirect path
-    const i18nMatch = canonicalUrl.pathname.match(/^\/(en|rs)(?:\/|$)(.*)/i);
-    if (i18nMatch) {
-      canonicalUrl.pathname = '/' + i18nMatch[2];
-    }
-
     return NextResponse.redirect(canonicalUrl, { status: 301 });
-  }
-
-  // 1. 🌐 i18n PREFIX REMOVAL (single-hop with facility redirect folding)
-  const i18nMatch = pathname.match(/^\/(en|rs)(?:\/|$)(.*)/i);
-  if (i18nMatch) {
-    const [, , remainingPath] = i18nMatch;
-    let cleanPath = '/' + remainingPath;
-
-    // Fold facilities redirect into the same hop to avoid /en/facilities/X → /facilities/X → /X
-    if (cleanPath.startsWith('/facilities/')) {
-      const categorySlug = cleanPath.substring('/facilities/'.length).replace(/\/$/, "");
-      const CITY_SLUGS = new Set([
-        'beograd', 'belgrade', 'novi-sad', 'jagodina', 'vrnjacka-banja', 'subotica',
-        'nis', 'kragujevac', 'arandjelovac', 'soko-banja', 'uzice', 'backi-petrovac',
-        'petrovac-na-mlavi', 'zlatibor', 'vojvodina', 'central-serbia', 'apatin',
-        'valjevo', 'ruma', 'indjija', 'stara-pazova', 'veliko-gradiste', 'krusevac',
-        'cacak', 'leskovac', 'sabac', 'kikinda', 'mionica'
-      ]);
-      if (CITY_SLUGS.has(categorySlug.toLowerCase())) {
-        const redirectUrl = new URL('/search', request.url);
-        redirectUrl.searchParams.set('q', categorySlug);
-        request.nextUrl.searchParams.forEach((value, key) => redirectUrl.searchParams.set(key, value));
-        return NextResponse.redirect(redirectUrl, { status: 301 });
-      }
-      cleanPath = `/${categorySlug}`;
-    }
-
-    const redirectUrl = new URL(cleanPath, request.url);
-    request.nextUrl.searchParams.forEach((value, key) => redirectUrl.searchParams.set(key, value));
-    return NextResponse.redirect(redirectUrl, { status: 301 });
   }
 
   // 2. 🧟 DECLARATIVE REDIRECTS (SEO & Legacy Cleanup)

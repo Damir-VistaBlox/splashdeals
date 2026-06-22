@@ -1,14 +1,10 @@
 import { Metadata } from "next";
+import { connection } from "next/server";
 import { notFound } from "next/navigation";
 import { prisma } from "@/server/lib/prisma";
 import { FacilityShowcaseTemplate, getFacilityMetadata } from "@/app/(web)/facilities/[categorySlug]/[facilitySlug]/page";
 import { DiscoveryTemplate, getDiscoveryMetadata } from "@/lib/routing/discovery";
-
-const KNOWN_CATEGORIES: Record<string, string> = {
-  "akva-parkovi": "Akva parkovi",
-  "bazeni": "Bazeni",
-  "wellness-i-spa": "Wellness i spa",
-};
+import { slugToDbValue, isKnownCategory, dbValueToSlug } from "@/lib/routing/categories";
 
 interface PageProps {
   params: Promise<{ categorySlug: string }>;
@@ -18,13 +14,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { categorySlug } = await params;
 
   // 1. Try as known category
-  if (KNOWN_CATEGORIES[categorySlug.toLowerCase()]) {
+  if (isKnownCategory(categorySlug.toLowerCase())) {
     return await getDiscoveryMetadata(categorySlug);
   }
 
   // 2. Try as category in DB
+  const dbValue = slugToDbValue(categorySlug);
   const hasCategory = await prisma.facility.findFirst({
-    where: { category: { equals: categorySlug, mode: "insensitive" } },
+    where: { category: { equals: dbValue ?? categorySlug, mode: "insensitive" } },
     select: { id: true },
   }).catch(() => null);
 
@@ -39,7 +36,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }).catch(() => null);
 
   if (facility) {
-    return await getFacilityMetadata(categorySlug, facility.category!.toLowerCase().replace(/\s+/g, "-"));
+    const catSlug = dbValueToSlug(facility.category!) ?? facility.category!.toLowerCase().replace(/\s+/g, "-");
+    return await getFacilityMetadata(categorySlug, catSlug);
   }
 
   notFound();
@@ -49,7 +47,7 @@ export default async function CategoryPage({ params }: PageProps) {
   const { categorySlug } = await params;
 
   // 1. Try as category
-  if (KNOWN_CATEGORIES[categorySlug.toLowerCase()]) {
+  if (isKnownCategory(categorySlug.toLowerCase())) {
     return (
       <DiscoveryTemplate
         params={Promise.resolve({ categorySlug })}
@@ -57,8 +55,9 @@ export default async function CategoryPage({ params }: PageProps) {
     );
   }
 
+  const dbValue = slugToDbValue(categorySlug);
   const hasCategory = await prisma.facility.findFirst({
-    where: { category: { equals: categorySlug, mode: "insensitive" } },
+    where: { category: { equals: dbValue ?? categorySlug, mode: "insensitive" } },
     select: { id: true },
   }).catch(() => null);
 
@@ -77,10 +76,11 @@ export default async function CategoryPage({ params }: PageProps) {
   }).catch(() => null);
 
   if (facility) {
+    const catSlug = dbValueToSlug(facility.category!) ?? facility.category!.toLowerCase().replace(/\s+/g, "-");
     return (
       <FacilityShowcaseTemplate
         params={Promise.resolve({
-          categorySlug: facility.category!.toLowerCase().replace(/\s+/g, "-"),
+          categorySlug: catSlug,
           facilitySlug: categorySlug,
         })}
       />

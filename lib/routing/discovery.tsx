@@ -16,27 +16,23 @@ import Link from "next/link";
 import { prisma } from "@/server/lib/prisma";
 import { notFound } from "next/navigation";
 import { JsonLd } from "@/components/SEO/JsonLd";
+import { slugToDbValue, slugToName, isKnownCategory } from "@/lib/routing/categories";
 
 interface PageProps {
   params: Promise<{ categorySlug: string }>;
 }
-
-const catLabels: Record<string, string> = {
-  "akva-parkovi": "Akva Parkovi",
-  "bazeni": "Bazeni",
-  "wellness-i-spa": "Wellness i Spa",
-};
 
 /**
  * Generate SEO metadata for a category/discovery page
  */
 export async function getDiscoveryMetadata(categorySlug: string): Promise<Metadata> {
   const dict = await getDictionary();
+  const dbValue = slugToDbValue(categorySlug);
 
   let hasCategory = false;
   try {
     const result = await prisma.facility.findFirst({
-      where: { category: { equals: categorySlug, mode: "insensitive" } },
+      where: { category: { equals: dbValue ?? categorySlug, mode: "insensitive" } },
     });
     hasCategory = !!result;
   } catch {
@@ -44,12 +40,12 @@ export async function getDiscoveryMetadata(categorySlug: string): Promise<Metada
   }
 
   // If no facilities in DB but category slug is known, still render (eg. CI/empty state)
-  if (!hasCategory && !catLabels[categorySlug.toLowerCase()]) {
+  if (!hasCategory && !isKnownCategory(categorySlug.toLowerCase())) {
     notFound();
   }
 
   const catName =
-    catLabels[categorySlug.toLowerCase()] ||
+    slugToName(categorySlug.toLowerCase()) ??
     categorySlug.charAt(0).toUpperCase() + categorySlug.slice(1).toLowerCase();
 
   const canonicalUrl = `https://www.splashdeals.rs/${categorySlug}`;
@@ -88,11 +84,12 @@ export async function DiscoveryTemplate({ params }: PageProps) {
   await connection();
   const { categorySlug } = await params;
   const dict = await getDictionary();
+  const dbValue = slugToDbValue(categorySlug);
 
   let hasCategory = false;
   try {
     const result = await prisma.facility.findFirst({
-      where: { category: { equals: categorySlug, mode: "insensitive" } },
+      where: { category: { equals: dbValue ?? categorySlug, mode: "insensitive" } },
     });
     hasCategory = !!result;
   } catch {
@@ -100,12 +97,12 @@ export async function DiscoveryTemplate({ params }: PageProps) {
   }
 
   // If no facilities in DB but category slug is known, still render (eg. CI/empty state)
-  if (!hasCategory && !catLabels[categorySlug.toLowerCase()]) {
+  if (!hasCategory && !isKnownCategory(categorySlug.toLowerCase())) {
     notFound();
   }
 
   const displayName =
-    catLabels[categorySlug.toLowerCase()] ||
+    slugToName(categorySlug.toLowerCase()) ??
     categorySlug.charAt(0).toUpperCase() + categorySlug.slice(1).toLowerCase();
 
   const jsonLd = {
@@ -171,7 +168,7 @@ export async function DiscoveryTemplate({ params }: PageProps) {
           <FacilityGrid
             dict={dict}
             fromLabel={dict.facilities.from_price}
-            category={categorySlug}
+            category={dbValue ?? categorySlug}
             noFacilitiesLabel={dict.facilities.no_facilities}
           />
         </Suspense>
