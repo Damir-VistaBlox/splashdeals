@@ -7,11 +7,9 @@ import { Logo } from "./Logo";
 import { ThemeToggle } from "./ThemeToggle";
 import { CartButton } from "./CartButton";
 import { MobileTopNav } from "./MobileTopNav";
-import type { Dict } from "@/lib/types";
 
 
 interface DesktopTopNavProps {
-  dict: Dict;
   cities: { id: string; name: string; slug: string }[];
   mounted: boolean;
   totalItems: number;
@@ -26,7 +24,6 @@ interface DesktopTopNavProps {
 }
 
 export function DesktopTopNav({
-  dict,
   mounted,
   totalItems,
   isOnline,
@@ -49,13 +46,12 @@ export function DesktopTopNav({
         />
 
         <React.Suspense fallback={<DesktopNavSkeleton />}>
-          <MegaMenu dict={dict} />
+          <MegaMenu />
         </React.Suspense>
 
         <div className="flex items-center gap-1.5 md:gap-3">
           <ThemeToggle />
           <CartButton
-            dict={dict}
             isOnline={isOnline}
             mounted={mounted}
             totalItems={totalItems}

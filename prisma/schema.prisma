@@ -594,6 +594,80 @@ enum PostStatus {
   @@schema("marketing")
 }
 
+/// 🧩 How a mega menu section renders in the panel
+enum NavigationSectionStyle {
+  LINKS           // icon + title + desc links
+  DOT_LINKS       // bullet-dot links without icons
+  DYNAMIC_CITIES  // auto-populated from /api/menu/discovery
+  FOOTER_BADGE    // static icon + text with border-top
+  VISUAL          // branded visual block (scanner mockup, club card)
+
+  @@schema("marketing")
+}
+
+/// 🧭 Top-level tab in the mega menu (Istraži, Za Biznis, Korisnici, Blog)
+model NavigationMenu {
+  id        String   @id @default(uuid())
+  label     String
+  icon      String
+  sortOrder Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  sections NavigationMenuSection[]
+
+  @@map("navigation_menus")
+  @@schema("marketing")
+}
+
+/// 📦 A section/group inside a menu's panel
+/// Renders as: <h4>heading</h4> + items rendered per style
+model NavigationMenuSection {
+  id        String   @id @default(uuid())
+  menuId    String
+  menu      NavigationMenu @relation(fields: [menuId], references: [id], onDelete: Cascade)
+
+  heading   String?                // null → no <h4> rendered
+  column    Int      @default(0)   // 0, 1, 2 — which grid column
+  style     NavigationSectionStyle
+  config    Json?                  // Per-style config (footer icon, visual component, city slugs)
+  sortOrder Int      @default(0)   // Within its column
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  items NavigationMenuItem[]
+
+  @@index([menuId, column, sortOrder])
+  @@map("navigation_menu_sections")
+  @@schema("marketing")
+}
+
+/// 🔗 A single link/item inside a section
+model NavigationMenuItem {
+  id        String   @id @default(uuid())
+  sectionId String
+  section   NavigationMenuSection @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+
+  label     String
+  href      String?                // null for visual blocks
+  icon      String?
+  desc      String?
+
+  /// Rich metadata — badges, price, variant, thumbnail, count, accent, external
+  metadata  Json?
+
+  sortOrder Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([sectionId, sortOrder])
+  @@map("navigation_menu_items")
+  @@schema("marketing")
+}
+
 enum UserRole {
   CUSTOMER
   FACILITY_STAFF

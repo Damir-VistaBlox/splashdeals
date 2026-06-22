@@ -1,5 +1,6 @@
 import { MetadataRoute } from 'next';
 import { prisma } from '@/server/lib/prisma';
+import { getActiveCities } from '@/server/lib/data/discovery';
 
 export const revalidate = 3600; // Revalidate sitemap every hour
 
@@ -121,6 +122,51 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
   } catch (error) {
     console.error('Sitemap Error: Could not fetch blog posts', error);
+  }
+
+  // 6. Dynamic City Listing Pages (from navigation DYNAMIC_CITIES)
+  try {
+    const cities = await getActiveCities();
+    for (const city of cities) {
+      sitemapEntries.push({
+        url: `${baseUrl}/facilities/${city.slug}`,
+        lastModified: staticLastMod,
+        changeFrequency: 'daily',
+        priority: 0.85,
+      });
+    }
+  } catch (error) {
+    console.error('Sitemap Error: Could not fetch cities', error);
+  }
+
+  // 7. Navigation Menu Item URLs (unique pages from the mega menu)
+  try {
+    const { prisma: db } = await import('@/server/lib/prisma');
+    const items = await (db as any).navigationMenuItem.findMany({
+      where: {
+        isActive: true,
+        href: { not: null, notIn: ['#', ''] },
+        section: { menu: { isActive: true } },
+      },
+      select: { href: true, label: true },
+    });
+
+    const seen = new Set(sitemapEntries.map((e) => e.url));
+    for (const item of items) {
+      const href = item.href as string;
+      const fullUrl = `${baseUrl}${href}`;
+      if (href.startsWith('/') && !seen.has(fullUrl)) {
+        seen.add(fullUrl);
+        sitemapEntries.push({
+          url: fullUrl,
+          lastModified: staticLastMod,
+          changeFrequency: 'weekly',
+          priority: 0.65,
+        });
+      }
+    }
+  } catch (error) {
+    console.error('Sitemap Error: Could not fetch navigation items', error);
   }
 
   return sitemapEntries;

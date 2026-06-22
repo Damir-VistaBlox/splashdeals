@@ -49,11 +49,20 @@ export async function FacilityGrid({
         }
       } : {}),
       ...(minPrice || maxPrice ? {
-        tickets: {
+        ticketCategories: {
           some: {
             isActive: true,
-            ...(minPrice ? { price: { gte: parseFloat(minPrice) } } : {}),
-            ...(maxPrice ? { price: { lte: parseFloat(maxPrice) } } : {}),
+            types: {
+              some: {
+                isActive: true,
+                prices: {
+                  some: {
+                    ...(minPrice ? { price: { gte: parseFloat(minPrice) } } : {}),
+                    ...(maxPrice ? { price: { lte: parseFloat(maxPrice) } } : {}),
+                  }
+                }
+              }
+            }
           }
         }
       } : {})
@@ -62,9 +71,19 @@ export async function FacilityGrid({
       media: {
         orderBy: { order: "asc" }
       },
-      tickets: {
+      ticketCategories: {
         where: { isActive: true },
-        orderBy: { price: 'asc' },
+        include: {
+          types: {
+            where: { isActive: true },
+            include: {
+              prices: {
+                orderBy: { price: 'asc' },
+                take: 1
+              }
+            }
+          }
+        }
       }
     },
     orderBy: sort === 'name_asc' ? { name: 'asc' } : { createdAt: 'desc' }
@@ -103,12 +122,23 @@ export async function FacilityGrid({
   }
 
   // 3. Serialize Prisma Decimal → number for client component props
-  const serializedFacilities = processedFacilities.map((f) => ({
-    ...f,
-    tickets: [],
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    minPrice: (f as any).minPrice ? Number((f as any).minPrice) : null,
-  }));
+  const serializedFacilities = processedFacilities.map((f) => {
+    // Extract lowest price from nested ticketCategories → types → prices
+    let lowestPrice: number | null = null
+    for (const cat of (f as any).ticketCategories || []) {
+      for (const type of cat.types || []) {
+        for (const price of type.prices || []) {
+          const val = Number(price.price)
+          if (lowestPrice === null || val < lowestPrice) lowestPrice = val
+        }
+      }
+    }
+    return {
+      ...f,
+      ticketCategories: [],
+      minPrice: lowestPrice,
+    }
+  })
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">

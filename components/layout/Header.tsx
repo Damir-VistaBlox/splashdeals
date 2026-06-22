@@ -60,7 +60,6 @@ export const Header = ({ dict, cities }: HeaderProps) => {
         `}
       >
         <DesktopTopNav
-          dict={dict}
           cities={cities}
           mounted={mounted}
           totalItems={totalItems}

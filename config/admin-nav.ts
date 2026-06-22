@@ -59,6 +59,11 @@ export const adminNavData = {
           icon: "folder",
         },
         {
+          title: "Navigacija",
+          url: "/admin/cms/navigation",
+          icon: "menu_book",
+        },
+        {
           title: "Tagovi",
           url: "/admin/cms/tags",
           icon: "tags",

@@ -75,7 +75,7 @@ import {
   buildBreadcrumbSchema
 } from "./_schemas";
 
-interface TicketData {
+interface _TicketData {
   id: string;
   title: string;
   price: number | { toString: () => string };
@@ -422,6 +422,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
         id: prod.id,
         title: prod.title,
         label: prod.title,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         price: Math.min(...(prod.prices || []).filter((p: any) => p.isActive).map((p: any) => Number(p.price))),
         originalPrice: null,
         minPeople: prod.minPeople || 1,

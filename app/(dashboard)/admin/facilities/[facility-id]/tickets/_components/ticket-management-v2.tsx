@@ -38,7 +38,7 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
   const [editCatTitle, setEditCatTitle] = React.useState("")
   const [editingProductId, setEditingProductId] = React.useState<string | null>(null)
   const [editProductTitle, setEditProductTitle] = React.useState("")
-  const [draggedProductId, setDraggedProductId] = React.useState<string | null>(null)
+  const [_draggedProductId, setDraggedProductId] = React.useState<string | null>(null)
 
   const selectedCategory = categories.find((c) => c.id === selectedCategoryId) ?? null
   const selectedProduct = selectedCategory?.products.find((p) => p.id === selectedProductId) ?? null
@@ -384,6 +384,7 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
               </div>
               {prod.imageUrl && (
                 <div className="mb-2 -mx-1">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={prod.imageUrl}
                     alt={prod.title}
@@ -600,6 +601,7 @@ function ProductImageSection({
       {imageUrl ? (
         <div>
           <div className="relative group rounded-lg overflow-hidden border border-border/50 mb-2">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={imageUrl}
               alt={productTitle}

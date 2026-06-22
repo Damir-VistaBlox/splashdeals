@@ -6,17 +6,14 @@ import { LiquidButton } from "@/components/ui/LiquidButton";
 import { cn } from "@/lib/utils";
 
 
-import type { Dict } from "@/lib/types";
-
 interface CartButtonProps {
-  dict: Dict;
   isOnline: boolean;
   mounted: boolean;
   totalItems: number;
   openCart: () => void;
 }
 
-export function CartButton({ dict, isOnline, mounted, totalItems, openCart }: CartButtonProps) {
+export function CartButton({ isOnline, mounted, totalItems, openCart }: CartButtonProps) {
   return (
     <div className="relative flex items-center gap-2">
       {/* Offline Indicator — CSS transition on mount/unmount */}
@@ -25,7 +22,7 @@ export function CartButton({ dict, isOnline, mounted, totalItems, openCart }: Ca
           className="flex items-center gap-1.5 px-2 py-1 bg-destructive/10 border border-destructive/20 rounded-lg text-[9px] font-black text-destructive uppercase tracking-wider shadow-lg transition-all duration-300"
         >
           <Icon name="cloud_off" className="text-[12px] animate-pulse" />
-          {dict.nav.offline || "Nema Mreže"}
+          Nema Mreže
         </div>
       )}
 
@@ -52,7 +49,7 @@ export function CartButton({ dict, isOnline, mounted, totalItems, openCart }: Ca
               {totalItems}
             </span>
           </div>
-          <span className="hidden sm:inline">{dict.nav.checkout || "Korpa"}</span>
+          <span className="hidden sm:inline">Korpa</span>
         </LiquidButton>
       ) : (
         <div className="h-11 w-[106px] invisible" />

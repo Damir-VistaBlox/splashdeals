@@ -3,19 +3,19 @@ import Link from "next/link";
 import Image from "next/image";
 import { Card } from "@/components/ui/card";
 interface Facility {
-  id: string;
-  name: string;
-  slug: string;
-  category: string;
-  streetName: string;
-  streetNumber: string;
-  postalCode: string;
-  city: string;
-  logoUrl?: string | null;
-  media?: { url: string; type?: string; purpose?: string; isCardBackground?: boolean }[];
-  tickets: { price: number; currency: string }[];
+  id: string
+  name: string
+  slug: string
+  category: string
+  city: string
+  streetName: string
+  streetNumber: string
+  postalCode: string
+  description: string | null
+  logoUrl?: string | null
+  media?: { url: string; type?: string; purpose?: string; isCardBackground?: boolean }[]
+  minPrice: number | null
 }
-
 interface FacilityCardProps {
   facility: Facility;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -87,9 +87,9 @@ export function FacilityCard({ facility, dict, fromLabel, isPriority = false }: 
             </div>
             
             <div className="flex items-center justify-between border-t border-border pt-4 mt-2">
-              {facility.tickets[0] ? (
+              {facility.minPrice ? (
                 <div className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">
-                  {fromLabel} <span className="text-base text-primary font-black block leading-none mt-1">{Number(facility.tickets[0].price)} {facility.tickets[0].currency}</span>
+                  {fromLabel} <span className="text-base text-primary font-black block leading-none mt-1">{facility.minPrice} RSD</span>
                 </div>
               ) : (
                 <div />

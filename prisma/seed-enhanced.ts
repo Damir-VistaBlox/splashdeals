@@ -18,7 +18,7 @@
  */
 
 import "dotenv/config";
-import { PrismaClient, FacilityStatus, TicketType, ValidityType, DayType, TimeSlot } from "@prisma/client";
+import { PrismaClient, FacilityStatus } from "@prisma/client";
 import { PrismaNeon } from "@prisma/adapter-neon";
 
 const connectionString = process.env.DATABASE_URL || "";

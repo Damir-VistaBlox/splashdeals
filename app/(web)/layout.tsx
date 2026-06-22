@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Header } from "@/components/layout/Header";
+import { NavigationStructuredData } from "@/components/layout/_header/NavigationStructuredData";
 import { BreadcrumbBar } from "@/components/layout/BreadcrumbBar";
 import { GlobalAmbient } from "@/components/ui/GlobalAmbient";
 import { getDictionary } from "@/lib/dictionaries";
@@ -48,6 +49,7 @@ async function WebLayoutContent({
   return (
     <div className="min-h-screen flex flex-col overflow-x-hidden font-sans">
       <GlobalAmbient />
+      <NavigationStructuredData />
       <Header dict={dict} cities={cities} />
 
       {/* 🧭 Breadcrumb bar — always visible just below the top nav header */}

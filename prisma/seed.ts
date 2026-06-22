@@ -1,6 +1,6 @@
 import 'dotenv/config'
 import { PrismaClient } from '@prisma/client'
-import type { Amenity, FacilityStatus, TicketType, ValidityType } from '@prisma/client'
+import type { Amenity, FacilityStatus } from '@prisma/client'
 import { PrismaNeon } from "@prisma/adapter-neon";
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
