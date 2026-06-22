@@ -126,6 +126,7 @@ model Facility {
   revenue           Transaction[]
   closures          FacilityClosure[]
   faqs              FacilityFAQ[]
+  labels            FacilityLabel[]
   staffAssignments  FacilityStaffAssignment[]
   products          Product[]
   campaignLinks     CampaignFacility[]
@@ -730,6 +731,46 @@ enum TicketStatus {
   HOLD
 
   @@schema("sales")
+}
+
+/// Naseljeno mesto u Srbiji — koristi se za autocomplete i označavanje objekata
+model PopulatedPlace {
+  id            String   @id @default(uuid())
+  name          String
+  type          String?                 // "Grad" | "Varosica" | "Selo" | "Mesna Zajednica"
+  municipality  String?                 // Opština
+  district      String?                 // Okrug
+  region        String?                 // "Vojvodina" | "Centralna Srbija" | "Kosovo"
+  postalCode    String?
+  latitude      Float?
+  longitude     Float?
+  slug          String   @unique
+  createdAt     DateTime @default(now())
+  labels        FacilityLabel[]
+
+  @@index([name])
+  @@index([municipality])
+  @@index([district])
+  @@schema("partners")
+  @@map("populated_places")
+}
+
+/// Oznaka grada/mesta za objekat — povezuje Facility sa PopulatedPlace
+model FacilityLabel {
+  id         String          @id @default(uuid())
+  facilityId String
+  facility   Facility        @relation(fields: [facilityId], references: [id], onDelete: Cascade)
+  placeId    String
+  place      PopulatedPlace  @relation(fields: [placeId], references: [id])
+  label      String?                 // prikazni naziv (može se menjadi)
+  isPrimary  Boolean         @default(false)
+  createdAt  DateTime        @default(now())
+
+  @@unique([facilityId, placeId])
+  @@index([facilityId])
+  @@index([placeId])
+  @@schema("partners")
+  @@map("facility_labels")
 }
 
 /// Pitanja i odgovori za objekat — prikazuju se na javnoj stranici objekta

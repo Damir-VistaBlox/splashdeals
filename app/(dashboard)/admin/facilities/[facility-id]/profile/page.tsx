@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { FacilityProfileForm } from "./_components/facility-profile-form"
+import { CityLabels } from "./_components/city-labels"
 import { prisma } from "@/server/lib/prisma"
 import { notFound } from "next/navigation"
 import { connection } from "next/server"
@@ -66,6 +67,9 @@ export default async function ProfilePage({ params }: { params: Promise<{ 'facil
         userRole={userRole}
         transactionCount={transactionCount}
       />
+      <div className="rounded-xl border border-border bg-card p-6">
+        <CityLabels facilityId={facilityId} />
+      </div>
     </div>
   )
 }
