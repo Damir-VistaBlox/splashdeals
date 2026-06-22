@@ -62,8 +62,9 @@ import { BreadcrumbInjector } from "./_components/BreadcrumbInjector"
 
 
 import { serialize } from "@/lib/serialize"
-import { ShareButton } from "./_components/ShareButton"
-import { JsonLd } from "@/components/SEO/JsonLd"
+import { ShareButton } from "./_components/ShareButton";
+import { ScrollToTicketsButton } from "./_components/ScrollToTicketsButton";
+import { JsonLd } from "@/components/SEO/JsonLd";
 import { validateDiscoverySlug } from "@/server/lib/data/discovery";
 import { calculateMaxDiscount } from "@/lib/utils/pricing";
 import { 
@@ -724,13 +725,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
 
                 {/* Mobile: Scroll-to-tickets CTA */}
                 <div className="block md:hidden w-full pt-4">
-                  <button
-                    onClick={() => document.getElementById("tickets")?.scrollIntoView({ behavior: "smooth" })}
-                    className="w-full h-14 bg-primary text-primary-foreground font-black text-xs uppercase tracking-[0.2em] rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-primary/30 active:scale-[0.97] transition-all"
-                  >
-                    <span>Uzmi karte</span>
-                    <Icon name="arrow_downward" className="text-[16px]" />
-                  </button>
+                  <ScrollToTicketsButton />
                 </div>
            </div>
         </div>
