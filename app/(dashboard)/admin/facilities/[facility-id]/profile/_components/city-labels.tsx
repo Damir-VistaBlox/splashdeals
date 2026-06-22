@@ -73,7 +73,7 @@ export function CityLabels({ facilityId }: Props) {
 
   // Set primary
   const handleSetPrimary = useCallback(async (id: string) => {
-    const updated = await setPrimaryLabel(facilityId, id)
+    const _updated = await setPrimaryLabel(facilityId, id)
     setLabels((prev) =>
       prev.map((l) => ({
         ...l,

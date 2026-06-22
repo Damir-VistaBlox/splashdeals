@@ -718,9 +718,9 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
                       hours={facility.hours}
                       destLat={Number(facility.lat)}
                       destLng={Number(facility.lng)}
-                      facilityName={facility.name}
                    />
                 </div>
+             </div>
 
                 {/* Mobile: Scroll-to-tickets CTA */}
                 <div className="block md:hidden w-full pt-4">

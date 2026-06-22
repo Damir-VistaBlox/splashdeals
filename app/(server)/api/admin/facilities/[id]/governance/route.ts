@@ -65,20 +65,6 @@ export async function PATCH(
         })
       }
 
-      // Sync marketplace cities if provided
-      if (validated.targetCityIds) {
-        await tx.facilityCity.deleteMany({
-          where: { facilityId }
-        })
-        await tx.facilityCity.createMany({
-          data: validated.targetCityIds.map(cityId => ({
-            facilityId,
-            cityId,
-            isPrimary: false
-          }))
-        })
-      }
-
       return updated
     })
 

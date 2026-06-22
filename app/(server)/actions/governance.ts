@@ -68,7 +68,6 @@ export async function updateFacilityGovernanceAction(rawValues: UpdateFacilityGo
       streetName, 
       streetNumber, 
       postalCode, 
-      targetCityIds,
       metaTitle,
       metaDescription,
       logoUrl,
@@ -107,22 +106,6 @@ export async function updateFacilityGovernanceAction(rawValues: UpdateFacilityGo
           transitGuide
         },
       })
-
-      // 2. Update Marketplace Tags (Junction Table)
-      // strategy: Wipe and rebuild the relationship for atomic consistency
-      await tx.facilityCity.deleteMany({
-        where: { facilityId }
-      })
-
-      if (targetCityIds.length > 0) {
-        await tx.facilityCity.createMany({
-          data: targetCityIds.map(cityId => ({
-            facilityId,
-            cityId,
-            isPrimary: false // Can be extended later for prioritized sorting
-          }))
-        })
-      }
 
       // 3. Clear existing hours for this facility and replace with new ones
       await tx.operatingHours.deleteMany({

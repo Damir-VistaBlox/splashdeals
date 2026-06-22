@@ -49,6 +49,12 @@ interface ProductOption {
   prices: PriceOption[];
 }
 
+interface CategoryOption {
+  id: string;
+  title: string;
+  products: ProductOption[];
+}
+
 const parseFacilityName = (name: string) => {
   const commonPrefixes = ["Akva Park", "Akva park", "Aquapark", "Banja", "Terme"];
   for (const prefix of commonPrefixes) {
@@ -142,7 +148,7 @@ export function ShowcaseTicketGroups({ groups, facilityId, facilitySlug, facilit
   const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
   const totalPrice = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
-  const handleBuySelection = () => {
+  const _handleBuySelection = () => {
     if (!facility) return;
     for (const tier of activeGroup.tiers) {
       const qty = getQuantity(tier.id);
@@ -337,9 +343,9 @@ function MobileTicketAccordion({ tier, facilitySlug, facility, isHighlighted, is
     setLoadingPrices(true);
     fetch(`/api/facilities/${facilitySlug}/tickets`)
       .then((r) => r.json())
-      .then((data: any[]) => {
+      .then((data: CategoryOption[]) => {
         // Flatten to get all products
-        const allProducts: ProductOption[] = data.flatMap((cat: any) => cat.products || []);
+        const allProducts: ProductOption[] = data.flatMap((cat: { products?: ProductOption[] }) => cat.products || []);
         setProducts(allProducts);
         // Find current product by matching tier.id
         const current = allProducts.find((p) => p.id === tier.id);
@@ -552,7 +558,7 @@ function MobileTicketAccordion({ tier, facilitySlug, facility, isHighlighted, is
 
 // ─── Desktop components (unchanged) ────────────────────────────
 
-function SingleTierCard({ group, tier, quantity, setQuantity, onAdd, prefix, main }: {
+function SingleTierCard({ group, tier, quantity, setQuantity, onAdd, prefix: _prefix, main }: {
   group: TicketGroup;
   tier: TicketTier;
   quantity: number;
@@ -690,7 +696,7 @@ function SingleTierCard({ group, tier, quantity, setQuantity, onAdd, prefix, mai
   );
 }
 
-function TierList({ tiers, quantities, setQuantity, onAdd, prefix, main }: {
+function TierList({ tiers, quantities, setQuantity, onAdd, prefix: _prefix, main: _main }: {
   tiers: TicketTier[];
   quantities: Record<string, number>;
   setQuantity: (id: string, qty: number) => void;
@@ -759,7 +765,7 @@ function TierList({ tiers, quantities, setQuantity, onAdd, prefix, main }: {
   );
 }
 
-function TierGrid({ tiers, quantities, setQuantity, onAdd, prefix, main }: {
+function TierGrid({ tiers, quantities, setQuantity, onAdd, prefix: _prefix, main: _main }: {
   tiers: TicketTier[];
   quantities: Record<string, number>;
   setQuantity: (id: string, qty: number) => void;

@@ -21,7 +21,6 @@ export { MediaGallery } from "../media/_components/media-gallery";
 // Profile components
 export { FacilityProfileForm } from "../profile/_components/facility-profile-form";
 export { DangerZone } from "../profile/_components/danger-zone";
-export { DistributionLogic } from "../profile/_components/distribution-logic";
 export { LocationSection } from "../profile/_components/location-section";
 export { ProfileAndSEO } from "../profile/_components/profile-and-seo";
 export { FacilityLogoUpload } from "../profile/_components/facility-logo-upload";
