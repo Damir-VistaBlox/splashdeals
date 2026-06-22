@@ -729,113 +729,92 @@ function MobileTicketCard({ tier, quantity, setQuantity, onAdd, isHighlighted, p
   prefix: string;
   main: string;
 }) {
+  const [justAdded, setJustAdded] = useState(false);
   const hasDiscount = tier.originalPrice && Number(tier.originalPrice) > Number(tier.price);
   const discountPercent = hasDiscount 
     ? Math.round(((Number(tier.originalPrice) - Number(tier.price)) / Number(tier.originalPrice)) * 100)
     : 0;
 
+  const handleIncrement = () => {
+    if (typeof navigator !== 'undefined' && "vibrate" in navigator) navigator.vibrate(10);
+    setQuantity(tier.id, quantity + 1);
+    setJustAdded(true);
+    setTimeout(() => setJustAdded(false), 600);
+  };
+
+  const handleDecrement = () => {
+    if (typeof navigator !== 'undefined' && "vibrate" in navigator) navigator.vibrate(10);
+    setQuantity(tier.id, Math.max(1, quantity - 1));
+  };
+
   return (
     <div 
       id={`ticket-${tier.id}`}
       className={cn(
-        "relative p-6 rounded-3xl transition-all duration-300 flex flex-col gap-5 border text-left",
-        isHighlighted 
-          ? "bg-gradient-to-br from-primary/20 to-background/40 border-primary/40 shadow-[0_0_25px_rgba(6,182,212,0.12)]" 
-          : "bg-muted/20 border-border hover:bg-muted/50"
+        "flex items-center justify-between px-3 py-3 border-b border-border/40 transition-colors",
+        isHighlighted ? "bg-primary/[0.03]" : "hover:bg-muted/20"
       )}
     >
-      {isHighlighted && (
-        <span className="absolute -top-3 right-6 bg-gradient-to-r from-primary to-blue-500 text-primary-foreground font-black text-[9px] uppercase tracking-widest px-3 py-1 rounded-full shadow-[0_0_15px_rgba(6,182,212,0.4)]">
-          Najpopularnije
-        </span>
-      )}
-
-      {/* Title & Info */}
-      <div className="space-y-2">
-        <h4 className="text-sm md:text-base font-black text-foreground uppercase italic tracking-tight leading-tight">
+      {/* Left: label + badge */}
+      <div className="flex items-center gap-2 min-w-0 flex-1">
+        <span className="text-sm font-bold text-foreground tracking-tight truncate">
           {tier.label}
-        </h4>
-        
-        <div className="flex flex-wrap gap-2">
-          {tier.dayType && tier.dayType !== 'ALL' && (
-            <Badge className="bg-muted/50 text-foreground/80 text-[8px] font-black uppercase tracking-wider border-border">
-              {tier.dayType === 'WEEKDAY' ? 'Radni dan' : 'Vikend'}
-            </Badge>
-          )}
-          {tier.timeSlot && tier.timeSlot !== 'FULL_DAY' && (
-            <Badge className="bg-primary/10 text-primary text-[8px] font-black uppercase tracking-wider border-cyan-500/10">
-              {tier.timeSlot === "AFTER_16H" ? "Poslepodne" : "Celodnevna"}
-            </Badge>
-          )}
-          {tier.isSeasonPass && (
-            <Badge className="bg-emerald-500/10 text-emerald-400 text-[8px] font-black uppercase tracking-wider border-emerald-500/10">
-              Sezonska karta
-            </Badge>
-          )}
-        </div>
-      </div>
-
-      {/* Pricing Row */}
-      <div className="flex items-center justify-between border-t border-border pt-4">
-        {hasDiscount ? (
-          <div className="flex items-center gap-3">
-            {/* Gate Price (Na ulazu) */}
-            <div className="flex flex-col">
-              <span className="text-[8px] font-black uppercase tracking-wider text-muted-foreground leading-none mb-1">
-                {prefix && <span className="sr-only">{prefix} </span>}
-                {main} cene
-              </span>
-              <div className="relative inline-flex items-center">
-                <span className="text-sm font-bold text-muted-foreground line-through opacity-70">
-                  {tier.originalPrice} RSD
-                </span>
-              </div>
-            </div>
-
-            {/* Online Price (Kupi online) */}
-            <div className="flex flex-col">
-              <span className="text-[8px] font-black uppercase tracking-wider text-primary leading-none mb-1 animate-pulse">Kupi online</span>
-              <span className="text-xl font-black text-foreground leading-none">
-                {tier.price} <span className="text-[10px] text-primary font-black">RSD</span>
-              </span>
-            </div>
-
-            {/* Discount Badge */}
-            <Badge className="bg-rose-500 text-white font-black text-[9px] uppercase tracking-wider px-2 py-0.5 ml-1">
-              -{discountPercent}%
-            </Badge>
-          </div>
-        ) : (
-          <div className="flex flex-col">
-            <span className="text-[8px] font-black uppercase tracking-wider text-muted-foreground leading-none mb-1">Cena</span>
-            <span className="text-xl font-black text-foreground">
-              {tier.price} <span className="text-[10px] text-muted-foreground">RSD</span>
-            </span>
-          </div>
+        </span>
+        {hasDiscount && (
+          <span className="shrink-0 text-[7px] font-black uppercase tracking-widest bg-rose-500/15 text-rose-400 px-1.5 py-0.5 rounded-full leading-none">
+            -{discountPercent}%
+          </span>
+        )}
+        {isHighlighted && (
+          <span className="shrink-0 text-[7px] font-black uppercase tracking-widest bg-primary/15 text-primary px-1.5 py-0.5 rounded-full leading-none">
+            Najpopularnije
+          </span>
         )}
       </div>
 
-      {/* Quantity & CTA */}
-      <div className="flex items-center gap-3 border-t border-border pt-4">
-        <div className="flex items-center bg-black/35 rounded-2xl p-1 border border-border shrink-0">
-          <button 
-            onClick={() => setQuantity(tier.id, Math.max(1, quantity - 1))} 
-            className="w-10 h-10 flex items-center justify-center hover:bg-muted/50 rounded-xl transition-colors text-muted-foreground"
-          >
-            <Icon name="remove" className="text-[16px]" />
-          </button>
-          <span className="w-6 text-center font-black text-foreground text-sm">{quantity}</span>
-          <button 
-            onClick={() => setQuantity(tier.id, quantity + 1)} 
-            className="w-10 h-10 flex items-center justify-center hover:bg-muted/50 rounded-xl transition-colors text-muted-foreground"
-          >
-            <Icon name="add" className="text-[16px]" />
-          </button>
+      {/* Right: price + stepper */}
+      <div className="flex items-center gap-3 shrink-0">
+        {/* Price */}
+        <div className="text-right min-w-[60px]">
+          {hasDiscount ? (
+            <div className="flex flex-col items-end leading-tight -space-y-0.5">
+              <span className="text-[9px] font-black text-foreground tabular-nums leading-none">
+                {tier.price} RSD
+              </span>
+              <span className="text-[7px] font-bold text-muted-foreground line-through leading-none">
+                {tier.originalPrice} RSD
+              </span>
+            </div>
+          ) : (
+            <span className="text-sm font-black text-foreground tabular-nums leading-none">
+              {tier.price} RSD
+            </span>
+          )}
         </div>
 
-        <Button onClick={() => onAdd(tier)} className="h-12 px-4 text-[10px] font-black uppercase tracking-[0.15em] bg-primary text-black hover:bg-primary/90 rounded-full">
-          Dodaj u korpu
-        </Button>
+        {/* Stepper */}
+        <div className="flex items-center bg-black/25 rounded-lg border border-border/50">
+          <button
+            onClick={handleDecrement}
+            className="w-8 h-8 flex items-center justify-center hover:bg-muted/30 rounded-l-lg transition-colors text-muted-foreground"
+            aria-label="Smanji količinu"
+          >
+            <Icon name="remove" className="text-[14px]" />
+          </button>
+          <span className={cn(
+            "w-7 text-center font-black text-foreground text-xs transition-all duration-300",
+            justAdded && "scale-125 text-primary"
+          )}>
+            {quantity}
+          </span>
+          <button
+            onClick={handleIncrement}
+            className="w-8 h-8 flex items-center justify-center hover:bg-muted/30 rounded-r-lg transition-colors text-muted-foreground"
+            aria-label="Povećaj količinu"
+          >
+            <Icon name="add" className="text-[14px]" />
+          </button>
+        </div>
       </div>
     </div>
   );
