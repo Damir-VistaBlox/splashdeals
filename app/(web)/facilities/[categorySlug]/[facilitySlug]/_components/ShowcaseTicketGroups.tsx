@@ -751,7 +751,7 @@ function MobileTicketCard({ tier, quantity, setQuantity, onAdd, isHighlighted, p
     <div 
       id={`ticket-${tier.id}`}
       className={cn(
-        "flex items-center justify-between px-3 py-3 border-b border-border/40 transition-colors",
+        "flex items-center justify-between px-3 py-3 border-b border-border/40 transition-colors even:bg-muted/[0.02]",
         isHighlighted ? "bg-primary/[0.03]" : "hover:bg-muted/20"
       )}
     >
