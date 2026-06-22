@@ -782,14 +782,20 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
                 </Card>
               )}
 
+              {/* 🍱 Facility amenities card grid — hidden on mobile, already in description text */}
+              <div className="hidden md:block">
               <ShowcaseAmenities 
                 amenities={serialize(facility.amenities) as any /* eslint-disable-line @typescript-eslint/no-explicit-any */} 
                 dict={dict} 
               />
+              </div>
            </div>
 
            <aside className="lg:col-span-4 lg:sticky lg:top-28 space-y-6">
+            {/* Partner Branding — hidden on mobile (already in description text) */}
+            <div className="hidden md:block">
               <PartnerBranding logoUrl={facility.logoUrl} name={facility.name} />
+            </div>
               
               {/* Operational Portal — hidden on mobile (already in MobileUnifiedControlPill) */}
               <div className="hidden md:block">
