@@ -755,8 +755,17 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
                  <h2 className="text-2xl md:text-5xl font-black italic tracking-tighter uppercase leading-tight text-white">
                     Zabava <span className="text-splash">Otključana.</span>
                  </h2>
-                 <p className="text-slate-300 text-xl leading-relaxed font-medium italic opacity-90 max-w-2xl">
-                    {facility.description || "Otkrijte premium iskustvo koje prevazilazi običan odlazak na bazen."}
+                 <p className="text-slate-300 text-xl leading-relaxed font-medium italic opacity-90 max-w-2xl space-y-4">
+                    <span>{facility.description || "Otkrijte premium iskustvo koje prevazilazi običan odlazak na bazen."}</span>
+                    {facility.amenities && facility.amenities.length > 0 && (
+                      <span className="block text-base not-italic font-medium text-slate-400 mt-4 border-t border-border/30 pt-4">
+                        Sadržaji:{" "}
+                        {facility.amenities
+                          .map((fa: { amenity: { name: string } }) => fa.amenity.name)
+                          .join(", ")}
+                        .
+                      </span>
+                    )}
                  </p>
               </Card>
 
