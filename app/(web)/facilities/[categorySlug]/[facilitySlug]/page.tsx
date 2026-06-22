@@ -798,7 +798,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
         </div>
 
         {facility.faqs && facility.faqs.length > 0 && (
-          <div className="space-y-8 pt-12">
+          <div className="space-y-8 pt-12 max-w-3xl mx-auto w-full px-6 md:px-12">
             <FaqAccordion
               faqs={facility.faqs.map((f) => ({
                 id: f.id,
