@@ -2,8 +2,8 @@ import { Suspense } from "react";
 import { Metadata } from "next";
 import { connection } from "next/server";
 import { getDictionary } from "@/lib/dictionaries";
-import { FacilityGrid } from "@/app/(web)/facilities/_components/FacilityGrid";
-import { FacilityGridSkeleton } from "@/app/(web)/facilities/_components/FacilitySkeletons";
+import { FacilityGrid } from "@/app/(web)/_facility/_components/FacilityGrid";
+import { FacilityGridSkeleton } from "@/app/(web)/_facility/_components/FacilitySkeletons";
 import {
   Breadcrumb,
   BreadcrumbItem,

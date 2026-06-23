@@ -1,5 +1,5 @@
 import { Skeleton } from "@/components/ui/skeleton"
-import { FacilityGridSkeleton } from "./_components/FacilitySkeletons"
+import { FacilityGridSkeleton } from "../_facility/_components/FacilitySkeletons"
 
 export default function FacilitiesRootLoading() {
   return (
