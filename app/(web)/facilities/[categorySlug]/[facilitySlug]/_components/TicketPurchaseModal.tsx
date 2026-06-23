@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import { useCart, MAX_QUANTITY_PER_ITEM } from "@/hooks/use-cart";
 import { useUIState } from "@/hooks/use-ui-state";
 import { useRouter } from "next/navigation";
+import { Spinner, SpinnerLg } from "@/components/ui/spinner";
 
 interface TicketPurchaseModalProps {
   isOpen: boolean;
@@ -257,10 +258,7 @@ export function TicketPurchaseModal({ isOpen, onClose, facilitySlug, initialProd
 
   const renderLoading = () => (
     <div className="flex items-center justify-center py-16">
-      <svg className="animate-spin h-8 w-8 text-primary" viewBox="0 0 24 24" fill="none">
-        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-      </svg>
+      <SpinnerLg />
     </div>
   );
 
@@ -441,7 +439,7 @@ export function TicketPurchaseModal({ isOpen, onClose, facilitySlug, initialProd
           {isAdded ? (
             <><Icon name="check" className="text-[16px] animate-scale-in" /><span>Dodato u korpu!</span></>
           ) : isAdding ? (
-            <><svg className="animate-spin h-4 w-4 mr-2" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg><span>Dodavanje...</span></>
+            <><Spinner className="mr-2 inline" style={{width:"1rem",height:"1rem"}} /><span>Dodavanje...</span></>
           ) : (
             <><Icon name="shopping_bag" className="text-[16px]" /><span>Dodaj u korpu</span></>
           )}

@@ -7,8 +7,8 @@ import { Button } from "@/components/ui/button"
 import { useCart, MAX_QUANTITY_PER_ITEM } from "@/hooks/use-cart"
 import { cn } from "@/lib/utils"
 import Image from "next/image"
-import type { DayType, TimeSlot } from "@prisma/client"
 import { TicketPurchaseModal } from "./TicketPurchaseModal"
+import { Spinner } from "@/components/ui/spinner"
 
 interface TicketTier {
   id: string;
@@ -18,8 +18,8 @@ interface TicketTier {
   price: number;
   originalPrice: number | null;
   description: string | null;
-  dayType: DayType | null;
-  timeSlot: TimeSlot | null;
+  dayType: string | null;
+  timeSlot: string | null;
   minPeople: number;
   maxPeople: number | null;
   isSeasonPass: boolean;
@@ -436,10 +436,7 @@ function MobileTicketAccordion({ tier, facilitySlug, facility, isHighlighted, is
         <div className="px-3 pb-4 animate-fade-in">
           {loadingPrices ? (
             <div className="flex items-center justify-center py-8">
-              <svg className="animate-spin h-5 w-5 text-primary" viewBox="0 0 24 24" fill="none">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-              </svg>
+              <Spinner />
             </div>
           ) : !activeProduct || activeProduct.prices.length === 0 ? (
             <p className="text-xs text-muted-foreground italic py-4 text-center">Nema dostupnih varijanti.</p>
@@ -543,7 +540,7 @@ function MobileTicketAccordion({ tier, facilitySlug, facility, isHighlighted, is
                 {isAdded ? (
                   <><Icon name="check" className="text-[16px] animate-scale-in" /><span>Dodato u korpu!</span></>
                 ) : isAdding ? (
-                  <><svg className="animate-spin h-4 w-4 mr-2" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg><span>Dodavanje...</span></>
+                  <><Spinner className="mr-2 inline" style={{width:"1rem",height:"1rem"}} /><span>Dodavanje...</span></>
                 ) : (
                   <><Icon name="shopping_bag" className="text-[16px]" /><span>Dodaj u korpu</span></>
                 )}

@@ -142,51 +142,5 @@ export function MediaGallery({ media, dict }: MediaGalleryProps) {
   );
 }
 
-/**
- * 🎞️ HeroThumbnails Island (Client)
- * Minimal thumbnail switcher for the immersive hero background.
- */
-export function HeroThumbnails({ media }: { media: FacilityMedia[] }) {
-  const [activeIdx, setActiveIdx] = useState(0)
-  const visibleMedia = media.filter(m => m.isGalleryVisible !== false);
-  
-  return (
-    <div className="flex p-2 gap-2 overflow-x-auto no-scrollbar">
-      {visibleMedia.slice(0, 4).map((m: FacilityMedia, idx: number) => (
-        <button 
-          key={m.id}
-          onClick={() => setActiveIdx(idx)}
-          className={cn(
-            "relative h-20 w-32 rounded-xl overflow-hidden flex-shrink-0 transition-all duration-300",
-            activeIdx === idx ? "ring-2 ring-primary scale-105" : "opacity-60 grayscale hover:grayscale-0"
-          )}
-        >
-          {m.type === 'VIDEO' ? (
-            <div className="w-full h-full bg-muted flex items-center justify-center">
-              {m.thumbnailUrl ? (
-                <Image 
-                  src={m.thumbnailUrl} 
-                  fill
-                  sizes="128px"
-                  className="w-full h-full object-cover opacity-50" 
-                  alt="Video thumbnail" 
-                />
-              ) : (
-                <video src={m.url} muted className="w-full h-full object-cover opacity-50" />
-              )}
-              <Icon name="play_arrow" className="absolute inset-0 m-auto text-[24px] text-white" />
-            </div>
-          ) : (
-            <Image 
-              src={m.url} 
-              fill
-              sizes="128px"
-              className="w-full h-full object-cover" 
-              alt="Media thumbnail" 
-            />
-          )}
-        </button>
-      ))}
-    </div>
-  )
-}
+
+

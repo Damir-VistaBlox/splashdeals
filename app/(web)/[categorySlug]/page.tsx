@@ -5,7 +5,8 @@ import { prisma } from "@/server/lib/prisma";
 import { FacilityShowcaseTemplate } from "@/app/(web)/facilities/[categorySlug]/[facilitySlug]/page";
 import { buildFacilityMetadata } from "@/app/(web)/facilities/[categorySlug]/[facilitySlug]/_metadata";
 import { DiscoveryTemplate, getDiscoveryMetadata } from "@/lib/routing/discovery";
-import { slugToDbValue, isKnownCategory, dbValueToSlug } from "@/lib/routing/categories";
+import { resolveSlug, resolveFacilitySlug } from "@/lib/routing/resolve-slug";
+import { isKnownCategory, slugToDbValue } from "@/lib/routing/categories";
 
 interface PageProps {
   params: Promise<{ categorySlug: string }>;
@@ -14,31 +15,26 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { categorySlug } = await params;
 
-  // 1. Try as known category
+  // Try as category first
   if (isKnownCategory(categorySlug.toLowerCase())) {
     return await getDiscoveryMetadata(categorySlug);
   }
 
-  // 2. Try as category in DB
+  // Try as category via DB lookup
   const dbValue = slugToDbValue(categorySlug);
   const hasCategory = await prisma.facility.findFirst({
     where: { category: { equals: dbValue ?? categorySlug, mode: "insensitive" } },
     select: { id: true },
-  }).catch(() => null);
+  });
 
   if (hasCategory) {
     return await getDiscoveryMetadata(categorySlug);
   }
 
-  // 3. Try as facility slug
-  const facility = await prisma.facility.findUnique({
-    where: { slug: categorySlug, status: "ACTIVE" },
-    select: { slug: true, category: true },
-  }).catch(() => null);
-
+  // Try as facility slug
+  const facility = await resolveFacilitySlug(categorySlug);
   if (facility) {
-    const catSlug = dbValueToSlug(facility.category!) ?? facility.category!.toLowerCase().replace(/\s+/g, "-");
-    return await buildFacilityMetadata(categorySlug, catSlug);
+    return await buildFacilityMetadata(categorySlug, facility.category);
   }
 
   notFound();
@@ -47,7 +43,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function CategoryPage({ params }: PageProps) {
   const { categorySlug } = await params;
 
-  // 1. Try as category
+  // Try as category first
   if (isKnownCategory(categorySlug.toLowerCase())) {
     return (
       <DiscoveryTemplate
@@ -56,11 +52,12 @@ export default async function CategoryPage({ params }: PageProps) {
     );
   }
 
+  // Try as category via DB lookup
   const dbValue = slugToDbValue(categorySlug);
   const hasCategory = await prisma.facility.findFirst({
     where: { category: { equals: dbValue ?? categorySlug, mode: "insensitive" } },
     select: { id: true },
-  }).catch(() => null);
+  });
 
   if (hasCategory) {
     return (
@@ -70,18 +67,13 @@ export default async function CategoryPage({ params }: PageProps) {
     );
   }
 
-  // 3. Try as facility slug
-  const facility = await prisma.facility.findUnique({
-    where: { slug: categorySlug, status: "ACTIVE" },
-    select: { slug: true, category: true },
-  }).catch(() => null);
-
+  // Try as facility slug
+  const facility = await resolveFacilitySlug(categorySlug);
   if (facility) {
-    const catSlug = dbValueToSlug(facility.category!) ?? facility.category!.toLowerCase().replace(/\s+/g, "-");
     return (
       <FacilityShowcaseTemplate
         params={Promise.resolve({
-          categorySlug: catSlug,
+          categorySlug: facility.category,
           facilitySlug: categorySlug,
         })}
       />

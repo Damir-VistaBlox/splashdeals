@@ -36,6 +36,139 @@ type FacilityWithIncludes = Prisma.FacilityGetPayload<{
   };
 }>;
 
+export type { FacilityWithIncludes };
+
+// ── Typed helpers for ticket data ─────────────────────────────────
+
+export interface FlattenedPrice {
+  id: string;
+  price: number | { toString: () => string };
+  originalPrice: number | null | { toString: () => string };
+  isActive: boolean;
+  catTitle: string;
+  prodTitle: string;
+  prodDescription: string | null;
+  requiresIdentity: boolean;
+  requiresPhoto: boolean;
+  minPeople: number;
+  maxPeople: number | null;
+  isSeasonPass: boolean;
+  validityType: string | null;
+  dayType: string | null;
+  timeSlot: string | null;
+}
+
+export interface TicketGroupTier {
+  id: string;
+  title: string;
+  label: string;
+  price: number;
+  originalPrice: number | null;
+  minPeople: number;
+  maxPeople: number | null;
+  dayType: string | null;
+  timeSlot: string | null;
+  isSeasonPass: boolean;
+  isActive: boolean;
+  requiresIdentity: boolean;
+  requiresPhoto: boolean;
+  imageUrl: string | null;
+  slug: string | null;
+  description: string | null;
+  seasonStart: Date | null;
+  seasonEnd: Date | null;
+}
+
+export interface TicketGroup {
+  id: string;
+  title: string;
+  description: string | null;
+  slug: string;
+  tiers: TicketGroupTier[];
+}
+
+export function flattenActivePrices(facility: FacilityWithIncludes): FlattenedPrice[] {
+  return (facility.ticketCategories || []).flatMap((cat) =>
+    (cat.types || []).flatMap((prod) =>
+      (prod.prices || []).filter((p) => p.isActive).map((p) => ({
+        ...p,
+        catTitle: cat.title,
+        prodTitle: prod.title,
+        prodDescription: prod.description,
+        requiresIdentity: prod.requiresIdentity,
+        requiresPhoto: prod.requiresPhoto,
+        minPeople: prod.minPeople,
+        maxPeople: prod.maxPeople,
+        isSeasonPass: prod.isSeasonPass,
+        validityType: prod.validityType,
+      }))
+    )
+  );
+}
+
+export function buildTicketGroups(facility: FacilityWithIncludes): TicketGroup[] {
+  if (facility.ticketCategories && facility.ticketCategories.length > 0) {
+    return facility.ticketCategories.map((cat) => ({
+      id: cat.id,
+      title: cat.title,
+      description: null,
+      slug: cat.slug || cat.title.toLowerCase().replace(/\s+/g, "-"),
+      tiers: (cat.types || []).filter((prod) => prod.isActive).map((prod) => ({
+        id: prod.id,
+        title: prod.title,
+        label: prod.title,
+        price: Math.min(...(prod.prices || []).filter((p) => p.isActive).map((p) => Number(p.price))),
+        originalPrice: null,
+        minPeople: prod.minPeople || 1,
+        maxPeople: prod.maxPeople || null,
+        dayType: null,
+        timeSlot: null,
+        isSeasonPass: prod.isSeasonPass,
+        requiresIdentity: prod.requiresIdentity,
+        requiresPhoto: prod.requiresPhoto,
+        imageUrl: prod.imageUrl || facility.media?.[0]?.url || null,
+        slug: null,
+        description: null,
+        seasonStart: null,
+        seasonEnd: null,
+        isActive: true,
+      }))
+    }));
+  }
+
+  const allPrices = flattenActivePrices(facility);
+  if (allPrices.length > 0) {
+    return [{
+      id: "default-group",
+      title: "Standardne Ponude",
+      description: "Standardne ponude i ulaznice koje nisu deo posebnih paketa.",
+      slug: "standardne-ponude",
+      tiers: allPrices.map((p) => ({
+        id: p.id,
+        title: p.prodTitle,
+        label: p.prodTitle,
+        price: Number(p.price),
+        originalPrice: p.originalPrice ? Number(p.originalPrice) : null,
+        minPeople: p.minPeople || 1,
+        maxPeople: p.maxPeople || null,
+        dayType: p.dayType,
+        timeSlot: p.timeSlot,
+        isSeasonPass: p.isSeasonPass,
+        requiresIdentity: p.requiresIdentity,
+        requiresPhoto: p.requiresPhoto,
+        imageUrl: facility.media?.[0]?.url || null,
+        slug: null,
+        description: null,
+        seasonStart: null,
+        seasonEnd: null,
+        isActive: true,
+      }))
+    }];
+  }
+
+  return [];
+}
+
 // ── Fetcher (shared with the page component) ─────────────────────
 
 export const getFacility = cache(async (slug: string): Promise<FacilityWithIncludes | null> => {
@@ -85,14 +218,7 @@ export async function buildFacilityMetadata(
   const categoryLabel = catLabelMap[facility.category.toLowerCase()] ?? facility.category;
 
   // Flatten ticket data for price / count hints
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const tickets = (facility.ticketCategories || []).flatMap((cat: any) =>
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (cat.types || []).flatMap((prod: any) =>
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (prod.prices || []).filter((p: any) => p.isActive),
-    ),
-  );
+  const tickets = flattenActivePrices(facility);
   const ticketCount = tickets.length;
   const ticketHint =
     ticketCount > 0 ? ` | ${ticketCount} vrsta ulaznica dostupno` : "";

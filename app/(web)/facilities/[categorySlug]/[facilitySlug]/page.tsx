@@ -17,10 +17,6 @@ const DELETED_FACILITY_SLUGS = new Set<string>([]); // proxy handles all 410s
 function isDeletedFacility(slug: string): boolean {
   return DELETED_FACILITY_SLUGS.has(slug);
 }
-import { 
-  DayType,
-  TimeSlot,
-} from "@prisma/client"
 
 // 🏝️ Islands: Client Components for interactive portions
 import { ShowcaseHero } from "./_components/ShowcaseHero"
@@ -42,12 +38,11 @@ const ShowcaseAmenities = dynamic(() => import("./_components/ShowcaseAmenities"
   ssr: true
 });
 
-import { Card } from "@/components/ui/card"
-import { Skeleton } from "@/components/ui/skeleton"
 import { PartnerBranding } from "./_components/PartnerBranding"
 import { ScrollManager } from "./_components/ScrollManager"
 import { BreadcrumbInjector } from "./_components/BreadcrumbInjector"
-
+import { Card } from "@/components/ui/card"
+import { Skeleton } from "@/components/ui/skeleton"
 
 import { serialize } from "@/lib/serialize"
 import { JsonLd } from "@/components/SEO/JsonLd";
@@ -57,25 +52,9 @@ import {
   buildFacilitySchema,
   TierEntry,
 } from "./_schemas";
-import { getFacility, buildFacilityMetadata } from "./_metadata";
+import { getFacility, buildFacilityMetadata, buildTicketGroups, flattenActivePrices } from "./_metadata";
+import type { FacilityWithIncludes } from "./_metadata";
 import { getWeather } from "@/server/lib/weather";
-
-interface _TicketData {
-  id: string;
-  title: string;
-  price: number | { toString: () => string };
-  originalPrice: number | null | { toString: () => string };
-  dayType: string | null;
-  timeSlot: string | null;
-  minPeople: number;
-  maxPeople: number | null;
-  isSeasonPass: boolean;
-  requiresIdentity: boolean;
-  requiresPhoto: boolean;
-  groupId: string | null;
-  isActive: boolean;
-  imageUrl?: string | null;
-}
 
 interface FacilityPageProps {
   params: Promise<{
@@ -88,7 +67,6 @@ interface FacilityPageProps {
  * 🕵️ Metadata Engine (For the legacy long-segment redirect)
  */
 export async function generateMetadata({ params }: FacilityPageProps): Promise<Metadata> {
-  await connection()
   const { facilitySlug } = await params
 
   // Permanently deleted legacy paths — 410 Gone
@@ -120,125 +98,18 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
   validateDiscoverySlug(categorySlug, facility);
   const categoryLabel = catLabelMap[facility.category.toLowerCase()] ?? facility.category;
 
-  // Find all active prices across all categories/products
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const allPrices = (facility.ticketCategories || []).flatMap((cat: any) =>
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (cat.types || []).flatMap((prod: any) =>
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (prod.prices || []).filter((p: any) => p.isActive).map((p: any) => ({
-        ...p,
-        catTitle: cat.title,
-        prodTitle: prod.title,
-        prodDescription: prod.description,
-        requiresIdentity: prod.requiresIdentity,
-        requiresPhoto: prod.requiresPhoto,
-        minPeople: prod.minPeople,
-        maxPeople: prod.maxPeople,
-        isSeasonPass: prod.isSeasonPass,
-        validityType: prod.validityType,
-      }))
-    )
-  );
+  // Build ticket groups and price data
+  const mappedGroups = buildTicketGroups(facility);
+  const allPrices = flattenActivePrices(facility);
   const ticketCount = allPrices.length;
 
-  let mappedGroups: Array<{
-    id: string;
-        title: string;
-    description: string | null;
-    slug: string;
-    tiers: Array<{
-      id: string;
-      slug: string | null;
-      label: string;
-      title: string;
-      description: string | null;
-      price: number;
-      originalPrice: number | null;
-      minPeople: number;
-      maxPeople: number | null;
-      dayType: DayType | null;
-      timeSlot: TimeSlot | null;
-      isSeasonPass: boolean;
-      isActive: boolean;
-      seasonStart: Date | null;
-      seasonEnd: Date | null;
-      requiresIdentity: boolean;
-      requiresPhoto: boolean;
-      imageUrl: string | null;
-    }>;
-  }> = []
-
-  // Build groups from the new hierarchy — each category becomes a group,
-  // each product becomes a tier (modal handles price selection)
-  if (facility.ticketCategories && facility.ticketCategories.length > 0) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    mappedGroups = facility.ticketCategories.map((cat: any) => ({
-      id: cat.id,
-      title: cat.title,
-      description: null,
-      slug: cat.slug || cat.title.toLowerCase().replace(/\s+/g, "-"),
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      tiers: (cat.types || []).filter((prod: any) => prod.isActive).map((prod: any) => ({
-        id: prod.id,
-        title: prod.title,
-        label: prod.title,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        price: Math.min(...(prod.prices || []).filter((p: any) => p.isActive).map((p: any) => Number(p.price))),
-        originalPrice: null,
-        minPeople: prod.minPeople || 1,
-        maxPeople: prod.maxPeople || null,
-        dayType: null,
-        timeSlot: null,
-        isSeasonPass: prod.isSeasonPass,
-        requiresIdentity: prod.requiresIdentity,
-        requiresPhoto: prod.requiresPhoto,
-        imageUrl: prod.imageUrl || facility.media?.[0]?.url || null,
-        slug: null,
-        description: null,
-        seasonStart: null,
-        seasonEnd: null,
-        isActive: true,
-      }))
-    }))
-  } else if (allPrices.length > 0) {
-    // Fallback: all prices in a single "Standardne Ponude" group
-    mappedGroups = [{
-      id: "default-group",
-      title: "Standardne Ponude",
-      description: "Standardne ponude i ulaznice koje nisu deo posebnih paketa.",
-      slug: "standardne-ponude",
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      tiers: allPrices.map((p: any) => ({
-        id: p.id,
-        title: p.prodTitle,
-        label: p.prodTitle,
-        price: Number(p.price),
-        originalPrice: p.originalPrice ? Number(p.originalPrice) : null,
-        minPeople: p.minPeople || 1,
-        maxPeople: p.maxPeople || null,
-        dayType: p.dayType,
-        timeSlot: p.timeSlot,
-        isSeasonPass: p.isSeasonPass,
-        requiresIdentity: p.requiresIdentity,
-        requiresPhoto: p.requiresPhoto,
-        imageUrl: facility.media?.[0]?.url || null,
-        slug: null,
-        description: null,
-        seasonStart: null,
-        seasonEnd: null,
-        isActive: true,
-      }))
-    }]
-  }
-
   // 🎥 Logic: Priority Hero Selection (Protocol)
-  const explicitHero = facility.media.find((m: { isHero: boolean }) => m.isHero);
-  const firstVideo = facility.media.find((m: { type: string }) => m.type === "VIDEO");
+  const explicitHero = facility.media.find((m) => m.isHero);
+  const firstVideo = facility.media.find((m) => m.type === "VIDEO");
   const heroMedia = explicitHero || firstVideo || facility.media[0];
 
   // 🧠 Structured Data Block
-  const allTiers = mappedGroups.flatMap((group: { tiers: Array<unknown> }) => group.tiers || []) as TierEntry[];
+  const allTiers = mappedGroups.flatMap((group) => group.tiers || []) as TierEntry[];
 
   const facilitySchema = buildFacilitySchema({
     facility,
@@ -368,7 +239,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
               {/* 🍱 Facility amenities card grid — hidden on mobile, already in description text */}
               <div className="hidden md:block">
               <ShowcaseAmenities 
-                amenities={serialize(facility.amenities) as any /* eslint-disable-line @typescript-eslint/no-explicit-any */} 
+                amenities={serialize(facility.amenities) as any}
                 dict={dict} 
               />
               </div>

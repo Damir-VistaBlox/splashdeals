@@ -4,18 +4,6 @@ import { Icon } from "@/components/ui/Icon";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { formatTime24h } from "@/lib/utils/date-time";
 
-interface CurrentWeather {
-  temperature: number;
-  weathercode: number;
-}
-
-export interface DailyForecastItem {
-  day: string;
-  weathercode: number;
-  tempHigh: number;
-  tempLow: number;
-}
-
 interface HoursSubset {
   dayOfWeek: number;
   openTime: string;
@@ -24,47 +12,12 @@ interface HoursSubset {
 }
 
 interface MobileUnifiedControlPillProps {
-  weather?: CurrentWeather | null;
-  dailyForecast?: DailyForecastItem[] | null;
   hours: HoursSubset[];
   destLat: number;
   destLng: number;
 }
 
-const WMO_DESCRIPTIONS: Record<number, string> = {
-  0: "Vedro",
-  1: "Pretežno vedro",
-  2: "Delimično oblačno",
-  3: "Oblačno",
-  45: "Maglovito",
-  48: "Magla",
-  51: "Sitna kiša",
-  53: "Sitna kiša",
-  55: "Sitna kiša",
-  56: "Ledena kiša",
-  57: "Ledena kiša",
-  61: "Kiša",
-  63: "Kiša",
-  65: "Jaka kiša",
-  66: "Ledena kiša",
-  67: "Ledena kiša",
-  71: "Sneg",
-  73: "Sneg",
-  75: "Jak sneg",
-  77: "Zrnca snega",
-  80: "Pljuskovi",
-  81: "Pljuskovi",
-  82: "Jaki pljuskovi",
-  85: "Snežni pljuskovi",
-  86: "Snežni pljuskovi",
-  95: "Oluja",
-  96: "Oluja sa gradom",
-  99: "Oluja sa gradom",
-};
-
 export function MobileUnifiedControlPill({
-  weather,
-  dailyForecast,
   hours = [],
   destLat,
   destLng,
@@ -73,7 +26,6 @@ export function MobileUnifiedControlPill({
     distance: null,
     failed: false,
   });
-  const [forecastOpen, setForecastOpen] = useState(false);
   const geoTimeoutRef = useRef<number | null>(null);
 
   // ⏰ Derived hours + open/closed status
@@ -146,63 +98,12 @@ export function MobileUnifiedControlPill({
     window.open(url, "_blank");
   };
 
-  // 🌤️ Weather icon + description
-  const getWeatherIcon = (code: number) => {
-    if (code === 0) return <Icon name="light_mode" className="text-[24px] text-amber-400" />;
-    if (code < 4) return <Icon name="cloud" className="text-[24px] text-slate-300" />;
-    if (code >= 95) return <Icon name="bolt" className="text-[24px] text-purple-400" />;
-    if (code >= 61) return <Icon name="water_drop" className="text-[24px] text-primary" />;
-    if (code >= 51) return <Icon name="water_drop" className="text-[24px] text-primary" />;
-    if (code >= 45) return <Icon name="cloud_off" className="text-[24px] text-slate-400" />;
-    return <Icon name="cloud" className="text-[24px] text-slate-400" />;
-  };
-
-  const getSmallWeatherIcon = (code: number) => {
-    if (code === 0) return <Icon name="light_mode" className="text-[14px] text-amber-400" />;
-    if (code < 4) return <Icon name="cloud" className="text-[14px] text-slate-400" />;
-    if (code >= 95) return <Icon name="bolt" className="text-[14px] text-purple-400" />;
-    if (code >= 61) return <Icon name="water_drop" className="text-[14px] text-primary" />;
-    return <Icon name="water_drop" className="text-[14px] text-primary" />;
-  };
-
-  const weatherDescription = weather ? WMO_DESCRIPTIONS[weather.weathercode] ?? "" : "";
-
   return (
     <div className="w-full max-w-md mx-auto">
       <div
         className="mobile-glass flex items-center justify-between w-full h-16 rounded-full px-4 shadow-2xl relative select-none border-primary/10"
       >
-        {/* 🌤️ Segment 1: Weather (tappable → toggle forecast) */}
-        <button
-          onClick={() => setForecastOpen(!forecastOpen)}
-          className="flex items-center gap-1.5 px-2 flex-[1.3] justify-center h-full transition-colors active:scale-95 origin-center"
-          aria-label={weather ? `Trenutno ${Math.round(weather.temperature)}°C, ${weatherDescription}. Dodirni za prognozu.` : "Trenutno vreme"}
-        >
-          {weather ? (
-            <>
-              {getWeatherIcon(weather.weathercode)}
-              <div className="flex flex-col items-start leading-tight -space-y-0.5">
-                <span className="text-base font-black text-foreground tracking-tight">
-                  {Math.round(weather.temperature)}°C
-                </span>
-                <span className="text-[8px] font-bold text-muted-foreground uppercase tracking-wider leading-none">
-                  {weatherDescription}
-                </span>
-              </div>
-              <Icon
-                name={forecastOpen ? "keyboard_arrow_up" : "keyboard_arrow_down"}
-                className="text-[12px] text-muted-foreground/50 ml-0.5 transition-transform duration-200"
-              />
-            </>
-          ) : (
-            <Icon name="cloud" className="text-[24px] text-slate-400 animate-pulse" />
-          )}
-        </button>
-
-        {/* Separator 1 */}
-        <div className="w-px h-6 bg-border/30 self-center shrink-0" />
-
-        {/* ⏰ Segment 2: Operating Hours */}
+        {/* ⏰ Segment 1: Operating Hours */}
         <div
           className="flex items-center gap-1.5 px-2 flex-[1.3] justify-center"
           aria-label={
@@ -239,10 +140,10 @@ export function MobileUnifiedControlPill({
           </div>
         </div>
 
-        {/* Separator 2 */}
+        {/* Separator */}
         <div className="w-px h-6 bg-border/30 self-center shrink-0" />
 
-        {/* 🧭 Segment 3: Navigation */}
+        {/* 🧭 Segment 2: Navigation */}
         <button
           onClick={handleNavigation}
           className="flex items-center gap-1.5 px-2 flex-1 justify-center h-full text-foreground hover:text-primary transition-colors active:scale-90 origin-center group cursor-pointer"
@@ -263,36 +164,6 @@ export function MobileUnifiedControlPill({
           )}
         </button>
       </div>
-
-      {/* 📅 Expandable 3‑day forecast */}
-      {forecastOpen && dailyForecast && dailyForecast.length > 0 && (
-        <div className="mt-2 mobile-glass rounded-2xl p-3 shadow-2xl animate-in slide-in-from-top-2 duration-200">
-          <div className="flex items-center justify-between text-[9px] font-black uppercase tracking-widest text-muted-foreground mb-2 px-1">
-            <span>Prognoza</span>
-            <span>Visoko / Nisko</span>
-          </div>
-          <div className="space-y-1.5">
-            {dailyForecast.slice(0, 3).map((day, idx) => (
-              <div
-                key={idx}
-                className="flex items-center justify-between px-2 py-1.5 rounded-xl hover:bg-muted/30 transition-colors"
-              >
-                <div className="flex items-center gap-2.5">
-                  <span className="text-xs font-black text-foreground w-8">
-                    {idx === 0 ? "Danas" : day.day}
-                  </span>
-                  {getSmallWeatherIcon(day.weathercode)}
-                </div>
-                <div className="flex items-center gap-2 text-xs font-bold">
-                  <span className="text-foreground">{Math.round(day.tempHigh)}°</span>
-                  <span className="text-muted-foreground/50">/</span>
-                  <span className="text-muted-foreground/60">{Math.round(day.tempLow)}°</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
     </div>
   );
 }

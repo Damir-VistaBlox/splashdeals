@@ -4,106 +4,7 @@ import { prisma } from "@/server/lib/prisma";
 import { FacilityShowcaseTemplate } from "../facilities/[categorySlug]/[facilitySlug]/page";
 import { buildFacilityMetadata } from "../facilities/[categorySlug]/[facilitySlug]/_metadata";
 import { DiscoveryTemplate, getDiscoveryMetadata } from "@/lib/routing/discovery";
-import { slugToDbValue, isKnownCategory, dbValueToSlug } from "@/lib/routing/categories";
-
-/**
- * 🏝️ Dynamic Short-URL Resolver Helper
- * Checks the nature of the first path segment against the database.
- */
-async function resolveSlug(firstSlug: string) {
-  const dbValue = slugToDbValue(firstSlug);
-
-  // 1. Check if category (DB has facilities matching the mapped value)
-  if (dbValue) {
-    const hasCategory = await prisma.facility.findFirst({
-      where: { category: { equals: dbValue, mode: "insensitive" } },
-      select: { category: true }
-    });
-    if (hasCategory) {
-      return { type: "category", category: firstSlug.toLowerCase() };
-    }
-  }
-
-  // 1b. Check known category slugs (works even when DB is empty, e.g. CI)
-  if (isKnownCategory(firstSlug.toLowerCase())) {
-    return { type: "category", category: firstSlug.toLowerCase() };
-  }
-
-  // 2. Check if facility
-  const facility = await prisma.facility.findUnique({
-    where: { slug: firstSlug, status: "ACTIVE" },
-    select: { slug: true, category: true }
-  });
-  if (facility) {
-    const catSlug = dbValueToSlug(facility.category!) ?? facility.category!.toLowerCase().replace(/\s+/g, '-');
-    return { type: "facility", category: catSlug };
-  }
-
-  return null;
-}
-
-/**
- * 🗑️ Permanently deleted legacy paths — return 410 Gone
- * These URLs were indexed by Google and must return 410 so Google
- * removes them from the index entirely. No redirects.
- */
-const DELETED_PATHS = new Set([
-  "en/facilities/waterpark/petroland",
-  "facilities/waterpark/petroland",
-  "waterpark/petroland",
-  "en/waterpark/petroland",
-  "rs/waterpark/petroland",
-  "waterpark",
-  "en/waterpark",
-  "rs/waterpark",
-  "facilities/waterpark",
-  "en/facilities/waterpark",
-  "rs/facilities/waterpark",
-]);
-
-function isDeletedPath(slug: string[]): boolean {
-  const path = slug.join("/");
-  if (DELETED_PATHS.has(path)) return true;
-  
-  // Also check if the path without the i18n prefix is deleted
-  if (slug.length > 1 && (slug[0] === "en" || slug[0] === "rs")) {
-    return DELETED_PATHS.has(slug.slice(1).join("/"));
-  }
-  
-  return false;
-}
-
-/**
- * 🗑️ Legacy Prefix Resolver
- * Given a legacy /en/... or /rs/... path, resolves the final clean URL
- * by looking up the facility slug directly. Returns the direct target
- * so we can 301 straight there — no intermediate hops that Google can index.
- */
-async function resolveLegacyTarget(slugs: string[]): Promise<string | null> {
-  // Strip the prefix
-  const cleanSegments = slugs.slice(1);
-  if (cleanSegments.length === 0) return "/";
-
-  // Try to find a facility slug in the path
-  // Legacy patterns:
-  //   /en/facilities/waterpark/petroland → facility slug = petroland
-  //   /rs/explore/waterpark/aquapark-petroland → facility slug = aquapark-petroland
-  //   /en/facilities/nis → facility slug = nis
-  
-  // Check the last segment as a facility slug
-  const lastSegment = cleanSegments[cleanSegments.length - 1];
-  const facility = await prisma.facility.findUnique({
-    where: { slug: lastSegment, status: "ACTIVE" },
-    select: { slug: true }
-  });
-  if (facility) {
-    return "/" + facility.slug;
-  }
-
-  // Fallback: do not blindly redirect to a stripped path which might be a 404.
-  // Returning null lets the router handle it naturally.
-  return null;
-}
+import { isDeletedPath, resolveSlug, resolveLegacyTarget } from "@/lib/routing/resolve-slug";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string[] }> }): Promise<Metadata> {
   const { slug } = await params;
@@ -119,8 +20,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   // NOTE: connection() is intentionally NOT called here — duplicate connection() calls
   // across generateMetadata + page component cause RSC resumable slot mismatches
   // in Next.js 16: "Couldn't find all resumable slots by key/index during replaying".
-  // FacilityShowcaseTemplate (rendered below) calls its own connection() at line ~295
-  // which is sufficient for the dynamic signal.
+  // FacilityShowcaseTemplate (rendered below) calls its own connection() which is sufficient.
 
   // Legacy /en/ and /rs/ prefix routes → resolve final target and 301 directly
   if (slug && (slug[0] === "en" || slug[0] === "rs")) {
@@ -132,7 +32,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     const resolved = await resolveSlug(slug[0]);
     if (resolved) {
       if (resolved.type === "facility") {
-        return await buildFacilityMetadata(slug[0], resolved.category!);
+        return await buildFacilityMetadata(slug[0], resolved.category);
       }
       return await getDiscoveryMetadata(slug[0]);
     }
@@ -142,7 +42,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     if (slug[1] === "dnevne-ulaznice") {
       const resolved = await resolveSlug(slug[0]);
       if (resolved && resolved.type === "facility") {
-        return await buildFacilityMetadata(slug[0], resolved.category!, "dnevne-ulaznice");
+        return await buildFacilityMetadata(slug[0], resolved.category, "dnevne-ulaznice");
       }
     }
 
@@ -205,7 +105,7 @@ export default async function CatchAllPage({ params }: { params: Promise<{ slug:
         return (
           <FacilityShowcaseTemplate
             params={Promise.resolve({
-              categorySlug: resolved.category!,
+              categorySlug: resolved.category,
               facilitySlug: slug[0]
             })}
           />
@@ -228,7 +128,7 @@ export default async function CatchAllPage({ params }: { params: Promise<{ slug:
         return (
           <FacilityShowcaseTemplate
             params={Promise.resolve({
-              categorySlug: resolved.category!,
+              categorySlug: resolved.category,
               facilitySlug: slug[0]
             })}
           />
