@@ -90,9 +90,9 @@ async function main() {
   });
 
   const catId = await insertSection(exploreId, "Kategorije", 0, "LINKS", 1);
-  await insertItem(catId, "Akva Parkovi", "/facilities/waterpark", 0, { icon: "waves" });
-  await insertItem(catId, "Bazeni", "/facilities/swimming-pool", 1, { icon: "waves" });
-  await insertItem(catId, "Wellness & Spa", "/facilities/wellness", 2, { icon: "auto_awesome" });
+  await insertItem(catId, "Akva Parkovi", "/akva-parkovi", 0, { icon: "waves" });
+  await insertItem(catId, "Bazeni", "/bazeni", 1, { icon: "waves" });
+  await insertItem(catId, "Wellness & Spa", "/wellness-i-spa", 2, { icon: "auto_awesome" });
   await insertItem(catId, "Sve Akcije", "/#deals", 3, { icon: "local_fire_department" });
 
   await insertSection(exploreId, "Gradovi", 1, "DYNAMIC_CITIES", 0, {

@@ -135,8 +135,8 @@ export function Footer() {
             </h4>
             <ul className="space-y-1">
               {[
-                { name: dict?.footer?.featured_parks || "Izdvojeni Parkovi", href: `/facilities` },
-                { name: dict?.footer?.top_destinations || "Najbolje Destinacije", href: `/facilities/waterpark` },
+                { name: dict?.footer?.featured_parks || "Izdvojeni Parkovi", href: `/akva-parkovi` },
+                { name: dict?.footer?.top_destinations || "Najbolje Destinacije", href: `/akva-parkovi` },
                 { name: dict?.footer?.how_it_works || "Kako Funkcioniše", href: `/how-it-works` },
                 { name: dict?.footer?.support_center || "Centar za Podršku", href: `/support` }
               ].map((item) => (

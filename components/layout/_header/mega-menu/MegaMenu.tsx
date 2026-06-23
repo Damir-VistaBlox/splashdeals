@@ -396,14 +396,14 @@ export function MegaMenu() {
                                           sortedCities.slice(0, (config?.maxItems as number) || 10).map((city) => (
                                             <MenuDotLink
                                               key={city.id}
-                                              href={`/facilities/${city.slug}`}
+                                              href={`/akva-parkovi?city=${city.slug}`}
                                               label={city.name}
                                             />
                                           ))
                                         )}
                                         {sortedCities.length > ((config?.maxItems as number) || 10) && (
                                           <MenuDotLink
-                                            href="/facilities"
+                                            href="/akva-parkovi"
                                             label={`+${sortedCities.length - ((config?.maxItems as number) || 10)} gradova`}
                                           />
                                         )}

@@ -125,19 +125,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }
 
   // 6. Dynamic City Listing Pages (from navigation DYNAMIC_CITIES)
-  try {
-    const cities = await getActiveCities();
-    for (const city of cities) {
-      sitemapEntries.push({
-        url: `${baseUrl}/facilities/${city.slug}`,
-        lastModified: staticLastMod,
-        changeFrequency: 'daily',
-        priority: 0.85,
-      });
-    }
-  } catch (error) {
-    console.error('Sitemap Error: Could not fetch cities', error);
-  }
+  // Removed — city-specific pages live under /akva-parkovi?city=... which are not sitemapped individually
+  // to keep the sitemap focused on canonical facility and category pages.
 
   // 7. Navigation Menu Item URLs (unique pages from the mega menu)
   try {
