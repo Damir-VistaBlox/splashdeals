@@ -1,8 +1,8 @@
 import { notFound, permanentRedirect } from "next/navigation";
 import { Metadata } from "next";
 import { prisma } from "@/server/lib/prisma";
-import { FacilityShowcaseTemplate } from "../facilities/[categorySlug]/[facilitySlug]/page";
-import { buildFacilityMetadata } from "../facilities/[categorySlug]/[facilitySlug]/_metadata";
+import { FacilityShowcaseTemplate } from "../_facility/page";
+import { buildFacilityMetadata } from "../_facility/_metadata";
 import { DiscoveryTemplate, getDiscoveryMetadata } from "@/lib/routing/discovery";
 import { isDeletedPath, resolveSlug, resolveLegacyTarget } from "@/lib/routing/resolve-slug";
 
