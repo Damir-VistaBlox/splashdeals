@@ -39,13 +39,6 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   }
 
   if (slug && slug.length === 2) {
-    if (slug[1] === "dnevne-ulaznice") {
-      const resolved = await resolveSlug(slug[0]);
-      if (resolved && resolved.type === "facility") {
-        return await buildFacilityMetadata(slug[0], resolved.category, "dnevne-ulaznice");
-      }
-    }
-
     const facility = await prisma.facility.findUnique({
       where: { slug: slug[1], status: "ACTIVE" },
       select: { slug: true }
@@ -122,20 +115,6 @@ export default async function CatchAllPage({ params }: { params: Promise<{ slug:
   }
 
   if (slug && slug.length === 2) {
-    if (slug[1] === "dnevne-ulaznice") {
-      const resolved = await resolveSlug(slug[0]);
-      if (resolved && resolved.type === "facility") {
-        return (
-          <FacilityShowcaseTemplate
-            params={Promise.resolve({
-              categorySlug: resolved.category,
-              facilitySlug: slug[0]
-            })}
-          />
-        );
-      }
-    }
-
     const facility = await prisma.facility.findUnique({
       where: { slug: slug[1], status: "ACTIVE" },
       select: { slug: true }

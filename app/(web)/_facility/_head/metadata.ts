@@ -209,7 +209,6 @@ export const getFacility = cache(async (slug: string): Promise<FacilityWithInclu
 export async function buildFacilityMetadata(
   facilitySlug: string,
   categorySlug: string,
-  subPath?: string,
 ): Promise<Metadata> {
   const facility = await getFacility(facilitySlug);
   if (!facility) notFound();
@@ -287,9 +286,7 @@ export async function buildFacilityMetadata(
     "/og-image.png";
 
   // Canonical URL
-  const canonicalUrl = subPath
-    ? `${SITE_URL}/${facilitySlug}/${subPath}`
-    : `${SITE_URL}/${facilitySlug}`;
+  const canonicalUrl = `${SITE_URL}/${facilitySlug}`;
 
   return {
     title,

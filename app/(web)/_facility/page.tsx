@@ -38,7 +38,6 @@ const ShowcaseAmenities = dynamic(() => import("./_components/ShowcaseAmenities"
 });
 
 import { PartnerBranding } from "./_components/PartnerBranding"
-import { ScrollManager } from "./_components/ScrollManager"
 import { Card } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { serialize } from "@/lib/serialize"
@@ -123,16 +122,11 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
   const weather = facility.lat && facility.lng
     ? await getWeather(Number(facility.lat), Number(facility.lng))
     : null;
-
   return (
     <div className="relative min-h-screen text-foreground selection:bg-primary/30 font-sans">
-      
-      {/* ✅ Scroll Anchor Manager */}
-      <ScrollManager />
-      
+
       {/* ✅ Structured Data */}
       <JsonLd data={facilitySchema} id={`facility-${facilitySlug}-schema`} />
-      
       <section className="relative h-[60vh] md:h-screen w-full flex flex-col justify-end p-6 md:p-12 overflow-hidden">
         <ShowcaseHero heroMedia={heroMedia} facility={facility} />
 
