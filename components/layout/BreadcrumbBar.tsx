@@ -54,9 +54,8 @@ interface FacilityMap {
  */
 export function BreadcrumbBar({ facilityMap = {} }: { facilityMap?: FacilityMap }) {
   const pathname = usePathname();
-  const segments = pathname.split("/").filter(Boolean);
-
   const trail = useMemo<{ items: BreadcrumbItem[]; backHref?: string }>(() => {
+    const segments = pathname.split("/").filter(Boolean);
     const items: BreadcrumbItem[] = [{ label: "Početna", href: "/" }];
     let backHref: string | undefined;
 
@@ -84,7 +83,7 @@ export function BreadcrumbBar({ facilityMap = {} }: { facilityMap?: FacilityMap 
     }
 
     return { items, backHref };
-  }, [pathname, facilityMap, segments]);
+  }, [pathname, facilityMap]);
 
   const { items, backHref } = trail;
   const isLastItem = (idx: number) => idx === items.length - 1;

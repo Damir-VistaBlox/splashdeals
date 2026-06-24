@@ -48,8 +48,7 @@ import {
   buildFacilitySchema,
   TierEntry,
 } from "./_head";
-import { getFacility, buildFacilityMetadata, buildTicketGroups, flattenActivePrices } from "./_head";
-import type { FacilityWithIncludes } from "./_head";
+import { getFacility, buildTicketGroups, flattenActivePrices } from "./_head";
 import { getWeather } from "@/server/lib/weather";
 
 interface FacilityPageProps {
