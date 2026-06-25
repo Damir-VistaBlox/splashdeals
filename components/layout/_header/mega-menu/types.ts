@@ -1,10 +1,11 @@
 // ── Types for the MegaMenu component ──────────────────────────────────
 
 export interface NavigationMenuData {
-  id: string
-  label: string
-  icon: string
-  sections: NavigationMenuSectionData[]
+  id: string;
+  label: string;
+  icon: string;
+  placement: string;
+  sections: NavigationMenuSectionData[];
 }
 
 export interface NavigationMenuSectionData {

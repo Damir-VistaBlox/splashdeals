@@ -33,6 +33,11 @@ export function DesktopTopNav({
   return (
     <div className="h-16 flex items-center w-full">
       <nav className="max-w-7xl mx-auto w-full flex items-center justify-between relative">
+        {/* Left — MegaMenu (left-placed menus) */}
+        <div className="flex-1 flex justify-start">
+          <MegaMenu side="left" />
+        </div>
+
         {/* Center — Logo */}
         <div className="absolute left-1/2 -translate-x-1/2 z-10">
           <Logo
@@ -43,22 +48,16 @@ export function DesktopTopNav({
           />
         </div>
 
-        {/* Left — MegaMenu on desktop */}
-        <div className="flex-1">
-          <MegaMenu />
-        </div>
-
-        {/* Right — ThemeToggle + CartButton on desktop */}
-        <div className="flex items-center gap-1.5 md:gap-3 flex-1 justify-end">
+        {/* Right — MegaMenu (right-placed menus) + controls */}
+        <div className="flex-1 flex items-center justify-end gap-1.5 md:gap-3">
+          <MegaMenu side="right" />
           <ThemeToggle />
-          <div className="hidden md:flex">
           <CartButton
             isOnline={isOnline}
             mounted={mounted}
             totalItems={totalItems}
             openCart={openCart}
           />
-          </div>
         </div>
       </nav>
     </div>

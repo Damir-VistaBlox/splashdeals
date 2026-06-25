@@ -18,14 +18,16 @@ async function main() {
   async function insertMenu(
     label: string,
     icon: string,
-    sortOrder: number
+    sortOrder: number,
+    placement = "left"
   ): Promise<string> {
     const id = crypto.randomUUID();
     await prisma.$executeRawUnsafe(
-      `INSERT INTO marketing.navigation_menus (id, label, icon, "sortOrder", "isActive", "createdAt", "updatedAt") VALUES ($1, $2, $3, $4, $5, NOW(), NOW())`,
+      `INSERT INTO marketing.navigation_menus (id, label, icon, placement, "sortOrder", "isActive", "createdAt", "updatedAt") VALUES ($1, $2, $3, $4, $5, $6, NOW(), NOW())`,
       id,
       label,
       icon,
+      placement,
       sortOrder,
       true
     );
@@ -196,6 +198,30 @@ async function main() {
     icon: "rss_feed",
     desc: "Pratite putem RSS-a",
   });
+
+  // ─── Right side: Pomoć ─────────────────────────
+  const helpId = await insertMenu("Pomoć", "help_outline", 0, "right");
+
+  const helpLinksId = await insertSection(helpId, null, 0, "LINKS", 0);
+  await insertItem(helpLinksId, "Korisnička podrška", "/support", 0, { icon: "support_agent" });
+  await insertItem(helpLinksId, "Kako funkcioniše?", "/how-it-works", 1, { icon: "explore" });
+  await insertItem(helpLinksId, "Uslovi korišćenja", "/terms", 2, { icon: "description" });
+  await insertItem(helpLinksId, "Privatnost", "/privacy", 3, { icon: "lock" });
+
+  // ─── Right side: Pratite nas ────────────────────
+  const socialId = await insertMenu("Pratite nas", "rss_feed", 1, "right");
+
+  const socialLinksId = await insertSection(socialId, null, 0, "LINKS", 0);
+  await insertItem(socialLinksId, "Instagram", "https://instagram.com/splashdeals", 0, {
+    icon: "photo_camera", metadata: { external: true },
+  });
+  await insertItem(socialLinksId, "Facebook", "https://facebook.com/splashdeals.rs", 1, {
+    icon: "facebook", metadata: { external: true },
+  });
+  await insertItem(socialLinksId, "X (Twitter)", "https://x.com/splashdeals", 2, {
+    icon: "alternate_email", metadata: { external: true },
+  });
+  await insertItem(socialLinksId, "Blog", "/blog", 3, { icon: "article" });
 
   const menuCount = await prisma.$queryRawUnsafe<[{ count: bigint }]>(
     "SELECT COUNT(*)::int as count FROM marketing.navigation_menus"

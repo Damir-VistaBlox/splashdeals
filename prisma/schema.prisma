@@ -611,6 +611,7 @@ model NavigationMenu {
   id        String   @id @default(uuid())
   label     String
   icon      String
+  placement String   @default("left")
   sortOrder Int      @default(0)
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())

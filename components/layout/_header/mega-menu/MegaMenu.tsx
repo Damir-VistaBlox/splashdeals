@@ -31,7 +31,7 @@ const POPULAR_CITY_SLUGS = [
 
 // ── Main component ──────────────────────────────────────────────────
 
-export function MegaMenu() {
+export function MegaMenu({ side = "left" }: { side?: "left" | "right" }) {
   const [menus, setMenus] = useState<NavigationMenuData[]>([])
   const [discovery, setDiscovery] = useState<DiscoveryMenuData>({ cities: [], featured: null })
   const [loading, setLoading] = useState(true)
@@ -67,6 +67,11 @@ export function MegaMenu() {
     return [...popular, ...others]
   }, [discovery.cities])
 
+  const filteredMenus = useMemo(
+    () => menus.filter((m) => (m.placement || "left") === side),
+    [menus, side],
+  );
+
   if (loading) {
     return (
       <nav aria-label="Glavna navigacija">
@@ -83,12 +88,12 @@ export function MegaMenu() {
     <nav aria-label="Glavna navigacija">
       <NavigationMenu className="hidden md:flex">
         <NavigationMenuList>
-          {menus.length === 0 ? (
+          {filteredMenus.length === 0 ? (
             <li className="flex items-center gap-2 px-3 py-1.5 text-xs text-muted-foreground">
               Meni nije dostupan
             </li>
           ) : (
-            menus.map((menu) => (
+            filteredMenus.map((menu) => (
               <NavigationMenuItem key={menu.id}>
                 <NavigationMenuTrigger className="h-9 px-3 py-1.5 text-xs font-bold uppercase tracking-wider gap-1.5 data-[state=open]:text-primary rounded-xl transition-colors">
                   <Icon name={menu.icon} className="size-4 text-primary/70" aria-hidden="true" />

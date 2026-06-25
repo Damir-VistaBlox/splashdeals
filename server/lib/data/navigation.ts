@@ -5,6 +5,7 @@ export interface NavMenuData {
   id: string
   label: string
   icon: string
+  placement: string
   sections: NavSectionData[]
 }
 
@@ -48,6 +49,7 @@ export async function getNavigationMenus(): Promise<NavMenuData[]> {
     id: menu.id,
     label: menu.label,
     icon: menu.icon,
+    placement: menu.placement,
     sections: menu.sections.map((section: any) => ({
       id: section.id,
       heading: section.heading,
