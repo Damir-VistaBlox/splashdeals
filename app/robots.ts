@@ -1,4 +1,5 @@
 import { MetadataRoute } from 'next';
+import { getAllSlugs } from '@/lib/routing/categories';
 
 /**
  * 🌊 Robots Configuration (Next.js Best Practice)
@@ -89,9 +90,7 @@ export default function robots(): MetadataRoute.Robots {
         userAgent: ['GPTBot', 'ChatGPT-User', 'ClaudeBot', 'PerplexityBot'],
         allow: [
           '/',
-          '/akva-parkovi/',
-          '/bazeni/',
-          '/wellness-i-spa/',
+          ...getAllSlugs().map((s) => `/${s}/`),
           '/how-it-works',
         ],
         disallow: ['/admin', '/api', '/checkout', '/success', '/cdn-cgi/', '/cdn-cgi/*'],

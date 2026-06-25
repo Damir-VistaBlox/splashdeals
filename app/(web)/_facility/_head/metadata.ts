@@ -5,7 +5,7 @@ import { cache } from "react";
 import { prisma } from "@/server/lib/prisma";
 import { serialize } from "@/lib/serialize";
 import { calculateMaxDiscount } from "@/lib/utils/pricing";
-import { catLabelMap, SITE_URL } from "./schemas";
+import { getCategoryLabel, SITE_URL } from "./schemas";
 
 // ── Types ────────────────────────────────────────────────────────
 
@@ -214,7 +214,7 @@ export async function buildFacilityMetadata(
   if (!facility) notFound();
 
   const currentYear = new Date().getFullYear();
-  const categoryLabel = catLabelMap[facility.category.toLowerCase()] ?? facility.category;
+  const categoryLabel = getCategoryLabel(facility.category);
 
   // Flatten ticket data for price / count hints
   const tickets = flattenActivePrices(facility);

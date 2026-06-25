@@ -26,14 +26,16 @@ export interface FacilitySchemaInput {
   }[];
 }
 
-export const catLabelMap: Record<string, string> = {
-  "akva-parkovi": "Akva Parkovi",
-  "bazeni": "Bazeni",
-  "wellness-i-spa": "Wellness i Spa",
-};
+import { slugToName, dbValueToSlug } from "@/lib/routing/categories";
 
 /** Canonical site URL — must be set via NEXT_PUBLIC_SITE_URL env var. */
 export const SITE_URL: string = process.env.NEXT_PUBLIC_SITE_URL!;
+
+/** Resolve a DB category value (e.g. "Akva Park") to its display name (e.g. "Akva Parkovi"). */
+export function getCategoryLabel(category: string): string {
+  const slug = dbValueToSlug(category);
+  return slug ? (slugToName(slug) ?? category) : category;
+}
 
 // ── Schema: Attraction ─────────────────────────────────────────────
 

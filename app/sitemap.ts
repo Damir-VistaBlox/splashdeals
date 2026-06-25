@@ -1,6 +1,7 @@
 import { MetadataRoute } from 'next';
 import { prisma } from '@/server/lib/prisma';
 import { getActiveCities } from '@/server/lib/data/discovery';
+import { getAllSlugs, slugToName } from '@/lib/routing/categories';
 
 export const revalidate = 3600; // Revalidate sitemap every hour
 
@@ -35,16 +36,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     });
   }
 
-  // 2. Serbian Category Discovery Routes (canonical — prefix-free)
-  const categories = [
-    { slug: 'akva-parkovi', label: 'Akva Parkovi' },
-    { slug: 'bazeni', label: 'Bazeni' },
-    { slug: 'wellness-i-spa', label: 'Wellness i Spa' },
-  ];
-
-  for (const cat of categories) {
+  // 2. Category Discovery Routes (from registry — auto-syncs with categories.ts)
+  for (const slug of getAllSlugs()) {
     sitemapEntries.push({
-      url: `${baseUrl}/${cat.slug}`,
+      url: `${baseUrl}/${slug}`,
       lastModified: staticLastMod,
       changeFrequency: 'weekly',
       priority: 0.9,

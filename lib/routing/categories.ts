@@ -8,13 +8,33 @@ export const CATEGORIES = {
     name: "Akva Parkovi",
     dbValues: ["Akva Park"],
   },
+  "termalne-rivijere": {
+    name: "Termalne Rivijere",
+    dbValues: ["Termalna Rivijera"],
+  },
   "bazeni": {
     name: "Bazeni",
-    dbValues: ["Bazen", "Public Pool", "Swimming Pool"],
+    dbValues: ["Bazen", "Otvoreni Bazen", "Zatvoreni Bazen", "Javni Bazen"],
+  },
+  "banje": {
+    name: "Banje",
+    dbValues: ["Banja"],
   },
   "wellness-i-spa": {
     name: "Wellness i Spa",
     dbValues: ["Wellness i Spa"],
+  },
+  "jezera": {
+    name: "Jezera",
+    dbValues: ["Jezero"],
+  },
+  "plaze-i-kupalista": {
+    name: "Plaže i Kupališta",
+    dbValues: ["Gradska Plaža", "Kupalište", "Reka"],
+  },
+  "vodeni-sportovi": {
+    name: "Vodeni Sportovi",
+    dbValues: ["Vodeni Sport", "Rafting"],
   },
 } as const;
 
@@ -22,7 +42,7 @@ export type CategorySlug = keyof typeof CATEGORIES;
 
 /**
  * Convert a URL slug to the first DB category value for querying.
- * E.g. "akva-parkovi" → "Waterpark"
+ * E.g. "akva-parkovi" → "Akva Park"
  */
 export function slugToDbValue(slug: string): string | undefined {
   return CATEGORIES[slug as CategorySlug]?.dbValues?.[0];
@@ -38,7 +58,7 @@ export function slugToName(slug: string): string | undefined {
 
 /**
  * Convert a DB category value back to the URL slug.
- * E.g. "Waterpark" → "akva-parkovi"
+ * E.g. "Akva Park" → "akva-parkovi"
  */
 export function dbValueToSlug(dbValue: string): string | undefined {
   const entry = Object.entries(CATEGORIES).find(

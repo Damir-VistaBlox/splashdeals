@@ -44,7 +44,7 @@ import { serialize } from "@/lib/serialize"
 import { JsonLd } from "@/components/SEO/JsonLd";
 import { validateDiscoverySlug } from "@/server/lib/data/discovery";
 import {
-  catLabelMap,
+  getCategoryLabel,
   buildFacilitySchema,
   TierEntry,
 } from "./_head";
@@ -87,7 +87,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
 
   if (!facility) return notFound()
 
-  const categoryLabel = catLabelMap[facility.category.toLowerCase()] ?? facility.category;
+  const categoryLabel = getCategoryLabel(facility.category);
 
   // 🕵️ Validate that the URL slug matches the facility's category or city
   validateDiscoverySlug(categorySlug, facility);

@@ -22,17 +22,31 @@ const STATIC_LABELS: Record<string, string> = {
 // ── Known category slugs → display names ───────────────────────────
 const CATEGORY_NAMES: Record<string, string> = {
   "akva-parkovi": "Akva Parkovi",
-  bazeni: "Bazeni",
+  "termalne-rivijere": "Termalne Rivijere",
+  "bazeni": "Bazeni",
+  "banje": "Banje",
   "wellness-i-spa": "Wellness i Spa",
+  "jezera": "Jezera",
+  "plaze-i-kupalista": "Plaže i Kupališta",
+  "vodeni-sportovi": "Vodeni Sportovi",
 };
 
 // ── DB values → category slug lookup ───────────────────────────────
 const DB_TO_SLUG: Record<string, string> = {
   "akva park": "akva-parkovi",
+  "termalna rivijera": "termalne-rivijere",
   bazen: "bazeni",
-  "public pool": "bazeni",
-  "swimming pool": "bazeni",
+  "otvoreni bazen": "bazeni",
+  "zatvoreni bazen": "bazeni",
+  "javni bazen": "bazeni",
+  banja: "banje",
   "wellness i spa": "wellness-i-spa",
+  jezero: "jezera",
+  "gradska plaza": "plaze-i-kupalista",
+  kupaliste: "plaze-i-kupalista",
+  reka: "plaze-i-kupalista",
+  "vodeni sport": "vodeni-sportovi",
+  rafting: "vodeni-sportovi",
 };
 
 interface BreadcrumbItem {

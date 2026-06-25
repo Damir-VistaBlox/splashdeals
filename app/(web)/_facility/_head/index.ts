@@ -15,7 +15,7 @@ export type {
 } from "./metadata";
 
 export {
-  catLabelMap,
+  getCategoryLabel,
   SITE_URL,
   buildFacilitySchema,
   buildAttractionSchema,
