@@ -28,6 +28,7 @@ export interface NavItemData {
 }
 
 export async function getNavigationMenus(): Promise<NavMenuData[]> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Prisma @@schema("marketing") causes type mismatch
   const menus = await (prisma as any).navigationMenu.findMany({
     where: { isActive: true },
     orderBy: { sortOrder: "asc" },
@@ -45,18 +46,18 @@ export async function getNavigationMenus(): Promise<NavMenuData[]> {
     },
   })
 
-  return menus.map((menu: any) => ({
+  return menus.map((menu: { id: string; label: string; icon: string; placement: string; sections: { id: string; heading: string | null; column: number; style: string; config: unknown; items: { id: string; label: string; href: string | null; icon: string | null; desc: string | null; metadata: unknown }[] }[] }) => ({
     id: menu.id,
     label: menu.label,
     icon: menu.icon,
     placement: menu.placement,
-    sections: menu.sections.map((section: any) => ({
+    sections: menu.sections.map((section: { id: string; heading: string | null; column: number; style: string; config: unknown; items: { id: string; label: string; href: string | null; icon: string | null; desc: string | null; metadata: unknown }[] }) => ({
       id: section.id,
       heading: section.heading,
       column: section.column,
       style: section.style,
       config: section.config,
-      items: section.items.map((item: any) => ({
+      items: section.items.map((item: { id: string; label: string; href: string | null; icon: string | null; desc: string | null; metadata: unknown }) => ({
         id: item.id,
         label: item.label,
         href: item.href,

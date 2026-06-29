@@ -218,7 +218,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
               {/* 🍱 Facility amenities card grid — hidden on mobile, already in description text */}
               <div className="hidden md:block">
               <ShowcaseAmenities 
-                amenities={serialize(facility.amenities) as any}
+                amenities={serialize(facility.amenities) as unknown as Array<{ amenityId: string; value: string | null; imageUrl?: string | null; scheduledAt?: string | null; isFeatured?: boolean; amenity: { id: string; name: string; icon: string; category: string | null; type: "BOOLEAN" | "QUANTIFIABLE" | "TEXT" } }>}
                 dict={dict} 
               />
               </div>

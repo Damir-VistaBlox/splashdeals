@@ -1,6 +1,5 @@
 import { MetadataRoute } from 'next';
 import { prisma } from '@/server/lib/prisma';
-import { getActiveCities } from '@/server/lib/data/discovery';
 import { getAllSlugs } from '@/lib/routing/categories';
 
 export const revalidate = 3600; // Revalidate sitemap every hour
@@ -125,8 +124,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // 7. Navigation Menu Item URLs (unique pages from the mega menu)
   try {
-    const { prisma: db } = await import('@/server/lib/prisma');
-    const items = await (db as any).navigationMenuItem.findMany({
+    const items = await prisma.navigationMenuItem.findMany({
       where: {
         isActive: true,
         href: { not: null, notIn: ['#', ''] },

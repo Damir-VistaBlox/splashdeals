@@ -125,7 +125,7 @@ export async function FacilityGrid({
   const serializedFacilities = processedFacilities.map((f) => {
     // Extract lowest price from nested ticketCategories → types → prices
     let lowestPrice: number | null = null
-    for (const cat of (f as any).ticketCategories || []) {
+    for (const cat of (f as { ticketCategories?: { types?: { prices?: { price: unknown }[] }[] }[] }).ticketCategories || []) {
       for (const type of cat.types || []) {
         for (const price of type.prices || []) {
           const val = Number(price.price)

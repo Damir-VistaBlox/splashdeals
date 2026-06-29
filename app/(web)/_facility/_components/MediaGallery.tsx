@@ -4,7 +4,6 @@ import { Icon } from "@/components/ui/Icon";
 import { useState } from "react";
 import Image from "next/image";
 import type { FacilityMedia } from "@prisma/client";
-import { cn } from "@/lib/utils";
 
 import { Dict } from "@/lib/types";
 
