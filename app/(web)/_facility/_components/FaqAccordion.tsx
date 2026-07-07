@@ -3,6 +3,7 @@
 import { useRef, useCallback, useState } from "react";
 import Link from "next/link";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
+import { cn } from "@/lib/utils";
 
 interface FAQItem {
   id: string;
@@ -17,11 +18,10 @@ interface Props {
 const INITIAL_VISIBLE = 4;
 
 export function FaqAccordion({ faqs }: Props) {
-  const [showAll, setShowAll] = useState(false);
+  const [showAllMobile, setShowAllMobile] = useState(false);
   const itemRefs = useRef<Map<string, HTMLDivElement>>(new Map());
   const prevOpenRef = useRef<Set<string>>(new Set());
 
-  const visibleFaqs = showAll ? faqs : faqs.slice(0, INITIAL_VISIBLE);
   const remaining = faqs.length - INITIAL_VISIBLE;
 
   const setItemRef = useCallback((id: string, el: HTMLDivElement | null) => {
@@ -35,7 +35,6 @@ export function FaqAccordion({ faqs }: Props) {
   const handleValueChange = useCallback(
     (openValues: string[]) => {
       const currentSet = new Set(openValues);
-      // Find items that were just opened (in current but not in prev)
       for (const id of currentSet) {
         if (!prevOpenRef.current.has(id)) {
           const el = itemRefs.current.get(id);
@@ -60,11 +59,15 @@ export function FaqAccordion({ faqs }: Props) {
         defaultValue={[faqs[0].id]}
         onValueChange={handleValueChange}
       >
-        {visibleFaqs.map((faq) => (
+        {faqs.map((faq, index) => (
           <AccordionItem
             key={faq.id}
             value={faq.id}
-            className="rounded-xl border border-border bg-card px-4 sm:px-6 brand-accent-left"
+            className={cn(
+              "rounded-xl border border-border bg-card px-4 sm:px-6 brand-accent-left",
+              index >= INITIAL_VISIBLE && "hidden md:block",
+              index >= INITIAL_VISIBLE && showAllMobile && "!block"
+            )}
             ref={(el) => setItemRef(faq.id, el)}
           >
             <AccordionTrigger className="text-left font-medium text-foreground py-4 hover:no-underline">
@@ -77,10 +80,10 @@ export function FaqAccordion({ faqs }: Props) {
         ))}
       </Accordion>
 
-      {!showAll && remaining > 0 && (
-        <div className="text-center pt-2">
+      {!showAllMobile && remaining > 0 && (
+        <div className="text-center md:hidden pt-2">
           <button
-            onClick={() => setShowAll(true)}
+            onClick={() => setShowAllMobile(true)}
             className="text-sm font-bold text-primary underline underline-offset-2 hover:text-cyan-300 transition-colors cursor-pointer"
           >
             Prikaži još {remaining} pitanja
