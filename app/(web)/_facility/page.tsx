@@ -97,6 +97,35 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
   const allPrices = flattenActivePrices(facility);
   const ticketCount = allPrices.length;
 
+  // Build a lookup map so the mobile accordion doesn't need an API call
+  const ticketProductMap: Record<string, {
+    id: string;
+    title: string;
+    label: string | null;
+    minPeople: number;
+    maxPeople: number | null;
+    prices: Array<{ id: string; label: string | null; price: number; originalPrice: number | null; dayType: string | null; timeSlot: string | null }>;
+  }> = {};
+  for (const cat of facility.ticketCategories || []) {
+    for (const prod of cat.types || []) {
+      ticketProductMap[prod.id] = {
+        id: prod.id,
+        title: prod.title,
+        label: prod.label,
+        minPeople: prod.minPeople,
+        maxPeople: prod.maxPeople,
+        prices: (prod.prices || []).map(p => ({
+          id: p.id,
+          label: p.label,
+          price: Number(p.price),
+          originalPrice: p.originalPrice ? Number(p.originalPrice) : null,
+          dayType: p.dayType,
+          timeSlot: p.timeSlot,
+        })),
+      };
+    }
+  }
+
   // 🎥 Logic: Priority Hero Selection (Protocol)
   const explicitHero = facility.media.find((m) => m.isHero);
   const firstVideo = facility.media.find((m) => m.type === "VIDEO");
@@ -168,12 +197,13 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
            </div>
             <Suspense fallback={<TicketGridSkeleton />}>
                <ShowcaseTicketGroups 
-                  groups={mappedGroups} 
+                  groups={mappedGroups}
                   facilityId={facility.id}
                   facilitySlug={facility.slug}
                   facilityName={facility.name}
                   category={facility.category}
                   facility={facility}
+                  ticketProductMap={serialize(ticketProductMap)}
                />
             </Suspense>
         </div>

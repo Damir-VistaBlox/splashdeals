@@ -1,6 +1,6 @@
 "use client"
 import { Icon } from "@/components/ui/Icon"
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect } from "react"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -49,10 +49,13 @@ interface ProductOption {
   prices: PriceOption[];
 }
 
-interface CategoryOption {
+interface ProductOption {
   id: string;
   title: string;
-  products: ProductOption[];
+  label: string | null;
+  minPeople: number;
+  maxPeople: number | null;
+  prices: PriceOption[];
 }
 
 const parseFacilityName = (name: string) => {
@@ -113,9 +116,17 @@ interface ShowcaseTicketGroupsProps {
     city: string;
     slug: string | null;
   };
+  ticketProductMap?: Record<string, {
+    id: string;
+    title: string;
+    label: string | null;
+    minPeople: number;
+    maxPeople: number | null;
+    prices: PriceOption[];
+  }>;
 }
 
-export function ShowcaseTicketGroups({ groups, facilityId, facilitySlug, facilityName, category, facility }: ShowcaseTicketGroupsProps) {
+export function ShowcaseTicketGroups({ groups, facilityId, facilitySlug, facilityName, category, facility, ticketProductMap }: ShowcaseTicketGroupsProps) {
   const { prefix, main } = parseFacilityName(facilityName);
   const [activeGroupId, setActiveGroupId] = useState<string>(groups[0]?.id || "");
   const [quantities, setQuantities] = useState<Record<string, number>>({});
@@ -260,12 +271,12 @@ export function ShowcaseTicketGroups({ groups, facilityId, facilitySlug, facilit
                 <MobileTicketAccordion
                   key={tier.id}
                   tier={tier}
-                  facilitySlug={facilitySlug}
                   facility={facility || { id: facilityId, name: facilityName, category }}
                   isHighlighted={isFeatured}
                   isExpanded={expandedTier === tier.id}
                   onToggle={() => setExpandedTier(expandedTier === tier.id ? null : tier.id)}
                   cartCount={cartItems.filter(i => i.ticketId === tier.id).reduce((a, i) => a + i.quantity, 0)}
+                  ticketProductMap={ticketProductMap}
                 />
               );
             })}
@@ -312,14 +323,21 @@ export function ShowcaseTicketGroups({ groups, facilityId, facilitySlug, facilit
 
 // ─── Mobile Accordion ─────────────────────────────────────────
 
-function MobileTicketAccordion({ tier, facilitySlug, facility, isHighlighted, isExpanded, onToggle, cartCount }: {
+function MobileTicketAccordion({ tier, facility, isHighlighted, isExpanded, onToggle, cartCount, ticketProductMap }: {
   tier: TicketTier;
-  facilitySlug: string;
   facility: { id: string; name: string; category: string };
   isHighlighted: boolean;
   isExpanded: boolean;
   onToggle: () => void;
   cartCount: number;
+  ticketProductMap?: Record<string, {
+    id: string;
+    title: string;
+    label: string | null;
+    minPeople: number;
+    maxPeople: number | null;
+    prices: PriceOption[];
+  }>;
 }) {
   const hasDiscount = tier.originalPrice && Number(tier.originalPrice) > Number(tier.price);
   const discountPercent = hasDiscount ? Math.round(((Number(tier.originalPrice) - Number(tier.price)) / Number(tier.originalPrice)) * 100) : 0;
@@ -332,32 +350,24 @@ function MobileTicketAccordion({ tier, facilitySlug, facility, isHighlighted, is
   const [loadingPrices, setLoadingPrices] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
   const [isAdded, setIsAdded] = useState(false);
-  const prevExpanded = useRef(isExpanded);
 
-  // Fetch product prices when expanded
+// Resolve prices from the prop map (no API call needed)
   useEffect(() => {
-    if (!isExpanded) return;
-    if (prevExpanded.current === isExpanded) return; // skip initial
-    prevExpanded.current = isExpanded;
+    if (!isExpanded || !ticketProductMap) return;
+    requestAnimationFrame(() => setLoadingPrices(true));
 
-    setLoadingPrices(true);
-    fetch(`/api/facilities/${facilitySlug}/tickets`)
-      .then((r) => r.json())
-      .then((data: CategoryOption[]) => {
-        // Flatten to get all products
-        const allProducts: ProductOption[] = data.flatMap((cat: { products?: ProductOption[] }) => cat.products || []);
-        setProducts(allProducts);
-        // Find current product by matching tier.id
-        const current = allProducts.find((p) => p.id === tier.id);
-        if (current) {
-          const best = findBestDeal(current.prices);
-          setSelectedPrice(best ?? current.prices[0]?.id ?? null);
-          setQty(current.minPeople || 1);
-        }
-        setLoadingPrices(false);
-      })
-      .catch(() => setLoadingPrices(false));
-  }, [isExpanded, facilitySlug, tier.id]);
+    // Flatten all products from the map
+    const allProducts = Object.values(ticketProductMap);
+    requestAnimationFrame(() => setProducts(allProducts));
+
+    const current = allProducts.find((p) => p.id === tier.id);
+    if (current) {
+      const best = findBestDeal(current.prices);
+      requestAnimationFrame(() => setSelectedPrice(best ?? current.prices[0]?.id ?? null));
+      requestAnimationFrame(() => setQty(current.minPeople || 1));
+    }
+    requestAnimationFrame(() => setLoadingPrices(false));
+  }, [isExpanded, ticketProductMap, tier.id]);
 
   const activeProduct = products.find((p) => p.id === tier.id);
   const activePrice = activeProduct?.prices.find((p) => p.id === selectedPrice) ?? activeProduct?.prices[0] ?? null;
