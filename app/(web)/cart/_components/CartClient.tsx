@@ -6,6 +6,7 @@ import { useCart, MAX_QUANTITY_PER_ITEM } from "@/hooks/use-cart";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { IdentitySetupDialog } from "@/components/shared/IdentitySetupDialog";
+import { createCheckoutSessionAction } from "@/app/(server)/actions/checkout";
 import Image from "next/image";
 import Link from "next/link";
 import { toast } from "sonner";
@@ -53,31 +54,25 @@ export function CartClient({ dict }: {  dict: Record<string, any> }) {
       setIsCheckingOut(true);
       setShowIdentityDialog(false);
 
-      const response = await fetch("/api/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          items: items.map(i => ({
-            ticketPriceId: i.ticketId,
-            quantity: i.quantity
-          })),
-          holderName,
-          holderPhotoUrl
-        }),
+      const result = await createCheckoutSessionAction({
+        items: items.map(i => ({
+          ticketPriceId: i.ticketId,
+          quantity: i.quantity
+        })),
+        holderName,
+        holderPhotoUrl
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to initialize checkout");
+      if (!result.success) {
+        throw new Error(result.error || "Failed to initialize checkout");
       }
 
-      if (data.url) {
+      if (result.data?.url) {
         // 🌊 Clear cart immediately so it's empty when they return
         clearCart();
-        window.location.href = data.url;
+        window.location.href = result.data.url;
       } else {
-        throw new Error(data.error || "Checkout endpoint returned no redirect URL");
+        throw new Error(result.error || "Checkout endpoint returned no redirect URL");
       }
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Something went wrong.";
