@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useCallback } from "react";
+import { useRef, useCallback, useState } from "react";
 import Link from "next/link";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 
@@ -14,9 +14,15 @@ interface Props {
   faqs: FAQItem[];
 }
 
+const INITIAL_VISIBLE = 4;
+
 export function FaqAccordion({ faqs }: Props) {
+  const [showAll, setShowAll] = useState(false);
   const itemRefs = useRef<Map<string, HTMLDivElement>>(new Map());
   const prevOpenRef = useRef<Set<string>>(new Set());
+
+  const visibleFaqs = showAll ? faqs : faqs.slice(0, INITIAL_VISIBLE);
+  const remaining = faqs.length - INITIAL_VISIBLE;
 
   const setItemRef = useCallback((id: string, el: HTMLDivElement | null) => {
     if (el) {
@@ -54,7 +60,7 @@ export function FaqAccordion({ faqs }: Props) {
         defaultValue={[faqs[0].id]}
         onValueChange={handleValueChange}
       >
-        {faqs.map((faq) => (
+        {visibleFaqs.map((faq) => (
           <AccordionItem
             key={faq.id}
             value={faq.id}
@@ -71,17 +77,26 @@ export function FaqAccordion({ faqs }: Props) {
         ))}
       </Accordion>
 
-      {faqs.length > 0 && (
-        <p className="text-sm text-muted-foreground text-center pt-2">
-          Niste pronašli odgovor?{" "}
-          <Link
-            href="/podrska"
-            className="text-primary font-bold underline underline-offset-2 hover:text-cyan-300 transition-colors"
+      {!showAll && remaining > 0 && (
+        <div className="text-center pt-2">
+          <button
+            onClick={() => setShowAll(true)}
+            className="text-sm font-bold text-primary underline underline-offset-2 hover:text-cyan-300 transition-colors cursor-pointer"
           >
-            Kontaktirajte nas
-          </Link>
-        </p>
+            Prikaži još {remaining} pitanja
+          </button>
+        </div>
       )}
+
+      <p className="text-sm text-muted-foreground text-center pt-2">
+        Niste pronašli odgovor?{" "}
+        <Link
+          href="/podrska"
+          className="text-primary font-bold underline underline-offset-2 hover:text-cyan-300 transition-colors"
+        >
+          Kontaktirajte nas
+        </Link>
+      </p>
     </section>
   );
 }
