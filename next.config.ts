@@ -30,28 +30,23 @@ const nextConfig: NextConfig = {
     ],
   },
 
-  // Ensure Turbopack remains fast
   // 🏎️ ETag generation for conditional GET (304 Not Modified) support
-  // Reduces crawl budget waste by allowing bots to revalidate instead of re-downloading full payloads.
   generateEtags: true,
 
   experimental: {
-    optimizeCss: true, // Inlines critical CSS for better FCP
+    optimizeCss: true,
     serverActions: {
-      bodySizeLimit: '25mb', // Bumps from 1MB to 25MB for images & metadata
+      bodySizeLimit: '25mb',
     },
-    proxyClientMaxBodySize: 26214400, // 25MB in bytes (Bumps from 10MB)
+    proxyClientMaxBodySize: 26214400, // 25MB
+  },
 
-    // ⚠️ Force Turbopack to include sharp native binaries in deployment
-    // lovell/sharp#4543: Turbopack doesn't discover @img/sharp-* packages
-    // via vercel/nft even with sharp@0.35.2's stub binaries.
-    // @ts-expect-error - exists at runtime despite missing types
-    outputFileTracingIncludes: {
-      '/admin/**': [
-        './node_modules/@img/sharp-linux-x64/**',
-        './node_modules/@img/sharp-libvips-linux-x64/**',
-      ],
-    },
+  // Force Turbopack to include sharp native binaries in deployment
+  outputFileTracingIncludes: {
+    '/admin/**': [
+      './node_modules/@img/sharp-linux-x64/**',
+      './node_modules/@img/sharp-libvips-linux-x64/**',
+    ],
   },
 
   async headers() {
