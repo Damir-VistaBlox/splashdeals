@@ -52,6 +52,18 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     }
   }
 
+  // /facilities/{category}/{facilitySlug} → 301 to /{facilitySlug}
+  // Google indexed old URLs under facilities/waterpark/* before the flat URL migration.
+  if (slug && slug.length === 3 && slug[0] === "facilities") {
+    const facility = await prisma.facility.findUnique({
+      where: { slug: slug[2], status: "ACTIVE" },
+      select: { slug: true }
+    });
+    if (facility) {
+      permanentRedirect(`/${facility.slug}`);
+    }
+  }
+
   notFound();
 }
 
@@ -119,6 +131,17 @@ export default async function CatchAllPage({ params }: { params: Promise<{ slug:
     });
     if (facility) {
       permanentRedirect(`/${facility.slug}#deals`);
+    }
+  }
+
+  // /facilities/{category}/{facilitySlug} → 301 to /{facilitySlug}
+  if (slug && slug.length === 3 && slug[0] === "facilities") {
+    const facility = await prisma.facility.findUnique({
+      where: { slug: slug[2], status: "ACTIVE" },
+      select: { slug: true }
+    });
+    if (facility) {
+      permanentRedirect(`/${facility.slug}`);
     }
   }
 
