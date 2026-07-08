@@ -1,5 +1,6 @@
 {
   "$schema": "https://unpkg.com/knip@5/schema.json",
+  "maxIssues": 100,
   "entry": [
     "server/actions/**/*.ts",
     "scripts/check-*.mjs",
