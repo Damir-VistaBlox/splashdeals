@@ -1,4 +1,3 @@
-export { useFacility, FacilityProvider } from "./facility-context";
 export { FacilityLayoutContextHandler } from "./facility-layout-context-handler";
 export { FacilityGovernanceSheet } from "./nav/facility-governance-sheet";
 export { FacilityNav } from "./nav/facility-nav";
@@ -10,7 +9,6 @@ export { SlotError } from "./slot-error";
 // Amenities components
 export { CompactAmenitiesTable } from "../amenities/_components/facility-amenities-compact";
 export { CompactAmenitiesTableContainer as AmenitiesSection } from "../amenities/_components";
-export { AmenitiesSkeleton } from "../amenities/_components/amenities-skeleton";
 
 // Tickets components
 // (barrel export removed — use ticket-management-v2 directly)

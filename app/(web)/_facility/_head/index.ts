@@ -18,11 +18,6 @@ export {
   getCategoryLabel,
   SITE_URL,
   buildFacilitySchema,
-  buildAttractionSchema,
-  buildBusinessSchema,
-  buildProductSchema,
-  buildVideoSchema,
-  buildBreadcrumbSchema,
 } from "./schemas";
 export type {
   FacilitySchemaInput,
