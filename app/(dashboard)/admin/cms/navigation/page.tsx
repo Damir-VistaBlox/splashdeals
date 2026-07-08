@@ -23,10 +23,5 @@ export default async function NavigationPage() {
     },
   });
 
-    const serializedMenus = menus.map(m => ({
-    ...m,
-    createdAt: m.createdAt instanceof Date ? m.createdAt.toISOString() : m.createdAt,
-    updatedAt: m.updatedAt instanceof Date ? m.updatedAt.toISOString() : m.updatedAt,
-  }));
-  return <NavigationManager initialMenus={serializedMenus as unknown as Array<Record<string, unknown>>} />;
+  return <NavigationManager initialMenus={JSON.parse(JSON.stringify(menus))} />;
 }

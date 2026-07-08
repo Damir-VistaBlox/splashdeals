@@ -22,11 +22,7 @@ export default async function PostsPage() {
 
   // Serialize Date -> ISO string for client
   const serialized = posts.map((post) => ({
-    id: post.id, title: post.title, slug: post.slug,
-    excerpt: post.excerpt, imageUrl: post.imageUrl,
-    categoryId: post.categoryId, categoryName: post.categoryName,
-    tags: post.tags, published: post.published,
-    readingTime: post.readingTime,
+    ...post,
     createdAt: post.createdAt.toISOString(),
     updatedAt: post.updatedAt.toISOString(),
     publishedAt: post.publishedAt?.toISOString() ?? null,
@@ -43,7 +39,7 @@ export default async function PostsPage() {
         </div>
         <Link
           href="/admin/cms/posts/new"
-          className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors"
+          className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium"
         >
           <Icon name="add" className="size-4" />
           Nova objava

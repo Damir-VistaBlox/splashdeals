@@ -41,7 +41,7 @@ export default async function PagesPage() {
         </Link>
       </div>
 
-      <PagesListClient pages={serialized as unknown as Array<Record<string, unknown>>} />
+      <PagesListClient pages={serialized} />
     </div>
   );
 }

@@ -16,7 +16,10 @@ export default async function TagsPage() {
   });
 
   const serializedTags = tags.map((t) => ({
-    id: t.id, name: t.name, slug: t.slug, postCount: t._count.posts,
+    id: t.id,
+    name: t.name,
+    slug: t.slug,
+    postCount: t._count.posts,
   }));
 
   return <TagsManager tags={serializedTags} />;
