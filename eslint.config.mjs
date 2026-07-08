@@ -7,14 +7,15 @@ const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
   reactCompiler.configs.recommended,
+  // Custom project rules
   {
     rules: {
       "@typescript-eslint/no-explicit-any": "warn",
       "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }],
-      "@next/next/no-img-element": "warn"
-    }
+      "@next/next/no-img-element": "warn",
+    },
   },
-  // Override default ignores of eslint-config-next.
+  // Ignores
   globalIgnores([
     "scripts/**",
     "quick-gsc-pull.js",

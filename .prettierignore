@@ -1,0 +1,9 @@
+node_modules
+.next
+out
+build
+playwright-report
+scratch
+coverage
+.lighthouseci
+*.md

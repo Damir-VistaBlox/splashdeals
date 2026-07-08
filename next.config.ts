@@ -1,32 +1,41 @@
 import type { NextConfig } from "next";
 
 /**
+ * Bundle analyzer integration — enabled via ANALYZE=true npm run build.
+ * Uses top-level await (Node 24+) for CJS-compatible usage.
+ */
+const withBundleAnalyzer =
+  process.env.ANALYZE === "true"
+    ? (await import("@next/bundle-analyzer")).default({ enabled: true })
+    : (config: NextConfig) => config;
+
+/**
  * 🌊 Next.js 16.x Configuration
  * Optimized for AquastreamUI Experience.
  */
-const nextConfig: NextConfig = {
+const nextConfig: NextConfig = withBundleAnalyzer({
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: '*.public.blob.vercel-storage.com',
+        protocol: "https",
+        hostname: "*.public.blob.vercel-storage.com",
       },
       {
-        protocol: 'https',
-        hostname: 'res.cloudinary.com',
+        protocol: "https",
+        hostname: "res.cloudinary.com",
       },
       {
-        protocol: 'https',
-        hostname: 'images.unsplash.com',
+        protocol: "https",
+        hostname: "images.unsplash.com",
       },
       {
-        protocol: 'https',
-        hostname: 'cdn.brandfolder.io',
+        protocol: "https",
+        hostname: "cdn.brandfolder.io",
       },
       {
-        protocol: 'https',
-        hostname: 'upload.wikimedia.org',
-      }
+        protocol: "https",
+        hostname: "upload.wikimedia.org",
+      },
     ],
   },
 
@@ -36,16 +45,16 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizeCss: true,
     serverActions: {
-      bodySizeLimit: '25mb',
+      bodySizeLimit: "25mb",
     },
     proxyClientMaxBodySize: 26214400, // 25MB
   },
 
   // Force Turbopack to include sharp native binaries in deployment
   outputFileTracingIncludes: {
-    '/admin/**': [
-      './node_modules/@img/sharp-linux-x64/**',
-      './node_modules/@img/sharp-libvips-linux-x64/**',
+    "/admin/**": [
+      "./node_modules/@img/sharp-linux-x64/**",
+      "./node_modules/@img/sharp-libvips-linux-x64/**",
     ],
   },
 
@@ -113,12 +122,13 @@ const nextConfig: NextConfig = {
           },
           {
             key: "Content-Security-Policy",
-            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.splashdeals.rs https://f7t7eeiv4kcyjvws.public.blob.vercel-storage.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://www.splashdeals.rs https://f7t7eeiv4kcyjvws.public.blob.vercel-storage.com https://grainy-gradients.vercel.app; font-src 'self' data:; connect-src 'self' https://www.splashdeals.rs https://vercel.com https://blob.vercel-storage.com; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'",
+            value:
+              "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.splashdeals.rs https://f7t7eeiv4kcyjvws.public.blob.vercel-storage.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://www.splashdeals.rs https://f7t7eeiv4kcyjvws.public.blob.vercel-storage.com https://grainy-gradients.vercel.app; font-src 'self' data:; connect-src 'self' https://www.splashdeals.rs https://vercel.com https://blob.vercel-storage.com; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'",
           },
         ],
       },
     ];
-  }
-};
+  },
+});
 
 export default nextConfig;
