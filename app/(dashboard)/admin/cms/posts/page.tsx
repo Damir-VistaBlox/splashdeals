@@ -22,11 +22,14 @@ export default async function PostsPage() {
 
   // Serialize Date -> ISO string for client
   const serialized = posts.map((post) => ({
-    ...post,
+    id: post.id, title: post.title, slug: post.slug,
+    excerpt: post.excerpt, imageUrl: post.imageUrl,
+    categoryId: post.categoryId, categoryName: post.categoryName,
+    tags: post.tags, published: post.published,
+    readingTime: post.readingTime,
     createdAt: post.createdAt.toISOString(),
     updatedAt: post.updatedAt.toISOString(),
     publishedAt: post.publishedAt?.toISOString() ?? null,
-    readingTime: post.readingTime,
   }));
 
   return (

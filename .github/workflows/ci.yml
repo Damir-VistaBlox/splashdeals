@@ -85,7 +85,7 @@ jobs:
 
       - name: 🚦 Lighthouse CI
         env: *build_env
-        run: npx lhci autorun --collect.numberOfRuns=1 --collect.url=http://localhost:3000 --collect.url=http://localhost:3000/how-it-works --assert.preset=lighthouse:no-pwa --upload.target=filesystem
+        run: npx lhci autorun --collect.numberOfRuns=1 --collect.startServerCommand="npm run start -- -p 3000" --collect.url=http://localhost:3000 --collect.url=http://localhost:3000/how-it-works --assert.preset=lighthouse:no-pwa --upload.target=filesystem
 
       # ─── Deploy ────────────────────────────────────────────────────────
 

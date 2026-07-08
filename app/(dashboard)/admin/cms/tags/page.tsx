@@ -15,5 +15,9 @@ export default async function TagsPage() {
     include: { _count: { select: { posts: true } } },
   });
 
-  return <TagsManager tags={tags as unknown as Array<Record<string, unknown>>} />;
+  const serializedTags = tags.map((t) => ({
+    id: t.id, name: t.name, slug: t.slug, postCount: t._count.posts,
+  }));
+
+  return <TagsManager tags={serializedTags} />;
 }
