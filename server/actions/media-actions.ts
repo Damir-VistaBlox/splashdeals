@@ -433,6 +433,7 @@ export async function toggleMediaGalleryVisibilityAction(mediaId: string, facili
 
 /**
  * Updates the caption/alt tag description of a media item.
+ * Does NOT revalidate the public layout — captions don't affect public render output.
  */
 export async function updateMediaCaptionAction(mediaId: string, facilityId: string, caption: string | null) {
   try {
@@ -447,7 +448,6 @@ export async function updateMediaCaptionAction(mediaId: string, facilityId: stri
     });
 
     revalidatePath(`/admin/facilities/${facilityId}/media`);
-    revalidatePath(`/facilities/[categorySlug]/[facilitySlug]`, "layout");
 
     return { success: true, media: updated };
   } catch (error) {
@@ -457,6 +457,7 @@ export async function updateMediaCaptionAction(mediaId: string, facilityId: stri
 
 /**
  * Updates the focal point coordinates of a media item.
+ * Does NOT revalidate the public layout — focal points don't affect public render output.
  */
 export async function updateMediaFocalPointAction(mediaId: string, facilityId: string, focalPoint: string | null) {
   try {
@@ -471,7 +472,6 @@ export async function updateMediaFocalPointAction(mediaId: string, facilityId: s
     });
 
     revalidatePath(`/admin/facilities/${facilityId}/media`);
-    revalidatePath(`/facilities/[categorySlug]/[facilitySlug]`, "layout");
 
     return { success: true, media: updated };
   } catch (error) {
@@ -481,6 +481,7 @@ export async function updateMediaFocalPointAction(mediaId: string, facilityId: s
 
 /**
  * Bulk updates captions/alt tags for multiple media items.
+ * Does NOT revalidate the public layout — captions don't affect public render output.
  */
 export async function bulkUpdateMediaCaptionAction(mediaIds: string[], facilityId: string, caption: string | null) {
   try {
@@ -498,7 +499,6 @@ export async function bulkUpdateMediaCaptionAction(mediaIds: string[], facilityI
     });
 
     revalidatePath(`/admin/facilities/${facilityId}/media`);
-    revalidatePath(`/facilities/[categorySlug]/[facilitySlug]`, "layout");
 
     return { success: true };
   } catch (error) {
