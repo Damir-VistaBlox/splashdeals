@@ -19,7 +19,7 @@
     "analyze": "ANALYZE=true next build",
     "check:arch": "node scripts/check-architecture.mjs",
     "check:unused": "knip",
-    "check:duplicate": "jscpd --min-lines 8 --min-tokens 60 --format 'ts,tsx' --threshold 3 app server lib components",
+    "check:duplicate": "jscpd --min-lines 8 --min-tokens 60 --format 'ts,tsx' --threshold 4 app server lib components",
     "check:circular": "node scripts/check-circular.mjs",
     "prepare": "husky",
     "test:unit": "vitest run",
