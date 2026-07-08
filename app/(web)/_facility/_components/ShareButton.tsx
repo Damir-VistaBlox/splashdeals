@@ -20,11 +20,11 @@ export function ShareButton({ title, url, className }: ShareButtonProps) {
 
   const handleShare = async () => {
     // 📳 Haptic Vibration API: Feedback confirmation
-    if (typeof navigator !== 'undefined' && "vibrate" in navigator) {
+    if (typeof navigator !== "undefined" && "vibrate" in navigator) {
       navigator.vibrate(15);
     }
 
-    if (typeof navigator !== 'undefined' && navigator.share) {
+    if (typeof navigator !== "undefined" && navigator.share) {
       try {
         await navigator.share({
           title,
@@ -32,7 +32,7 @@ export function ShareButton({ title, url, className }: ShareButtonProps) {
           url,
         });
       } catch (err) {
-        if ((err as Error).name !== 'AbortError') {
+        if ((err as Error).name !== "AbortError") {
           console.error("Error sharing:", err);
         }
       }
@@ -42,7 +42,7 @@ export function ShareButton({ title, url, className }: ShareButtonProps) {
         await navigator.clipboard.writeText(url);
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
-        if (typeof navigator !== 'undefined' && "vibrate" in navigator) {
+        if (typeof navigator !== "undefined" && "vibrate" in navigator) {
           navigator.vibrate([15, 40, 15]); // Double-tap confirmation
         }
       } catch (err) {
@@ -55,20 +55,23 @@ export function ShareButton({ title, url, className }: ShareButtonProps) {
     <button
       onClick={handleShare}
       className={cn(
-        "relative p-2.5 rounded-full backdrop-blur-xl bg-muted/50 border border-border hover:bg-muted transition-all group overflow-hidden flex items-center justify-center min-w-[36px] min-h-[36px] hover:scale-105 active:scale-95",
+        "bg-muted/50 border-border hover:bg-muted group relative flex min-h-[36px] min-w-[36px] items-center justify-center overflow-hidden rounded-full border p-2.5 backdrop-blur-xl transition-all hover:scale-105 active:scale-95",
         copied ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-400" : "",
-        className
+        className,
       )}
       title={copied ? "Kopirano!" : "Podeli"}
       aria-live="polite"
     >
       {copied ? (
         <div key="check" className="animate-scale-in">
-          <Icon name="check" className="w-[14px] h-[14px] text-emerald-400" />
+          <Icon name="check" className="h-[14px] w-[14px] text-emerald-400" />
         </div>
       ) : (
         <div key="share" className="animate-scale-in">
-          <Icon name="share" className="w-[14px] h-[14px] text-slate-300 group-hover:text-cyan-400 transition-colors" />
+          <Icon
+            name="share"
+            className="h-[14px] w-[14px] text-slate-300 transition-colors group-hover:text-cyan-400"
+          />
         </div>
       )}
     </button>

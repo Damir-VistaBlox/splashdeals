@@ -1,9 +1,9 @@
 export interface NavItem {
-  title: string
-  url: string
-  icon?: string
-  requiredRole?: "SUPER_ADMIN" | "FACILITY_STAFF"
-  items?: NavItem[]
+  title: string;
+  url: string;
+  icon?: string;
+  requiredRole?: "SUPER_ADMIN" | "FACILITY_STAFF";
+  items?: NavItem[];
 }
 
 export const adminNavData = {
@@ -97,4 +97,4 @@ export const adminNavData = {
       ],
     },
   ] as NavItem[],
-}
+};

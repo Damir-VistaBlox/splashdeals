@@ -1,6 +1,6 @@
-import { NextResponse } from "next/server"
-import { prisma } from "@/server/lib/prisma"
-import { revalidatePath } from "next/cache"
+import { NextResponse } from "next/server";
+import { prisma } from "@/server/lib/prisma";
+import { revalidatePath } from "next/cache";
 
 /**
  * 📅 CMS Scheduled Publishing Cron
@@ -9,13 +9,13 @@ import { revalidatePath } from "next/cache"
  */
 export async function GET(request: Request) {
   // 🔐 Auth check
-  const authHeader = request.headers.get("authorization")
+  const authHeader = request.headers.get("authorization");
   if (process.env.CRON_SECRET && authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-    return new NextResponse("Unauthorized", { status: 401 })
+    return new NextResponse("Unauthorized", { status: 401 });
   }
 
   try {
-    const now = new Date()
+    const now = new Date();
 
     const result = await prisma.blogPost.updateMany({
       where: {
@@ -25,18 +25,21 @@ export async function GET(request: Request) {
       data: {
         status: "PUBLISHED",
       },
-    })
+    });
 
     // Revalidate blog pages
-    revalidatePath("/blog")
+    revalidatePath("/blog");
 
     return NextResponse.json({
       success: true,
       published: result.count,
       timestamp: now.toISOString(),
-    })
+    });
   } catch (error) {
-    console.error("[CMS Cron] Scheduled publishing error:", error)
-    return NextResponse.json({ success: false, error: "Scheduled publishing failed" }, { status: 500 })
+    console.error("[CMS Cron] Scheduled publishing error:", error);
+    return NextResponse.json(
+      { success: false, error: "Scheduled publishing failed" },
+      { status: 500 },
+    );
   }
 }

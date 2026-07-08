@@ -1,39 +1,39 @@
-"use client"
+"use client";
 
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Label } from "@/components/ui/label"
-import { Separator } from "@/components/ui/separator"
-import { useFormContext } from "react-hook-form"
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
+import { useFormContext } from "react-hook-form";
 
 interface SEOPanelProps {
-  previewUrl?: string
+  previewUrl?: string;
 }
 
 export function SEOPanel({ previewUrl }: SEOPanelProps) {
-  const { register, watch } = useFormContext()
-  const title = watch("title")
-  const metaTitle = watch("metaTitle")
-  const metaDescription = watch("metaDescription")
+  const { register, watch } = useFormContext();
+  const title = watch("title");
+  const metaTitle = watch("metaTitle");
+  const metaDescription = watch("metaDescription");
 
-  const serpTitle = metaTitle || title || "—"
-  const serpDesc = metaDescription || "Dodaj meta opis za prikaz u pretrazi..."
+  const serpTitle = metaTitle || title || "—";
+  const serpDesc = metaDescription || "Dodaj meta opis za prikaz u pretrazi...";
 
   return (
     <div className="space-y-6">
       {/* SERP Preview */}
       <div>
-        <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+        <h4 className="text-muted-foreground mb-2 text-xs font-semibold tracking-wider uppercase">
           Google SERP Preview
         </h4>
-        <div className="rounded-lg border bg-card p-3 space-y-1">
-          <p className="text-xs text-green-700 dark:text-green-400 truncate">
+        <div className="bg-card space-y-1 rounded-lg border p-3">
+          <p className="truncate text-xs text-green-700 dark:text-green-400">
             {previewUrl || "splashdeals.rs/blog/..."}
           </p>
-          <p className="text-sm font-medium text-blue-600 dark:text-blue-400 leading-tight truncate">
+          <p className="truncate text-sm leading-tight font-medium text-blue-600 dark:text-blue-400">
             {serpTitle.length > 60 ? serpTitle.slice(0, 57) + "..." : serpTitle}
           </p>
-          <p className="text-xs text-muted-foreground leading-tight line-clamp-2">
+          <p className="text-muted-foreground line-clamp-2 text-xs leading-tight">
             {serpDesc.length > 160 ? serpDesc.slice(0, 157) + "..." : serpDesc}
           </p>
         </div>
@@ -49,7 +49,7 @@ export function SEOPanel({ previewUrl }: SEOPanelProps) {
           {...register("metaTitle")}
           placeholder={title ? `${title} | Splashdeals.rs` : "SEO naslov..."}
         />
-        <p className="text-xs text-muted-foreground">
+        <p className="text-muted-foreground text-xs">
           Preporučeno: do 60 karaktera.{" "}
           <span className={metaTitle?.length > 60 ? "text-destructive font-medium" : ""}>
             ({metaTitle?.length || 0})
@@ -66,7 +66,7 @@ export function SEOPanel({ previewUrl }: SEOPanelProps) {
           placeholder="Kratak opis za prikaz u Google rezultatima..."
           className="min-h-[80px] resize-none"
         />
-        <p className="text-xs text-muted-foreground">
+        <p className="text-muted-foreground text-xs">
           Preporučeno: 150-160 karaktera.{" "}
           <span className={metaDescription?.length > 160 ? "text-destructive font-medium" : ""}>
             ({metaDescription?.length || 0})
@@ -78,7 +78,7 @@ export function SEOPanel({ previewUrl }: SEOPanelProps) {
 
       {/* Open Graph */}
       <div className="space-y-3">
-        <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+        <h4 className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
           Open Graph (društvene mreže)
         </h4>
 
@@ -103,11 +103,7 @@ export function SEOPanel({ previewUrl }: SEOPanelProps) {
 
         <div className="space-y-2">
           <Label htmlFor="ogImage">OG slika (URL)</Label>
-          <Input
-            id="ogImage"
-            {...register("ogImage")}
-            placeholder="https://..."
-          />
+          <Input id="ogImage" {...register("ogImage")} placeholder="https://..." />
         </div>
       </div>
 
@@ -115,7 +111,7 @@ export function SEOPanel({ previewUrl }: SEOPanelProps) {
 
       {/* Napredno */}
       <div className="space-y-3">
-        <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+        <h4 className="text-muted-foreground text-xs font-semibold tracking-wider uppercase">
           Napredno
         </h4>
 
@@ -133,7 +129,7 @@ export function SEOPanel({ previewUrl }: SEOPanelProps) {
           <select
             id="robotsDirective"
             {...register("robotsDirective")}
-            className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+            className="border-input placeholder:text-muted-foreground focus-visible:ring-ring flex h-9 w-full rounded-md border bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:ring-1 focus-visible:outline-none"
           >
             <option value="">Podrazumevano (index, follow)</option>
             <option value="noindex,nofollow">noindex, nofollow</option>
@@ -143,5 +139,5 @@ export function SEOPanel({ previewUrl }: SEOPanelProps) {
         </div>
       </div>
     </div>
-  )
+  );
 }

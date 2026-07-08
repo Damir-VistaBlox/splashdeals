@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 // import { PKPass } from "passkit-generator";
 import { prisma } from "@/server/lib/prisma";
 
-
-
 /**
  * Apple Wallet Pass Generator
  * Logic: Resolves the IssuedTicket (Purchased Asset) by qrHash
@@ -30,11 +28,11 @@ export async function GET(request: NextRequest) {
             ticketType: {
               include: {
                 category: {
-                  include: { facility: true }
-                }
-              }
-            }
-          }
+                  include: { facility: true },
+                },
+              },
+            },
+          },
         },
       },
     });
@@ -44,22 +42,22 @@ export async function GET(request: NextRequest) {
     }
 
     const isMissingCerts = !process.env.APPLE_WWDR_CERT;
-    
+
     if (isMissingCerts) {
       console.warn("Generating Mock PassKit without Apple Certificates for Developer Feedback.");
       return new NextResponse(
         JSON.stringify({
-           mock_success: true,
-           message: "Placeholder for the binary .pkpass file. Real certificates required.",
-           ticketDataExtracted: {
-             qrHash: issuedTicket.qrHash,
-             title: issuedTicket.ticketPrice?.ticketType?.title || "Ticket",
-             facility: issuedTicket.ticketPrice?.ticketType?.category?.facility.name || "Facility"
-           }
+          mock_success: true,
+          message: "Placeholder for the binary .pkpass file. Real certificates required.",
+          ticketDataExtracted: {
+            qrHash: issuedTicket.qrHash,
+            title: issuedTicket.ticketPrice?.ticketType?.title || "Ticket",
+            facility: issuedTicket.ticketPrice?.ticketType?.category?.facility.name || "Facility",
+          },
         }),
         {
-          headers: { "Content-Type": "application/json" }
-        }
+          headers: { "Content-Type": "application/json" },
+        },
       );
     }
 

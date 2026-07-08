@@ -48,16 +48,16 @@ export async function GET(request: Request) {
         await prisma.transaction.delete({
           where: { id: tx.id },
         });
-        
+
         successCount++;
       } catch (e) {
         console.warn(`[CRON] Failed to cleanup session ${tx.stripeSession}:`, e);
       }
     }
 
-    return NextResponse.json({ 
-      processed: abandonedTransactions.length, 
-      deleted: successCount 
+    return NextResponse.json({
+      processed: abandonedTransactions.length,
+      deleted: successCount,
     });
   } catch (error) {
     console.error("[CRON ERROR] Cleanup failed:", error);

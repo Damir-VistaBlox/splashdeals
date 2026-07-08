@@ -1,5 +1,5 @@
 const dictionaries = {
-  rs: () => import('@/dictionaries/rs.json').then((module) => module.default),
+  rs: () => import("@/dictionaries/rs.json").then((module) => module.default),
 };
 
 /**

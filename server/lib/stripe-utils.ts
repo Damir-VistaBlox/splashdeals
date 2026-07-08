@@ -24,29 +24,29 @@ export function generateIdempotencyKey(payload: unknown, discriminator?: string)
 export async function withStripeRetry<T>(
   fn: () => Promise<T>,
   retries = 3,
-  delay = 500
+  delay = 500,
 ): Promise<T> {
   let lastError: unknown;
-  
+
   for (let i = 0; i < retries; i++) {
     try {
       return await fn();
     } catch (error) {
       lastError = error;
-      
+
       // Don't retry on Stripe validation errors
       if (
         error &&
-        typeof error === 'object' &&
+        typeof error === "object" &&
         error !== null &&
-        'type' in error &&
-        (error as Record<string, unknown>).type === 'StripeInvalidRequestError'
+        "type" in error &&
+        (error as Record<string, unknown>).type === "StripeInvalidRequestError"
       ) {
         throw error;
       }
 
       console.warn(`[STRIPE RETRY] Attempt ${i + 1} failed. Retrying in ${delay}ms...`);
-      await new Promise(resolve => setTimeout(resolve, delay));
+      await new Promise((resolve) => setTimeout(resolve, delay));
       delay *= 2; // Exponential backoff
     }
   }

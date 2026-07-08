@@ -103,7 +103,10 @@ export async function createCheckoutSession(params: {
     const facility = ticketType.category.facility;
 
     // Validate identity for personalised passes
-    if ((ticketType.requiresIdentity && !holderName) || (ticketType.requiresPhoto && !holderPhotoUrl)) {
+    if (
+      (ticketType.requiresIdentity && !holderName) ||
+      (ticketType.requiresPhoto && !holderPhotoUrl)
+    ) {
       throw new Error("Personalizovane karte zahtevaju identifikaciju nosioca.");
     }
 

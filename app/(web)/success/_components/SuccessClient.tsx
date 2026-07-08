@@ -61,12 +61,12 @@ export interface SuccessDictionary {
   };
 }
 
-export function SuccessClient({ 
-  sessionId, 
+export function SuccessClient({
+  sessionId,
   initialTransaction,
-  dict
-}: { 
-  sessionId: string; 
+  dict,
+}: {
+  sessionId: string;
   initialTransaction: Transaction | null;
   dict: SuccessDictionary;
 }) {
@@ -78,28 +78,28 @@ export function SuccessClient({
     let isActive = true;
 
     if (transaction?.status !== "SUCCESS") {
-        const poll = async () => {
+      const poll = async () => {
+        if (!isActive) return;
+        try {
+          const res = await fetch(`/api/checkout/status?session_id=${sessionId}`);
+          const data = await res.json();
+
           if (!isActive) return;
-          try {
-            const res = await fetch(`/api/checkout/status?session_id=${sessionId}`);
-            const data = await res.json();
-            
-            if (!isActive) return;
 
-            if (data.status === "SUCCESS") {
-              setTransaction(data);
-            } else {
-              timerId = setTimeout(poll, 3000);
-            }
-          } catch (error) {
-            console.error("Polling error:", error);
-            if (isActive) {
-              timerId = setTimeout(poll, 5000);
-            }
+          if (data.status === "SUCCESS") {
+            setTransaction(data);
+          } else {
+            timerId = setTimeout(poll, 3000);
           }
-        };
+        } catch (error) {
+          console.error("Polling error:", error);
+          if (isActive) {
+            timerId = setTimeout(poll, 5000);
+          }
+        }
+      };
 
-        poll();
+      poll();
     }
 
     return () => {
@@ -110,29 +110,27 @@ export function SuccessClient({
 
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-8 text-center pt-20">
+      <div className="flex min-h-[60vh] flex-col items-center justify-center space-y-8 pt-20 text-center">
         <div className="relative">
-            <div
-            className="text-primary-500 animate-spin"
-            >
+          <div className="text-primary-500 animate-spin">
             <Icon name="progress_activity" className="text-[80px]" />
-            </div>
-            <div className="absolute inset-0 flex items-center justify-center">
-                <Icon name="confirmation_number" className="text-[24px] text-primary-400 opacity-50" />
-            </div>
+          </div>
+          <div className="absolute inset-0 flex items-center justify-center">
+            <Icon name="confirmation_number" className="text-primary-400 text-[24px] opacity-50" />
+          </div>
         </div>
         <div className="space-y-3">
-          <h2 className="text-3xl font-black text-foreground italic tracking-tighter uppercase leading-none">
+          <h2 className="text-foreground text-3xl leading-none font-black tracking-tighter uppercase italic">
             {dict.processing.title}
           </h2>
           <p className="text-muted-400 font-medium">{dict.processing.description}</p>
           <div className="flex justify-center gap-1">
             {[0, 1, 2].map((i) => (
-                <div
-                    key={i}
-                    className="w-1.5 h-1.5 rounded-full bg-primary-500 animate-pulse-dot"
-                    style={{ animationDelay: `${i * 0.2}s` }}
-                />
+              <div
+                key={i}
+                className="bg-primary-500 animate-pulse-dot h-1.5 w-1.5 rounded-full"
+                style={{ animationDelay: `${i * 0.2}s` }}
+              />
             ))}
           </div>
         </div>
@@ -143,180 +141,200 @@ export function SuccessClient({
   return (
     <div className="space-y-16 pb-20">
       {/* 🌟 Header Section */}
-      <div className="text-center space-y-6 animate-fade-in-up">
+      <div className="animate-fade-in-up space-y-6 text-center">
         <div className="relative inline-block">
-            <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 relative z-10 animate-scale-in">
+          <div className="animate-scale-in relative z-10 inline-flex h-24 w-24 items-center justify-center rounded-full border border-emerald-500/20 bg-emerald-500/10 text-emerald-400">
             <Icon name="check_circle" className="text-[56px]" />
-            </div>
-            <div className="absolute -top-4 -right-4 w-12 h-12 bg-primary-500/20 blur-2xl rounded-full animate-pulse" />
-            <div className="absolute -bottom-4 -left-4 w-12 h-12 bg-blue-500/20 blur-2xl rounded-full animate-pulse delay-700" />
+          </div>
+          <div className="bg-primary-500/20 absolute -top-4 -right-4 h-12 w-12 animate-pulse rounded-full blur-2xl" />
+          <div className="absolute -bottom-4 -left-4 h-12 w-12 animate-pulse rounded-full bg-blue-500/20 blur-2xl delay-700" />
         </div>
 
         <div className="space-y-3">
-            <h1 className="text-4xl md:text-6xl font-black text-foreground italic tracking-tighter uppercase leading-tight">
-              {dict.header.title} <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">{dict.header.status}</span>
-            </h1>
-            <p className="text-muted-400 max-w-xl mx-auto text-lg">
-              {dict.header.description}
-            </p>
+          <h1 className="text-foreground text-4xl leading-tight font-black tracking-tighter uppercase italic md:text-6xl">
+            {dict.header.title}{" "}
+            <span className="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+              {dict.header.status}
+            </span>
+          </h1>
+          <p className="text-muted-400 mx-auto max-w-xl text-lg">{dict.header.description}</p>
         </div>
       </div>
 
       {/* 🎟️ Ticket Container */}
-      <div className="max-w-5xl mx-auto space-y-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {transaction.issuedTickets.map((issuedTicket, index) => (
-                <div
-                key={issuedTicket.id}
-                className="animate-fade-in-up"
-                style={{ animationDelay: `${0.2 + index * 0.1}s` }}
-                >
-                <Card className="group overflow-hidden flex flex-col md:flex-row p-0 border-border/5 bg-card/40 hover:border-cyan-500/30 transition-colors duration-500">
-                    {/* QR Code Wing */}
-                    <div className="p-10 bg-white flex items-center justify-center relative min-w-[240px]">
-                        <div className="absolute inset-0 bg-gradient-to-br from-cyan-50/50 to-transparent pointer-events-none" />
-                        <div className="relative">
-                            <QRCodeSVG 
-                                value={issuedTicket.qrHash} 
-                                size={160} 
-                                level="H"
-                                includeMargin={false}
-                                className="drop-shadow-2xl grayscale group-hover:grayscale-0 transition-all duration-700"
-                            />
-                            {/* Corner Accents */}
-                            <div className="absolute -top-2 -left-2 w-4 h-4 border-t-2 border-l-2 border-slate-900/10" />
-                            <div className="absolute -bottom-2 -right-2 w-4 h-4 border-b-2 border-r-2 border-slate-900/10" />
-                        </div>
-                    </div>
-                    
-                    {/* Data Wing */}
-                    <div className="flex-1 p-8 space-y-6 relative">
-                        {/* Decorative background text */}
-                        <div className="absolute top-4 right-4 text-foreground/[0.02] font-black text-6xl pointer-events-none select-none tracking-tighter">
-                            SPLASH
-                        </div>
-
-                        <div className="space-y-2 relative z-10">
-                            <div className="flex items-center gap-2">
-                                <span className="w-1.5 h-1.5 rounded-full bg-primary-500 shadow-[0_0_8px_rgba(6,182,212,0.6)]" />
-                                <span className="text-[10px] font-bold text-primary-400 tracking-[0.3em] uppercase">{dict.ticket.valid}</span>
-                            </div>
-                            <h3 className="text-2xl font-black text-foreground tracking-tighter italic uppercase leading-none">
-                                {issuedTicket.ticket.title}
-                            </h3>
-                        </div>
-
-                        <div className="space-y-4 pt-4 border-t border-border/5 relative z-10">
-                            <div className="flex items-start gap-3 group/item">
-                                <div className="p-2 rounded-lg bg-muted/5 text-muted-400 group-hover/item:text-primary-400 transition-colors">
-                                    <Icon name="location_on" className="text-[16px]" />
-                                </div>
-                                <div className="space-y-0.5">
-                                    <p className="text-[10px] text-muted-500 font-bold uppercase tracking-wider">{dict.ticket.location}</p>
-                                    <p className="text-sm font-medium text-foreground">{issuedTicket.ticket.facility.name}</p>
-                                </div>
-                            </div>
-
-                            <div className="flex items-start gap-3 group/item">
-                                <div className="p-2 rounded-lg bg-muted/5 text-muted-400 group-hover/item:text-primary-400 transition-colors">
-                                    <Icon name="calendar_month" className="text-[16px]" />
-                                </div>
-                                <div className="space-y-0.5">
-                                    <p className="text-[10px] text-muted-500 font-bold uppercase tracking-wider">{dict.ticket.issue_date}</p>
-                                    <p className="text-sm font-medium text-foreground">
-                                        {new Date().toLocaleDateString(undefined, { day: '2-digit', month: 'long', year: 'numeric' })}
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="pt-4 flex items-center justify-between">
-                            <div className="font-mono text-[10px] text-muted-600 tracking-wider">
-                                {dict.ticket.ref}: {issuedTicket.id.slice(-12).toUpperCase()}
-                            </div>
-                            <div className="w-8 h-8 rounded-full bg-muted/5 flex items-center justify-center text-foreground/20 group-hover:text-primary-400 group-hover:bg-primary-400/10 transition-all">
-                                <SuccessSparkles size={14} />
-                            </div>
-                        </div>
-                    </div>
-                </Card>
+      <div className="mx-auto max-w-5xl space-y-10">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+          {transaction.issuedTickets.map((issuedTicket, index) => (
+            <div
+              key={issuedTicket.id}
+              className="animate-fade-in-up"
+              style={{ animationDelay: `${0.2 + index * 0.1}s` }}
+            >
+              <Card className="group border-border/5 bg-card/40 flex flex-col overflow-hidden p-0 transition-colors duration-500 hover:border-cyan-500/30 md:flex-row">
+                {/* QR Code Wing */}
+                <div className="relative flex min-w-[240px] items-center justify-center bg-white p-10">
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-cyan-50/50 to-transparent" />
+                  <div className="relative">
+                    <QRCodeSVG
+                      value={issuedTicket.qrHash}
+                      size={160}
+                      level="H"
+                      includeMargin={false}
+                      className="drop-shadow-2xl grayscale transition-all duration-700 group-hover:grayscale-0"
+                    />
+                    {/* Corner Accents */}
+                    <div className="absolute -top-2 -left-2 h-4 w-4 border-t-2 border-l-2 border-slate-900/10" />
+                    <div className="absolute -right-2 -bottom-2 h-4 w-4 border-r-2 border-b-2 border-slate-900/10" />
+                  </div>
                 </div>
-            ))}
+
+                {/* Data Wing */}
+                <div className="relative flex-1 space-y-6 p-8">
+                  {/* Decorative background text */}
+                  <div className="text-foreground/[0.02] pointer-events-none absolute top-4 right-4 text-6xl font-black tracking-tighter select-none">
+                    SPLASH
+                  </div>
+
+                  <div className="relative z-10 space-y-2">
+                    <div className="flex items-center gap-2">
+                      <span className="bg-primary-500 h-1.5 w-1.5 rounded-full shadow-[0_0_8px_rgba(6,182,212,0.6)]" />
+                      <span className="text-primary-400 text-[10px] font-bold tracking-[0.3em] uppercase">
+                        {dict.ticket.valid}
+                      </span>
+                    </div>
+                    <h3 className="text-foreground text-2xl leading-none font-black tracking-tighter uppercase italic">
+                      {issuedTicket.ticket.title}
+                    </h3>
+                  </div>
+
+                  <div className="border-border/5 relative z-10 space-y-4 border-t pt-4">
+                    <div className="group/item flex items-start gap-3">
+                      <div className="bg-muted/5 text-muted-400 group-hover/item:text-primary-400 rounded-lg p-2 transition-colors">
+                        <Icon name="location_on" className="text-[16px]" />
+                      </div>
+                      <div className="space-y-0.5">
+                        <p className="text-muted-500 text-[10px] font-bold tracking-wider uppercase">
+                          {dict.ticket.location}
+                        </p>
+                        <p className="text-foreground text-sm font-medium">
+                          {issuedTicket.ticket.facility.name}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="group/item flex items-start gap-3">
+                      <div className="bg-muted/5 text-muted-400 group-hover/item:text-primary-400 rounded-lg p-2 transition-colors">
+                        <Icon name="calendar_month" className="text-[16px]" />
+                      </div>
+                      <div className="space-y-0.5">
+                        <p className="text-muted-500 text-[10px] font-bold tracking-wider uppercase">
+                          {dict.ticket.issue_date}
+                        </p>
+                        <p className="text-foreground text-sm font-medium">
+                          {new Date().toLocaleDateString(undefined, {
+                            day: "2-digit",
+                            month: "long",
+                            year: "numeric",
+                          })}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between pt-4">
+                    <div className="text-muted-600 font-mono text-[10px] tracking-wider">
+                      {dict.ticket.ref}: {issuedTicket.id.slice(-12).toUpperCase()}
+                    </div>
+                    <div className="bg-muted/5 text-foreground/20 group-hover:text-primary-400 group-hover:bg-primary-400/10 flex h-8 w-8 items-center justify-center rounded-full transition-all">
+                      <SuccessSparkles size={14} />
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            </div>
+          ))}
         </div>
 
         {/* 🛠️ Footer Actions */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-10 animate-fade-in"
-            style={{ animationDelay: "0.8s", animationFillMode: "both" }}
+        <div
+          className="animate-fade-in flex flex-col items-center justify-center gap-6 pt-10 sm:flex-row"
+          style={{ animationDelay: "0.8s", animationFillMode: "both" }}
         >
-            <Link href="/facilities" className="w-full sm:w-auto">
-            <Button variant="outline" size="lg" className="w-full sm:w-auto h-16 px-10 bg-muted/5 text-foreground hover:bg-muted/10 border border-border/10 rounded-full">
-                <Icon name="arrow_back" className="text-[20px] mr-3" />
-                {dict.actions.continue}
-            </Button>
-            </Link>
-            
-            <Button 
-                onClick={() => window.print()}
-                size="lg" 
-                className="w-full sm:w-auto h-16 px-10 shadow-[0_0_30px_rgba(6,182,212,0.3)] bg-primary text-black hover:bg-primary/90 rounded-full"
+          <Link href="/facilities" className="w-full sm:w-auto">
+            <Button
+              variant="outline"
+              size="lg"
+              className="bg-muted/5 text-foreground hover:bg-muted/10 border-border/10 h-16 w-full rounded-full border px-10 sm:w-auto"
             >
-                <Icon name="download" className="text-[20px] mr-3 text-black" />
-                {dict.actions.download}
+              <Icon name="arrow_back" className="mr-3 text-[20px]" />
+              {dict.actions.continue}
             </Button>
+          </Link>
+
+          <Button
+            onClick={() => window.print()}
+            size="lg"
+            className="bg-primary hover:bg-primary/90 h-16 w-full rounded-full px-10 text-black shadow-[0_0_30px_rgba(6,182,212,0.3)] sm:w-auto"
+          >
+            <Icon name="download" className="mr-3 text-[20px] text-black" />
+            {dict.actions.download}
+          </Button>
         </div>
 
-        <div className="text-center pt-8">
-            <p className="text-xs text-muted-500 font-medium">
-                {dict.footer.email_notice}
-            </p>
-            <p className="text-[10px] text-muted-600 mt-2 uppercase tracking-widest font-bold">
-                {dict.footer.protocol}
-            </p>
+        <div className="pt-8 text-center">
+          <p className="text-muted-500 text-xs font-medium">{dict.footer.email_notice}</p>
+          <p className="text-muted-600 mt-2 text-[10px] font-bold tracking-widest uppercase">
+            {dict.footer.protocol}
+          </p>
         </div>
       </div>
 
       <style jsx global>{`
         @media print {
-            header, footer, nav, button, .no-print {
-                display: none !important;
-            }
-            body {
-                background: white !important;
-                color: black !important;
-            }
-            .container {
-                max-width: 100% !important;
-                margin: 0 !important;
-                padding: 0 !important;
-            }
-            .issued-ticket {
-                break-inside: avoid;
-                page-break-inside: avoid;
-            }
+          header,
+          footer,
+          nav,
+          button,
+          .no-print {
+            display: none !important;
+          }
+          body {
+            background: white !important;
+            color: black !important;
+          }
+          .container {
+            max-width: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+          }
+          .issued-ticket {
+            break-inside: avoid;
+            page-break-inside: avoid;
+          }
         }
       `}</style>
     </div>
   );
 }
 
-function SuccessSparkles({ size, className }: { size: number, className?: string }) {
-    return (
-        <svg 
-            width={size} 
-            height={size} 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            stroke="currentColor" 
-            strokeWidth="2" 
-            strokeLinecap="round" 
-            strokeLinejoin="round" 
-            className={className}
-        >
-            <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
-            <path d="M5 3v4"/>
-            <path d="M19 17v4"/>
-            <path d="M3 5h4"/>
-            <path d="M17 19h4"/>
-        </svg>
-    );
+function SuccessSparkles({ size, className }: { size: number; className?: string }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+    >
+      <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
+      <path d="M5 3v4" />
+      <path d="M19 17v4" />
+      <path d="M3 5h4" />
+      <path d="M17 19h4" />
+    </svg>
+  );
 }

@@ -1,19 +1,19 @@
-import { Skeleton } from "@/components/ui/skeleton"
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function InterceptedSearchLoading() {
   return (
-    <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-md flex items-start justify-center pt-32 px-6 animate-pulse">
-      <div className="max-w-3xl w-full bg-navy-deep/90 border border-border p-8 rounded-[2.5rem] shadow-2xl space-y-6">
-        <Skeleton className="h-14 w-full bg-muted rounded-2xl" />
+    <div className="bg-background/80 fixed inset-0 z-50 flex animate-pulse items-start justify-center px-6 pt-32 backdrop-blur-md">
+      <div className="bg-navy-deep/90 border-border w-full max-w-3xl space-y-6 rounded-[2.5rem] border p-8 shadow-2xl">
+        <Skeleton className="bg-muted h-14 w-full rounded-2xl" />
         <div className="space-y-3 pt-4">
-          <Skeleton className="h-4 w-1/3 bg-muted rounded-md" />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Skeleton className="bg-muted h-4 w-1/3 rounded-md" />
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             {[1, 2].map((i) => (
-              <div key={i} className="h-28 bg-muted rounded-2xl border border-border" />
+              <div key={i} className="bg-muted border-border h-28 rounded-2xl border" />
             ))}
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }

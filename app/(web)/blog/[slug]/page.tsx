@@ -1,24 +1,24 @@
-import { prisma } from "@/server/lib/prisma"
-import { notFound } from "next/navigation"
-import Link from "next/link"
-import Image from "next/image"
-import { Icon } from "@/components/ui/Icon"
-import type { Metadata } from "next"
+import { prisma } from "@/server/lib/prisma";
+import { notFound } from "next/navigation";
+import Link from "next/link";
+import Image from "next/image";
+import { Icon } from "@/components/ui/Icon";
+import type { Metadata } from "next";
 
 interface BlogPostPageProps {
-  params: Promise<{ slug: string }>
+  params: Promise<{ slug: string }>;
 }
 
 export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
-  const { slug } = await params
+  const { slug } = await params;
   const post = await prisma.blogPost.findUnique({
     where: { slug, status: "PUBLISHED" },
-  })
+  });
 
-  if (!post) return { title: "Nije pronađeno | Splashdeals.rs" }
+  if (!post) return { title: "Nije pronađeno | Splashdeals.rs" };
 
-  const metaTitle = post.metaTitle || `${post.title} | Splashdeals.rs`
-  const metaDescription = post.metaDescription || (post.excerpt || "").slice(0, 160)
+  const metaTitle = post.metaTitle || `${post.title} | Splashdeals.rs`;
+  const metaDescription = post.metaDescription || (post.excerpt || "").slice(0, 160);
 
   return {
     title: metaTitle,
@@ -32,13 +32,16 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
       images: post.ogImage ? [{ url: post.ogImage, width: 1200, height: 630 }] : undefined,
     },
     robots: post.robotsDirective
-      ? { index: post.robotsDirective.includes("noindex") ? false : true, follow: post.robotsDirective.includes("nofollow") ? false : true }
+      ? {
+          index: post.robotsDirective.includes("noindex") ? false : true,
+          follow: post.robotsDirective.includes("nofollow") ? false : true,
+        }
       : undefined,
-  }
+  };
 }
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
-  const { slug } = await params
+  const { slug } = await params;
 
   const post = await prisma.blogPost.findUnique({
     where: { slug, status: "PUBLISHED" },
@@ -46,9 +49,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       category: true,
       tags: { include: { tag: true } },
     },
-  })
+  });
 
-  if (!post) notFound()
+  if (!post) notFound();
 
   // Related posts by same category
   const relatedPosts = post.categoryId
@@ -62,14 +65,14 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         orderBy: { publishedAt: "desc" },
         select: { id: true, title: true, slug: true, coverImage: true, publishedAt: true },
       })
-    : []
+    : [];
 
   return (
-    <article className="max-w-3xl mx-auto px-4 py-12">
+    <article className="mx-auto max-w-3xl px-4 py-12">
       {/* Back link */}
       <Link
         href="/blog"
-        className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors mb-8"
+        className="text-muted-foreground hover:text-foreground mb-8 inline-flex items-center gap-1 text-sm transition-colors"
       >
         <Icon name="arrow_back" className="size-4" />
         Nazad na blog
@@ -80,7 +83,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         {post.category && (
           <Link
             href={`/blog?category=${post.category.slug}`}
-            className="inline-block text-xs font-medium rounded-full px-2.5 py-0.5 mb-3"
+            className="mb-3 inline-block rounded-full px-2.5 py-0.5 text-xs font-medium"
             style={{
               backgroundColor: post.category.color ? `${post.category.color}20` : undefined,
               color: post.category.color || undefined,
@@ -90,15 +93,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           </Link>
         )}
 
-        <h1 className="text-3xl md:text-4xl font-bold tracking-tight leading-tight mb-4">
+        <h1 className="mb-4 text-3xl leading-tight font-bold tracking-tight md:text-4xl">
           {post.title}
         </h1>
 
-        <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
+        <div className="text-muted-foreground flex flex-wrap items-center gap-3 text-sm">
           {post.publishedAt && (
-            <time dateTime={post.publishedAt.toISOString()}>
-              {formatDate(post.publishedAt)}
-            </time>
+            <time dateTime={post.publishedAt.toISOString()}>{formatDate(post.publishedAt)}</time>
           )}
           {post.readingTime && (
             <span className="flex items-center gap-1">
@@ -115,11 +116,11 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         </div>
 
         {post.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1.5 mt-4">
+          <div className="mt-4 flex flex-wrap gap-1.5">
             {post.tags.map(({ tag }) => (
               <span
                 key={tag.id}
-                className="inline-flex items-center rounded-full bg-secondary px-2.5 py-0.5 text-xs text-secondary-foreground"
+                className="bg-secondary text-secondary-foreground inline-flex items-center rounded-full px-2.5 py-0.5 text-xs"
               >
                 #{tag.name}
               </span>
@@ -130,7 +131,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
       {/* Cover image */}
       {post.coverImage && (
-        <div className="relative aspect-[16/9] rounded-xl overflow-hidden mb-8 bg-muted">
+        <div className="bg-muted relative mb-8 aspect-[16/9] overflow-hidden rounded-xl">
           <Image
             src={post.coverImage}
             alt={post.title}
@@ -149,33 +150,31 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
       {/* Related posts */}
       {relatedPosts.length > 0 && (
-        <section className="mt-16 pt-8 border-t">
-          <h2 className="text-2xl font-bold mb-6">Povezane objave</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <section className="mt-16 border-t pt-8">
+          <h2 className="mb-6 text-2xl font-bold">Povezane objave</h2>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             {relatedPosts.map((rp) => (
               <Link
                 key={rp.id}
                 href={`/blog/${rp.slug}`}
-                className="group rounded-lg border p-4 hover:shadow-md transition-all hover:-translate-y-0.5"
+                className="group rounded-lg border p-4 transition-all hover:-translate-y-0.5 hover:shadow-md"
               >
                 {rp.coverImage && (
-                  <div className="relative aspect-[16/9] rounded-md overflow-hidden mb-3 bg-muted">
+                  <div className="bg-muted relative mb-3 aspect-[16/9] overflow-hidden rounded-md">
                     <Image
                       src={rp.coverImage}
                       alt={rp.title}
                       fill
                       sizes="(max-width: 768px) 100vw, 33vw"
-                      className="object-cover group-hover:scale-105 transition-transform"
+                      className="object-cover transition-transform group-hover:scale-105"
                     />
                   </div>
                 )}
-                <h3 className="font-semibold text-sm group-hover:text-primary transition-colors line-clamp-2">
+                <h3 className="group-hover:text-primary line-clamp-2 text-sm font-semibold transition-colors">
                   {rp.title}
                 </h3>
                 {rp.publishedAt && (
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {formatDate(rp.publishedAt)}
-                  </p>
+                  <p className="text-muted-foreground mt-1 text-xs">{formatDate(rp.publishedAt)}</p>
                 )}
               </Link>
             ))}
@@ -195,13 +194,15 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             image: post.coverImage || undefined,
             datePublished: post.publishedAt?.toISOString(),
             dateModified: post.updatedAt.toISOString(),
-            author: post.author ? {
-              "@type": "Person",
-              name: post.author,
-            } : {
-              "@type": "Organization",
-              name: "Splashdeals.rs",
-            },
+            author: post.author
+              ? {
+                  "@type": "Person",
+                  name: post.author,
+                }
+              : {
+                  "@type": "Organization",
+                  name: "Splashdeals.rs",
+                },
             publisher: {
               "@type": "Organization",
               name: "Splashdeals.rs",
@@ -215,7 +216,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         }}
       />
     </article>
-  )
+  );
 }
 
 function formatDate(date: Date) {
@@ -223,5 +224,5 @@ function formatDate(date: Date) {
     day: "2-digit",
     month: "long",
     year: "numeric",
-  }).format(new Date(date))
+  }).format(new Date(date));
 }

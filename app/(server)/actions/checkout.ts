@@ -1,7 +1,7 @@
-"use server"
+"use server";
 
-import { createCheckoutSession } from "@/server/lib/stripe-checkout"
-import { handleServerActionError, type ActionResult } from "@/server/lib/server-action-error"
+import { createCheckoutSession } from "@/server/lib/stripe-checkout";
+import { handleServerActionError, type ActionResult } from "@/server/lib/server-action-error";
 
 /**
  * 🌊 Initialise a Stripe Checkout session from the cart.
@@ -13,14 +13,14 @@ import { handleServerActionError, type ActionResult } from "@/server/lib/server-
  * the browser to the returned URL.
  */
 export async function createCheckoutSessionAction(params: {
-  items: { ticketPriceId: string; quantity: number }[]
-  holderName?: string | null
-  holderPhotoUrl?: string | null
+  items: { ticketPriceId: string; quantity: number }[];
+  holderName?: string | null;
+  holderPhotoUrl?: string | null;
 }): Promise<ActionResult<{ url: string }>> {
   try {
-    const result = await createCheckoutSession(params)
-    return { success: true, data: { url: result.url } }
+    const result = await createCheckoutSession(params);
+    return { success: true, data: { url: result.url } };
   } catch (error) {
-    return handleServerActionError(error, "checkout")
+    return handleServerActionError(error, "checkout");
   }
 }

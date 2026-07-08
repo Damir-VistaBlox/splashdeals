@@ -48,12 +48,18 @@ export type EmailPayload = {
  * 📧 Splashdeals Email Service
  * Uses Nodemailer with SMTP transport.
  */
-export async function sendEmail({ to, subject, html, text, attachments }: EmailPayload): Promise<void> {
+export async function sendEmail({
+  to,
+  subject,
+  html,
+  text,
+  attachments,
+}: EmailPayload): Promise<void> {
   if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
     const log = process.env.NODE_ENV === "production" ? console.error : console.warn;
     log("[Email] SMTP not configured. Skipping email send.");
     log("[Email] Required: SMTP_USER, SMTP_PASS. Optional: SMTP_HOST, SMTP_PORT, SMTP_FROM.");
-    
+
     // In dev, we might want to log the content if SMTP is missing
     if (process.env.NODE_ENV === "development") {
       console.log("--- DEVELOPMENT EMAIL LOG ---");
@@ -61,7 +67,9 @@ export async function sendEmail({ to, subject, html, text, attachments }: EmailP
       console.log(`Subject: ${subject}`);
       console.log(`Content: ${text || "HTML provided"}`);
       if (attachments && attachments.length > 0) {
-        console.log(`Attachments: ${attachments.map(a => `${a.filename} (CID: ${a.cid})`).join(", ")}`);
+        console.log(
+          `Attachments: ${attachments.map((a) => `${a.filename} (CID: ${a.cid})`).join(", ")}`,
+        );
       }
       console.log("----------------------------");
     }

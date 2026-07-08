@@ -30,7 +30,9 @@
   --color-accent: var(--color-accent);
   --color-accent-foreground: var(--accent-foreground);
   --font-sans: var(--font-geist-sans);
-  --font-mono: ui-monospace, SFMono-Regular, Roboto Mono, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --font-mono:
+    ui-monospace, SFMono-Regular, Roboto Mono, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
 
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
@@ -44,26 +46,53 @@
   --animate-kinetic-2: kinetic-2 25s linear infinite;
 
   @keyframes logo-shimmer {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
   }
   @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-5px); }
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-5px);
+    }
   }
   @keyframes shimmer {
-    0% { transform: translateX(-100%) skewX(-25deg); }
-    100% { transform: translateX(200%) skewX(-25deg); }
+    0% {
+      transform: translateX(-100%) skewX(-25deg);
+    }
+    100% {
+      transform: translateX(200%) skewX(-25deg);
+    }
   }
   @keyframes kinetic-1 {
-    0%, 100% { transform: translate(-50px, -50px) scale(1); }
-    33% { transform: translate(50px, 20px) scale(1.1); }
-    66% { transform: translate(-20px, 80px) scale(1.05); }
+    0%,
+    100% {
+      transform: translate(-50px, -50px) scale(1);
+    }
+    33% {
+      transform: translate(50px, 20px) scale(1.1);
+    }
+    66% {
+      transform: translate(-20px, 80px) scale(1.05);
+    }
   }
   @keyframes kinetic-2 {
-    0%, 100% { transform: translate(100px, 0) scale(1); }
-    33% { transform: translate(-50px, 50px) scale(1.2); }
-    66% { transform: translate(20px, 120px) scale(1.1); }
+    0%,
+    100% {
+      transform: translate(100px, 0) scale(1);
+    }
+    33% {
+      transform: translate(-50px, 50px) scale(1.2);
+    }
+    66% {
+      transform: translate(20px, 120px) scale(1.1);
+    }
   }
 }
 
@@ -79,11 +108,22 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
+  font-family:
+    var(--font-sans),
+    system-ui,
+    -apple-system,
+    sans-serif;
 }
 
 /* Mobile UX: enforce pointer cursor on all interactive elements */
-a, button, [role="button"], select, summary, [type="checkbox"], [type="radio"], label {
+a,
+button,
+[role="button"],
+select,
+summary,
+[type="checkbox"],
+[type="radio"],
+label {
   cursor: pointer;
 }
 
@@ -97,12 +137,22 @@ a, button, [role="button"], select, summary, [type="checkbox"], [type="radio"], 
 }
 
 .splash-gradient {
-  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 50%, var(--splash-gradient-end) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--color-primary) 0%,
+    var(--color-primary-dark) 50%,
+    var(--splash-gradient-end) 100%
+  );
 }
 
 .text-splash {
   color: var(--color-primary);
-  background: linear-gradient(135deg, var(--color-primary) 0%, var(--text-splash-mid) 50%, var(--color-primary) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--color-primary) 0%,
+    var(--text-splash-mid) 50%,
+    var(--color-primary) 100%
+  );
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -141,14 +191,14 @@ a, button, [role="button"], select, summary, [type="checkbox"], [type="radio"], 
 
 /* Mobile Glassmorphism Utility */
 .mobile-glass {
-  @apply bg-background/80 backdrop-blur-xl border border-border;
+  @apply bg-background/80 border-border border backdrop-blur-xl;
 }
 
 /* 🎨 Brand Utilities — Teal + Amber Splash Palette */
 
 /* Brand card with thicker teal-tinted border */
 .brand-card {
-  @apply border-2 border-primary/10 rounded-2xl shadow-sm;
+  @apply border-primary/10 rounded-2xl border-2 shadow-sm;
 }
 
 /* Brand accent left border (amber) */
@@ -163,8 +213,13 @@ a, button, [role="button"], select, summary, [type="checkbox"], [type="radio"], 
 
 /* Section divider — teal to amber gradient line */
 .brand-divider {
-  @apply w-full h-px;
-  background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-secondary) 50%, transparent 100%);
+  @apply h-px w-full;
+  background: linear-gradient(
+    90deg,
+    var(--color-primary) 0%,
+    var(--color-secondary) 50%,
+    transparent 100%
+  );
 }
 
 /* Subtle amber ambient background */

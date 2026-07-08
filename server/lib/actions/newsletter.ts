@@ -1,4 +1,4 @@
-"use server"
+"use server";
 
 import { prisma } from "@/server/lib/prisma";
 import { z } from "zod";
@@ -13,7 +13,10 @@ interface SubscriberState {
   message: string;
 }
 
-export async function subscribeToNewsletter(prevState: SubscriberState | null, formData: FormData): Promise<SubscriberState> {
+export async function subscribeToNewsletter(
+  prevState: SubscriberState | null,
+  formData: FormData,
+): Promise<SubscriberState> {
   try {
     const email = formData.get("email")?.toString() || "";
     const source = formData.get("source")?.toString() || "footer";
@@ -31,9 +34,9 @@ export async function subscribeToNewsletter(prevState: SubscriberState | null, f
     await prisma.subscriber.upsert({
       where: { email: validated.data.email },
       update: { active: true },
-      create: { 
-        email: validated.data.email, 
-        source: validated.data.source 
+      create: {
+        email: validated.data.email,
+        source: validated.data.source,
       },
     });
 

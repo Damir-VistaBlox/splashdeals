@@ -1,12 +1,13 @@
-import { prisma } from "@/server/lib/prisma"
-import Link from "next/link"
-import Image from "next/image"
-import { Icon } from "@/components/ui/Icon"
-import type { Metadata } from "next"
+import { prisma } from "@/server/lib/prisma";
+import Link from "next/link";
+import Image from "next/image";
+import { Icon } from "@/components/ui/Icon";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Blog | Splashdeals.rs",
-  description: "Najnovije vesti, saveti i informacije o akva parkovima, bazenima i wellness centrima u Srbiji.",
+  description:
+    "Najnovije vesti, saveti i informacije o akva parkovima, bazenima i wellness centrima u Srbiji.",
   alternates: { canonical: "https://www.splashdeals.rs/blog" },
   other: {
     "link:alternate": "https://www.splashdeals.rs/blog/feed.xml",
@@ -16,16 +17,16 @@ export const metadata: Metadata = {
     description: "Najnovije vesti o akva parkovima i bazenima u Srbiji.",
     type: "website",
   },
-}
+};
 
 export default async function BlogPage({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string }>
+  searchParams: Promise<{ page?: string }>;
 }) {
-  const { page: pageStr } = await searchParams
-  const currentPage = Math.max(1, parseInt(pageStr || "1", 10) || 1)
-  const perPage = 12
+  const { page: pageStr } = await searchParams;
+  const currentPage = Math.max(1, parseInt(pageStr || "1", 10) || 1);
+  const perPage = 12;
 
   const [posts, total] = await Promise.all([
     prisma.blogPost.findMany({
@@ -39,58 +40,58 @@ export default async function BlogPage({
       },
     }),
     prisma.blogPost.count({ where: { status: "PUBLISHED" } }),
-  ])
+  ]);
 
-  const totalPages = Math.ceil(total / perPage)
+  const totalPages = Math.ceil(total / perPage);
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-12">
+    <div className="mx-auto max-w-6xl px-4 py-12">
       {/* Header */}
-      <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold tracking-tight mb-3">Blog</h1>
-        <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+      <div className="mb-12 text-center">
+        <h1 className="mb-3 text-4xl font-bold tracking-tight">Blog</h1>
+        <p className="text-muted-foreground mx-auto max-w-2xl text-lg">
           Saveti, vodiči i novosti iz sveta akva parkova, bazena i wellness centara u Srbiji.
         </p>
       </div>
 
       {/* Posts grid */}
       {posts.length === 0 ? (
-        <div className="text-center py-20 text-muted-foreground">
-          <Icon name="article" className="size-12 mx-auto mb-4 opacity-50" />
+        <div className="text-muted-foreground py-20 text-center">
+          <Icon name="article" className="mx-auto mb-4 size-12 opacity-50" />
           <p className="text-lg">Još uvek nema objava.</p>
-          <p className="text-sm mt-1">Vrati se uskoro!</p>
+          <p className="mt-1 text-sm">Vrati se uskoro!</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {posts.map((post) => (
             <Link
               key={post.id}
               href={`/blog/${post.slug}`}
-              className="group rounded-xl border bg-card hover:shadow-lg transition-all hover:-translate-y-0.5 overflow-hidden"
+              className="group bg-card overflow-hidden rounded-xl border transition-all hover:-translate-y-0.5 hover:shadow-lg"
             >
               {/* Cover image */}
-              <div className="relative aspect-[16/9] bg-muted overflow-hidden">
+              <div className="bg-muted relative aspect-[16/9] overflow-hidden">
                 {post.coverImage ? (
                   <Image
                     src={post.coverImage}
                     alt={post.title}
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
+                    className="object-cover transition-transform duration-300 group-hover:scale-105"
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-muted-foreground/30">
+                  <div className="text-muted-foreground/30 flex h-full w-full items-center justify-center">
                     <Icon name="image" className="size-12" />
                   </div>
                 )}
               </div>
 
               {/* Content */}
-              <div className="p-5 space-y-2">
+              <div className="space-y-2 p-5">
                 {/* Category */}
                 {post.category && (
                   <span
-                    className="inline-block text-xs font-medium rounded-full px-2.5 py-0.5"
+                    className="inline-block rounded-full px-2.5 py-0.5 text-xs font-medium"
                     style={{
                       backgroundColor: post.category.color ? `${post.category.color}20` : undefined,
                       color: post.category.color || undefined,
@@ -101,22 +102,18 @@ export default async function BlogPage({
                 )}
 
                 {/* Title */}
-                <h2 className="font-semibold text-lg leading-tight group-hover:text-primary transition-colors line-clamp-2">
+                <h2 className="group-hover:text-primary line-clamp-2 text-lg leading-tight font-semibold transition-colors">
                   {post.title}
                 </h2>
 
                 {/* Excerpt */}
                 {post.excerpt && (
-                  <p className="text-sm text-muted-foreground line-clamp-2">
-                    {post.excerpt}
-                  </p>
+                  <p className="text-muted-foreground line-clamp-2 text-sm">{post.excerpt}</p>
                 )}
 
                 {/* Meta */}
-                <div className="flex items-center gap-3 text-xs text-muted-foreground pt-1">
-                  {post.publishedAt && (
-                    <span>{formatDate(post.publishedAt)}</span>
-                  )}
+                <div className="text-muted-foreground flex items-center gap-3 pt-1 text-xs">
+                  {post.publishedAt && <span>{formatDate(post.publishedAt)}</span>}
                   {post.readingTime && (
                     <span className="flex items-center gap-1">
                       <Icon name="schedule" className="size-3" />
@@ -138,23 +135,23 @@ export default async function BlogPage({
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <nav className="flex justify-center items-center gap-2 mt-12" aria-label="Blog pagination">
+        <nav className="mt-12 flex items-center justify-center gap-2" aria-label="Blog pagination">
           {currentPage > 1 && (
             <Link
               href={`/blog?page=${currentPage - 1}`}
-              className="inline-flex items-center gap-1 rounded-md border px-3 py-2 text-sm hover:bg-accent transition-colors"
+              className="hover:bg-accent inline-flex items-center gap-1 rounded-md border px-3 py-2 text-sm transition-colors"
             >
               <Icon name="chevron_left" className="size-4" />
               Prethodna
             </Link>
           )}
-          <span className="text-sm text-muted-foreground px-3">
+          <span className="text-muted-foreground px-3 text-sm">
             {currentPage} / {totalPages}
           </span>
           {currentPage < totalPages && (
             <Link
               href={`/blog?page=${currentPage + 1}`}
-              className="inline-flex items-center gap-1 rounded-md border px-3 py-2 text-sm hover:bg-accent transition-colors"
+              className="hover:bg-accent inline-flex items-center gap-1 rounded-md border px-3 py-2 text-sm transition-colors"
             >
               Sledeća
               <Icon name="chevron_right" className="size-4" />
@@ -177,7 +174,7 @@ export default async function BlogPage({
         }}
       />
     </div>
-  )
+  );
 }
 
 function formatDate(date: Date) {
@@ -185,5 +182,5 @@ function formatDate(date: Date) {
     day: "2-digit",
     month: "long",
     year: "numeric",
-  }).format(new Date(date))
+  }).format(new Date(date));
 }

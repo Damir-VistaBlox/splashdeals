@@ -1,6 +1,6 @@
-import { MetadataRoute } from 'next';
-import { prisma } from '@/server/lib/prisma';
-import { getAllSlugs } from '@/lib/routing/categories';
+import { MetadataRoute } from "next";
+import { prisma } from "@/server/lib/prisma";
+import { getAllSlugs } from "@/lib/routing/categories";
 
 export const revalidate = 3600; // Revalidate sitemap every hour
 
@@ -11,17 +11,10 @@ export const revalidate = 3600; // Revalidate sitemap every hour
  * or return 410 Gone if permanently deleted.
  */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = 'https://www.splashdeals.rs';
+  const baseUrl = "https://www.splashdeals.rs";
 
   // 1. Static Core Routes (canonical URLs only — no legacy /facilities)
-  const staticRoutes = [
-    '',
-    '/how-it-works',
-    '/terms',
-    '/privacy',
-    '/support',
-    '/cookies',
-  ];
+  const staticRoutes = ["", "/how-it-works", "/terms", "/privacy", "/support", "/cookies"];
 
   const sitemapEntries: MetadataRoute.Sitemap = [];
   const staticLastMod = new Date();
@@ -30,8 +23,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     sitemapEntries.push({
       url: `${baseUrl}${route}`,
       lastModified: staticLastMod,
-      changeFrequency: route === '' ? 'daily' : 'weekly',
-      priority: route === '' ? 1.0 : 0.7,
+      changeFrequency: route === "" ? "daily" : "weekly",
+      priority: route === "" ? 1.0 : 0.7,
     });
   }
 
@@ -40,16 +33,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     sitemapEntries.push({
       url: `${baseUrl}/${slug}`,
       lastModified: staticLastMod,
-      changeFrequency: 'weekly',
+      changeFrequency: "weekly",
       priority: 0.9,
     });
   }
 
-
   // 4. Dynamic Facility Detail Routes (canonical — short URL: /[facilitySlug])
   try {
     const facilities = await prisma.facility.findMany({
-      where: { status: 'ACTIVE' },
+      where: { status: "ACTIVE" },
       select: {
         slug: true,
         name: true,
@@ -57,51 +49,64 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         updatedAt: true,
         media: {
           select: { url: true, type: true },
-          orderBy: { order: 'asc' },
-        }
+          orderBy: { order: "asc" },
+        },
       },
     });
 
     for (const facility of facilities) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const photos = facility.media.filter((m: any) => m.type === 'PHOTO').map((m: any) => m.url).slice(0, 5);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const videos = facility.media.filter((m: any) => m.type === 'VIDEO').map((m: any) => m.url).slice(0, 1);
+      const photos = facility.media
+        .filter((m: any) => m.type === "PHOTO")
+        .map((m: any) => m.url)
+        .slice(0, 5);
+
+      const videos = facility.media
+        .filter((m: any) => m.type === "VIDEO")
+        .map((m: any) => m.url)
+        .slice(0, 1);
 
       sitemapEntries.push({
         url: `${baseUrl}/${facility.slug}`,
         lastModified: facility.updatedAt,
-        changeFrequency: 'daily',
+        changeFrequency: "daily",
         priority: 0.95,
         images: photos,
         // Only include video entries when we have a thumbnail (empty thumbnail_loc = XML error = sitemap rejected)
-        videos: videos.length > 0 && photos[0]
-          ? videos.map((v: string) => ({
-              title: facility.name,
-              thumbnail_loc: photos[0],
-              description: facility.description || '',
-              content_loc: v,
-            }))
-          : undefined,
+        videos:
+          videos.length > 0 && photos[0]
+            ? videos.map((v: string) => ({
+                title: facility.name,
+                thumbnail_loc: photos[0],
+                description: facility.description || "",
+                content_loc: v,
+              }))
+            : undefined,
       });
     }
   } catch (error) {
-    console.error('Sitemap Error: Could not fetch facilities', error);
+    console.error("Sitemap Error: Could not fetch facilities", error);
   }
 
   // 5. Blog Posts
   try {
     const blogPosts = await prisma.blogPost.findMany({
-      where: { status: 'PUBLISHED' },
-      select: { slug: true, updatedAt: true, publishedAt: true, coverImage: true, title: true, excerpt: true },
-      orderBy: { publishedAt: 'desc' },
+      where: { status: "PUBLISHED" },
+      select: {
+        slug: true,
+        updatedAt: true,
+        publishedAt: true,
+        coverImage: true,
+        title: true,
+        excerpt: true,
+      },
+      orderBy: { publishedAt: "desc" },
     });
 
     // Blog index page
     sitemapEntries.push({
       url: `${baseUrl}/blog`,
       lastModified: blogPosts[0]?.updatedAt || staticLastMod,
-      changeFrequency: 'daily',
+      changeFrequency: "daily",
       priority: 0.8,
     });
 
@@ -109,13 +114,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       sitemapEntries.push({
         url: `${baseUrl}/blog/${post.slug}`,
         lastModified: post.updatedAt,
-        changeFrequency: 'monthly',
+        changeFrequency: "monthly",
         priority: 0.7,
         images: post.coverImage ? [post.coverImage] : undefined,
       });
     }
   } catch (error) {
-    console.error('Sitemap Error: Could not fetch blog posts', error);
+    console.error("Sitemap Error: Could not fetch blog posts", error);
   }
 
   // 6. Dynamic City Listing Pages (from navigation DYNAMIC_CITIES)
@@ -127,7 +132,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const items = await prisma.navigationMenuItem.findMany({
       where: {
         isActive: true,
-        href: { not: null, notIn: ['#', ''] },
+        href: { not: null, notIn: ["#", ""] },
         section: { menu: { isActive: true } },
       },
       select: { href: true, label: true },
@@ -137,18 +142,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     for (const item of items) {
       const href = item.href as string;
       const fullUrl = `${baseUrl}${href}`;
-      if (href.startsWith('/') && !seen.has(fullUrl)) {
+      if (href.startsWith("/") && !seen.has(fullUrl)) {
         seen.add(fullUrl);
         sitemapEntries.push({
           url: fullUrl,
           lastModified: staticLastMod,
-          changeFrequency: 'weekly',
+          changeFrequency: "weekly",
           priority: 0.65,
         });
       }
     }
   } catch (error) {
-    console.error('Sitemap Error: Could not fetch navigation items', error);
+    console.error("Sitemap Error: Could not fetch navigation items", error);
   }
 
   return sitemapEntries;

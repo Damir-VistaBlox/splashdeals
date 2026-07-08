@@ -1,55 +1,52 @@
-import { Skeleton } from "@/components/ui/skeleton"
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function TicketManagementLoading() {
   return (
-    <div className="flex h-full animate-in fade-in duration-500">
+    <div className="animate-in fade-in flex h-full duration-500">
       {/* Left: Group panel skeleton */}
-      <div className="hidden lg:flex lg:w-72 xl:w-80 flex-col border-r border-border/50 p-3 space-y-1.5">
+      <div className="border-border/50 hidden flex-col space-y-1.5 border-r p-3 lg:flex lg:w-72 xl:w-80">
         {/* Header */}
-        <div className="flex items-center justify-between px-1 py-3 mb-1">
-          <Skeleton className="h-3 w-24 bg-muted/30" />
-          <Skeleton className="h-7 w-7 rounded-lg bg-muted/30" />
+        <div className="mb-1 flex items-center justify-between px-1 py-3">
+          <Skeleton className="bg-muted/30 h-3 w-24" />
+          <Skeleton className="bg-muted/30 h-7 w-7 rounded-lg" />
         </div>
         {/* All Tickets sentinel */}
-        <Skeleton className="h-14 w-full rounded-xl bg-muted/30" />
+        <Skeleton className="bg-muted/30 h-14 w-full rounded-xl" />
         {/* Group cards */}
         {[1, 2, 3, 4].map((i) => (
-          <Skeleton key={i} className="h-14 w-full rounded-xl bg-muted/30" />
+          <Skeleton key={i} className="bg-muted/30 h-14 w-full rounded-xl" />
         ))}
       </div>
 
       {/* Right: Ticket table skeleton */}
-      <div className="flex flex-col flex-1 min-w-0">
+      <div className="flex min-w-0 flex-1 flex-col">
         {/* Panel header */}
-        <div className="flex items-center justify-between px-4 py-4 border-b border-border/50">
-          <Skeleton className="h-3 w-32 bg-muted/30" />
+        <div className="border-border/50 flex items-center justify-between border-b px-4 py-4">
+          <Skeleton className="bg-muted/30 h-3 w-32" />
           <div className="flex items-center gap-2">
-            <Skeleton className="h-9 w-48 rounded-xl bg-muted/30" />
-            <Skeleton className="h-9 w-36 rounded-xl bg-muted/30" />
+            <Skeleton className="bg-muted/30 h-9 w-48 rounded-xl" />
+            <Skeleton className="bg-muted/30 h-9 w-36 rounded-xl" />
           </div>
         </div>
         {/* Table rows */}
         <div className="flex-1 p-0">
           {[1, 2, 3, 4, 5, 6].map((i) => (
-            <div
-              key={i}
-              className="flex items-center gap-4 px-4 py-4 border-b border-border/50"
-            >
-              <Skeleton className="h-4 w-4 rounded bg-muted/30" />
-              <Skeleton className="h-8 w-12 rounded-lg bg-muted/30" />
+            <div key={i} className="border-border/50 flex items-center gap-4 border-b px-4 py-4">
+              <Skeleton className="bg-muted/30 h-4 w-4 rounded" />
+              <Skeleton className="bg-muted/30 h-8 w-12 rounded-lg" />
               <div className="flex-1 space-y-2">
-                <Skeleton className="h-3 w-40 bg-muted/30" />
-                <Skeleton className="h-2 w-20 bg-muted/30" />
+                <Skeleton className="bg-muted/30 h-3 w-40" />
+                <Skeleton className="bg-muted/30 h-2 w-20" />
               </div>
-              <Skeleton className="h-3 w-20 bg-muted/30" />
-              <Skeleton className="h-3 w-20 bg-muted/30" />
-              <Skeleton className="h-6 w-24 rounded-full bg-muted/30" />
-              <Skeleton className="h-5 w-20 rounded-md bg-muted/30" />
-              <Skeleton className="h-8 w-8 rounded-lg bg-muted/30" />
+              <Skeleton className="bg-muted/30 h-3 w-20" />
+              <Skeleton className="bg-muted/30 h-3 w-20" />
+              <Skeleton className="bg-muted/30 h-6 w-24 rounded-full" />
+              <Skeleton className="bg-muted/30 h-5 w-20 rounded-md" />
+              <Skeleton className="bg-muted/30 h-8 w-8 rounded-lg" />
             </div>
           ))}
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -7,7 +7,7 @@ interface TicketDeliveryData {
   tickets: Array<{
     title: string;
     qrDataUrl: string; // base64 PNG data URL OR CID reference (e.g. cid:ticket-qr-0)
-    qrHash?: string;   // Optional raw QR hash for plain text fallback
+    qrHash?: string; // Optional raw QR hash for plain text fallback
     expiryDate: Date;
     usageLimit: number;
   }>;
@@ -23,18 +23,20 @@ export function buildTicketDeliveryHtml(data: TicketDeliveryData): string {
     minimumFractionDigits: 2,
   }).format(data.totalAmount);
 
-  const ticketRows = data.tickets.map((ticket, index) => {
-    const formattedDate = new Date(ticket.expiryDate).toLocaleDateString("sr-RS", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
+  const ticketRows = data.tickets
+    .map((ticket, index) => {
+      const formattedDate = new Date(ticket.expiryDate).toLocaleDateString("sr-RS", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
 
-    const usageText = ticket.usageLimit > 10
-      ? "Sezonska karta (Neograničeno)"
-      : `Maksimalan broj ulazaka: ${ticket.usageLimit}`;
+      const usageText =
+        ticket.usageLimit > 10
+          ? "Sezonska karta (Neograničeno)"
+          : `Maksimalan broj ulazaka: ${ticket.usageLimit}`;
 
-    return `
+      return `
       <!-- Ticket Card -->
       <table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom: 24px; background-color: #0f172a; border: 1px solid #1e293b; border-radius: 12px; overflow: hidden; border-collapse: separate;">
         <tr>
@@ -69,7 +71,8 @@ export function buildTicketDeliveryHtml(data: TicketDeliveryData): string {
         </tr>
       </table>
     `;
-  }).join("");
+    })
+    .join("");
 
   return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="sr">
@@ -170,7 +173,9 @@ export function buildTicketDeliveryHtml(data: TicketDeliveryData): string {
           </tr>
 
           <!-- CTA Button Section -->
-          ${data.successPageUrl ? `
+          ${
+            data.successPageUrl
+              ? `
           <tr>
             <td align="center" style="padding: 16px 0 32px 0;">
               <table cellpadding="0" cellspacing="0" border="0">
@@ -184,7 +189,9 @@ export function buildTicketDeliveryHtml(data: TicketDeliveryData): string {
               </table>
             </td>
           </tr>
-          ` : ""}
+          `
+              : ""
+          }
 
           <!-- Footer Section -->
           <tr>
@@ -210,12 +217,17 @@ export function buildTicketDeliveryHtml(data: TicketDeliveryData): string {
 }
 
 export function buildTicketDeliveryText(data: TicketDeliveryData): string {
-  const ticketsList = data.tickets.map((t, i) => {
-    const usageText = t.usageLimit > 10 ? "Sezonska karta (Neograničeno)" : `Maksimalan broj ulazaka: ${t.usageLimit}`;
-    const formattedDate = new Date(t.expiryDate).toLocaleDateString("sr-RS");
-    const hashText = t.qrHash ? `\n   - Kod: ${t.qrHash}` : "";
-    return `${i + 1}. ${t.title}${hashText}\n   - ${usageText}\n   - Važi do: ${formattedDate}`;
-  }).join("\n\n");
+  const ticketsList = data.tickets
+    .map((t, i) => {
+      const usageText =
+        t.usageLimit > 10
+          ? "Sezonska karta (Neograničeno)"
+          : `Maksimalan broj ulazaka: ${t.usageLimit}`;
+      const formattedDate = new Date(t.expiryDate).toLocaleDateString("sr-RS");
+      const hashText = t.qrHash ? `\n   - Kod: ${t.qrHash}` : "";
+      return `${i + 1}. ${t.title}${hashText}\n   - ${usageText}\n   - Važi do: ${formattedDate}`;
+    })
+    .join("\n\n");
 
   return `
 Vaše Splashdeals karte su spremne! 🎫

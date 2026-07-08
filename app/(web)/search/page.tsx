@@ -9,7 +9,9 @@ import { getDictionary } from "@/lib/dictionaries";
 export async function generateMetadata(): Promise<Metadata> {
   const dict = await getDictionary();
   const title = dict.seo?.search?.title || "Pretraga Akva Parkova";
-  const description = dict.seo?.search?.description || "Pronađite najbolje akva parkove, bazene i spa centre u Srbiji.";
+  const description =
+    dict.seo?.search?.description ||
+    "Pronađite najbolje akva parkove, bazene i spa centre u Srbiji.";
   return {
     title,
     description,
@@ -36,17 +38,17 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function SearchPage() {
   await connection();
   return (
-    <div className="min-h-screen bg-background">
-      <JsonLd 
+    <div className="bg-background min-h-screen">
+      <JsonLd
         id="search-schema"
         data={{
           "@context": "https://schema.org",
           "@type": "SearchResultsPage",
-          "name": "Pretraga Akva Parkova",
-          "description": "Pronađite akva parkove, bazene i spa centre u Srbiji."
-        }} 
+          name: "Pretraga Akva Parkova",
+          description: "Pronađite akva parkove, bazene i spa centre u Srbiji.",
+        }}
       />
-      <Suspense fallback={<div className="min-h-screen bg-background" />}>
+      <Suspense fallback={<div className="bg-background min-h-screen" />}>
         <GlobalSearch />
       </Suspense>
     </div>

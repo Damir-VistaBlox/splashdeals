@@ -17,8 +17,8 @@ export function NotFoundClient() {
 
   if (!dict) {
     return (
-      <section className="min-h-[80vh] flex flex-col items-center justify-center">
-        <div className="w-20 h-20 rounded-full bg-slate-800 animate-pulse" />
+      <section className="flex min-h-[80vh] flex-col items-center justify-center">
+        <div className="h-20 w-20 animate-pulse rounded-full bg-slate-800" />
       </section>
     );
   }
@@ -26,62 +26,50 @@ export function NotFoundClient() {
   const webpageSchema = {
     "@context": "https://schema.org",
     "@type": "WebPage",
-    "name": `${dict.not_found.title} ${dict.not_found.highlight}`,
-    "description": dict.not_found.desc,
-    "url": `https://www.splashdeals.rs/404`
+    name: `${dict.not_found.title} ${dict.not_found.highlight}`,
+    description: dict.not_found.desc,
+    url: `https://www.splashdeals.rs/404`,
   };
 
   return (
     <>
       <JsonLd id="not-found-schema" data={webpageSchema} />
-      
-      <section className="relative min-h-[80vh] flex flex-col items-center justify-center px-6 py-32 overflow-hidden">
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden">
-          <span className="text-[15rem] sm:text-[30rem] font-black text-white leading-none tracking-tighter opacity-[0.03]">
+
+      <section className="relative flex min-h-[80vh] flex-col items-center justify-center overflow-hidden px-6 py-32">
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden select-none">
+          <span className="text-[15rem] leading-none font-black tracking-tighter text-white opacity-[0.03] sm:text-[30rem]">
             404
           </span>
         </div>
 
-        <div className="relative z-10 flex flex-col items-center text-center max-w-2xl">
-          <div
-            className="h-24 w-24 rounded-3xl bg-primary/10 flex items-center justify-center mb-10 ring-1 ring-white/10 shadow-2xl shadow-primary/5 backdrop-blur-sm"
-          >
-            <Icon name="location_off" className="text-[40px] text-primary" />
+        <div className="relative z-10 flex max-w-2xl flex-col items-center text-center">
+          <div className="bg-primary/10 shadow-primary/5 mb-10 flex h-24 w-24 items-center justify-center rounded-3xl shadow-2xl ring-1 ring-white/10 backdrop-blur-sm">
+            <Icon name="location_off" className="text-primary text-[40px]" />
           </div>
 
-          <h1
-            className="text-5xl sm:text-7xl font-black italic uppercase tracking-tighter mb-8 bg-gradient-to-br from-white to-slate-400 bg-clip-text text-transparent"
-          >
+          <h1 className="mb-8 bg-gradient-to-br from-white to-slate-400 bg-clip-text text-5xl font-black tracking-tighter text-transparent uppercase italic sm:text-7xl">
             {dict.not_found.title} <span className="text-primary">{dict.not_found.highlight}</span>?
           </h1>
-          
-          <p
-            className="text-xl text-muted-foreground font-medium leading-relaxed mb-4 max-w-lg"
-          >
+
+          <p className="text-muted-foreground mb-4 max-w-lg text-xl leading-relaxed font-medium">
             {dict.not_found.desc}
           </p>
-          
-          <p
-            className="text-sm text-slate-500 mb-14"
-          >
-            {dict.not_found.sublabel}
-          </p>
 
-          <div
-            className="flex flex-col sm:flex-row gap-6 items-center"
-          >
-            <Button className="px-10 py-5 min-w-[220px] bg-primary text-black hover:bg-primary/90 rounded-full">
-              <Link href="/" className="flex items-center justify-center gap-2 w-full h-full">
+          <p className="mb-14 text-sm text-slate-500">{dict.not_found.sublabel}</p>
+
+          <div className="flex flex-col items-center gap-6 sm:flex-row">
+            <Button className="bg-primary hover:bg-primary/90 min-w-[220px] rounded-full px-10 py-5 text-black">
+              <Link href="/" className="flex h-full w-full items-center justify-center gap-2">
                 <Icon name="arrow_back" className="text-[16px]" />
                 {dict.not_found.back_home}
               </Link>
             </Button>
-            
-            <Link 
+
+            <Link
               href={`/`}
-              className="text-xs font-black uppercase tracking-[.25em] text-slate-500 hover:text-white transition-colors py-4 px-8 flex items-center gap-2 group"
+              className="group flex items-center gap-2 px-8 py-4 text-xs font-black tracking-[.25em] text-slate-500 uppercase transition-colors hover:text-white"
             >
-              <Icon name="waves" className="text-[16px] group-hover:animate-pulse text-primary" />
+              <Icon name="waves" className="text-primary text-[16px] group-hover:animate-pulse" />
               {dict.not_found.browse_parks}
             </Link>
           </div>

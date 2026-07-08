@@ -7,7 +7,6 @@ import { Logo } from "./Logo";
 import { ThemeToggle } from "./ThemeToggle";
 import { CartButton } from "./CartButton";
 
-
 interface DesktopTopNavProps {
   cities: { id: string; name: string; slug: string }[];
   mounted: boolean;
@@ -31,15 +30,15 @@ export function DesktopTopNav({
   setIsHovered,
 }: DesktopTopNavProps) {
   return (
-    <div className="h-16 flex items-center w-full">
-      <nav className="max-w-7xl mx-auto w-full flex items-center justify-between relative">
+    <div className="flex h-16 w-full items-center">
+      <nav className="relative mx-auto flex w-full max-w-7xl items-center justify-between">
         {/* Left — MegaMenu (left-placed menus) */}
-        <div className="flex-1 flex justify-start">
+        <div className="flex flex-1 justify-start">
           <MegaMenu side="left" />
         </div>
 
         {/* Center — Logo */}
-        <div className="absolute left-1/2 -translate-x-1/2 z-10">
+        <div className="absolute left-1/2 z-10 -translate-x-1/2">
           <Logo
             isTabActive={isTabActive}
             isReducedMotion={isReducedMotion}
@@ -49,7 +48,7 @@ export function DesktopTopNav({
         </div>
 
         {/* Right — MegaMenu (right-placed menus) + controls */}
-        <div className="flex-1 flex items-center justify-end gap-1.5 md:gap-3">
+        <div className="flex flex-1 items-center justify-end gap-1.5 md:gap-3">
           <MegaMenu side="right" />
           <ThemeToggle />
           <CartButton

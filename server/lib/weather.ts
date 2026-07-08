@@ -10,16 +10,16 @@ export async function getWeather(lat: number, lng: number) {
     const res = await fetch(
       `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current_weather=true`,
       { next: { revalidate: 3600 } },
-    )
-    const data = await res.json()
+    );
+    const data = await res.json();
     return (data?.current_weather ?? null) as {
-      temperature: number
-      weathercode: number
-      windspeed?: number
-      is_day?: number
-      time?: string
-    } | null
+      temperature: number;
+      weathercode: number;
+      windspeed?: number;
+      is_day?: number;
+      time?: string;
+    } | null;
   } catch {
-    return null
+    return null;
   }
 }

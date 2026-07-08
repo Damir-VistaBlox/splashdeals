@@ -70,13 +70,16 @@ export function MobileUnifiedControlPill({
             Math.cos(destLat * (Math.PI / 180)) *
               Math.cos(position.coords.latitude * (Math.PI / 180)) *
               Math.sin(dLon / 2) ** 2;
-          setGeoState({ distance: R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)), failed: false });
+          setGeoState({
+            distance: R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)),
+            failed: false,
+          });
         },
         () => {
           if (geoTimeoutRef.current !== null) window.clearTimeout(geoTimeoutRef.current);
           setGeoState({ distance: null, failed: true });
         },
-        { enableHighAccuracy: false, timeout: 5000 }
+        { enableHighAccuracy: false, timeout: 5000 },
       );
     } else {
       Promise.resolve().then(() => setGeoState({ distance: null, failed: true }));
@@ -90,8 +93,7 @@ export function MobileUnifiedControlPill({
   const handleNavigation = () => {
     if ("vibrate" in navigator) navigator.vibrate(15);
     const isApple =
-      typeof navigator !== "undefined" &&
-      /Mac|iPod|iPhone|iPad/.test(navigator.userAgent);
+      typeof navigator !== "undefined" && /Mac|iPod|iPhone|iPad/.test(navigator.userAgent);
     const url = isApple
       ? `maps://maps.google.com/maps?daddr=${destLat},${destLng}`
       : `https://www.google.com/maps/dir/?api=1&destination=${destLat},${destLng}`;
@@ -99,13 +101,11 @@ export function MobileUnifiedControlPill({
   };
 
   return (
-    <div className="w-full max-w-md mx-auto">
-      <div
-        className="mobile-glass flex items-center justify-between w-full h-16 rounded-full px-4 shadow-2xl relative select-none border-primary/10"
-      >
+    <div className="mx-auto w-full max-w-md">
+      <div className="mobile-glass border-primary/10 relative flex h-16 w-full items-center justify-between rounded-full px-4 shadow-2xl select-none">
         {/* ⏰ Segment 1: Operating Hours */}
         <div
-          className="flex items-center gap-1.5 px-2 flex-[1.3] justify-center"
+          className="flex flex-[1.3] items-center justify-center gap-1.5 px-2"
           aria-label={
             todayHours
               ? todayHours.isClosed
@@ -115,50 +115,54 @@ export function MobileUnifiedControlPill({
           }
         >
           <div className="relative shrink-0">
-            <Icon name="schedule" className="text-[22px] text-muted-foreground" />
+            <Icon name="schedule" className="text-muted-foreground text-[22px]" />
             {isOpen === true && (
-              <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.6)]" />
+              <span className="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.6)]" />
             )}
           </div>
-          <div className="flex flex-col items-start leading-tight -space-y-0.5">
+          <div className="flex flex-col items-start -space-y-0.5 leading-tight">
             {todayHours ? (
               todayHours.isClosed ? (
-                <span className="text-sm font-black text-red-400 tracking-tight">Zatvoreno</span>
+                <span className="text-sm font-black tracking-tight text-red-400">Zatvoreno</span>
               ) : (
                 <>
-                  <span className="text-sm font-black text-foreground tracking-tight">
+                  <span className="text-foreground text-sm font-black tracking-tight">
                     {isOpen ? "Otvoreno" : "Zatvoreno"}
                   </span>
-                  <span className="text-[8px] font-bold text-muted-foreground tracking-tight leading-none">
+                  <span className="text-muted-foreground text-[8px] leading-none font-bold tracking-tight">
                     {formatTime24h(todayHours.openTime)}–{formatTime24h(todayHours.closeTime)}
                   </span>
                 </>
               )
             ) : (
-              <span className="text-sm font-black text-muted-foreground tracking-tight">--:--</span>
+              <span className="text-muted-foreground text-sm font-black tracking-tight">--:--</span>
             )}
           </div>
         </div>
 
         {/* Separator */}
-        <div className="w-px h-6 bg-border/30 self-center shrink-0" />
+        <div className="bg-border/30 h-6 w-px shrink-0 self-center" />
 
         {/* 🧭 Segment 2: Navigation */}
         <button
           onClick={handleNavigation}
-          className="flex items-center gap-1.5 px-2 flex-1 justify-center h-full text-foreground hover:text-primary transition-colors active:scale-90 origin-center group cursor-pointer"
-          aria-label={distance !== null ? `Udaljenost ${distance.toFixed(0)} km. Dodirni za otvaranje mape.` : "Prikaži rutu na mapi"}
+          className="text-foreground hover:text-primary group flex h-full flex-1 origin-center cursor-pointer items-center justify-center gap-1.5 px-2 transition-colors active:scale-90"
+          aria-label={
+            distance !== null
+              ? `Udaljenost ${distance.toFixed(0)} km. Dodirni za otvaranje mape.`
+              : "Prikaži rutu na mapi"
+          }
         >
           <Icon
             name="location_on"
-            className="text-[22px] text-muted-foreground group-hover:text-primary transition-colors shrink-0"
+            className="text-muted-foreground group-hover:text-primary shrink-0 text-[22px] transition-colors"
           />
           {distance !== null ? (
-            <span className="text-sm font-black tracking-tight font-sans">
+            <span className="font-sans text-sm font-black tracking-tight">
               {distance.toFixed(0)} km
             </span>
           ) : (
-            <span className="text-[9px] uppercase font-black tracking-wider text-muted-foreground/80 group-hover:text-primary">
+            <span className="text-muted-foreground/80 group-hover:text-primary text-[9px] font-black tracking-wider uppercase">
               {geoError ? "? km" : "Ruta"}
             </span>
           )}

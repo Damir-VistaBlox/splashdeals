@@ -12,11 +12,11 @@ export const CATEGORIES = {
     name: "Termalne Rivijere",
     dbValues: ["Termalna Rivijera"],
   },
-  "bazeni": {
+  bazeni: {
     name: "Bazeni",
     dbValues: ["Bazen", "Otvoreni Bazen", "Zatvoreni Bazen", "Javni Bazen"],
   },
-  "banje": {
+  banje: {
     name: "Banje",
     dbValues: ["Banja"],
   },
@@ -24,7 +24,7 @@ export const CATEGORIES = {
     name: "Wellness i Spa",
     dbValues: ["Wellness i Spa"],
   },
-  "jezera": {
+  jezera: {
     name: "Jezera",
     dbValues: ["Jezero"],
   },
@@ -61,8 +61,8 @@ export function slugToName(slug: string): string | undefined {
  * E.g. "Akva Park" → "akva-parkovi"
  */
 export function dbValueToSlug(dbValue: string): string | undefined {
-  const entry = Object.entries(CATEGORIES).find(
-    ([, v]) => v.dbValues.some((dv) => dv.toLowerCase() === dbValue.toLowerCase())
+  const entry = Object.entries(CATEGORIES).find(([, v]) =>
+    v.dbValues.some((dv) => dv.toLowerCase() === dbValue.toLowerCase()),
   );
   return entry?.[0];
 }

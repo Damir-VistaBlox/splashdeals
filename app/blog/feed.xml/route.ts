@@ -1,9 +1,9 @@
-import { prisma } from "@/server/lib/prisma"
+import { prisma } from "@/server/lib/prisma";
 
-export const revalidate = 3600
+export const revalidate = 3600;
 
 export async function GET() {
-  const baseUrl = "https://www.splashdeals.rs"
+  const baseUrl = "https://www.splashdeals.rs";
 
   const posts = await prisma.blogPost.findMany({
     where: { status: "PUBLISHED" },
@@ -19,7 +19,7 @@ export async function GET() {
       author: true,
       category: { select: { name: true } },
     },
-  })
+  });
 
   const items = posts
     .map(
@@ -31,9 +31,9 @@ export async function GET() {
       <pubDate>${post.publishedAt ? new Date(post.publishedAt).toUTCString() : ""}</pubDate>
       ${post.author ? `<author>${post.author}</author>` : ""}
       ${post.category ? `<category>${post.category.name}</category>` : ""}
-    </item>`
+    </item>`,
     )
-    .join("\n")
+    .join("\n");
 
   const rss = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0"
@@ -49,12 +49,12 @@ export async function GET() {
     <atom:link href="${baseUrl}/blog/feed.xml" rel="self" type="application/rss+xml"/>
 ${items}
   </channel>
-</rss>`
+</rss>`;
 
   return new Response(rss, {
     headers: {
       "Content-Type": "application/xml; charset=utf-8",
       "Cache-Control": "public, max-age=3600, must-revalidate",
     },
-  })
+  });
 }

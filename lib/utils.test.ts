@@ -1,34 +1,34 @@
-import { describe, it, expect } from 'vitest';
-import { cn } from './utils';
+import { describe, it, expect } from "vitest";
+import { cn } from "./utils";
 
-describe('cn utility', () => {
-  it('merges tailwind classes correctly', () => {
-    expect(cn('px-2', 'py-2')).toBe('px-2 py-2');
-    expect(cn('px-2 py-2', 'p-4')).toBe('p-4');
+describe("cn utility", () => {
+  it("merges tailwind classes correctly", () => {
+    expect(cn("px-2", "py-2")).toBe("px-2 py-2");
+    expect(cn("px-2 py-2", "p-4")).toBe("p-4");
   });
 
-  it('handles conditional classes', () => {
-    expect(cn('px-2', true && 'py-2', false && 'm-2')).toBe('px-2 py-2');
+  it("handles conditional classes", () => {
+    expect(cn("px-2", true && "py-2", false && "m-2")).toBe("px-2 py-2");
   });
 
-  it('handles undefined and null', () => {
-    expect(cn('px-2', undefined, null)).toBe('px-2');
+  it("handles undefined and null", () => {
+    expect(cn("px-2", undefined, null)).toBe("px-2");
   });
 
-  it('returns empty string for all falsy values', () => {
-    expect(cn(false, null, undefined, '')).toBe('');
+  it("returns empty string for all falsy values", () => {
+    expect(cn(false, null, undefined, "")).toBe("");
   });
 
-  it('resolves conflicting classes via twMerge', () => {
-    expect(cn('px-4', 'px-2')).toBe('px-2');
-    expect(cn('text-red-500', 'text-blue-500')).toBe('text-blue-500');
+  it("resolves conflicting classes via twMerge", () => {
+    expect(cn("px-4", "px-2")).toBe("px-2");
+    expect(cn("text-red-500", "text-blue-500")).toBe("text-blue-500");
   });
 
-  it('handles single string input', () => {
-    expect(cn('px-4')).toBe('px-4');
+  it("handles single string input", () => {
+    expect(cn("px-4")).toBe("px-4");
   });
 
-  it('handles empty string input', () => {
-    expect(cn('')).toBe('');
+  it("handles empty string input", () => {
+    expect(cn("")).toBe("");
   });
 });

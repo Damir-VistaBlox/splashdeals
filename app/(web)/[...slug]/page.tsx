@@ -6,7 +6,11 @@ import { buildFacilityMetadata } from "../_facility/_head";
 import { DiscoveryTemplate, getDiscoveryMetadata } from "@/lib/routing/discovery";
 import { resolveSlug, resolveLegacyTarget } from "@/lib/routing/resolve-slug";
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string[] }> }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string[] }>;
+}): Promise<Metadata> {
   const { slug } = await params;
 
   // NOTE: connection() is intentionally NOT called here — duplicate connection() calls
@@ -19,7 +23,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     const target = await resolveLegacyTarget(slug);
     if (target) permanentRedirect(target);
   }
-  
+
   if (slug && slug.length === 1) {
     const resolved = await resolveSlug(slug[0]);
     if (resolved) {
@@ -33,7 +37,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (slug && slug.length === 2) {
     const facility = await prisma.facility.findUnique({
       where: { slug: slug[1], status: "ACTIVE" },
-      select: { slug: true }
+      select: { slug: true },
     });
     if (facility) {
       permanentRedirect(`/${facility.slug}`);
@@ -45,7 +49,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (slug && slug.length === 3 && slug[1] === "ticket") {
     const facility = await prisma.facility.findUnique({
       where: { slug: slug[0], status: "ACTIVE" },
-      select: { slug: true }
+      select: { slug: true },
     });
     if (facility) {
       permanentRedirect(`/${facility.slug}#deals`);
@@ -59,7 +63,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 /**
  * 🌊 Catch-All Interceptor
- * Forces all unmatched routes within the routing segment to trigger 
+ * Forces all unmatched routes within the routing segment to trigger
  * the custom 404 UI located in the (web) group, while automatically
  * stripping legacy locale prefixes via direct 301 redirects (no intermediate hops),
  * or serving the dynamic prefix-free facility & category listings natively.
@@ -77,7 +81,7 @@ export default async function CatchAllPage({ params }: { params: Promise<{ slug:
     const target = await resolveLegacyTarget(slug);
     if (target) permanentRedirect(target);
   }
-  
+
   if (slug && slug.length === 1) {
     const resolved = await resolveSlug(slug[0]);
     if (resolved) {
@@ -86,7 +90,7 @@ export default async function CatchAllPage({ params }: { params: Promise<{ slug:
           <FacilityShowcaseTemplate
             params={Promise.resolve({
               categorySlug: resolved.category,
-              facilitySlug: slug[0]
+              facilitySlug: slug[0],
             })}
           />
         );
@@ -94,7 +98,7 @@ export default async function CatchAllPage({ params }: { params: Promise<{ slug:
       return (
         <DiscoveryTemplate
           params={Promise.resolve({
-            categorySlug: slug[0]
+            categorySlug: slug[0],
           })}
         />
       );
@@ -104,7 +108,7 @@ export default async function CatchAllPage({ params }: { params: Promise<{ slug:
   if (slug && slug.length === 2) {
     const facility = await prisma.facility.findUnique({
       where: { slug: slug[1], status: "ACTIVE" },
-      select: { slug: true }
+      select: { slug: true },
     });
     if (facility) {
       permanentRedirect(`/${facility.slug}`);
@@ -117,7 +121,7 @@ export default async function CatchAllPage({ params }: { params: Promise<{ slug:
   if (slug && slug.length === 3 && slug[1] === "ticket") {
     const facility = await prisma.facility.findUnique({
       where: { slug: slug[0], status: "ACTIVE" },
-      select: { slug: true }
+      select: { slug: true },
     });
     if (facility) {
       permanentRedirect(`/${facility.slug}#deals`);

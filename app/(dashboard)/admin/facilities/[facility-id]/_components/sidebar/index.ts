@@ -1,3 +1,3 @@
-export * from "./facility-action-sidebar"
-export * from "./social-links-widget"
-export * from "./public-contact-widget"
+export * from "./facility-action-sidebar";
+export * from "./social-links-widget";
+export * from "./public-contact-widget";

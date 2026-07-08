@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import { Icon } from "@/components/ui/Icon";
 
 import { useCart } from "@/hooks/use-cart";
@@ -36,7 +36,7 @@ export function AddToCartButton({ ticket, className }: AddToCartButtonProps) {
   const handleAdd = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    
+
     addItem({
       ticketId: ticket.id,
       facilityId: ticket.facility.id,
@@ -62,30 +62,34 @@ export function AddToCartButton({ ticket, className }: AddToCartButtonProps) {
     });
     setAdded(true);
     openCart();
-    
+
     // 📳 Haptic Feedback (PWA standard)
-    if (typeof navigator !== 'undefined' && navigator.vibrate) {
+    if (typeof navigator !== "undefined" && navigator.vibrate) {
       navigator.vibrate(20);
     }
-    
+
     setTimeout(() => setAdded(false), 2000);
   };
 
   return (
-    <button 
+    <button
       onClick={handleAdd}
       className={cn(
-        "relative z-30 h-14 w-14 rounded-2xl flex items-center justify-center transition-all duration-300 active:scale-95",
-        added 
-          ? "bg-emerald-500 text-slate-950 scale-110 shadow-[0_0_20px_rgba(34,197,94,0.4)]" 
-          : "bg-white/5 text-slate-100 hover:bg-primary hover:text-slate-950 hover:scale-110",
-        className
+        "relative z-30 flex h-14 w-14 items-center justify-center rounded-2xl transition-all duration-300 active:scale-95",
+        added
+          ? "scale-110 bg-emerald-500 text-slate-950 shadow-[0_0_20px_rgba(34,197,94,0.4)]"
+          : "hover:bg-primary bg-white/5 text-slate-100 hover:scale-110 hover:text-slate-950",
+        className,
       )}
       title={added ? "Dodato" : "Dodaj u korpu"}
       aria-label={added ? `Usponešno dodato: ${ticket.title}` : `Dodaj ${ticket.title} u korpu`}
       aria-live="polite"
     >
-       {added ? <Icon name="check" className="text-[24px]" /> : <Icon name="shopping_cart" className="text-[20px]" />}
+      {added ? (
+        <Icon name="check" className="text-[24px]" />
+      ) : (
+        <Icon name="shopping_cart" className="text-[20px]" />
+      )}
     </button>
   );
 }

@@ -6,68 +6,74 @@ import { sendEmail } from "./email";
 import { buildResetPasswordHtml } from "./email-templates/reset-password";
 
 export const auth = betterAuth({
-    database: prismaAdapter(prisma, {
-        provider: "postgresql",
-    }),
-    
-    trustedOrigins: [
-        "https://www.splashdeals.rs",
-        "https://splashdeals.rs",
-        "http://localhost:3000",
-        // Add Vercel preview URLs here for PR deployments
-    ],
-    emailAndPassword: {
-        enabled: true,
-        autoSignIn: true,
-    },
+  database: prismaAdapter(prisma, {
+    provider: "postgresql",
+  }),
 
-    session: {
-        expiresIn: 60 * 60 * 24 * 7, // 7 days
-        updateAge: 60 * 60 * 24,      // refresh once per day
-        cookieCache: {
-            enabled: true,
-            maxAge: 60 * 5, // 5 min cache
-        },
-    },
+  trustedOrigins: [
+    "https://www.splashdeals.rs",
+    "https://splashdeals.rs",
+    "http://localhost:3000",
+    // Add Vercel preview URLs here for PR deployments
+  ],
+  emailAndPassword: {
+    enabled: true,
+    autoSignIn: true,
+  },
 
-    emailVerification: {
-        sendOnSignUp: false, // No public sign-up for admin
+  session: {
+    expiresIn: 60 * 60 * 24 * 7, // 7 days
+    updateAge: 60 * 60 * 24, // refresh once per day
+    cookieCache: {
+      enabled: true,
+      maxAge: 60 * 5, // 5 min cache
     },
+  },
 
-    resetPassword: {
-        enabled: true,
-        expiresIn: 3600, // 1 hour
-        sendResetPassword: async ({ user, url }: { user: { id: string; email: string; name?: string | null }; url: string }) => {
-            await sendEmail({
-                to: user.email,
-                subject: "Reset your Splashdeals Admin password",
-                html: buildResetPasswordHtml(url),
-            });
-        },
-    },
+  emailVerification: {
+    sendOnSignUp: false, // No public sign-up for admin
+  },
 
-    rateLimit: {
-        window: 60, // 60 seconds
-        max: 15,    // 15 requests per window
+  resetPassword: {
+    enabled: true,
+    expiresIn: 3600, // 1 hour
+    sendResetPassword: async ({
+      user,
+      url,
+    }: {
+      user: { id: string; email: string; name?: string | null };
+      url: string;
+    }) => {
+      await sendEmail({
+        to: user.email,
+        subject: "Reset your Splashdeals Admin password",
+        html: buildResetPasswordHtml(url),
+      });
     },
-    
-    // Expert addition: Map role to session for easier RBAC
-    user: {
-        additionalFields: {
-            role: {
-                type: "string",
-                required: false,
-                defaultValue: "CUSTOMER"
-            }
-        }
+  },
+
+  rateLimit: {
+    window: 60, // 60 seconds
+    max: 15, // 15 requests per window
+  },
+
+  // Expert addition: Map role to session for easier RBAC
+  user: {
+    additionalFields: {
+      role: {
+        type: "string",
+        required: false,
+        defaultValue: "CUSTOMER",
+      },
     },
-    advanced: {
-        crossSubDomainCookies: {
-            enabled: process.env.NODE_ENV === "production",
-            domain: process.env.NODE_ENV === "production"
-                ? (process.env.COOKIE_DOMAIN || ".splashdeals.rs")
-                : undefined,
-        }
-    }
+  },
+  advanced: {
+    crossSubDomainCookies: {
+      enabled: process.env.NODE_ENV === "production",
+      domain:
+        process.env.NODE_ENV === "production"
+          ? process.env.COOKIE_DOMAIN || ".splashdeals.rs"
+          : undefined,
+    },
+  },
 });
-

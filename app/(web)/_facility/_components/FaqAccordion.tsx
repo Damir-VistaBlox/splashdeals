@@ -2,7 +2,12 @@
 
 import { useRef, useCallback, useState } from "react";
 import Link from "next/link";
-import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from "@/components/ui/accordion";
 import { cn } from "@/lib/utils";
 
 interface FAQItem {
@@ -32,25 +37,22 @@ export function FaqAccordion({ faqs }: Props) {
     }
   }, []);
 
-  const handleValueChange = useCallback(
-    (openValues: string[]) => {
-      const currentSet = new Set(openValues);
-      for (const id of currentSet) {
-        if (!prevOpenRef.current.has(id)) {
-          const el = itemRefs.current.get(id);
-          el?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-        }
+  const handleValueChange = useCallback((openValues: string[]) => {
+    const currentSet = new Set(openValues);
+    for (const id of currentSet) {
+      if (!prevOpenRef.current.has(id)) {
+        const el = itemRefs.current.get(id);
+        el?.scrollIntoView({ behavior: "smooth", block: "nearest" });
       }
-      prevOpenRef.current = currentSet;
-    },
-    []
-  );
+    }
+    prevOpenRef.current = currentSet;
+  }, []);
 
   if (!faqs.length) return null;
 
   return (
     <section className="space-y-6">
-      <h2 className="text-2xl md:text-4xl font-black text-foreground italic tracking-tighter uppercase">
+      <h2 className="text-foreground text-2xl font-black tracking-tighter uppercase italic md:text-4xl">
         Često postavljena pitanja
       </h2>
       <Accordion
@@ -64,13 +66,13 @@ export function FaqAccordion({ faqs }: Props) {
             key={faq.id}
             value={faq.id}
             className={cn(
-              "rounded-xl border border-border bg-card px-4 sm:px-6 brand-accent-left",
+              "border-border bg-card brand-accent-left rounded-xl border px-4 sm:px-6",
               index >= INITIAL_VISIBLE && "hidden md:block",
-              index >= INITIAL_VISIBLE && showAllMobile && "!block"
+              index >= INITIAL_VISIBLE && showAllMobile && "!block",
             )}
             ref={(el) => setItemRef(faq.id, el)}
           >
-            <AccordionTrigger className="text-left font-medium text-foreground py-4 hover:no-underline">
+            <AccordionTrigger className="text-foreground py-4 text-left font-medium hover:no-underline">
               {faq.question}
             </AccordionTrigger>
             <AccordionContent className="text-muted-foreground pb-4 whitespace-pre-wrap">
@@ -81,21 +83,21 @@ export function FaqAccordion({ faqs }: Props) {
       </Accordion>
 
       {!showAllMobile && remaining > 0 && (
-        <div className="text-center md:hidden pt-2">
+        <div className="pt-2 text-center md:hidden">
           <button
             onClick={() => setShowAllMobile(true)}
-            className="text-sm font-bold text-primary underline underline-offset-2 hover:text-cyan-300 transition-colors cursor-pointer"
+            className="text-primary cursor-pointer text-sm font-bold underline underline-offset-2 transition-colors hover:text-cyan-300"
           >
             Prikaži još {remaining} pitanja
           </button>
         </div>
       )}
 
-      <p className="text-sm text-muted-foreground text-center pt-2">
+      <p className="text-muted-foreground pt-2 text-center text-sm">
         Niste pronašli odgovor?{" "}
         <Link
           href="/podrska"
-          className="text-primary font-bold underline underline-offset-2 hover:text-cyan-300 transition-colors"
+          className="text-primary font-bold underline underline-offset-2 transition-colors hover:text-cyan-300"
         >
           Kontaktirajte nas
         </Link>

@@ -55,10 +55,7 @@ export function trackBeginCheckout(params: {
 }) {
   if (typeof window === "undefined") return;
 
-  const totalValue = params.items.reduce(
-    (sum, i) => sum + i.price * i.quantity,
-    0,
-  );
+  const totalValue = params.items.reduce((sum, i) => sum + i.price * i.quantity, 0);
 
   sendGAEvent("event", "begin_checkout", {
     currency: params.currency || "RSD",

@@ -10,9 +10,9 @@ export const MAX_FILE_SIZE = 10 * 1024 * 1024;
  */
 export async function processImageToWebP(buffer: Buffer): Promise<Buffer> {
   return await sharp(buffer)
-    .resize(2000, undefined, { 
+    .resize(2000, undefined, {
       withoutEnlargement: true,
-      fit: 'inside'
+      fit: "inside",
     })
     .webp({ quality: 80 })
     .toBuffer();
@@ -25,7 +25,7 @@ export async function processImageToWebP(buffer: Buffer): Promise<Buffer> {
 export async function generateThumbnail(buffer: Buffer): Promise<Buffer> {
   return await sharp(buffer)
     .resize(400, 400, {
-      fit: 'cover',
+      fit: "cover",
     })
     .webp({ quality: 70 })
     .toBuffer();
@@ -38,8 +38,8 @@ export async function generateThumbnail(buffer: Buffer): Promise<Buffer> {
 export async function processTicketImage(buffer: Buffer): Promise<Buffer> {
   return await sharp(buffer)
     .resize(1200, 630, {
-      fit: 'cover',
-      position: 'center'
+      fit: "cover",
+      position: "center",
     })
     .webp({ quality: 85 })
     .toBuffer();

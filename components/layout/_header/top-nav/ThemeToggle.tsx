@@ -16,7 +16,13 @@ export function ThemeToggle() {
 
   if (!mounted) {
     return (
-      <LiquidButton variant="ghost" size="sm" className="px-4 h-11" aria-label="Toggle theme" disabled>
+      <LiquidButton
+        variant="ghost"
+        size="sm"
+        className="h-11 px-4"
+        aria-label="Toggle theme"
+        disabled
+      >
         <span className="size-[16px]" />
       </LiquidButton>
     );
@@ -28,14 +34,11 @@ export function ThemeToggle() {
     <LiquidButton
       variant="ghost"
       size="sm"
-      className="px-4 h-11"
+      className="h-11 px-4"
       aria-label={isDark ? "Prebaci na svetlu temu" : "Prebaci na tamnu temu"}
       onClick={() => setTheme(isDark ? "light" : "dark")}
     >
-      <Icon
-        name={isDark ? "light_mode" : "dark_mode"}
-        className="text-[16px] text-primary"
-      />
+      <Icon name={isDark ? "light_mode" : "dark_mode"} className="text-primary text-[16px]" />
     </LiquidButton>
   );
 }

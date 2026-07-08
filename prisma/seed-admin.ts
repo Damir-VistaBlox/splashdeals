@@ -63,7 +63,6 @@ async function main() {
     console.log(`   ID: ${result.user.id}`);
     console.log(`   Email: ${adminEmail}`);
     console.log("   Role: SUPER_ADMIN");
-
   } catch (error) {
     console.error("❌ Seeding failed:", error);
     process.exit(1);

@@ -90,19 +90,21 @@ export interface TicketGroup {
 export function flattenActivePrices(facility: FacilityWithIncludes): FlattenedPrice[] {
   return (facility.ticketCategories || []).flatMap((cat) =>
     (cat.types || []).flatMap((prod) =>
-      (prod.prices || []).filter((p) => p.isActive).map((p) => ({
-        ...p,
-        catTitle: cat.title,
-        prodTitle: prod.title,
-        prodDescription: prod.description,
-        requiresIdentity: prod.requiresIdentity,
-        requiresPhoto: prod.requiresPhoto,
-        minPeople: prod.minPeople,
-        maxPeople: prod.maxPeople,
-        isSeasonPass: prod.isSeasonPass,
-        validityType: prod.validityType,
-      }))
-    )
+      (prod.prices || [])
+        .filter((p) => p.isActive)
+        .map((p) => ({
+          ...p,
+          catTitle: cat.title,
+          prodTitle: prod.title,
+          prodDescription: prod.description,
+          requiresIdentity: prod.requiresIdentity,
+          requiresPhoto: prod.requiresPhoto,
+          minPeople: prod.minPeople,
+          maxPeople: prod.maxPeople,
+          isSeasonPass: prod.isSeasonPass,
+          validityType: prod.validityType,
+        })),
+    ),
   );
 }
 
@@ -113,57 +115,63 @@ export function buildTicketGroups(facility: FacilityWithIncludes): TicketGroup[]
       title: cat.title,
       description: null,
       slug: cat.slug || cat.title.toLowerCase().replace(/\s+/g, "-"),
-      tiers: (cat.types || []).filter((prod) => prod.isActive).map((prod) => ({
-        id: prod.id,
-        title: prod.title,
-        label: prod.title,
-        price: Math.min(...(prod.prices || []).filter((p) => p.isActive).map((p) => Number(p.price))),
-        originalPrice: null,
-        minPeople: prod.minPeople || 1,
-        maxPeople: prod.maxPeople || null,
-        dayType: null,
-        timeSlot: null,
-        isSeasonPass: prod.isSeasonPass,
-        requiresIdentity: prod.requiresIdentity,
-        requiresPhoto: prod.requiresPhoto,
-        imageUrl: prod.imageUrl || facility.media?.[0]?.url || null,
-        slug: null,
-        description: null,
-        seasonStart: null,
-        seasonEnd: null,
-        isActive: true,
-      }))
+      tiers: (cat.types || [])
+        .filter((prod) => prod.isActive)
+        .map((prod) => ({
+          id: prod.id,
+          title: prod.title,
+          label: prod.title,
+          price: Math.min(
+            ...(prod.prices || []).filter((p) => p.isActive).map((p) => Number(p.price)),
+          ),
+          originalPrice: null,
+          minPeople: prod.minPeople || 1,
+          maxPeople: prod.maxPeople || null,
+          dayType: null,
+          timeSlot: null,
+          isSeasonPass: prod.isSeasonPass,
+          requiresIdentity: prod.requiresIdentity,
+          requiresPhoto: prod.requiresPhoto,
+          imageUrl: prod.imageUrl || facility.media?.[0]?.url || null,
+          slug: null,
+          description: null,
+          seasonStart: null,
+          seasonEnd: null,
+          isActive: true,
+        })),
     }));
   }
 
   const allPrices = flattenActivePrices(facility);
   if (allPrices.length > 0) {
-    return [{
-      id: "default-group",
-      title: "Standardne Ponude",
-      description: "Standardne ponude i ulaznice koje nisu deo posebnih paketa.",
-      slug: "standardne-ponude",
-      tiers: allPrices.map((p) => ({
-        id: p.id,
-        title: p.prodTitle,
-        label: p.prodTitle,
-        price: Number(p.price),
-        originalPrice: p.originalPrice ? Number(p.originalPrice) : null,
-        minPeople: p.minPeople || 1,
-        maxPeople: p.maxPeople || null,
-        dayType: p.dayType,
-        timeSlot: p.timeSlot,
-        isSeasonPass: p.isSeasonPass,
-        requiresIdentity: p.requiresIdentity,
-        requiresPhoto: p.requiresPhoto,
-        imageUrl: facility.media?.[0]?.url || null,
-        slug: null,
-        description: null,
-        seasonStart: null,
-        seasonEnd: null,
-        isActive: true,
-      }))
-    }];
+    return [
+      {
+        id: "default-group",
+        title: "Standardne Ponude",
+        description: "Standardne ponude i ulaznice koje nisu deo posebnih paketa.",
+        slug: "standardne-ponude",
+        tiers: allPrices.map((p) => ({
+          id: p.id,
+          title: p.prodTitle,
+          label: p.prodTitle,
+          price: Number(p.price),
+          originalPrice: p.originalPrice ? Number(p.originalPrice) : null,
+          minPeople: p.minPeople || 1,
+          maxPeople: p.maxPeople || null,
+          dayType: p.dayType,
+          timeSlot: p.timeSlot,
+          isSeasonPass: p.isSeasonPass,
+          requiresIdentity: p.requiresIdentity,
+          requiresPhoto: p.requiresPhoto,
+          imageUrl: facility.media?.[0]?.url || null,
+          slug: null,
+          description: null,
+          seasonStart: null,
+          seasonEnd: null,
+          isActive: true,
+        })),
+      },
+    ];
   }
 
   return [];
@@ -219,27 +227,22 @@ export async function buildFacilityMetadata(
   // Flatten ticket data for price / count hints
   const tickets = flattenActivePrices(facility);
   const ticketCount = tickets.length;
-  const ticketHint =
-    ticketCount > 0 ? ` | ${ticketCount} vrsta ulaznica dostupno` : "";
+  const ticketHint = ticketCount > 0 ? ` | ${ticketCount} vrsta ulaznica dostupno` : "";
 
   const minPrice =
     ticketCount > 0
       ? Math.min(
-          ...tickets.map(
-            (t: { price: number | { toString: () => string } }) => Number(t.price),
-          ),
+          ...tickets.map((t: { price: number | { toString: () => string } }) => Number(t.price)),
         )
       : null;
   const priceHint = minPrice ? ` Već od ${minPrice} RSD!` : "";
 
   const maxDiscount = calculateMaxDiscount(
-    tickets.map(
-      (t: { isActive: boolean; price: unknown; originalPrice: unknown | null }) => ({
-        isActive: t.isActive,
-        price: Number(t.price),
-        originalPrice: t.originalPrice ? Number(t.originalPrice) : null,
-      }),
-    ),
+    tickets.map((t: { isActive: boolean; price: unknown; originalPrice: unknown | null }) => ({
+      isActive: t.isActive,
+      price: Number(t.price),
+      originalPrice: t.originalPrice ? Number(t.originalPrice) : null,
+    })),
   );
 
   // Localize and normalize name (e.g. "AquaPark Petroland" -> "Akva park Petroland")
@@ -262,9 +265,7 @@ export async function buildFacilityMetadata(
   // Description
   const fallbackDescription = `Kupi ulaznice za ${facility.name} u ${facility.city}.${priceHint} Najbolje cene za ${categoryLabel.toLowerCase()} u Srbiji na Splashdeals.`;
   const baseDescription =
-    facility.metaDescription ||
-    facility.description?.slice(0, 140) ||
-    fallbackDescription;
+    facility.metaDescription || facility.description?.slice(0, 140) || fallbackDescription;
   const finalDescription = baseDescription.includes("Već od")
     ? baseDescription
     : `${baseDescription}${priceHint}${ticketHint}`;
@@ -305,9 +306,7 @@ export async function buildFacilityMetadata(
       description: finalDescription,
       url: canonicalUrl,
       siteName: "SplashDeals",
-      images: [
-        { url: ogImage, width: 1200, height: 630, alt: facility.name },
-      ],
+      images: [{ url: ogImage, width: 1200, height: 630, alt: facility.name }],
       locale: "sr_RS",
       type: "website",
     },

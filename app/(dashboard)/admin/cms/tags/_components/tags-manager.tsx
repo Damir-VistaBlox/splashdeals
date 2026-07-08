@@ -1,12 +1,12 @@
-"use client"
+"use client";
 
-import { useCallback, useTransition, useState } from "react"
-import { useRouter } from "next/navigation"
-import { toast } from "sonner"
-import slugify from "slugify"
-import { Icon } from "@/components/ui/Icon"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
+import { useCallback, useTransition, useState } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import slugify from "slugify";
+import { Icon } from "@/components/ui/Icon";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -14,86 +14,88 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-import { Badge } from "@/components/ui/badge"
-import {
-  createTagAction,
-  updateTagAction,
-  deleteTagAction,
-} from "@/app/(server)/actions/cms"
+} from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { createTagAction, updateTagAction, deleteTagAction } from "@/app/(server)/actions/cms";
 
 interface TagRow {
-  id: string
-  name: string
-  slug: string
-  _count?: { posts: number }
+  id: string;
+  name: string;
+  slug: string;
+  _count?: { posts: number };
 }
 
 export function TagsManager({ tags }: { tags: Array<Record<string, unknown>> }) {
-  const router = useRouter()
-  const [isPending, startTransition] = useTransition()
-  const [newName, setNewName] = useState("")
-  const [editingId, setEditingId] = useState<string | null>(null)
-  const [editName, setEditName] = useState("")
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+  const [newName, setNewName] = useState("");
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editName, setEditName] = useState("");
 
   const handleCreate = useCallback(() => {
-    if (!newName.trim()) return
-    const slug = slugify(newName, { lower: true, strict: true })
+    if (!newName.trim()) return;
+    const slug = slugify(newName, { lower: true, strict: true });
     startTransition(async () => {
-      const result = await createTagAction({ name: newName.trim(), slug })
+      const result = await createTagAction({ name: newName.trim(), slug });
       if (result.success) {
-        toast.success("Tag kreiran")
-        setNewName("")
-        router.refresh()
+        toast.success("Tag kreiran");
+        setNewName("");
+        router.refresh();
       } else {
-        toast.error(result.error || "Greška")
+        toast.error(result.error || "Greška");
       }
-    })
-  }, [newName, router, startTransition])
+    });
+  }, [newName, router, startTransition]);
 
-  const handleUpdate = useCallback((id: string) => {
-    if (!editName.trim()) return
-    const slug = slugify(editName, { lower: true, strict: true })
-    startTransition(async () => {
-      const result = await updateTagAction(id, { name: editName.trim(), slug })
-      if (result.success) {
-        toast.success("Tag ažuriran")
-        setEditingId(null)
-        router.refresh()
-      } else {
-        toast.error(result.error || "Greška")
-      }
-    })
-  }, [editName, router, startTransition])
+  const handleUpdate = useCallback(
+    (id: string) => {
+      if (!editName.trim()) return;
+      const slug = slugify(editName, { lower: true, strict: true });
+      startTransition(async () => {
+        const result = await updateTagAction(id, { name: editName.trim(), slug });
+        if (result.success) {
+          toast.success("Tag ažuriran");
+          setEditingId(null);
+          router.refresh();
+        } else {
+          toast.error(result.error || "Greška");
+        }
+      });
+    },
+    [editName, router, startTransition],
+  );
 
-  const handleDelete = useCallback((id: string, name: string) => {
-    if (!confirm(`Da li ste sigurni da želite da obrišete tag "${name}"?`)) return
-    startTransition(async () => {
-      const result = await deleteTagAction(id)
-      if (result.success) {
-        toast.success("Tag obrisan")
-        router.refresh()
-      } else {
-        toast.error(result.error || "Greška")
-      }
-    })
-  }, [router, startTransition])
+  const handleDelete = useCallback(
+    (id: string, name: string) => {
+      if (!confirm(`Da li ste sigurni da želite da obrišete tag "${name}"?`)) return;
+      startTransition(async () => {
+        const result = await deleteTagAction(id);
+        if (result.success) {
+          toast.success("Tag obrisan");
+          router.refresh();
+        } else {
+          toast.error(result.error || "Greška");
+        }
+      });
+    },
+    [router, startTransition],
+  );
 
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Tagovi</h1>
-        <p className="text-sm text-muted-foreground mt-1">
+        <p className="text-muted-foreground mt-1 text-sm">
           Dodaj tagove za blog objave (samo SUPER_ADMIN).
         </p>
       </div>
 
       {/* Novi tag */}
       <div className="rounded-lg border p-4">
-        <h3 className="text-sm font-semibold mb-3">Novi tag</h3>
+        <h3 className="mb-3 text-sm font-semibold">Novi tag</h3>
         <div className="flex items-end gap-3">
-          <div className="space-y-1.5 flex-1 max-w-xs">
-            <label className="text-xs text-muted-foreground">Naziv</label>
+          <div className="max-w-xs flex-1 space-y-1.5">
+            <label className="text-muted-foreground text-xs">Naziv</label>
             <Input
               value={newName}
               onChange={(e) => setNewName(e.target.value)}
@@ -103,7 +105,7 @@ export function TagsManager({ tags }: { tags: Array<Record<string, unknown>> }) 
             />
           </div>
           <Button onClick={handleCreate} disabled={isPending || !newName.trim()} className="h-9">
-            <Icon name="add" className="size-4 mr-1" />
+            <Icon name="add" className="mr-1 size-4" />
             Dodaj
           </Button>
         </div>
@@ -123,7 +125,7 @@ export function TagsManager({ tags }: { tags: Array<Record<string, unknown>> }) 
           <TableBody>
             {(tags as unknown as TagRow[]).length === 0 ? (
               <TableRow>
-                <TableCell colSpan={4} className="h-24 text-center text-sm text-muted-foreground">
+                <TableCell colSpan={4} className="text-muted-foreground h-24 text-center text-sm">
                   Nema tagova.
                 </TableCell>
               </TableRow>
@@ -143,7 +145,7 @@ export function TagsManager({ tags }: { tags: Array<Record<string, unknown>> }) 
                     )}
                   </TableCell>
                   <TableCell>
-                    <code className="text-xs text-muted-foreground">{tag.slug}</code>
+                    <code className="text-muted-foreground text-xs">{tag.slug}</code>
                   </TableCell>
                   <TableCell>
                     <Badge variant="secondary" className="text-xs">
@@ -179,8 +181,8 @@ export function TagsManager({ tags }: { tags: Array<Record<string, unknown>> }) 
                             size="sm"
                             className="h-7 w-7 p-0"
                             onClick={() => {
-                              setEditingId(tag.id)
-                              setEditName(tag.name)
+                              setEditingId(tag.id);
+                              setEditName(tag.name);
                             }}
                           >
                             <Icon name="edit" className="size-3.5" />
@@ -188,7 +190,7 @@ export function TagsManager({ tags }: { tags: Array<Record<string, unknown>> }) 
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="h-7 w-7 p-0 text-destructive hover:text-destructive"
+                            className="text-destructive hover:text-destructive h-7 w-7 p-0"
                             onClick={() => handleDelete(tag.id, tag.name)}
                           >
                             <Icon name="delete" className="size-3.5" />
@@ -204,5 +206,5 @@ export function TagsManager({ tags }: { tags: Array<Record<string, unknown>> }) 
         </Table>
       </div>
     </div>
-  )
+  );
 }

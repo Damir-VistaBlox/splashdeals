@@ -1,45 +1,49 @@
-"use client"
+"use client";
 import { Icon } from "@/components/ui/Icon";
-import { useEffect } from "react"
-import { Card } from "@/components/ui/card"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
+import { useEffect } from "react";
+import { Card } from "@/components/ui/card";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 export default function UsersError({
   error,
   reset,
 }: {
-  error: Error & { digest?: string }
-  reset: () => void
+  error: Error & { digest?: string };
+  reset: () => void;
 }) {
   useEffect(() => {
-    console.error("Users Section Error:", error)
-  }, [error])
+    console.error("Users Section Error:", error);
+  }, [error]);
 
   return (
-    <div className="flex items-center justify-center min-h-[60vh] p-6">
-      <Card className="max-w-xl w-full p-8 md:p-12 border-border/50 bg-background/50 relative z-10 text-center space-y-8">
-        <div className="relative inline-flex items-center justify-center h-20 w-20 rounded-full bg-muted/50 border border-border text-muted-foreground">
+    <div className="flex min-h-[60vh] items-center justify-center p-6">
+      <Card className="border-border/50 bg-background/50 relative z-10 w-full max-w-xl space-y-8 p-8 text-center md:p-12">
+        <div className="bg-muted/50 border-border text-muted-foreground relative inline-flex h-20 w-20 items-center justify-center rounded-full border">
           <Icon name="gpp_maybe" className="size-10 stroke-[1.5]" />
         </div>
         <div className="space-y-3">
-          <h1 className="text-3xl font-black italic tracking-tighter uppercase leading-none text-foreground">
+          <h1 className="text-foreground text-3xl leading-none font-black tracking-tighter uppercase italic">
             Korisnici <span className="text-muted-foreground">Greška</span>
-           </h1>
-           <p className="text-muted-foreground text-sm leading-relaxed max-w-sm mx-auto">
-              Došlo je do greške prilikom učitavanja korisnika.
+          </h1>
+          <p className="text-muted-foreground mx-auto max-w-sm text-sm leading-relaxed">
+            Došlo je do greške prilikom učitavanja korisnika.
           </p>
         </div>
         <div className="flex flex-col gap-3 pt-4">
-          <Button 
+          <Button
             onClick={reset}
             variant="outline"
-            className="font-black uppercase tracking-widest text-[10px] h-11 rounded-xl"
+            className="h-11 rounded-xl text-[10px] font-black tracking-widest uppercase"
           >
             <Icon name="refresh" className="size-4" />
             Pokušaj ponovo
           </Button>
-          <Button asChild variant="secondary" className="font-black uppercase tracking-widest text-[10px] h-11 rounded-xl">
+          <Button
+            asChild
+            variant="secondary"
+            className="h-11 rounded-xl text-[10px] font-black tracking-widest uppercase"
+          >
             <Link href="/admin/users">
               <Icon name="arrow_back" className="size-4" />
               Nazad na korisnike
@@ -48,5 +52,5 @@ export default function UsersError({
         </div>
       </Card>
     </div>
-  )
+  );
 }

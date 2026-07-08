@@ -1,21 +1,21 @@
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import type { Metadata } from "next"
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Facility Not Found | Splashdeals Admin",
   description: "The requested facility does not exist or has been removed.",
-}
+};
 
 export default function FacilityNotFound() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
-      <div className="text-6xl font-bold text-primary/40">404</div>
-      <h2 className="text-xl font-semibold text-primary">Facility Not Found</h2>
-      <p className="text-muted-foreground text-sm max-w-md text-center">
+    <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4">
+      <div className="text-primary/40 text-6xl font-bold">404</div>
+      <h2 className="text-primary text-xl font-semibold">Facility Not Found</h2>
+      <p className="text-muted-foreground max-w-md text-center text-sm">
         The facility you&apos;re looking for doesn&apos;t exist or has been removed.
       </p>
-      <div className="flex gap-3 mt-2">
+      <div className="mt-2 flex gap-3">
         <Button asChild variant="default">
           <Link href="/admin/facilities">Back to Facilities</Link>
         </Button>
@@ -24,5 +24,5 @@ export default function FacilityNotFound() {
         </Button>
       </div>
     </div>
-  )
+  );
 }

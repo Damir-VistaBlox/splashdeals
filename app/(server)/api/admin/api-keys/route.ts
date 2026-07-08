@@ -1,15 +1,15 @@
-import { NextResponse } from "next/server"
-import { prisma } from "@/server/lib/prisma"
-import { requireSuperAdmin } from "@/server/lib/auth-guards"
-import { generateApiKey } from "@/server/lib/api-key-auth"
-import { handleServerActionError } from "@/server/lib/server-action-error"
+import { NextResponse } from "next/server";
+import { prisma } from "@/server/lib/prisma";
+import { requireSuperAdmin } from "@/server/lib/auth-guards";
+import { generateApiKey } from "@/server/lib/api-key-auth";
+import { handleServerActionError } from "@/server/lib/server-action-error";
 
 /**
  * 🔑 API Keys Management - List & Create
  */
 export async function GET() {
   try {
-    await requireSuperAdmin()
+    await requireSuperAdmin();
     const apiKeys = await prisma.apiKey.findMany({
       orderBy: { createdAt: "desc" },
       select: {
@@ -20,25 +20,25 @@ export async function GET() {
         lastUsedAt: true,
         expiresAt: true,
         userId: true,
-      }
-    })
-    return NextResponse.json(apiKeys)
+      },
+    });
+    return NextResponse.json(apiKeys);
   } catch (error) {
-    const result = handleServerActionError(error)
-    return NextResponse.json(result, { status: result.error ? 400 : 500 })
+    const result = handleServerActionError(error);
+    return NextResponse.json(result, { status: result.error ? 400 : 500 });
   }
 }
 
 export async function POST(request: Request) {
   try {
-    const user = await requireSuperAdmin()
-    const { name, expiresAt } = await request.json()
+    const user = await requireSuperAdmin();
+    const { name, expiresAt } = await request.json();
 
     if (!name) {
-      return NextResponse.json({ error: "Name is required" }, { status: 400 })
+      return NextResponse.json({ error: "Name is required" }, { status: 400 });
     }
 
-    const { plainKey, prefix, hashedKey } = generateApiKey()
+    const { plainKey, prefix, hashedKey } = generateApiKey();
 
     const apiKey = await prisma.apiKey.create({
       data: {
@@ -47,16 +47,19 @@ export async function POST(request: Request) {
         key: hashedKey,
         userId: user.id,
         expiresAt: expiresAt ? new Date(expiresAt) : null,
-      }
-    })
+      },
+    });
 
     // Return the plain key ONLY once during creation
-    return NextResponse.json({
-      ...apiKey,
-      key: plainKey 
-    }, { status: 201 })
+    return NextResponse.json(
+      {
+        ...apiKey,
+        key: plainKey,
+      },
+      { status: 201 },
+    );
   } catch (error) {
-    const result = handleServerActionError(error)
-    return NextResponse.json(result, { status: result.error ? 400 : 500 })
+    const result = handleServerActionError(error);
+    return NextResponse.json(result, { status: result.error ? 400 : 500 });
   }
 }

@@ -14,10 +14,10 @@ export async function GET(req: Request) {
   if (!sessionId) {
     return NextResponse.json(
       { error: "Missing session_id" },
-      { 
+      {
         status: 400,
-        headers: { 'Cache-Control': 'no-store, must-revalidate' }
-      }
+        headers: { "Cache-Control": "no-store, must-revalidate" },
+      },
     );
   }
 
@@ -36,11 +36,11 @@ export async function GET(req: Request) {
                     category: {
                       include: {
                         facility: true,
-                      }
-                    }
-                  }
-                }
-              }
+                      },
+                    },
+                  },
+                },
+              },
             },
           },
         },
@@ -50,7 +50,7 @@ export async function GET(req: Request) {
     if (!transaction) {
       return NextResponse.json(
         { status: "PENDING" },
-        { headers: { 'Cache-Control': 'no-store, must-revalidate' } }
+        { headers: { "Cache-Control": "no-store, must-revalidate" } },
       );
     }
 
@@ -65,7 +65,7 @@ export async function GET(req: Request) {
         if (session.payment_status === "paid") {
           // Fulfill order immediately on the spot!
           await fulfillOrder(session);
-          
+
           // Re-fetch transaction from DB to get the new successful state + issued tickets
           const updatedTransaction = await prisma.transaction.findFirst({
             where: {
@@ -81,11 +81,11 @@ export async function GET(req: Request) {
                           category: {
                             include: {
                               facility: true,
-                            }
-                          }
-                        }
-                      }
-                    }
+                            },
+                          },
+                        },
+                      },
+                    },
                   },
                 },
               },
@@ -99,18 +99,17 @@ export async function GET(req: Request) {
     }
 
     // Success response should include basic transaction data for the UI
-    return NextResponse.json(
-      transaction,
-      { headers: { 'Cache-Control': 'no-store, must-revalidate' } }
-    );
+    return NextResponse.json(transaction, {
+      headers: { "Cache-Control": "no-store, must-revalidate" },
+    });
   } catch (error) {
     console.error("[TRANSACTION_STATUS_ERROR]", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { 
+      {
         status: 500,
-        headers: { 'Cache-Control': 'no-store, must-revalidate' }
-      }
+        headers: { "Cache-Control": "no-store, must-revalidate" },
+      },
     );
   }
 }

@@ -14,13 +14,5 @@ export type {
   TicketGroupTier,
 } from "./metadata";
 
-export {
-  getCategoryLabel,
-  SITE_URL,
-  buildFacilitySchema,
-} from "./schemas";
-export type {
-  FacilitySchemaInput,
-  TierEntry,
-  BuildFacilitySchemaParams,
-} from "./schemas";
+export { getCategoryLabel, SITE_URL, buildFacilitySchema } from "./schemas";
+export type { FacilitySchemaInput, TierEntry, BuildFacilitySchemaParams } from "./schemas";

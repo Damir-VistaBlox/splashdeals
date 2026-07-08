@@ -1,16 +1,16 @@
-"use server"
+"use server";
 
-import { prisma } from "@/server/lib/prisma"
-import { revalidateAdminFacilities } from "@/server/lib/revalidation"
-import { FacilityStatus } from "@prisma/client"
-import { facilitySchema, type FacilityFormValues } from "@/server/lib/validations/facility"
-import { requireSuperAdmin } from "@/server/lib/auth-guards"
+import { prisma } from "@/server/lib/prisma";
+import { revalidateAdminFacilities } from "@/server/lib/revalidation";
+import { FacilityStatus } from "@prisma/client";
+import { facilitySchema, type FacilityFormValues } from "@/server/lib/validations/facility";
+import { requireSuperAdmin } from "@/server/lib/auth-guards";
 
-import { handleServerActionError } from "@/server/lib/server-action-error"
+import { handleServerActionError } from "@/server/lib/server-action-error";
 
 export async function bulkUpdateFacilityStatusAction(ids: string[], status: FacilityStatus) {
   try {
-    await requireSuperAdmin()
+    await requireSuperAdmin();
     await prisma.facility.updateMany({
       where: {
         id: { in: ids },
@@ -18,21 +18,22 @@ export async function bulkUpdateFacilityStatusAction(ids: string[], status: Faci
       data: {
         status,
       },
-    })
+    });
 
-    revalidateAdminFacilities()
-    return { success: true }
+    revalidateAdminFacilities();
+    return { success: true };
   } catch (error) {
-    return handleServerActionError(error, "facilities")
+    return handleServerActionError(error, "facilities");
   }
 }
 
 export async function createFacilityAction(data: FacilityFormValues) {
   try {
-    const validatedFields = facilitySchema.parse(data)
-    const { name, slug, category, city, cityId, streetName, streetNumber, postalCode, status } = validatedFields
+    const validatedFields = facilitySchema.parse(data);
+    const { name, slug, category, city, cityId, streetName, streetNumber, postalCode, status } =
+      validatedFields;
 
-    await requireSuperAdmin()
+    await requireSuperAdmin();
     const facility = await prisma.facility.create({
       data: {
         name,
@@ -45,37 +46,37 @@ export async function createFacilityAction(data: FacilityFormValues) {
         postalCode,
         status,
       },
-    })
+    });
 
-    revalidateAdminFacilities()
-    return { success: true, id: facility.id }
+    revalidateAdminFacilities();
+    return { success: true, id: facility.id };
   } catch (error: unknown) {
-    return handleServerActionError(error, "facilities")
+    return handleServerActionError(error, "facilities");
   }
 }
 
 export async function deleteFacilityAction(id: string) {
   try {
-    await requireSuperAdmin()
+    await requireSuperAdmin();
 
     const transactionCount = await prisma.transaction.count({
       where: { facilityId: id },
-    })
+    });
 
     if (transactionCount > 0) {
-      return { 
-        success: false, 
-        error: `Cannot delete facility because it has ${transactionCount} active or historical transaction records. Please set its status to CLOSED instead.` 
-      }
+      return {
+        success: false,
+        error: `Cannot delete facility because it has ${transactionCount} active or historical transaction records. Please set its status to CLOSED instead.`,
+      };
     }
 
     await prisma.facility.delete({
       where: { id },
-    })
+    });
 
-    revalidateAdminFacilities()
-    return { success: true }
+    revalidateAdminFacilities();
+    return { success: true };
   } catch (error) {
-    return handleServerActionError(error, "facilities")
+    return handleServerActionError(error, "facilities");
   }
 }

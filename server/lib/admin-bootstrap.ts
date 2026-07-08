@@ -13,14 +13,8 @@ import "server-only";
 import { prisma } from "@/server/lib/prisma";
 
 function getBootstrapConfig(): { email: string; password: string } | null {
-  const email =
-    process.env.ADMIN_BOOTSTRAP_EMAIL ||
-    process.env.ADMIN_SEED_EMAIL ||
-    "";
-  const password =
-    process.env.ADMIN_BOOTSTRAP_PASSWORD ||
-    process.env.ADMIN_SEED_PASSWORD ||
-    "";
+  const email = process.env.ADMIN_BOOTSTRAP_EMAIL || process.env.ADMIN_SEED_EMAIL || "";
+  const password = process.env.ADMIN_BOOTSTRAP_PASSWORD || process.env.ADMIN_SEED_PASSWORD || "";
 
   if (!email || !password) return null;
   return { email, password };
@@ -97,6 +91,8 @@ export async function bootstrapSuperAdmin(): Promise<void> {
     console.log(`✅ SUPER_ADMIN created: ${config.email}`);
   } catch (error) {
     console.error(`⚠️ Admin bootstrap failed (non-fatal): ${error}`);
-    console.error("⚠️ The server will start without a SUPER_ADMIN user. You may need to run seed manually.");
+    console.error(
+      "⚠️ The server will start without a SUPER_ADMIN user. You may need to run seed manually.",
+    );
   }
 }

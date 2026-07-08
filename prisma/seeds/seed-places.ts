@@ -21,13 +21,22 @@ function parseCSV(text: string): Record<string, string>[] {
     let current = "";
     let inQuotes = false;
     for (const ch of lines[i]) {
-      if (ch === '"') { inQuotes = !inQuotes; continue; }
-      if (ch === "," && !inQuotes) { values.push(current.trim()); current = ""; continue; }
+      if (ch === '"') {
+        inQuotes = !inQuotes;
+        continue;
+      }
+      if (ch === "," && !inQuotes) {
+        values.push(current.trim());
+        current = "";
+        continue;
+      }
       current += ch;
     }
     values.push(current.trim());
     const row: Record<string, string> = {};
-    headers.forEach((h, i) => { row[h] = values[i] || ""; });
+    headers.forEach((h, i) => {
+      row[h] = values[i] || "";
+    });
     rows.push(row);
   }
   return rows;

@@ -28,6 +28,6 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-[#020617] text-slate-100 selection:bg-cyan-500/20 font-sans;
+    @apply bg-[#020617] font-sans text-slate-100 selection:bg-cyan-500/20;
   }
 }

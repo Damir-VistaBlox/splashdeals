@@ -1,44 +1,52 @@
 import { Icon } from "@/components/ui/Icon";
-import { Skeleton } from "@/components/ui/skeleton"
-import { Card } from "@/components/ui/card"
+import { Skeleton } from "@/components/ui/skeleton";
+import { Card } from "@/components/ui/card";
 export default function TermsLoading() {
   return (
-    <div className="min-h-screen pb-16 sm:pb-32 pt-24 sm:pt-32 px-6 sm:px-12 max-w-5xl mx-auto animate-pulse">
+    <div className="mx-auto min-h-screen max-w-5xl animate-pulse px-6 pt-24 pb-16 sm:px-12 sm:pt-32 sm:pb-32">
       {/* 🏙️ HEADER SKELETON */}
-      <header className="mb-12 sm:mb-20 space-y-6">
+      <header className="mb-12 space-y-6 sm:mb-20">
         <div className="flex items-center gap-3">
-          <div className="p-2 rounded-lg bg-muted border border-border text-muted-foreground/40">
+          <div className="bg-muted border-border text-muted-foreground/40 rounded-lg border p-2">
             <Icon name="description" className="text-[20px]" />
           </div>
-          <Skeleton className="h-4 w-32 bg-muted rounded-md" />
+          <Skeleton className="bg-muted h-4 w-32 rounded-md" />
         </div>
-        <h1 className="text-5xl sm:text-7xl font-black tracking-tighter uppercase italic leading-[0.9] text-muted-foreground/60 select-none pointer-events-none">Uslovi Korišćenja</h1>
-        <Skeleton className="h-4 w-48 bg-muted rounded-md" />
+        <h1 className="text-muted-foreground/60 pointer-events-none text-5xl leading-[0.9] font-black tracking-tighter uppercase italic select-none sm:text-7xl">
+          Uslovi Korišćenja
+        </h1>
+        <Skeleton className="bg-muted h-4 w-48 rounded-md" />
       </header>
 
       {/* 📜 CONTENT SKELETON */}
       <div className="space-y-12">
         <div className="space-y-3">
-          <Skeleton className="h-4 w-full bg-muted rounded-md" />
-          <Skeleton className="h-4 w-5/6 bg-muted rounded-md" />
+          <Skeleton className="bg-muted h-4 w-full rounded-md" />
+          <Skeleton className="bg-muted h-4 w-5/6 rounded-md" />
         </div>
 
         <div className="grid gap-8">
           {[1, 2, 3].map((idx) => (
-            <Card key={idx} className="p-8 border-border bg-gradient-to-r from-muted to-transparent space-y-4">
-              <h2 className="text-xl font-black uppercase italic tracking-tight text-foreground flex items-center gap-3">
-                <Icon name="keyboard_arrow_right" className="text-[20px] text-muted-foreground/40" />
-                <Skeleton className="h-6 w-52 bg-muted rounded-md" />
+            <Card
+              key={idx}
+              className="border-border from-muted space-y-4 bg-gradient-to-r to-transparent p-8"
+            >
+              <h2 className="text-foreground flex items-center gap-3 text-xl font-black tracking-tight uppercase italic">
+                <Icon
+                  name="keyboard_arrow_right"
+                  className="text-muted-foreground/40 text-[20px]"
+                />
+                <Skeleton className="bg-muted h-6 w-52 rounded-md" />
               </h2>
               <div className="space-y-2">
-                <Skeleton className="h-4 w-full bg-muted rounded-md" />
-                <Skeleton className="h-4 w-full bg-muted rounded-md" />
-                <Skeleton className="h-4 w-2/3 bg-muted rounded-md" />
+                <Skeleton className="bg-muted h-4 w-full rounded-md" />
+                <Skeleton className="bg-muted h-4 w-full rounded-md" />
+                <Skeleton className="bg-muted h-4 w-2/3 rounded-md" />
               </div>
             </Card>
           ))}
         </div>
       </div>
     </div>
-  )
+  );
 }

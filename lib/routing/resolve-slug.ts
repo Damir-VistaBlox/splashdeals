@@ -7,9 +7,7 @@ import { prisma } from "@/server/lib/prisma";
 import { slugToDbValue, isKnownCategory, dbValueToSlug } from "./categories";
 
 export type ResolvedType =
-  | { type: "category"; category: string }
-  | { type: "facility"; category: string }
-  | null;
+  { type: "category"; category: string } | { type: "facility"; category: string } | null;
 
 /**
  * Resolve a single path segment to determine if it's a known category or facility slug.
@@ -26,7 +24,7 @@ export async function resolveSlug(firstSlug: string): Promise<ResolvedType> {
   if (dbValue) {
     const hasCategory = await prisma.facility.findFirst({
       where: { category: { equals: dbValue, mode: "insensitive" } },
-      select: { category: true }
+      select: { category: true },
     });
     if (hasCategory) {
       return { type: "category", category: firstSlug.toLowerCase() };
@@ -41,10 +39,11 @@ export async function resolveSlug(firstSlug: string): Promise<ResolvedType> {
   // 3. Check if facility
   const facility = await prisma.facility.findUnique({
     where: { slug: firstSlug, status: "ACTIVE" },
-    select: { slug: true, category: true }
+    select: { slug: true, category: true },
   });
   if (facility) {
-    const catSlug = dbValueToSlug(facility.category!) ?? facility.category!.toLowerCase().replace(/\s+/g, '-');
+    const catSlug =
+      dbValueToSlug(facility.category!) ?? facility.category!.toLowerCase().replace(/\s+/g, "-");
     return { type: "facility", category: catSlug };
   }
 
@@ -58,10 +57,11 @@ export async function resolveSlug(firstSlug: string): Promise<ResolvedType> {
 export async function resolveFacilitySlug(slug: string) {
   const facility = await prisma.facility.findUnique({
     where: { slug, status: "ACTIVE" },
-    select: { slug: true, category: true }
+    select: { slug: true, category: true },
   });
   if (facility) {
-    const catSlug = dbValueToSlug(facility.category!) ?? facility.category!.toLowerCase().replace(/\s+/g, '-');
+    const catSlug =
+      dbValueToSlug(facility.category!) ?? facility.category!.toLowerCase().replace(/\s+/g, "-");
     return { slug: facility.slug, category: catSlug };
   }
   return null;
@@ -80,7 +80,7 @@ export async function resolveLegacyTarget(slugs: string[]): Promise<string | nul
   const lastSegment = cleanSegments[cleanSegments.length - 1];
   const facility = await prisma.facility.findUnique({
     where: { slug: lastSegment, status: "ACTIVE" },
-    select: { slug: true }
+    select: { slug: true },
   });
   if (facility) {
     return "/" + facility.slug;

@@ -2,7 +2,6 @@ import { prisma } from "@/server/lib/prisma";
 import { FacilityCard } from "./FacilityCard";
 
 interface FacilityGridProps {
-  
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   dict: Record<string, any>;
   fromLabel: string;
@@ -32,44 +31,47 @@ export async function FacilityGrid({
   minPrice,
   maxPrice,
   sort = "newest",
-  noFacilitiesLabel
+  noFacilitiesLabel,
 }: FacilityGridProps) {
-  
   // 1. Build Query
   const facilities = await prisma.facility.findMany({
     where: {
-      ...(category ? { category: { equals: category, mode: 'insensitive' } } : {}),
-      ...(citySlug ? {
-        marketplaceCities: {
-          some: {
-            city: {
-              slug: citySlug
-            }
+      ...(category ? { category: { equals: category, mode: "insensitive" } } : {}),
+      ...(citySlug
+        ? {
+            marketplaceCities: {
+              some: {
+                city: {
+                  slug: citySlug,
+                },
+              },
+            },
           }
-        }
-      } : {}),
-      ...(minPrice || maxPrice ? {
-        ticketCategories: {
-          some: {
-            isActive: true,
-            types: {
+        : {}),
+      ...(minPrice || maxPrice
+        ? {
+            ticketCategories: {
               some: {
                 isActive: true,
-                prices: {
+                types: {
                   some: {
-                    ...(minPrice ? { price: { gte: parseFloat(minPrice) } } : {}),
-                    ...(maxPrice ? { price: { lte: parseFloat(maxPrice) } } : {}),
-                  }
-                }
-              }
-            }
+                    isActive: true,
+                    prices: {
+                      some: {
+                        ...(minPrice ? { price: { gte: parseFloat(minPrice) } } : {}),
+                        ...(maxPrice ? { price: { lte: parseFloat(maxPrice) } } : {}),
+                      },
+                    },
+                  },
+                },
+              },
+            },
           }
-        }
-      } : {})
+        : {}),
     },
     include: {
       media: {
-        orderBy: { order: "asc" }
+        orderBy: { order: "asc" },
       },
       ticketCategories: {
         where: { isActive: true },
@@ -78,43 +80,42 @@ export async function FacilityGrid({
             where: { isActive: true },
             include: {
               prices: {
-                orderBy: { price: 'asc' },
-                take: 1
-              }
-            }
-          }
-        }
-      }
+                orderBy: { price: "asc" },
+                take: 1,
+              },
+            },
+          },
+        },
+      },
     },
-    orderBy: sort === 'name_asc' ? { name: 'asc' } : { createdAt: 'desc' }
+    orderBy: sort === "name_asc" ? { name: "asc" } : { createdAt: "desc" },
   });
 
   // 2. Client-side Sort Logic (for complex fields like price)
   const processedFacilities = [...facilities];
-  
-  if (sort === 'price_asc' || sort === 'price_desc') {
+
+  if (sort === "price_asc" || sort === "price_desc") {
     processedFacilities.sort((a, b) => {
       const priceA = (a as FacilityWithMinPrice).minPrice ?? Infinity;
       const priceB = (b as FacilityWithMinPrice).minPrice ?? Infinity;
 
-      return sort === 'price_asc' ? priceA - priceB : priceB - priceA;
+      return sort === "price_asc" ? priceA - priceB : priceB - priceA;
     });
   }
 
   if (processedFacilities.length === 0 && noFacilitiesLabel) {
     return (
-      <div className="text-center py-24 bg-muted/50 rounded-[2.5rem] border border-border backdrop-blur-sm">
-        <div
-           className="flex flex-col items-center gap-4"
-        >
-          <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center border border-border">
-             <span className="text-2xl">🌊</span>
+      <div className="bg-muted/50 border-border rounded-[2.5rem] border py-24 text-center backdrop-blur-sm">
+        <div className="flex flex-col items-center gap-4">
+          <div className="bg-muted border-border flex h-16 w-16 items-center justify-center rounded-full border">
+            <span className="text-2xl">🌊</span>
           </div>
-          <span className="text-muted-foreground font-black uppercase tracking-[0.3em] text-xs">
+          <span className="text-muted-foreground text-xs font-black tracking-[0.3em] uppercase">
             {noFacilitiesLabel}
           </span>
-          <span className="text-slate-600 text-[10px] uppercase font-bold tracking-widest max-w-xs leading-relaxed">
-            {dict?.facilities?.no_results_hint || "Pokušajte da prilagodite filtere ili istražite druge kategorije."}
+          <span className="max-w-xs text-[10px] leading-relaxed font-bold tracking-widest text-slate-600 uppercase">
+            {dict?.facilities?.no_results_hint ||
+              "Pokušajte da prilagodite filtere ili istražite druge kategorije."}
           </span>
         </div>
       </div>
@@ -124,12 +125,14 @@ export async function FacilityGrid({
   // 3. Serialize Prisma Decimal → number for client component props
   const serializedFacilities = processedFacilities.map((f) => {
     // Extract lowest price from nested ticketCategories → types → prices
-    let lowestPrice: number | null = null
-    for (const cat of (f as { ticketCategories?: { types?: { prices?: { price: unknown }[] }[] }[] }).ticketCategories || []) {
+    let lowestPrice: number | null = null;
+    for (const cat of (
+      f as { ticketCategories?: { types?: { prices?: { price: unknown }[] }[] }[] }
+    ).ticketCategories || []) {
       for (const type of cat.types || []) {
         for (const price of type.prices || []) {
-          const val = Number(price.price)
-          if (lowestPrice === null || val < lowestPrice) lowestPrice = val
+          const val = Number(price.price);
+          if (lowestPrice === null || val < lowestPrice) lowestPrice = val;
         }
       }
     }
@@ -137,18 +140,15 @@ export async function FacilityGrid({
       ...f,
       ticketCategories: [],
       minPrice: lowestPrice,
-    }
-  })
+    };
+  });
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
+    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
       {serializedFacilities.map((facility, idx) => (
-        <div
-          key={facility.id}
-          className="transition-all duration-500"
-        >
-          <FacilityCard 
-            facility={facility} 
+        <div key={facility.id} className="transition-all duration-500">
+          <FacilityCard
+            facility={facility}
             dict={dict}
             fromLabel={fromLabel}
             isPriority={idx < 10}

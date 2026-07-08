@@ -6,8 +6,6 @@ import { Icon } from "@/components/ui/Icon";
 import { LiquidButton } from "@/components/ui/LiquidButton";
 import { MobileOverlayHeader } from "./MobileOverlayHeader";
 import { MobileCityPicker } from "./MobileCityPicker";
-;
-
 interface City {
   id: string;
   name: string;
@@ -40,26 +38,24 @@ export function MobileOverlay({
   return (
     <>
       {isMobileMenuOpen && (
-        <div
-          className="fixed inset-0 z-[1000] bg-background/95 backdrop-blur-3xl md:hidden flex flex-col p-8 overflow-hidden animate-in slide-in-from-right duration-300"
-        >
+        <div className="bg-background/95 animate-in slide-in-from-right fixed inset-0 z-[1000] flex flex-col overflow-hidden p-8 backdrop-blur-3xl duration-300 md:hidden">
           <MobileOverlayHeader onClose={() => setIsMobileMenuOpen(false)} />
 
           <div className="flex flex-col gap-6 overflow-hidden">
             {/* Explore First */}
-            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 delay-100 fill-mode-both">
+            <div className="animate-in fade-in slide-in-from-bottom-4 fill-mode-both delay-100 duration-500">
               <Link
                 href={navLinks[0].href}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="text-4xl font-black italic tracking-tighter text-white uppercase flex items-center gap-4 hover:text-primary transition-colors"
+                className="hover:text-primary flex items-center gap-4 text-4xl font-black tracking-tighter text-white uppercase italic transition-colors"
               >
-                <Icon name="search" className="text-[32px] text-primary" />
+                <Icon name="search" className="text-primary text-[32px]" />
                 {navLinks[0].name}
               </Link>
             </div>
 
             {/* Cities Section */}
-            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 delay-200 fill-mode-both">
+            <div className="animate-in fade-in slide-in-from-bottom-4 fill-mode-both delay-200 duration-500">
               <MobileCityPicker
                 cities={cities}
                 dict={dict}
@@ -71,26 +67,29 @@ export function MobileOverlay({
             {navLinks.slice(1).map((link, i) => (
               <div
                 key={link.name}
-                className="animate-in fade-in slide-in-from-bottom-4 duration-500 fill-mode-both"
-                style={{ animationDelay: `${300 + (i * 100)}ms` }}
+                className="animate-in fade-in slide-in-from-bottom-4 fill-mode-both duration-500"
+                style={{ animationDelay: `${300 + i * 100}ms` }}
               >
                 <Link
                   href={link.href}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="text-4xl font-black italic tracking-tighter text-white uppercase flex items-center gap-4 hover:text-primary transition-colors"
+                  className="hover:text-primary flex items-center gap-4 text-4xl font-black tracking-tighter text-white uppercase italic transition-colors"
                 >
-                  <Icon name={link.icon} className="text-[32px] text-primary" />
+                  <Icon name={link.icon} className="text-primary text-[32px]" />
                   {link.name}
                 </Link>
               </div>
             ))}
           </div>
 
-          <div className="mt-auto pt-6 border-t border-white/5 space-y-4">
-            <LiquidButton className="w-full h-14 text-base" onClick={() => setIsMobileMenuOpen(false)}>
+          <div className="mt-auto space-y-4 border-t border-white/5 pt-6">
+            <LiquidButton
+              className="h-14 w-full text-base"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
               {dict?.nav?.get_pass || "Uzmi kartu"}
             </LiquidButton>
-            <div className="text-center text-slate-500 text-xs font-bold uppercase tracking-widest">
+            <div className="text-center text-xs font-bold tracking-widest text-slate-500 uppercase">
               {dict?.home?.rights_reserved || "Srbijini najbolji akva parkovi"}
             </div>
           </div>

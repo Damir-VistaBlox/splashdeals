@@ -25,8 +25,13 @@ export function ShowcaseHero({ heroMedia, facility }: ShowcaseHeroProps) {
   useEffect(() => {
     // 📡 Network Information API: Defer HD loading on constrained data connections
     if (typeof navigator !== "undefined" && "connection" in navigator) {
-      const conn = (navigator as unknown as { connection?: { saveData?: boolean; effectiveType?: string } }).connection;
-      if (conn && (conn.saveData || conn.effectiveType === "2g" || conn.effectiveType === "slow-2g")) {
+      const conn = (
+        navigator as unknown as { connection?: { saveData?: boolean; effectiveType?: string } }
+      ).connection;
+      if (
+        conn &&
+        (conn.saveData || conn.effectiveType === "2g" || conn.effectiveType === "slow-2g")
+      ) {
         Promise.resolve().then(() => setAllowHDMedia(false));
       }
     }
@@ -48,9 +53,9 @@ export function ShowcaseHero({ heroMedia, facility }: ShowcaseHeroProps) {
   const renderMedia = () => {
     if (!heroMedia) {
       return (
-         <div className="w-full h-full bg-gradient-to-br from-background to-background flex items-center justify-center">
-           <Icon name="waves" className="w-48 h-48 text-foreground animate-pulse" />
-         </div>
+        <div className="from-background to-background flex h-full w-full items-center justify-center bg-gradient-to-br">
+          <Icon name="waves" className="text-foreground h-48 w-48 animate-pulse" />
+        </div>
       );
     }
 
@@ -58,7 +63,7 @@ export function ShowcaseHero({ heroMedia, facility }: ShowcaseHeroProps) {
 
     if (isVideo) {
       return (
-        <div className="relative w-full h-full">
+        <div className="relative h-full w-full">
           {heroMedia.thumbnailUrl && (
             <Image
               src={heroMedia.thumbnailUrl}
@@ -66,17 +71,17 @@ export function ShowcaseHero({ heroMedia, facility }: ShowcaseHeroProps) {
               fill
               priority
               sizes="100vw"
-              className="object-cover brightness-75 pointer-events-none"
+              className="pointer-events-none object-cover brightness-75"
             />
           )}
-          <video 
+          <video
             ref={videoRef}
-            autoPlay 
-            loop 
-            muted 
-            playsInline 
-            {...{fetchPriority: "high" as const}}
-            className="absolute inset-0 w-full h-full object-cover brightness-75 transition-all duration-700 pointer-events-none z-10"
+            autoPlay
+            loop
+            muted
+            playsInline
+            {...{ fetchPriority: "high" as const }}
+            className="pointer-events-none absolute inset-0 z-10 h-full w-full object-cover brightness-75 transition-all duration-700"
             poster={heroMedia.thumbnailUrl || undefined}
           >
             <source src={heroMedia.url} type="video/mp4" />
@@ -88,9 +93,9 @@ export function ShowcaseHero({ heroMedia, facility }: ShowcaseHeroProps) {
     // PHOTO type — render the photo URL directly
     if (heroMedia.type === "PHOTO") {
       return (
-        <div className="relative w-full h-full">
-          <Image 
-            src={heroMedia.url} 
+        <div className="relative h-full w-full">
+          <Image
+            src={heroMedia.url}
             alt={facility.name}
             fill
             priority
@@ -105,16 +110,16 @@ export function ShowcaseHero({ heroMedia, facility }: ShowcaseHeroProps) {
     const fallbackSrc = heroMedia.thumbnailUrl || null;
     if (!fallbackSrc) {
       return (
-        <div className="w-full h-full bg-gradient-to-br from-background to-background flex items-center justify-center">
-          <Icon name="waves" className="w-48 h-48 text-foreground animate-pulse" />
+        <div className="from-background to-background flex h-full w-full items-center justify-center bg-gradient-to-br">
+          <Icon name="waves" className="text-foreground h-48 w-48 animate-pulse" />
         </div>
       );
     }
 
     return (
-      <div className="relative w-full h-full">
-        <Image 
-          src={fallbackSrc} 
+      <div className="relative h-full w-full">
+        <Image
+          src={fallbackSrc}
           alt={facility.name}
           fill
           priority
@@ -126,14 +131,12 @@ export function ShowcaseHero({ heroMedia, facility }: ShowcaseHeroProps) {
   };
 
   return (
-    <div
-      className="absolute inset-0 z-0 bg-background"
-    >
+    <div className="bg-background absolute inset-0 z-0">
       {renderMedia()}
-      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent shadow-[inset_0_-100px_100px_rgba(2,6,23,0.8)]" />
-      <div className="absolute inset-x-0 bottom-0 h-[20%] splash-gradient opacity-20 blur-3xl pointer-events-none" />
+      <div className="from-background via-background/20 absolute inset-0 bg-gradient-to-t to-transparent shadow-[inset_0_-100px_100px_rgba(2,6,23,0.8)]" />
+      <div className="splash-gradient pointer-events-none absolute inset-x-0 bottom-0 h-[20%] opacity-20 blur-3xl" />
     </div>
-  )
+  );
 }
 
 export interface CurrentWeather {
@@ -149,25 +152,23 @@ export interface CurrentWeather {
  */
 export function WeatherBadge({ weather }: { weather: CurrentWeather | null }) {
   if (!weather) return null;
-  
+
   const getWeatherIcon = (code: number) => {
-    if (code === 0) return <Icon name="light_mode" className="text-[20px] text-amber-400" />
-    if (code < 4) return <Icon name="cloud" className="text-[20px] text-slate-300" />
-    return <Icon name="rainy" className="text-[20px] text-primary" />
-  }
+    if (code === 0) return <Icon name="light_mode" className="text-[20px] text-amber-400" />;
+    if (code < 4) return <Icon name="cloud" className="text-[20px] text-slate-300" />;
+    return <Icon name="rainy" className="text-primary text-[20px]" />;
+  };
 
   return (
-    <div
-      className="flex items-center gap-3 glass-frost px-4 py-2 rounded-full border-border shadow-xl"
-    >
+    <div className="glass-frost border-border flex items-center gap-3 rounded-full px-4 py-2 shadow-xl">
       {getWeatherIcon(weather.weathercode)}
       <span className="text-sm font-black whitespace-nowrap text-white">
-         {Math.round(weather.temperature)}°C
+        {Math.round(weather.temperature)}°C
       </span>
-      <div className="hidden md:block h-4 w-px bg-white/10" />
-      <span className="hidden md:inline text-xs uppercase font-bold text-muted-foreground tracking-widest">
-         Idealno za kupanje
+      <div className="hidden h-4 w-px bg-white/10 md:block" />
+      <span className="text-muted-foreground hidden text-xs font-bold tracking-widest uppercase md:inline">
+        Idealno za kupanje
       </span>
     </div>
-  )
+  );
 }

@@ -1,12 +1,12 @@
-import { connection } from "next/server"
-import { DashboardClient } from "./_components/DashboardClient"
-import type { Metadata } from "next"
-import { getAdminDashboardStats, getRecentActivity } from "@/lib/data/admin"
+import { connection } from "next/server";
+import { DashboardClient } from "./_components/DashboardClient";
+import type { Metadata } from "next";
+import { getAdminDashboardStats, getRecentActivity } from "@/lib/data/admin";
 
 export const metadata: Metadata = {
   title: "Command Center | Governance Hub",
   description: "Real-time institutional oversight and facility management console.",
-}
+};
 
 export default async function DashboardPage() {
   await connection();
@@ -16,7 +16,5 @@ export default async function DashboardPage() {
     getRecentActivity(),
   ]);
 
-  return (
-    <DashboardClient stats={stats} recentActivity={recentActivity} />
-  )
+  return <DashboardClient stats={stats} recentActivity={recentActivity} />;
 }

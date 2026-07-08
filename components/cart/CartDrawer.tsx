@@ -22,7 +22,7 @@ export const CartDrawer = () => {
   const [dict, setDict] = React.useState<Dict | null>(null);
 
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('sr-RS').format(price);
+    return new Intl.NumberFormat("sr-RS").format(price);
   };
 
   React.useEffect(() => {
@@ -39,130 +39,156 @@ export const CartDrawer = () => {
     <Drawer.Root open={isCartOpen} onOpenChange={(open) => !open && closeCart()} direction="right">
       <Drawer.Portal>
         <Drawer.Overlay className="fixed inset-0 z-[2000] bg-black/60 backdrop-blur-sm" />
-        <Drawer.Content className="bg-navy-deep border-l border-white/5 flex flex-col rounded-l-[3rem] h-full w-full max-w-md fixed bottom-0 right-0 z-[2001] outline-none shadow-2xl">
+        <Drawer.Content className="bg-navy-deep fixed right-0 bottom-0 z-[2001] flex h-full w-full max-w-md flex-col rounded-l-[3rem] border-l border-white/5 shadow-2xl outline-none">
           {/* Header */}
-          <div className="p-8 border-b border-white/5 flex items-center justify-between">
+          <div className="flex items-center justify-between border-b border-white/5 p-8">
             <div className="flex items-center gap-4">
-              <div className="p-3 bg-cyan-400/10 rounded-2xl">
+              <div className="rounded-2xl bg-cyan-400/10 p-3">
                 <Icon name="shopping_bag" className="text-[24px] text-cyan-400" />
               </div>
               <div>
-                <h2 className="text-xl font-black italic uppercase tracking-tighter text-white leading-none">
+                <h2 className="text-xl leading-none font-black tracking-tighter text-white uppercase italic">
                   Vaša <span className="text-splash">Korpa</span>
                 </h2>
-                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">
+                <p className="mt-1 text-[10px] font-bold tracking-widest text-slate-500 uppercase">
                   {items.length} stavki izabrano
                 </p>
               </div>
             </div>
             <button
               onClick={closeCart}
-              className="p-3 bg-white/5 rounded-full hover:bg-white/10 transition-colors"
+              className="rounded-full bg-white/5 p-3 transition-colors hover:bg-white/10"
             >
               <Icon name="close" className="text-[20px] text-white/50" />
             </button>
           </div>
 
           {/* Items List */}
-          <div className="flex-1 overflow-y-auto p-8 space-y-6 scrollbar-hide">
+          <div className="scrollbar-hide flex-1 space-y-6 overflow-y-auto p-8">
             {items.length === 0 ? (
-              <div className="h-full flex flex-col items-center justify-center text-center space-y-4">
-                  <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center">
-                    <Icon name="shopping_bag" className="text-[32px] text-white/20" />
-                  </div>
-                  <div className="space-y-1">
-                    <p className="text-white font-black italic uppercase">Korpa je prazna</p>
-                    <p className="text-slate-500 text-xs font-bold uppercase tracking-widest">Započnite putovanje</p>
-                  </div>
+              <div className="flex h-full flex-col items-center justify-center space-y-4 text-center">
+                <div className="flex h-20 w-20 items-center justify-center rounded-full bg-white/5">
+                  <Icon name="shopping_bag" className="text-[32px] text-white/20" />
                 </div>
-              ) : (
-                items.map((item) => (
-                  <div
-                    key={item.id}
-                    className="group relative glass-frost p-5 rounded-[2rem] border border-white/5 hover:border-white/10 transition-all"
-                  >
-                    <div className="flex items-center gap-4">
-                      <div className="flex-1 min-w-0">
-                        <p className="text-[10px] font-black uppercase tracking-widest text-cyan-500/80 mb-1">
-                          {item.category === 'Waterpark' ? 'Akva Park' : item.category === 'Pool' ? 'Bazen' : item.category === 'Spa' ? 'Spa Centar' : item.category || 'Akva Park'}
-                        </p>
-                        <h3 className="text-sm font-black text-white italic truncate leading-none mb-1 uppercase">
-                          {item.title}
-                        </h3>
-                        <p className="text-[10px] font-bold text-slate-500 uppercase tracking-tighter truncate opacity-60">
-                           {item.facilityName}
-                        </p>
-                        
-                        <div className="flex items-center gap-4 mt-4">
-                            <div className="flex items-center bg-navy-deep/50 rounded-full border border-white/5 p-1">
-                             <button 
-                                disabled={item.quantity <= (item.minPeople || 1)}
-                                onClick={() => {
-                                  if (typeof navigator !== 'undefined' && "vibrate" in navigator) navigator.vibrate(10);
-                                  updateQuantity(item.id, item.quantity - 1);
-                                }}
-                                className="p-1.5 hover:text-cyan-400 text-white/40 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-                             >
-                               <Icon name="remove" className="text-[12px]" />
-                             </button>
-                             <span className="w-8 text-center text-xs font-black text-white">{item.quantity}</span>
-                             <button 
-                                disabled={item.quantity >= Math.min(item.maxPeople ?? MAX_QUANTITY_PER_ITEM, MAX_QUANTITY_PER_ITEM)}
-                                onClick={() => {
-                                  if (typeof navigator !== 'undefined' && "vibrate" in navigator) navigator.vibrate(10);
-                                  updateQuantity(item.id, item.quantity + 1);
-                                }}
-                                className="p-1.5 hover:text-cyan-400 text-white/40 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-                             >
-                                <Icon name="add" className="text-[12px]" />
-                             </button>
-                           </div>
-                            <button 
-                              onClick={() => {
-                                if (typeof navigator !== 'undefined' && "vibrate" in navigator) navigator.vibrate([20, 50, 20]);
-                                removeItem(item.id);
-                              }}
-                              className="text-[10px] font-black uppercase text-red-400/50 hover:text-red-400 transition-colors tracking-widest"
-                            >
-                              {dict?.cart?.remove ?? "Ukloni"}
-                            </button>
+                <div className="space-y-1">
+                  <p className="font-black text-white uppercase italic">Korpa je prazna</p>
+                  <p className="text-xs font-bold tracking-widest text-slate-500 uppercase">
+                    Započnite putovanje
+                  </p>
+                </div>
+              </div>
+            ) : (
+              items.map((item) => (
+                <div
+                  key={item.id}
+                  className="group glass-frost relative rounded-[2rem] border border-white/5 p-5 transition-all hover:border-white/10"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="min-w-0 flex-1">
+                      <p className="mb-1 text-[10px] font-black tracking-widest text-cyan-500/80 uppercase">
+                        {item.category === "Waterpark"
+                          ? "Akva Park"
+                          : item.category === "Pool"
+                            ? "Bazen"
+                            : item.category === "Spa"
+                              ? "Spa Centar"
+                              : item.category || "Akva Park"}
+                      </p>
+                      <h3 className="mb-1 truncate text-sm leading-none font-black text-white uppercase italic">
+                        {item.title}
+                      </h3>
+                      <p className="truncate text-[10px] font-bold tracking-tighter text-slate-500 uppercase opacity-60">
+                        {item.facilityName}
+                      </p>
+
+                      <div className="mt-4 flex items-center gap-4">
+                        <div className="bg-navy-deep/50 flex items-center rounded-full border border-white/5 p-1">
+                          <button
+                            disabled={item.quantity <= (item.minPeople || 1)}
+                            onClick={() => {
+                              if (typeof navigator !== "undefined" && "vibrate" in navigator)
+                                navigator.vibrate(10);
+                              updateQuantity(item.id, item.quantity - 1);
+                            }}
+                            className="p-1.5 text-white/40 transition-colors hover:text-cyan-400 disabled:cursor-not-allowed disabled:opacity-30"
+                          >
+                            <Icon name="remove" className="text-[12px]" />
+                          </button>
+                          <span className="w-8 text-center text-xs font-black text-white">
+                            {item.quantity}
+                          </span>
+                          <button
+                            disabled={
+                              item.quantity >=
+                              Math.min(
+                                item.maxPeople ?? MAX_QUANTITY_PER_ITEM,
+                                MAX_QUANTITY_PER_ITEM,
+                              )
+                            }
+                            onClick={() => {
+                              if (typeof navigator !== "undefined" && "vibrate" in navigator)
+                                navigator.vibrate(10);
+                              updateQuantity(item.id, item.quantity + 1);
+                            }}
+                            className="p-1.5 text-white/40 transition-colors hover:text-cyan-400 disabled:cursor-not-allowed disabled:opacity-30"
+                          >
+                            <Icon name="add" className="text-[12px]" />
+                          </button>
                         </div>
+                        <button
+                          onClick={() => {
+                            if (typeof navigator !== "undefined" && "vibrate" in navigator)
+                              navigator.vibrate([20, 50, 20]);
+                            removeItem(item.id);
+                          }}
+                          className="text-[10px] font-black tracking-widest text-red-400/50 uppercase transition-colors hover:text-red-400"
+                        >
+                          {dict?.cart?.remove ?? "Ukloni"}
+                        </button>
                       </div>
-                      
-                      <div className="text-right">
-                        <div className="text-lg font-black text-white tracking-tighter italic">
-                          {formatPrice(item.price * item.quantity)}
-                          <span className="text-[10px] ml-1 opacity-50 uppercase not-italic">RSD</span>
-                        </div>
+                    </div>
+
+                    <div className="text-right">
+                      <div className="text-lg font-black tracking-tighter text-white italic">
+                        {formatPrice(item.price * item.quantity)}
+                        <span className="ml-1 text-[10px] uppercase not-italic opacity-50">
+                          RSD
+                        </span>
                       </div>
                     </div>
                   </div>
-                ))
-              )}
+                </div>
+              ))
+            )}
           </div>
 
           {/* Footer Checkout */}
           {items.length > 0 && (
-            <div className="p-8 border-t border-white/5 space-y-6 bg-navy-deep/80 backdrop-blur-xl">
+            <div className="bg-navy-deep/80 space-y-6 border-t border-white/5 p-8 backdrop-blur-xl">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-black uppercase tracking-[0.2em] text-slate-500">Ukupno za uplatu</span>
-                <div className="text-3xl font-black text-white tracking-tighter italic">
+                <span className="text-xs font-black tracking-[0.2em] text-slate-500 uppercase">
+                  Ukupno za uplatu
+                </span>
+                <div className="text-3xl font-black tracking-tighter text-white italic">
                   {formatPrice(totalPrice)}
-                  <span className="text-xs ml-1 opacity-50 uppercase not-italic">RSD</span>
+                  <span className="ml-1 text-xs uppercase not-italic opacity-50">RSD</span>
                 </div>
               </div>
-              
+
               <Link href="/cart" onClick={closeCart}>
-                <LiquidButton className="w-full h-16 text-lg group">
+                <LiquidButton className="group h-16 w-full text-lg">
                   Nastavi na Plaćanje
-                  <Icon name="arrow_forward" className="ml-2 text-[20px] group-hover:translate-x-1 transition-transform" />
+                  <Icon
+                    name="arrow_forward"
+                    className="ml-2 text-[20px] transition-transform group-hover:translate-x-1"
+                  />
                 </LiquidButton>
               </Link>
-              
+
               <div className="text-center">
-                 <p className="text-[8px] font-black uppercase tracking-[0.3em] text-slate-600">
-                    Bezbedna transakcija šifrovana sa 256-bitnom enkripcijom
-                 </p>
+                <p className="text-[8px] font-black tracking-[0.3em] text-slate-600 uppercase">
+                  Bezbedna transakcija šifrovana sa 256-bitnom enkripcijom
+                </p>
               </div>
             </div>
           )}

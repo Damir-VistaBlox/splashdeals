@@ -1,12 +1,12 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { Icon } from "@/components/ui/Icon"
-import { ShareButton } from "./ShareButton"
-import { WeatherBadge } from "./ShowcaseHero"
-import { CurrentOperationalStatus } from "./OperationalPortal"
-import { DistanceCalculator } from "./DistanceCalculator"
-import { MobileUnifiedControlPill } from "./MobileUnifiedControlPill"
+import Link from "next/link";
+import { Icon } from "@/components/ui/Icon";
+import { ShareButton } from "./ShareButton";
+import { WeatherBadge } from "./ShowcaseHero";
+import { CurrentOperationalStatus } from "./OperationalPortal";
+import { DistanceCalculator } from "./DistanceCalculator";
+import { MobileUnifiedControlPill } from "./MobileUnifiedControlPill";
 
 interface CurrentWeather {
   temperature: number;
@@ -15,19 +15,19 @@ interface CurrentWeather {
 
 interface HeroActionPillProps {
   facility: {
-    name: string
-    slug: string
-    lat?: number | string | null
-    lng?: number | string | null
-    hours: Array<{ dayOfWeek: number; openTime: string; closeTime: string; isClosed: boolean }>
-    streetName: string
-    streetNumber: string
-    postalCode: string
-    city: string
-  }
-  facilitySlug: string
-  categorySlug: string
-  weather: CurrentWeather | null
+    name: string;
+    slug: string;
+    lat?: number | string | null;
+    lng?: number | string | null;
+    hours: Array<{ dayOfWeek: number; openTime: string; closeTime: string; isClosed: boolean }>;
+    streetName: string;
+    streetNumber: string;
+    postalCode: string;
+    city: string;
+  };
+  facilitySlug: string;
+  categorySlug: string;
+  weather: CurrentWeather | null;
 }
 
 /**
@@ -37,11 +37,16 @@ interface HeroActionPillProps {
  * and the mobile unified pill into a single client component.
  * Weather data is fetched server-side and passed as a prop.
  */
-export function HeroActionPill({ facility, facilitySlug, categorySlug, weather }: HeroActionPillProps) {
+export function HeroActionPill({
+  facility,
+  facilitySlug,
+  categorySlug,
+  weather,
+}: HeroActionPillProps) {
   return (
     <>
       {/* 📱 MOBILE SHARE ROW */}
-      <div className="flex md:hidden items-center justify-end">
+      <div className="flex items-center justify-end md:hidden">
         <ShareButton
           title={facility.name}
           url={`${process.env.NEXT_PUBLIC_SITE_URL}/${facilitySlug}`}
@@ -49,10 +54,10 @@ export function HeroActionPill({ facility, facilitySlug, categorySlug, weather }
       </div>
 
       {/* 🧭 DESKTOP ACTIONS */}
-      <div className="hidden md:flex flex-wrap gap-2 items-center">
+      <div className="hidden flex-wrap items-center gap-2 md:flex">
         <Link
           href={`/${categorySlug}`}
-          className="px-4 py-2 rounded-full backdrop-blur-xl bg-white/5 text-xs font-black flex items-center gap-2 hover:bg-white/10 transition-all border border-border uppercase tracking-widest text-muted-foreground"
+          className="border-border text-muted-foreground flex items-center gap-2 rounded-full border bg-white/5 px-4 py-2 text-xs font-black tracking-widest uppercase backdrop-blur-xl transition-all hover:bg-white/10"
         >
           <Icon name="arrow_back" className="text-[12px]" /> Nazad
         </Link>
@@ -64,10 +69,10 @@ export function HeroActionPill({ facility, facilitySlug, categorySlug, weather }
       </div>
 
       {/* 🏙️ HERO INFO ROW */}
-      <div className="flex flex-wrap items-center gap-6 text-slate-300 font-bold pb-4 w-full">
-        <div className="hidden md:flex items-center gap-2 bg-muted/50 px-5 py-2.5 rounded-2xl backdrop-blur-md border border-border">
+      <div className="flex w-full flex-wrap items-center gap-6 pb-4 font-bold text-slate-300">
+        <div className="bg-muted/50 border-border hidden items-center gap-2 rounded-2xl border px-5 py-2.5 backdrop-blur-md md:flex">
           <Icon name="location_on" className="text-[16px] text-cyan-400" />
-          <span className="text-sm tracking-tight font-medium opacity-80">
+          <span className="text-sm font-medium tracking-tight opacity-80">
             {facility.streetName} {facility.streetNumber}, {facility.postalCode} {facility.city}
           </span>
         </div>
@@ -83,7 +88,7 @@ export function HeroActionPill({ facility, facilitySlug, categorySlug, weather }
             />
           )}
         </div>
-        <div className="block md:hidden w-full pt-2">
+        <div className="block w-full pt-2 md:hidden">
           <MobileUnifiedControlPill
             hours={facility.hours}
             destLat={Number(facility.lat)}
@@ -92,5 +97,5 @@ export function HeroActionPill({ facility, facilitySlug, categorySlug, weather }
         </div>
       </div>
     </>
-  )
+  );
 }

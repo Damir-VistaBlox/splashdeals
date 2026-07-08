@@ -1,14 +1,14 @@
-"use server"
+"use server";
 
-import { prisma } from "@/server/lib/prisma"
-import { requireSuperAdmin } from "@/server/lib/auth-guards"
-import { generateApiKey } from "@/server/lib/api-key-auth"
-import { handleServerActionError } from "@/server/lib/server-action-error"
-import { revalidateAdminUsers } from "@/server/lib/revalidation"
+import { prisma } from "@/server/lib/prisma";
+import { requireSuperAdmin } from "@/server/lib/auth-guards";
+import { generateApiKey } from "@/server/lib/api-key-auth";
+import { handleServerActionError } from "@/server/lib/server-action-error";
+import { revalidateAdminUsers } from "@/server/lib/revalidation";
 
 export async function getApiKeysAction() {
   try {
-    const user = await requireSuperAdmin()
+    const user = await requireSuperAdmin();
     const keys = await prisma.apiKey.findMany({
       where: { userId: user.id },
       orderBy: { createdAt: "desc" },
@@ -20,17 +20,17 @@ export async function getApiKeysAction() {
         lastUsedAt: true,
         expiresAt: true,
       },
-    })
-    return { success: true, data: keys }
+    });
+    return { success: true, data: keys };
   } catch (error) {
-    return handleServerActionError(error, "api-keys")
+    return handleServerActionError(error, "api-keys");
   }
 }
 
 export async function createApiKeyAction(name: string) {
   try {
-    const user = await requireSuperAdmin()
-    const { plainKey, prefix, hashedKey } = generateApiKey()
+    const user = await requireSuperAdmin();
+    const { plainKey, prefix, hashedKey } = generateApiKey();
     await prisma.apiKey.create({
       data: {
         name,
@@ -38,21 +38,21 @@ export async function createApiKeyAction(name: string) {
         prefix,
         userId: user.id,
       },
-    })
-    revalidateAdminUsers()
-    return { success: true, data: { key: plainKey, prefix } }
+    });
+    revalidateAdminUsers();
+    return { success: true, data: { key: plainKey, prefix } };
   } catch (error) {
-    return handleServerActionError(error, "api-keys")
+    return handleServerActionError(error, "api-keys");
   }
 }
 
 export async function deleteApiKeyAction(id: string) {
   try {
-    await requireSuperAdmin()
-    await prisma.apiKey.delete({ where: { id } })
-    revalidateAdminUsers()
-    return { success: true }
+    await requireSuperAdmin();
+    await prisma.apiKey.delete({ where: { id } });
+    revalidateAdminUsers();
+    return { success: true };
   } catch (error) {
-    return handleServerActionError(error, "api-keys")
+    return handleServerActionError(error, "api-keys");
   }
 }

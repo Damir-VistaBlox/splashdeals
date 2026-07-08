@@ -16,27 +16,30 @@ export default function AuthError({
   }, [error]);
 
   return (
-    <div className="text-center space-y-6">
-      <div className="inline-flex h-20 w-20 items-center justify-center rounded-2xl bg-red-500/10 border border-red-500/20">
+    <div className="space-y-6 text-center">
+      <div className="inline-flex h-20 w-20 items-center justify-center rounded-2xl border border-red-500/20 bg-red-500/10">
         <Icon name="gpp_maybe" className="text-[40px] text-red-400" />
       </div>
       <div className="space-y-2">
-        <h1 className="text-2xl font-black uppercase tracking-tighter italic">
+        <h1 className="text-2xl font-black tracking-tighter uppercase italic">
           Auth <span className="text-slate-500">Error</span>
         </h1>
-        <p className="text-sm text-slate-400 max-w-sm mx-auto">
+        <p className="mx-auto max-w-sm text-sm text-slate-400">
           Something went wrong during authentication.
         </p>
       </div>
       <div className="flex flex-col gap-3">
         <Button
           onClick={reset}
-          className="w-full px-8 py-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 transition-all"
+          className="flex w-full items-center justify-center gap-2 rounded-xl border border-white/5 bg-white/5 px-8 py-4 text-[10px] font-black tracking-widest uppercase transition-all hover:bg-white/10"
         >
           <Icon name="refresh" className="text-[16px]" />
           Try Again
         </Button>
-        <Button asChild className="w-full px-8 py-4 rounded-xl bg-slate-100 hover:bg-white text-[#020617] font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 transition-all">
+        <Button
+          asChild
+          className="flex w-full items-center justify-center gap-2 rounded-xl bg-slate-100 px-8 py-4 text-[10px] font-black tracking-widest text-[#020617] uppercase transition-all hover:bg-white"
+        >
           <Link href="/auth/login">
             <Icon name="login" className="text-[16px]" />
             Go to Login

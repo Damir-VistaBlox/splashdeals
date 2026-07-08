@@ -9,29 +9,29 @@ interface MobileOverlayHeaderProps {
 
 export function MobileOverlayHeader({ onClose }: MobileOverlayHeaderProps) {
   return (
-    <div className="flex justify-between items-center mb-8">
-      <div className="flex items-center tracking-[-0.1em] select-none animate-float">
-        <div className="relative overflow-hidden group/logo">
-          <span className="text-2xl md:text-3xl font-black italic uppercase text-splash relative z-10">
+    <div className="mb-8 flex items-center justify-between">
+      <div className="animate-float flex items-center tracking-[-0.1em] select-none">
+        <div className="group/logo relative overflow-hidden">
+          <span className="text-splash relative z-10 text-2xl font-black uppercase italic md:text-3xl">
             Splash
           </span>
           {/* Glint Overlay */}
-          <div className="absolute inset-0 z-20 pointer-events-none translate-x-[-100%] group-hover/logo:animate-logo-shimmer bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-[-20deg]" />
+          <div className="group-hover/logo:animate-logo-shimmer pointer-events-none absolute inset-0 z-20 translate-x-[-100%] skew-x-[-20deg] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
         </div>
-        <span className="text-3xl md:text-4xl font-black italic uppercase text-white -ml-1">
+        <span className="-ml-1 text-3xl font-black text-white uppercase italic md:text-4xl">
           deals
         </span>
-        <div className="relative ml-1 mt-4">
-          <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-          <div className="absolute inset-0 w-2 h-2 rounded-full bg-primary blur-[2px] animate-ping opacity-50" />
+        <div className="relative mt-4 ml-1">
+          <div className="bg-primary h-2 w-2 animate-pulse rounded-full" />
+          <div className="bg-primary absolute inset-0 h-2 w-2 animate-ping rounded-full opacity-50 blur-[2px]" />
         </div>
       </div>
       <button
         onClick={onClose}
-        className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/[0.04] border border-white/10 text-white/80 active:scale-90 hover:bg-white/10 hover:border-primary/20 active:bg-primary/20 active:border-primary/30 transition-all duration-300 shadow-md shadow-black/10"
+        className="hover:border-primary/20 active:bg-primary/20 active:border-primary/30 flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-white/80 shadow-md shadow-black/10 transition-all duration-300 hover:bg-white/10 active:scale-90"
         aria-label="Zatvori meni"
       >
-        <Icon name="close" className="text-[20px] text-primary" />
+        <Icon name="close" className="text-primary text-[20px]" />
       </button>
     </div>
   );

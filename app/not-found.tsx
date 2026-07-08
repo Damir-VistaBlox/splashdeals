@@ -1,6 +1,6 @@
-import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import type { Metadata } from 'next'
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import type { Metadata } from "next";
 
 /**
  * 🗺️ Root-level 404 handler
@@ -10,9 +10,9 @@ import type { Metadata } from 'next'
  * file is what actually sets the HTTP response status to 404.
  */
 export const metadata: Metadata = {
-  title: 'Stranica Nije Pronađena | Splashdeals',
+  title: "Stranica Nije Pronađena | Splashdeals",
   description:
-    'Stranica koju tražite ne postoji ili je premeštena. Vratite se na početnu stranicu da istražite najbolje akva parkove u Srbiji.',
+    "Stranica koju tražite ne postoji ili je premeštena. Vratite se na početnu stranicu da istražite najbolje akva parkove u Srbiji.",
   robots: {
     index: false,
     follow: false,
@@ -20,23 +20,23 @@ export const metadata: Metadata = {
   alternates: {
     canonical: null,
   },
-}
+};
 
 export default function NotFound() {
   return (
     <html lang="sr">
-      <body className="bg-slate-950 text-white min-h-screen flex items-center justify-center p-6">
-        <div className="max-w-md w-full space-y-8 text-center">
+      <body className="flex min-h-screen items-center justify-center bg-slate-950 p-6 text-white">
+        <div className="w-full max-w-md space-y-8 text-center">
           <div className="space-y-4">
-            <div className="inline-block px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20">
-              <span className="text-[10px] font-black text-cyan-400 uppercase tracking-widest">
+            <div className="inline-block rounded-full border border-cyan-500/20 bg-cyan-500/10 px-3 py-1">
+              <span className="text-[10px] font-black tracking-widest text-cyan-400 uppercase">
                 Deep Water Discovery
               </span>
             </div>
-            <h1 className="text-4xl font-black italic uppercase tracking-tighter leading-none">
+            <h1 className="text-4xl leading-none font-black tracking-tighter uppercase italic">
               Koordinate <br /> Nisu Pronađene
             </h1>
-            <p className="text-slate-400 text-sm">
+            <p className="text-sm text-slate-400">
               Stranica koju tražite ne postoji ili je premeštena. Vratite se na početnu stranicu.
             </p>
           </div>
@@ -44,7 +44,7 @@ export default function NotFound() {
           <div className="flex flex-col gap-3">
             <Button
               asChild
-              className="w-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black uppercase italic"
+              className="w-full bg-cyan-500 font-black text-slate-950 uppercase italic hover:bg-cyan-400"
             >
               <Link href="/">Nazad na Marketplace</Link>
             </Button>
@@ -52,5 +52,5 @@ export default function NotFound() {
         </div>
       </body>
     </html>
-  )
+  );
 }

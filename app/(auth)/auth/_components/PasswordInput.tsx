@@ -32,12 +32,12 @@ export function PasswordInput({
         onChange={onChange}
         required
         disabled={disabled}
-        className="h-12 bg-white/5 border-white/10 focus-visible:ring-cyan-500/50 rounded-xl pr-10 transition-all"
+        className="h-12 rounded-xl border-white/10 bg-white/5 pr-10 transition-all focus-visible:ring-cyan-500/50"
       />
       <Button
         type="button"
         onClick={onToggle}
-        className="absolute right-1 top-1/2 -translate-y-1/2 text-slate-600 hover:text-slate-400"
+        className="absolute top-1/2 right-1 -translate-y-1/2 text-slate-600 hover:text-slate-400"
         tabIndex={-1}
         size="icon"
         variant="ghost"

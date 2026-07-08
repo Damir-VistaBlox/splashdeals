@@ -1,5 +1,5 @@
-import { NextResponse } from "next/server"
-import { processScheduledAmenitiesAction } from "@/server/actions/amenity-actions"
+import { NextResponse } from "next/server";
+import { processScheduledAmenitiesAction } from "@/server/actions/amenity-actions";
 
 /**
  * 🛰️ Infrastructure Pulse: Scheduled Amenity Activation
@@ -8,23 +8,26 @@ import { processScheduledAmenitiesAction } from "@/server/actions/amenity-action
  */
 export async function GET(request: Request) {
   // 🔐 Simple internal security check
-  const authHeader = request.headers.get('authorization')
+  const authHeader = request.headers.get("authorization");
   if (process.env.CRON_SECRET && authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-    return new NextResponse('Unauthorized Infrastructure Access', { status: 401 })
+    return new NextResponse("Unauthorized Infrastructure Access", { status: 401 });
   }
 
   try {
-    const result = await processScheduledAmenitiesAction()
-    return NextResponse.json({ 
-      success: true, 
+    const result = await processScheduledAmenitiesAction();
+    return NextResponse.json({
+      success: true,
       count: result.count,
-      timestamp: new Date().toISOString() 
-    })
+      timestamp: new Date().toISOString(),
+    });
   } catch (error) {
-    console.error("Critical failure during infrastructure pulse:", error)
-    return NextResponse.json({ 
-      success: false, 
-      error: "Infrastructure activation failure" 
-    }, { status: 500 })
+    console.error("Critical failure during infrastructure pulse:", error);
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Infrastructure activation failure",
+      },
+      { status: 500 },
+    );
   }
 }

@@ -2,8 +2,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function ApiKeysLoading() {
   return (
-    <div className="flex flex-col gap-6 p-6 md:p-10 max-w-[1400px] w-full mx-auto">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="mx-auto flex w-full max-w-[1400px] flex-col gap-6 p-6 md:p-10">
+      <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div className="space-y-2">
           <Skeleton className="h-10 w-48" />
           <Skeleton className="h-4 w-72" />

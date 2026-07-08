@@ -1,8 +1,8 @@
-import { auth } from "@/server/lib/auth"
-import { headers } from "next/headers"
-import { redirect } from "next/navigation"
-import { prisma } from "@/server/lib/prisma"
-import { AUTH_ERROR } from "@/server/lib/error-messages"
+import { auth } from "@/server/lib/auth";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+import { prisma } from "@/server/lib/prisma";
+import { AUTH_ERROR } from "@/server/lib/error-messages";
 
 export type AuthedUser = {
   id: string;
@@ -18,18 +18,18 @@ export type AuthedUser = {
 export async function requireAdmin(): Promise<AuthedUser> {
   const session = await auth.api.getSession({
     headers: await headers(),
-  })
+  });
 
   if (!session) {
-    throw new Error(AUTH_ERROR.REQUIRED)
+    throw new Error(AUTH_ERROR.REQUIRED);
   }
 
-  const role = session.user.role?.toUpperCase()
+  const role = session.user.role?.toUpperCase();
   if (role !== "SUPER_ADMIN" && role !== "FACILITY_STAFF") {
-    throw new Error(AUTH_ERROR.UNAUTHORIZED_ADMIN)
+    throw new Error(AUTH_ERROR.UNAUTHORIZED_ADMIN);
   }
 
-  return session.user
+  return session.user;
 }
 
 /**
@@ -40,19 +40,19 @@ export async function requireAdmin(): Promise<AuthedUser> {
 export async function requireSuperAdmin(options: { redirect?: boolean } = {}): Promise<AuthedUser> {
   const session = await auth.api.getSession({
     headers: await headers(),
-  })
+  });
 
   if (!session) {
-    if (options.redirect) redirect("/auth/login?callbackUrl=/admin")
-    throw new Error(AUTH_ERROR.REQUIRED)
+    if (options.redirect) redirect("/auth/login?callbackUrl=/admin");
+    throw new Error(AUTH_ERROR.REQUIRED);
   }
 
   if (session.user.role?.toUpperCase() !== "SUPER_ADMIN") {
-    if (options.redirect) redirect("/admin/forbidden")
-    throw new Error(AUTH_ERROR.UNAUTHORIZED_SUPER_ADMIN)
+    if (options.redirect) redirect("/admin/forbidden");
+    throw new Error(AUTH_ERROR.UNAUTHORIZED_SUPER_ADMIN);
   }
 
-  return session.user
+  return session.user;
 }
 
 /**
@@ -60,10 +60,13 @@ export async function requireSuperAdmin(options: { redirect?: boolean } = {}): P
  * SUPER_ADMIN has access to everything.
  * FACILITY_STAFF must have an explicit assignment to this facility.
  */
-export async function validateFacilityAccess(facilityId: string, user?: AuthedUser): Promise<AuthedUser> {
-  const adminUser = user || await requireAdmin()
-  
-  if (adminUser.role?.toUpperCase() === "SUPER_ADMIN") return adminUser
+export async function validateFacilityAccess(
+  facilityId: string,
+  user?: AuthedUser,
+): Promise<AuthedUser> {
+  const adminUser = user || (await requireAdmin());
+
+  if (adminUser.role?.toUpperCase() === "SUPER_ADMIN") return adminUser;
 
   // FACILITY_STAFF must have an explicit assignment to this facility
   const assignment = await prisma.facilityStaffAssignment.findUnique({
@@ -71,13 +74,13 @@ export async function validateFacilityAccess(facilityId: string, user?: AuthedUs
       userId_facilityId: {
         userId: adminUser.id,
         facilityId,
-      }
-    }
-  })
+      },
+    },
+  });
 
   if (!assignment) {
-    throw new Error(AUTH_ERROR.UNAUTHORIZED_FACILITY)
+    throw new Error(AUTH_ERROR.UNAUTHORIZED_FACILITY);
   }
 
-  return adminUser
+  return adminUser;
 }

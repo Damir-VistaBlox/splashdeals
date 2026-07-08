@@ -1,26 +1,20 @@
-import { NextResponse } from "next/server"
-import { prisma } from "@/server/lib/prisma"
+import { NextResponse } from "next/server";
+import { prisma } from "@/server/lib/prisma";
 
 /**
  * GET /api/facilities/:slug/tickets
  * Returns the full ticket hierarchy (categories → products → prices) for a facility.
  */
-export async function GET(
-  _request: Request,
-  { params }: { params: Promise<{ slug: string }> }
-) {
-  const { slug } = await params
+export async function GET(_request: Request, { params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
 
   const facility = await prisma.facility.findUnique({
     where: { slug },
     select: { id: true },
-  })
+  });
 
   if (!facility) {
-    return NextResponse.json(
-      { error: "Facility not found" },
-      { status: 404 }
-    )
+    return NextResponse.json({ error: "Facility not found" }, { status: 404 });
   }
 
   const categories = await prisma.ticketCategory.findMany({
@@ -38,7 +32,7 @@ export async function GET(
         },
       },
     },
-  })
+  });
 
   const result = categories.map((cat) => ({
     id: cat.id,
@@ -66,11 +60,11 @@ export async function GET(
         validTo: p.validTo,
       })),
     })),
-  }))
+  }));
 
   return NextResponse.json(result, {
     headers: {
       "Cache-Control": "public, max-age=60, s-maxage=120, stale-while-revalidate=300",
     },
-  })
+  });
 }

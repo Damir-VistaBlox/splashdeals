@@ -1,12 +1,12 @@
-import { prisma } from "@/server/lib/prisma"
-import { DataTable } from "./data-table"
-import { columns } from "./columns"
-import { Prisma } from "@prisma/client"
+import { prisma } from "@/server/lib/prisma";
+import { DataTable } from "./data-table";
+import { columns } from "./columns";
+import { Prisma } from "@prisma/client";
 
 interface FacilitiesListProps {
-  q?: string
-  page?: string
-  limit?: string
+  q?: string;
+  page?: string;
+  limit?: string;
 }
 
 /**
@@ -14,17 +14,19 @@ interface FacilitiesListProps {
  * Server-side pagination and filtering to minimize bandwidth.
  */
 export async function FacilitiesList({ q, page, limit }: FacilitiesListProps) {
-  const currentPage = Number(page) || 1
-  const pageSize = Number(limit) || 15
-  const skip = (currentPage - 1) * pageSize
+  const currentPage = Number(page) || 1;
+  const pageSize = Number(limit) || 15;
+  const skip = (currentPage - 1) * pageSize;
 
-  const filter: Prisma.FacilityWhereInput = q ? {
-    OR: [
-      { name: { contains: q, mode: "insensitive" } },
-      { slug: { contains: q, mode: "insensitive" } },
-      { city: { contains: q, mode: "insensitive" } },
-    ],
-  } : {}
+  const filter: Prisma.FacilityWhereInput = q
+    ? {
+        OR: [
+          { name: { contains: q, mode: "insensitive" } },
+          { slug: { contains: q, mode: "insensitive" } },
+          { city: { contains: q, mode: "insensitive" } },
+        ],
+      }
+    : {};
 
   // 🚀 Parallel Execution: Data + Total Count
   const [partners, totalCount] = await Promise.all([
@@ -34,17 +36,17 @@ export async function FacilitiesList({ q, page, limit }: FacilitiesListProps) {
       take: pageSize,
       skip: skip,
     }),
-    prisma.facility.count({ where: filter })
-  ])
+    prisma.facility.count({ where: filter }),
+  ]);
 
   return (
-    <DataTable 
-      columns={columns} 
-      data={partners} 
-      totalCount={totalCount} 
+    <DataTable
+      columns={columns}
+      data={partners}
+      totalCount={totalCount}
       currentPage={currentPage}
       pageSize={pageSize}
       initialQ={q}
     />
-  )
+  );
 }

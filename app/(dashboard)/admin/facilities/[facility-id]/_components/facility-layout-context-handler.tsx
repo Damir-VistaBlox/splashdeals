@@ -1,29 +1,29 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { useBreadcrumbs } from "@/app/(dashboard)/admin/_common/breadcrumb-context"
+import * as React from "react";
+import { useBreadcrumbs } from "@/app/(dashboard)/admin/_common/breadcrumb-context";
 
-export function FacilityLayoutContextHandler({ 
-  facilityId, 
-  facilityName 
-}: { 
-  facilityId: string, 
-  facilityName: string 
+export function FacilityLayoutContextHandler({
+  facilityId,
+  facilityName,
+}: {
+  facilityId: string;
+  facilityName: string;
 }) {
-  const { setOverride, removeOverride, setHideGlobalHeader } = useBreadcrumbs()
+  const { setOverride, removeOverride, setHideGlobalHeader } = useBreadcrumbs();
 
   React.useEffect(() => {
     // Hide the global header when inside a facility route
-    setHideGlobalHeader(true)
-    
+    setHideGlobalHeader(true);
+
     // Override the facility ID segment with the facility name
-    setOverride(facilityId, facilityName)
+    setOverride(facilityId, facilityName);
 
     return () => {
-      setHideGlobalHeader(false)
-      removeOverride(facilityId)
-    }
-  }, [facilityId, facilityName, setOverride, removeOverride, setHideGlobalHeader])
+      setHideGlobalHeader(false);
+      removeOverride(facilityId);
+    };
+  }, [facilityId, facilityName, setOverride, removeOverride, setHideGlobalHeader]);
 
-  return null
+  return null;
 }

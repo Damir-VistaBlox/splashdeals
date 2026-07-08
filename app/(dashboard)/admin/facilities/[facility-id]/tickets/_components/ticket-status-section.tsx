@@ -1,31 +1,21 @@
-"use client"
+"use client";
 
-import type { Control, FieldValues, Path } from "react-hook-form"
-import {
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion"
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Switch } from "@/components/ui/switch"
+import type { Control, FieldValues, Path } from "react-hook-form";
+import { AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from "@/components/ui/select";
 
 interface TicketStatusSectionProps<T extends FieldValues> {
-  control: Control<T>
-  ticketGroups: { id: string; title: string }[]
+  control: Control<T>;
+  ticketGroups: { id: string; title: string }[];
 }
 
 /**
@@ -38,24 +28,26 @@ export function TicketStatusSection<T extends FieldValues>({
   return (
     <AccordionItem
       value="governance"
-      className="border border-border/50 bg-muted/10 rounded-2xl px-4 overflow-hidden transition-all hover:bg-muted/20"
+      className="border-border/50 bg-muted/10 hover:bg-muted/20 overflow-hidden rounded-2xl border px-4 transition-all"
     >
-      <AccordionTrigger className="text-sm font-bold hover:no-underline py-4 text-foreground/90">
+      <AccordionTrigger className="text-foreground/90 py-4 text-sm font-bold hover:no-underline">
         <div className="flex items-center gap-3">
           <div className="h-2 w-2 rounded-full bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.5)]" />
           Status i Podešavanja
         </div>
       </AccordionTrigger>
-      <AccordionContent className="pb-5 space-y-4">
+      <AccordionContent className="space-y-4 pb-5">
         <div className="grid grid-cols-2 gap-3">
           <FormField
             control={control}
             name={"isActive" as Path<T>}
             render={({ field }) => (
-              <FormItem className="flex items-center justify-between p-3 border border-border/50 rounded-xl bg-background/40 space-y-0 gap-2">
+              <FormItem className="border-border/50 bg-background/40 flex items-center justify-between gap-2 space-y-0 rounded-xl border p-3">
                 <div className="space-y-0.5">
-                  <FormLabel className="text-xs font-bold text-foreground/80">Aktivna</FormLabel>
-                  <span className="block text-[9px] text-muted-foreground uppercase tracking-wider">Na sajtu</span>
+                  <FormLabel className="text-foreground/80 text-xs font-bold">Aktivna</FormLabel>
+                  <span className="text-muted-foreground block text-[9px] tracking-wider uppercase">
+                    Na sajtu
+                  </span>
                 </div>
                 <FormControl>
                   <Switch
@@ -72,10 +64,12 @@ export function TicketStatusSection<T extends FieldValues>({
             control={control}
             name={"isFeatured" as Path<T>}
             render={({ field }) => (
-              <FormItem className="flex items-center justify-between p-3 border border-border/50 rounded-xl bg-background/40 space-y-0 gap-2">
+              <FormItem className="border-border/50 bg-background/40 flex items-center justify-between gap-2 space-y-0 rounded-xl border p-3">
                 <div className="space-y-0.5">
-                  <FormLabel className="text-xs font-bold text-foreground/80">Izdvojena</FormLabel>
-                  <span className="block text-[9px] text-muted-foreground uppercase tracking-wider">Vrh liste</span>
+                  <FormLabel className="text-foreground/80 text-xs font-bold">Izdvojena</FormLabel>
+                  <span className="text-muted-foreground block text-[9px] tracking-wider uppercase">
+                    Vrh liste
+                  </span>
                 </div>
                 <FormControl>
                   <Switch
@@ -94,19 +88,21 @@ export function TicketStatusSection<T extends FieldValues>({
           name={"groupId" as Path<T>}
           render={({ field }) => (
             <FormItem className="space-y-1">
-              <FormLabel className="text-xs font-semibold text-muted-foreground">Grupa Ulaznica</FormLabel>
+              <FormLabel className="text-muted-foreground text-xs font-semibold">
+                Grupa Ulaznica
+              </FormLabel>
               <Select onValueChange={field.onChange} value={field.value || "none"}>
                 <FormControl>
-                  <SelectTrigger className="h-10 bg-muted/30 border-border rounded-xl text-xs px-3.5 text-foreground/90">
+                  <SelectTrigger className="bg-muted/30 border-border text-foreground/90 h-10 rounded-xl px-3.5 text-xs">
                     <SelectValue placeholder="Izaberite grupu" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent className="bg-muted border-border text-foreground/90">
-                  <SelectItem value="none" className="text-xs focus:bg-primary/20">
+                  <SelectItem value="none" className="focus:bg-primary/20 text-xs">
                     Nema grupe (Pojedinačna karta)
                   </SelectItem>
                   {ticketGroups?.map((g) => (
-                    <SelectItem key={g.id} value={g.id} className="text-xs focus:bg-primary/20">
+                    <SelectItem key={g.id} value={g.id} className="focus:bg-primary/20 text-xs">
                       {g.title}
                     </SelectItem>
                   ))}
@@ -123,7 +119,7 @@ export function TicketStatusSection<T extends FieldValues>({
             name={"saleStart" as Path<T>}
             render={({ field }) => (
               <FormItem className="space-y-1">
-                <FormLabel className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                <FormLabel className="text-muted-foreground text-[10px] font-semibold tracking-wider uppercase">
                   Početak Prodaje
                 </FormLabel>
                 <FormControl>
@@ -131,7 +127,7 @@ export function TicketStatusSection<T extends FieldValues>({
                     type="datetime-local"
                     {...field}
                     value={field.value || ""}
-                    className="h-10 bg-background/60 border-border rounded-xl text-xs text-foreground/80 px-3"
+                    className="bg-background/60 border-border text-foreground/80 h-10 rounded-xl px-3 text-xs"
                   />
                 </FormControl>
               </FormItem>
@@ -142,7 +138,7 @@ export function TicketStatusSection<T extends FieldValues>({
             name={"saleEnd" as Path<T>}
             render={({ field }) => (
               <FormItem className="space-y-1">
-                <FormLabel className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                <FormLabel className="text-muted-foreground text-[10px] font-semibold tracking-wider uppercase">
                   Kraj Prodaje
                 </FormLabel>
                 <FormControl>
@@ -150,7 +146,7 @@ export function TicketStatusSection<T extends FieldValues>({
                     type="datetime-local"
                     {...field}
                     value={field.value || ""}
-                    className="h-10 bg-background/60 border-border rounded-xl text-xs text-foreground/80 px-3"
+                    className="bg-background/60 border-border text-foreground/80 h-10 rounded-xl px-3 text-xs"
                   />
                 </FormControl>
               </FormItem>
@@ -159,5 +155,5 @@ export function TicketStatusSection<T extends FieldValues>({
         </div>
       </AccordionContent>
     </AccordionItem>
-  )
+  );
 }

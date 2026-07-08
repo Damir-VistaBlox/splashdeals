@@ -1,11 +1,11 @@
-import { getNavigationMenus } from "@/server/lib/data/navigation"
+import { getNavigationMenus } from "@/server/lib/data/navigation";
 
 export async function NavigationStructuredData() {
-  const menus = await getNavigationMenus()
+  const menus = await getNavigationMenus();
 
-  if (menus.length === 0) return null
+  if (menus.length === 0) return null;
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL!
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL!;
 
   // Build SiteNavigationElement items
   const navItems = menus.flatMap((menu) => {
@@ -14,8 +14,8 @@ export async function NavigationStructuredData() {
         name: item.label,
         url: item.href || `${siteUrl}/`,
         description: item.desc || undefined,
-      }))
-    )
+      })),
+    );
 
     return [
       {
@@ -23,8 +23,8 @@ export async function NavigationStructuredData() {
         url: `${siteUrl}/`,
         children: items,
       },
-    ]
-  })
+    ];
+  });
 
   const structuredData = {
     "@context": "https://schema.org",
@@ -38,12 +38,14 @@ export async function NavigationStructuredData() {
           name: item.name,
           url: item.url,
           ...(item.children.length > 0 && {
-            hasPart: item.children.map((child: { name: string; url: string; description?: string }) => ({
-              "@type": "SiteNavigationElement",
-              name: child.name,
-              url: child.url,
-              ...(child.description && { description: child.description }),
-            })),
+            hasPart: item.children.map(
+              (child: { name: string; url: string; description?: string }) => ({
+                "@type": "SiteNavigationElement",
+                name: child.name,
+                url: child.url,
+                ...(child.description && { description: child.description }),
+              }),
+            ),
           }),
         })),
       },
@@ -70,7 +72,8 @@ export async function NavigationStructuredData() {
         "@id": `${siteUrl}/#website`,
         url: siteUrl,
         name: "Splashdeals",
-        description: "Akva parkovi, bazeni, wellness i spa u Srbiji - najbolje ponude na jednom mestu.",
+        description:
+          "Akva parkovi, bazeni, wellness i spa u Srbiji - najbolje ponude na jednom mestu.",
         inLanguage: "sr",
         potentialAction: {
           "@type": "SearchAction",
@@ -82,7 +85,7 @@ export async function NavigationStructuredData() {
         },
       },
     ],
-  }
+  };
 
   return (
     <script
@@ -91,5 +94,5 @@ export async function NavigationStructuredData() {
         __html: JSON.stringify(structuredData, null, 2),
       }}
     />
-  )
+  );
 }

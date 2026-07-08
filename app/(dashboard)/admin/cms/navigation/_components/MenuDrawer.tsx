@@ -1,53 +1,53 @@
-"use client"
+"use client";
 
-import { useState, useCallback } from "react"
-import { useRouter } from "next/navigation"
-import { toast } from "sonner"
-import { Icon } from "@/components/ui/Icon"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { IconPicker } from "./IconPicker"
+import { useState, useCallback } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { Icon } from "@/components/ui/Icon";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { IconPicker } from "./IconPicker";
 import {
   createMenuAction,
   updateMenuAction,
   deleteMenuAction,
-} from "@/app/(server)/actions/navigation"
-import type { MenuWithSections } from "./types"
+} from "@/app/(server)/actions/navigation";
+import type { MenuWithSections } from "./types";
 
 interface MenuDrawerProps {
-  menu?: MenuWithSections | null
-  open: boolean
-  onClose: () => void
-  onSaved: () => void
+  menu?: MenuWithSections | null;
+  open: boolean;
+  onClose: () => void;
+  onSaved: () => void;
 }
 
 export function MenuDrawer({ menu, open, onClose, onSaved }: MenuDrawerProps) {
-  const router = useRouter()
-  const [label, setLabel] = useState(menu?.label || "")
-  const [icon, setIcon] = useState(menu?.icon || "menu_book")
-  const [saving, setSaving] = useState(false)
+  const router = useRouter();
+  const [label, setLabel] = useState(menu?.label || "");
+  const [icon, setIcon] = useState(menu?.icon || "menu_book");
+  const [saving, setSaving] = useState(false);
 
   // Reset form when menu changes
   useState(() => {
     if (open) {
-      setLabel(menu?.label || "")
-      setIcon(menu?.icon || "menu_book")
+      setLabel(menu?.label || "");
+      setIcon(menu?.icon || "menu_book");
     }
-  })
+  });
 
   const handleSave = useCallback(async () => {
-    if (!label.trim()) return
-    setSaving(true)
+    if (!label.trim()) return;
+    setSaving(true);
     try {
       if (menu) {
-        const result = await updateMenuAction(menu.id, { label: label.trim(), icon })
+        const result = await updateMenuAction(menu.id, { label: label.trim(), icon });
         if (result.success) {
-          toast.success("Meni ažuriran")
-          onSaved()
-          onClose()
+          toast.success("Meni ažuriran");
+          onSaved();
+          onClose();
         } else {
-          toast.error(result.error || "Greška")
+          toast.error(result.error || "Greška");
         }
       } else {
         const result = await createMenuAction({
@@ -55,47 +55,47 @@ export function MenuDrawer({ menu, open, onClose, onSaved }: MenuDrawerProps) {
           icon,
           sortOrder: 0,
           isActive: true,
-        })
+        });
         if (result.success) {
-          toast.success("Meni kreiran")
-          onSaved()
-          onClose()
+          toast.success("Meni kreiran");
+          onSaved();
+          onClose();
         } else {
-          toast.error(result.error || "Greška")
+          toast.error(result.error || "Greška");
         }
       }
     } finally {
-      setSaving(false)
-      router.refresh()
+      setSaving(false);
+      router.refresh();
     }
-  }, [menu, label, icon, onClose, onSaved, router])
+  }, [menu, label, icon, onClose, onSaved, router]);
 
   const handleDelete = useCallback(async () => {
-    if (!menu) return
-    if (!confirm(`Da li ste sigurni da želite da obrišete meni "${menu.label}"?`)) return
-    setSaving(true)
+    if (!menu) return;
+    if (!confirm(`Da li ste sigurni da želite da obrišete meni "${menu.label}"?`)) return;
+    setSaving(true);
     try {
-      const result = await deleteMenuAction(menu.id)
+      const result = await deleteMenuAction(menu.id);
       if (result.success) {
-        toast.success("Meni obrisan")
-        onSaved()
-        onClose()
+        toast.success("Meni obrisan");
+        onSaved();
+        onClose();
       } else {
-        toast.error(result.error || "Greška")
+        toast.error(result.error || "Greška");
       }
     } finally {
-      setSaving(false)
-      router.refresh()
+      setSaving(false);
+      router.refresh();
     }
-  }, [menu, onClose, onSaved, router])
+  }, [menu, onClose, onSaved, router]);
 
-  if (!open) return null
+  if (!open) return null;
 
   return (
     <>
       <div className="fixed inset-0 z-40 bg-black/50" onClick={onClose} />
-      <div className="fixed inset-y-0 right-0 z-50 w-full max-w-md border-l bg-background p-6 shadow-lg">
-        <div className="flex items-center justify-between mb-6">
+      <div className="bg-background fixed inset-y-0 right-0 z-50 w-full max-w-md border-l p-6 shadow-lg">
+        <div className="mb-6 flex items-center justify-between">
           <h2 className="text-lg font-semibold">{menu ? "Uredi meni" : "Novi meni"}</h2>
           <Button variant="ghost" size="sm" onClick={onClose}>
             <Icon name="close" className="size-4" />
@@ -129,5 +129,5 @@ export function MenuDrawer({ menu, open, onClose, onSaved }: MenuDrawerProps) {
         </div>
       </div>
     </>
-  )
+  );
 }

@@ -23,10 +23,10 @@ const STATIC_LABELS: Record<string, string> = {
 const CATEGORY_NAMES: Record<string, string> = {
   "akva-parkovi": "Akva Parkovi",
   "termalne-rivijere": "Termalne Rivijere",
-  "bazeni": "Bazeni",
-  "banje": "Banje",
+  bazeni: "Bazeni",
+  banje: "Banje",
   "wellness-i-spa": "Wellness i Spa",
-  "jezera": "Jezera",
+  jezera: "Jezera",
   "plaze-i-kupalista": "Plaže i Kupališta",
   "vodeni-sportovi": "Vodeni Sportovi",
 };
@@ -103,13 +103,13 @@ export function BreadcrumbBar({ facilityMap = {} }: { facilityMap?: FacilityMap 
   const isLastItem = (idx: number) => idx === items.length - 1;
 
   return (
-    <div className="w-full border-b border-white/5 bg-background/98 backdrop-blur-[40px] sticky top-16 z-[100]">
-      <div className="max-w-7xl mx-auto w-full flex items-center gap-0 px-4 md:px-12 h-10">
+    <div className="bg-background/98 sticky top-16 z-[100] w-full border-b border-white/5 backdrop-blur-[40px]">
+      <div className="mx-auto flex h-10 w-full max-w-7xl items-center gap-0 px-4 md:px-12">
         {/* Back button */}
         {backHref && (
           <Link
             href={backHref}
-            className="shrink-0 flex items-center justify-center h-full pr-3 text-slate-400 hover:text-white border-r border-white/5 mr-3 transition-colors"
+            className="mr-3 flex h-full shrink-0 items-center justify-center border-r border-white/5 pr-3 text-slate-400 transition-colors hover:text-white"
             aria-label="Nazad"
           >
             <Icon name="arrow_back" className="text-[14px]" />
@@ -118,17 +118,20 @@ export function BreadcrumbBar({ facilityMap = {} }: { facilityMap?: FacilityMap 
         )}
 
         {/* Breadcrumb trail */}
-        <div className="flex items-center gap-0 overflow-x-auto no-scrollbar w-full">
+        <div className="no-scrollbar flex w-full items-center gap-0 overflow-x-auto">
           {items.map((item, idx) => (
             <div key={idx} className="flex items-center">
               {idx > 0 && (
-                <Icon name="keyboard_arrow_right" className="text-[12px] text-slate-600 shrink-0 mx-1.5" />
+                <Icon
+                  name="keyboard_arrow_right"
+                  className="mx-1.5 shrink-0 text-[12px] text-slate-600"
+                />
               )}
               {item.href && !isLastItem(idx) ? (
                 item.href === "/" ? (
                   <Link
                     href={item.href}
-                    className="text-[10px] font-bold uppercase tracking-wider text-slate-400 hover:text-cyan-400 transition-colors shrink-0 flex items-center gap-1"
+                    className="flex shrink-0 items-center gap-1 text-[10px] font-bold tracking-wider text-slate-400 uppercase transition-colors hover:text-cyan-400"
                     aria-label={item.label}
                   >
                     <Icon name="home" className="text-[12px]" />
@@ -137,13 +140,13 @@ export function BreadcrumbBar({ facilityMap = {} }: { facilityMap?: FacilityMap 
                 ) : (
                   <Link
                     href={item.href}
-                    className="text-[10px] font-bold uppercase tracking-wider text-slate-400 hover:text-cyan-400 transition-colors whitespace-nowrap shrink-0"
+                    className="shrink-0 text-[10px] font-bold tracking-wider whitespace-nowrap text-slate-400 uppercase transition-colors hover:text-cyan-400"
                   >
                     {item.label}
                   </Link>
                 )
               ) : (
-                <span className="text-[10px] font-black uppercase tracking-wider text-cyan-400 whitespace-nowrap shrink-0">
+                <span className="shrink-0 text-[10px] font-black tracking-wider whitespace-nowrap text-cyan-400 uppercase">
                   {item.label}
                 </span>
               )}

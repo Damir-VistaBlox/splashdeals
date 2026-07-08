@@ -1,9 +1,8 @@
-"use client"
+"use client";
 
 import { Icon } from "@/components/ui/Icon";
- 
 
-import { useFormContext } from "react-hook-form"
+import { useFormContext } from "react-hook-form";
 import {
   FormControl,
   FormDescription,
@@ -11,33 +10,37 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import type { FacilityFormValues } from "@/server/lib/validations/facility"
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import type { FacilityFormValues } from "@/server/lib/validations/facility";
 
 interface IdentitySectionProps {
-  isSlugLocked: boolean
-  setIsSlugLocked: (locked: boolean) => void
-  onNameChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  isSlugLocked: boolean;
+  setIsSlugLocked: (locked: boolean) => void;
+  onNameChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export function IdentitySection({ isSlugLocked, setIsSlugLocked, onNameChange }: IdentitySectionProps) {
-  const { control } = useFormContext<FacilityFormValues>()
+export function IdentitySection({
+  isSlugLocked,
+  setIsSlugLocked,
+  onNameChange,
+}: IdentitySectionProps) {
+  const { control } = useFormContext<FacilityFormValues>();
 
   return (
-    <Card className="border-border/50 bg-muted/50 backdrop-blur-md overflow-hidden">
-      <CardHeader className="border-b border-border/50 bg-muted/30">
+    <Card className="border-border/50 bg-muted/50 overflow-hidden backdrop-blur-md">
+      <CardHeader className="border-border/50 bg-muted/30 border-b">
         <CardTitle className="flex items-center gap-2 text-lg">
-          <Icon name="business" className="text-[20px] text-primary" />
+          <Icon name="business" className="text-primary text-[20px]" />
           General Identity
         </CardTitle>
         <CardDescription>
           Javno ime i kategorija objekta. Treba jasno da opiše tip objekta.
         </CardDescription>
       </CardHeader>
-      <CardContent className="p-6 space-y-6">
+      <CardContent className="space-y-6 p-6">
         <FormField
           control={control}
           name="name"
@@ -45,21 +48,21 @@ export function IdentitySection({ isSlugLocked, setIsSlugLocked, onNameChange }:
             <FormItem>
               <FormLabel>Registered Business / Park Name</FormLabel>
               <FormControl>
-                <Input 
-                  placeholder="e.g. AquaPark Petroland" 
-                  className="h-12 bg-muted/30 border-border"
-                  {...field} 
+                <Input
+                  placeholder="e.g. AquaPark Petroland"
+                  className="bg-muted/30 border-border h-12"
+                  {...field}
                   onChange={(e) => {
                     field.onChange(e);
                     onNameChange(e);
-                  }} 
+                  }}
                 />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        
+
         <FormField
           control={control}
           name="slug"
@@ -67,30 +70,37 @@ export function IdentitySection({ isSlugLocked, setIsSlugLocked, onNameChange }:
             <FormItem>
               <FormLabel>URL Slug</FormLabel>
               <FormControl>
-                <div className="relative group">
-                  <Icon name="link" className="absolute left-3 top-4 text-[16px] text-muted-foreground" />
-                  <Input 
-                    placeholder="aquapark-petroland" 
-                    className="h-12 pl-9 pr-10 bg-muted/30 border-border" 
-                    {...field} 
+                <div className="group relative">
+                  <Icon
+                    name="link"
+                    className="text-muted-foreground absolute top-4 left-3 text-[16px]"
+                  />
+                  <Input
+                    placeholder="aquapark-petroland"
+                    className="bg-muted/30 border-border h-12 pr-10 pl-9"
+                    {...field}
                     onChange={(e) => {
-                      field.onChange(e)
-                      if (isSlugLocked) setIsSlugLocked(false)
+                      field.onChange(e);
+                      if (isSlugLocked) setIsSlugLocked(false);
                     }}
                   />
                   <Button
                     type="button"
                     variant="ghost"
                     size="icon"
-                    className="absolute right-1 top-2 h-8 w-8 text-muted-foreground hover:text-foreground"
+                    className="text-muted-foreground hover:text-foreground absolute top-2 right-1 h-8 w-8"
                     onClick={() => setIsSlugLocked(!isSlugLocked)}
                     title={isSlugLocked ? "Unlock to edit slug" : "Lock to sync with name"}
                   >
-                    {isSlugLocked ? <Icon name="lock" className="text-[14px]" /> : <Icon name="lock_open" className="text-[14px] text-amber-500" />}
+                    {isSlugLocked ? (
+                      <Icon name="lock" className="text-[14px]" />
+                    ) : (
+                      <Icon name="lock_open" className="text-[14px] text-amber-500" />
+                    )}
                   </Button>
                 </div>
               </FormControl>
-              <FormDescription className="text-xs italic text-muted-foreground">
+              <FormDescription className="text-muted-foreground text-xs italic">
                 splashdeals.rs/places/<strong>{field.value || "slug"}</strong>
               </FormDescription>
               <FormMessage />
@@ -99,5 +109,5 @@ export function IdentitySection({ isSlugLocked, setIsSlugLocked, onNameChange }:
         />
       </CardContent>
     </Card>
-  )
+  );
 }

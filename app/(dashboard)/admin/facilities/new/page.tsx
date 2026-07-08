@@ -1,26 +1,30 @@
 import { Icon } from "@/components/ui/Icon";
- 
- 
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { OnboardFacilityForm } from "./_components/onboard-facility-form"
-import { Metadata } from "next"
-import { connection } from "next/server"
-import { requireSuperAdmin } from "@/server/lib/auth-guards"
+
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { OnboardFacilityForm } from "./_components/onboard-facility-form";
+import { Metadata } from "next";
+import { connection } from "next/server";
+import { requireSuperAdmin } from "@/server/lib/auth-guards";
 
 export const metadata: Metadata = {
   title: "Onboard Facility | Splashdeals Admin",
   description: "Register a new waterpark or facility to the Splashdeals marketplace.",
-}
+};
 
 export default async function NewFacilityPage() {
-  await connection()
-  await requireSuperAdmin({ redirect: true })
-  
+  await connection();
+  await requireSuperAdmin({ redirect: true });
+
   return (
-    <div className="flex flex-col gap-4 p-4 md:p-6 max-w-7xl w-full mx-auto">
-      <div className="flex items-center gap-4 animate-in fade-in slide-in-from-left-4 duration-500">
-        <Button variant="outline" size="icon" asChild className="rounded-xl border-border bg-muted/50 backdrop-blur-sm">
+    <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 p-4 md:p-6">
+      <div className="animate-in fade-in slide-in-from-left-4 flex items-center gap-4 duration-500">
+        <Button
+          variant="outline"
+          size="icon"
+          asChild
+          className="border-border bg-muted/50 rounded-xl backdrop-blur-sm"
+        >
           <Link href="/admin/facilities">
             <Icon name="keyboard_arrow_left" className="text-[16px]" />
           </Link>
@@ -35,5 +39,5 @@ export default async function NewFacilityPage() {
 
       <OnboardFacilityForm />
     </div>
-  )
+  );
 }

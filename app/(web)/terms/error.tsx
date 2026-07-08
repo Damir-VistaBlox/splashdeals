@@ -1,19 +1,13 @@
-"use client"
+"use client";
 
-import { RouteErrorBoundary } from "@/components/ui/RouteErrorBoundary"
+import { RouteErrorBoundary } from "@/components/ui/RouteErrorBoundary";
 
 export default function TermsError({
   error,
   reset,
 }: {
-  error: Error & { digest?: string }
-  reset: () => void
+  error: Error & { digest?: string };
+  reset: () => void;
 }) {
-  return (
-    <RouteErrorBoundary 
-      error={error} 
-      reset={reset} 
-      subtitleKey="terms_subtitle" 
-    />
-  )
+  return <RouteErrorBoundary error={error} reset={reset} subtitleKey="terms_subtitle" />;
 }

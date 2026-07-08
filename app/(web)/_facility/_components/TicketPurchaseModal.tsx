@@ -88,7 +88,14 @@ const TIME_LABELS: Record<string, string> = {
   THREE_HOUR: "3 sata",
 };
 
-export function TicketPurchaseModal({ isOpen, onClose, facilitySlug, initialProductId, ticket: _ticket, facility }: TicketPurchaseModalProps) {
+export function TicketPurchaseModal({
+  isOpen,
+  onClose,
+  facilitySlug,
+  initialProductId,
+  ticket: _ticket,
+  facility,
+}: TicketPurchaseModalProps) {
   const [categories, setCategories] = useState<CategoryOption[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedProduct, setSelectedProduct] = useState<string | null>(initialProductId ?? null);
@@ -174,15 +181,20 @@ export function TicketPurchaseModal({ isOpen, onClose, facilitySlug, initialProd
   useEffect(() => {
     if (!isOpen || !modalRef.current) return;
     const focusable = modalRef.current.querySelectorAll<HTMLElement>(
-      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
     );
     const first = focusable[0];
     const last = focusable[focusable.length - 1];
     first?.focus();
     const handler = (e: KeyboardEvent) => {
       if (e.key !== "Tab") return;
-      if (e.shiftKey && document.activeElement === first) { last?.focus(); e.preventDefault(); }
-      else if (!e.shiftKey && document.activeElement === last) { first?.focus(); e.preventDefault(); }
+      if (e.shiftKey && document.activeElement === first) {
+        last?.focus();
+        e.preventDefault();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        first?.focus();
+        e.preventDefault();
+      }
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
@@ -191,7 +203,8 @@ export function TicketPurchaseModal({ isOpen, onClose, facilitySlug, initialProd
   // Derive current selections
   const activeCategory = categories.find((c) => c.id === selectedCategory);
   const activeProduct = activeCategory?.products.find((p) => p.id === selectedProduct);
-  const activePrice = activeProduct?.prices.find((p) => p.id === selectedPrice) ?? activeProduct?.prices[0] ?? null;
+  const activePrice =
+    activeProduct?.prices.find((p) => p.id === selectedPrice) ?? activeProduct?.prices[0] ?? null;
   const showCategoryPicker = categories.length > 1;
 
   // Best deal ID for highlighting in the variation list
@@ -265,14 +278,17 @@ export function TicketPurchaseModal({ isOpen, onClose, facilitySlug, initialProd
   const renderProductSelection = () => (
     <>
       {showCategoryPicker && (
-        <div className="flex gap-1 p-1 rounded-xl bg-muted/20 border border-border">
+        <div className="bg-muted/20 border-border flex gap-1 rounded-xl border p-1">
           {categories.map((cat) => (
             <button
               key={cat.id}
-              onClick={() => { setSelectedCategory(cat.id); setSelectedProduct(null); }}
-              className={`flex-1 py-2 text-[10px] font-black uppercase tracking-widest rounded-lg transition-all ${
+              onClick={() => {
+                setSelectedCategory(cat.id);
+                setSelectedProduct(null);
+              }}
+              className={`flex-1 rounded-lg py-2 text-[10px] font-black tracking-widest uppercase transition-all ${
                 selectedCategory === cat.id
-                  ? "bg-primary/10 text-primary border border-primary/20"
+                  ? "bg-primary/10 text-primary border-primary/20 border"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -282,7 +298,7 @@ export function TicketPurchaseModal({ isOpen, onClose, facilitySlug, initialProd
         </div>
       )}
 
-      <div className="divide-y divide-border/40">
+      <div className="divide-border/40 divide-y">
         {activeCategory?.products.map((prod) => (
           <button
             key={prod.id}
@@ -291,17 +307,19 @@ export function TicketPurchaseModal({ isOpen, onClose, facilitySlug, initialProd
               setQuantity(prod.minPeople || 1);
               setSelectedPrice(findBestDeal(prod.prices));
             }}
-            className="w-full text-left py-3 flex items-center justify-between transition-colors hover:bg-muted/10 active:bg-muted/20"
+            className="hover:bg-muted/10 active:bg-muted/20 flex w-full items-center justify-between py-3 text-left transition-colors"
           >
-            <div className="flex items-center gap-2 min-w-0 flex-1">
-              <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${
-                selectedProduct === prod.id ? "border-primary" : "border-muted-foreground/30"
-              }`}>
-                {selectedProduct === prod.id && <div className="w-2 h-2 rounded-full bg-primary" />}
+            <div className="flex min-w-0 flex-1 items-center gap-2">
+              <div
+                className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-2 transition-all ${
+                  selectedProduct === prod.id ? "border-primary" : "border-muted-foreground/30"
+                }`}
+              >
+                {selectedProduct === prod.id && <div className="bg-primary h-2 w-2 rounded-full" />}
               </div>
-              <span className="text-sm font-bold text-foreground">{prod.title}</span>
+              <span className="text-foreground text-sm font-bold">{prod.title}</span>
             </div>
-            <span className="text-xs font-black text-primary shrink-0">
+            <span className="text-primary shrink-0 text-xs font-black">
               od {Math.min(...prod.prices.map((p) => p.price)).toLocaleString("sr-RS")} RSD
             </span>
           </button>
@@ -315,26 +333,39 @@ export function TicketPurchaseModal({ isOpen, onClose, facilitySlug, initialProd
       {/* Back + title */}
       <div className="flex items-center gap-2">
         {categories.length > 1 && (
-          <button onClick={() => setSelectedProduct(null)} className="w-7 h-7 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted/20 transition-all">
+          <button
+            onClick={() => setSelectedProduct(null)}
+            className="text-muted-foreground hover:text-foreground hover:bg-muted/20 flex h-7 w-7 items-center justify-center rounded-lg transition-all"
+          >
             <Icon name="arrow_back" className="text-[14px]" />
           </button>
         )}
         <div>
-          <h3 className="text-sm font-black text-foreground italic tracking-tight uppercase">{activeProduct!.title}</h3>
+          <h3 className="text-foreground text-sm font-black tracking-tight uppercase italic">
+            {activeProduct!.title}
+          </h3>
           {facility?.name && (
-            <span className="text-[9px] font-bold text-primary tracking-widest uppercase">{facility.name}</span>
+            <span className="text-primary text-[9px] font-bold tracking-widest uppercase">
+              {facility.name}
+            </span>
           )}
         </div>
       </div>
 
       {/* Price variations */}
       <div>
-        <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest pb-2 block">Izaberite varijantu</span>
-        <div className="divide-y divide-border/40">
+        <span className="text-muted-foreground block pb-2 text-[9px] font-black tracking-widest uppercase">
+          Izaberite varijantu
+        </span>
+        <div className="divide-border/40 divide-y">
           {activeProduct!.prices.map((p) => {
             const isSelected = activePrice?.id === p.id;
             const hasDiscount = p.originalPrice && p.originalPrice > p.price;
-            const discountPct = hasDiscount ? Math.round(((Number(p.originalPrice) - Number(p.price)) / Number(p.originalPrice)) * 100) : 0;
+            const discountPct = hasDiscount
+              ? Math.round(
+                  ((Number(p.originalPrice) - Number(p.price)) / Number(p.originalPrice)) * 100,
+                )
+              : 0;
             const dayLabel = DAY_LABELS[p.dayType ?? "ALL"];
             const timeLabel = TIME_LABELS[p.timeSlot ?? "FULL_DAY"];
             const displayLabel = p.label || `${dayLabel} — ${timeLabel}`;
@@ -343,23 +374,27 @@ export function TicketPurchaseModal({ isOpen, onClose, facilitySlug, initialProd
               <button
                 key={p.id}
                 onClick={() => setSelectedPrice(p.id)}
-                className={`w-full text-left py-3 flex items-center justify-between transition-colors ${
+                className={`flex w-full items-center justify-between py-3 text-left transition-colors ${
                   isSelected ? "bg-primary/[0.02]" : "hover:bg-muted/10 active:bg-muted/20"
                 }`}
               >
-                <div className="flex items-center gap-2 min-w-0 flex-1">
-                  <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${
-                    isSelected ? "border-primary" : "border-muted-foreground/30"
-                  }`}>
-                    {isSelected && <div className="w-2 h-2 rounded-full bg-primary" />}
+                <div className="flex min-w-0 flex-1 items-center gap-2">
+                  <div
+                    className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-2 transition-all ${
+                      isSelected ? "border-primary" : "border-muted-foreground/30"
+                    }`}
+                  >
+                    {isSelected && <div className="bg-primary h-2 w-2 rounded-full" />}
                   </div>
                   <div className="min-w-0">
-                    <span className="text-sm font-bold text-foreground block truncate">{displayLabel}</span>
+                    <span className="text-foreground block truncate text-sm font-bold">
+                      {displayLabel}
+                    </span>
                     {hasDiscount && (
-                      <span className="text-[9px] text-muted-foreground flex items-center gap-1">
+                      <span className="text-muted-foreground flex items-center gap-1 text-[9px]">
                         Ušteda {discountPct}%
                         {p.id === bestDealId && (
-                          <span className="text-[7px] font-black uppercase tracking-widest bg-secondary/20 text-secondary px-1 py-[1px] rounded-full leading-none">
+                          <span className="bg-secondary/20 text-secondary rounded-full px-1 py-[1px] text-[7px] leading-none font-black tracking-widest uppercase">
                             Najbolja ponuda
                           </span>
                         )}
@@ -367,11 +402,13 @@ export function TicketPurchaseModal({ isOpen, onClose, facilitySlug, initialProd
                     )}
                   </div>
                 </div>
-                <div className="flex items-baseline gap-1.5 shrink-0">
-                  <span className="text-sm font-black text-foreground">{p.price.toLocaleString("sr-RS")}</span>
-                  <span className="text-[9px] font-bold text-primary">RSD</span>
+                <div className="flex shrink-0 items-baseline gap-1.5">
+                  <span className="text-foreground text-sm font-black">
+                    {p.price.toLocaleString("sr-RS")}
+                  </span>
+                  <span className="text-primary text-[9px] font-bold">RSD</span>
                   {hasDiscount && (
-                    <span className="text-[8px] text-muted-foreground line-through ml-0.5">
+                    <span className="text-muted-foreground ml-0.5 text-[8px] line-through">
                       {p.originalPrice?.toLocaleString("sr-RS")}
                     </span>
                   )}
@@ -384,20 +421,28 @@ export function TicketPurchaseModal({ isOpen, onClose, facilitySlug, initialProd
 
       {/* Quantity */}
       <div className="flex items-center justify-between">
-        <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Količina</span>
-        <div className="flex items-center bg-muted/60 rounded-2xl p-1 border border-border shadow-inner">
+        <span className="text-muted-foreground text-[9px] font-black tracking-widest uppercase">
+          Količina
+        </span>
+        <div className="bg-muted/60 border-border flex items-center rounded-2xl border p-1 shadow-inner">
           <button
             onClick={() => setQuantity(Math.max(activeProduct!.minPeople, quantity - 1))}
-            className="w-9 h-9 flex items-center justify-center hover:bg-muted/40 active:bg-muted/60 rounded-xl transition-all text-muted-foreground hover:text-foreground active:scale-90"
+            className="hover:bg-muted/40 active:bg-muted/60 text-muted-foreground hover:text-foreground flex h-9 w-9 items-center justify-center rounded-xl transition-all active:scale-90"
             disabled={isAdding || isAdded || quantity <= activeProduct!.minPeople}
           >
             <Icon name="remove" className="text-[14px]" />
           </button>
-          <span className="w-10 text-center font-black text-foreground text-base select-none">{quantity}</span>
+          <span className="text-foreground w-10 text-center text-base font-black select-none">
+            {quantity}
+          </span>
           <button
-            onClick={() => setQuantity(Math.min(activeProduct!.maxPeople ?? MAX_QUANTITY_PER_ITEM, quantity + 1))}
-            className="w-9 h-9 flex items-center justify-center hover:bg-muted/40 active:bg-muted/60 rounded-xl transition-all text-muted-foreground hover:text-foreground active:scale-90"
-            disabled={isAdding || isAdded || quantity >= (activeProduct!.maxPeople ?? MAX_QUANTITY_PER_ITEM)}
+            onClick={() =>
+              setQuantity(Math.min(activeProduct!.maxPeople ?? MAX_QUANTITY_PER_ITEM, quantity + 1))
+            }
+            className="hover:bg-muted/40 active:bg-muted/60 text-muted-foreground hover:text-foreground flex h-9 w-9 items-center justify-center rounded-xl transition-all active:scale-90"
+            disabled={
+              isAdding || isAdded || quantity >= (activeProduct!.maxPeople ?? MAX_QUANTITY_PER_ITEM)
+            }
           >
             <Icon name="add" className="text-[14px]" />
           </button>
@@ -406,29 +451,31 @@ export function TicketPurchaseModal({ isOpen, onClose, facilitySlug, initialProd
 
       {/* Total */}
       {activePrice && (
-        <div className="flex justify-between items-center">
-          <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Ukupno</span>
-          <span className="text-xl font-black text-foreground">
+        <div className="flex items-center justify-between">
+          <span className="text-muted-foreground text-[10px] font-bold tracking-widest uppercase">
+            Ukupno
+          </span>
+          <span className="text-foreground text-xl font-black">
             {(activePrice.price * quantity).toLocaleString("sr-RS")} RSD
           </span>
         </div>
       )}
 
       {/* CTA Buttons */}
-      <div className="flex flex-col gap-3.5 w-full">
+      <div className="flex w-full flex-col gap-3.5">
         <Button
           onClick={handleCheckout}
           disabled={isAdding || isAdded || !activePrice}
-          className="hidden md:flex w-full h-14 text-xs font-black tracking-[0.2em] uppercase items-center justify-center gap-2 shadow-lg shadow-primary/20 bg-primary text-primary-foreground hover:bg-primary/90 rounded-full"
+          className="shadow-primary/20 bg-primary text-primary-foreground hover:bg-primary/90 hidden h-14 w-full items-center justify-center gap-2 rounded-full text-xs font-black tracking-[0.2em] uppercase shadow-lg md:flex"
         >
           <span>Kupi Odmah (1-Klik)</span>
-          <Icon name="bolt" className="text-[16px] fill-current animate-pulse" />
+          <Icon name="bolt" className="animate-pulse fill-current text-[16px]" />
         </Button>
 
         <button
           onClick={handleAddToCart}
           disabled={isAdding || isAdded || !activePrice}
-          className={`w-full h-12 rounded-2xl border flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-widest transition-all duration-300 ${
+          className={`flex h-12 w-full items-center justify-center gap-2 rounded-2xl border text-[10px] font-black tracking-widest uppercase transition-all duration-300 ${
             isAdded
               ? "border-primary/30 bg-primary/10 text-primary"
               : isAdding
@@ -437,11 +484,20 @@ export function TicketPurchaseModal({ isOpen, onClose, facilitySlug, initialProd
           }`}
         >
           {isAdded ? (
-            <><Icon name="check" className="text-[16px] animate-scale-in" /><span>Dodato u korpu!</span></>
+            <>
+              <Icon name="check" className="animate-scale-in text-[16px]" />
+              <span>Dodato u korpu!</span>
+            </>
           ) : isAdding ? (
-            <><Spinner className="mr-2 inline" style={{width:"1rem",height:"1rem"}} /><span>Dodavanje...</span></>
+            <>
+              <Spinner className="mr-2 inline" style={{ width: "1rem", height: "1rem" }} />
+              <span>Dodavanje...</span>
+            </>
           ) : (
-            <><Icon name="shopping_bag" className="text-[16px]" /><span>Dodaj u korpu</span></>
+            <>
+              <Icon name="shopping_bag" className="text-[16px]" />
+              <span>Dodaj u korpu</span>
+            </>
           )}
         </button>
       </div>
@@ -461,36 +517,52 @@ export function TicketPurchaseModal({ isOpen, onClose, facilitySlug, initialProd
   return (
     <>
       {/* Mobile: Bottom Sheet */}
-      <div className="fixed inset-0 z-50 md:hidden flex flex-col justify-end">
-        <div onClick={onClose} className="absolute inset-0 bg-background/80 backdrop-blur-sm animate-fade-in pointer-events-auto" />
-        <div ref={modalRef} className={cn("relative z-10 bg-card rounded-t-3xl border border-border/50 shadow-2xl max-h-[85vh] flex flex-col pb-safe overflow-hidden", closing ? "animate-fade-out-up" : "animate-slide-up")}>
-          <div className="flex items-center justify-between px-5 pt-5 pb-3 border-b border-border/30 shrink-0">
-            <h2 className="text-base font-black text-foreground tracking-tight uppercase leading-tight">
+      <div className="fixed inset-0 z-50 flex flex-col justify-end md:hidden">
+        <div
+          onClick={onClose}
+          className="bg-background/80 animate-fade-in pointer-events-auto absolute inset-0 backdrop-blur-sm"
+        />
+        <div
+          ref={modalRef}
+          className={cn(
+            "bg-card border-border/50 pb-safe relative z-10 flex max-h-[85vh] flex-col overflow-hidden rounded-t-3xl border shadow-2xl",
+            closing ? "animate-fade-out-up" : "animate-slide-up",
+          )}
+        >
+          <div className="border-border/30 flex shrink-0 items-center justify-between border-b px-5 pt-5 pb-3">
+            <h2 className="text-foreground text-base leading-tight font-black tracking-tight uppercase">
               {facility?.name || "Izaberite kartu"}
             </h2>
             <button
               onClick={onClose}
-              className="w-8 h-8 rounded-full bg-muted/20 border border-border flex items-center justify-center text-muted-foreground hover:text-foreground active:scale-90 transition-all shrink-0"
+              className="bg-muted/20 border-border text-muted-foreground hover:text-foreground flex h-8 w-8 shrink-0 items-center justify-center rounded-full border transition-all active:scale-90"
               aria-label="Zatvori"
             >
               <Icon name="close" className="text-[16px]" />
             </button>
           </div>
-          <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4">
-            {renderContent()}
-          </div>
+          <div className="flex-1 space-y-4 overflow-y-auto px-5 py-4">{renderContent()}</div>
         </div>
       </div>
 
       {/* Desktop: Centered Card */}
       <div className="hidden md:fixed md:inset-0 md:z-50 md:flex md:items-center md:justify-center md:p-6">
-        <div onClick={onClose} className="absolute inset-0 bg-background/95 backdrop-blur-md animate-fade-in pointer-events-auto" />
-        <div ref={modalRef} className={cn("relative w-full max-w-lg md:max-w-xl z-10 animate-fade-in-up", closing && "scale-95 opacity-0 transition-all duration-300")}>
-          <Card className="p-8 md:p-10 overflow-visible border-border relative z-10 flex flex-col gap-6 bg-card shadow-2xl rounded-3xl">
-            <div className="absolute -top-12 left-1/4 right-1/4 h-24 bg-primary/10 rounded-full blur-[50px] pointer-events-none z-0" />
+        <div
+          onClick={onClose}
+          className="bg-background/95 animate-fade-in pointer-events-auto absolute inset-0 backdrop-blur-md"
+        />
+        <div
+          ref={modalRef}
+          className={cn(
+            "animate-fade-in-up relative z-10 w-full max-w-lg md:max-w-xl",
+            closing && "scale-95 opacity-0 transition-all duration-300",
+          )}
+        >
+          <Card className="border-border bg-card relative z-10 flex flex-col gap-6 overflow-visible rounded-3xl p-8 shadow-2xl md:p-10">
+            <div className="bg-primary/10 pointer-events-none absolute -top-12 right-1/4 left-1/4 z-0 h-24 rounded-full blur-[50px]" />
             <button
               onClick={onClose}
-              className="absolute top-6 right-6 w-9 h-9 rounded-full bg-muted/10 border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted/20 active:scale-90 transition-all z-30 shadow-sm"
+              className="bg-muted/10 border-border text-muted-foreground hover:text-foreground hover:bg-muted/20 absolute top-6 right-6 z-30 flex h-9 w-9 items-center justify-center rounded-full border shadow-sm transition-all active:scale-90"
               aria-label="Zatvori"
             >
               <Icon name="close" className="text-[18px]" />

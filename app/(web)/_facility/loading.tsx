@@ -1,6 +1,6 @@
 import { Icon } from "@/components/ui/Icon";
-import { Skeleton } from "@/components/ui/skeleton"
-import { Card } from "@/components/ui/card"
+import { Skeleton } from "@/components/ui/skeleton";
+import { Card } from "@/components/ui/card";
 
 /**
  * 🌊 AquastreamUI Skeleton Shell
@@ -11,52 +11,51 @@ import { Card } from "@/components/ui/card"
  */
 export default function FacilityLoading() {
   return (
-    <div className="relative bg-background min-h-screen text-foreground selection:bg-primary/30 font-sans overflow-x-hidden">
+    <div className="bg-background text-foreground selection:bg-primary/30 relative min-h-screen overflow-x-hidden font-sans">
       {/* 🏙️ HERO SKELETON */}
-      <section className="relative h-[90vh] md:h-screen w-full flex flex-col justify-end p-6 md:p-12 overflow-hidden bg-muted/40">
+      <section className="bg-muted/40 relative flex h-[90vh] w-full flex-col justify-end overflow-hidden p-6 md:h-screen md:p-12">
         <div className="absolute inset-0 flex items-center justify-center opacity-10">
-           <Icon name="waves" className="w-48 h-48 text-primary animate-pulse" />
+          <Icon name="waves" className="text-primary h-48 w-48 animate-pulse" />
         </div>
-        
-        <div className="relative z-10 max-w-7xl mx-auto w-full grid grid-cols-1 md:grid-cols-12 gap-8 items-end mb-12">
-           <div className="md:col-span-8 space-y-6">
-             <div className="flex gap-2">
-                <Skeleton className="h-8 w-24 rounded-full bg-muted" />
-                <Skeleton className="h-8 w-24 rounded-full bg-muted" />
-             </div>
-             <Skeleton className="h-24 w-[80%] bg-muted rounded-3xl" />
-             <div className="flex gap-4">
-                <Skeleton className="h-10 w-40 bg-muted rounded-2xl" />
-                <Skeleton className="h-10 w-40 bg-muted rounded-2xl" />
-             </div>
-           </div>
-           <div className="md:col-span-4">
-              <Card className="p-4 border-border bg-muted">
-                 <div className="flex gap-2">
-                    <Skeleton className="h-20 w-32 rounded-xl bg-muted" />
-                    <Skeleton className="h-20 w-32 rounded-xl bg-muted" />
-                    <Skeleton className="h-20 w-32 rounded-xl bg-muted" />
-                 </div>
-              </Card>
-           </div>
+
+        <div className="relative z-10 mx-auto mb-12 grid w-full max-w-7xl grid-cols-1 items-end gap-8 md:grid-cols-12">
+          <div className="space-y-6 md:col-span-8">
+            <div className="flex gap-2">
+              <Skeleton className="bg-muted h-8 w-24 rounded-full" />
+              <Skeleton className="bg-muted h-8 w-24 rounded-full" />
+            </div>
+            <Skeleton className="bg-muted h-24 w-[80%] rounded-3xl" />
+            <div className="flex gap-4">
+              <Skeleton className="bg-muted h-10 w-40 rounded-2xl" />
+              <Skeleton className="bg-muted h-10 w-40 rounded-2xl" />
+            </div>
+          </div>
+          <div className="md:col-span-4">
+            <Card className="border-border bg-muted p-4">
+              <div className="flex gap-2">
+                <Skeleton className="bg-muted h-20 w-32 rounded-xl" />
+                <Skeleton className="bg-muted h-20 w-32 rounded-xl" />
+                <Skeleton className="bg-muted h-20 w-32 rounded-xl" />
+              </div>
+            </Card>
+          </div>
         </div>
       </section>
 
-      <main className="max-w-7xl mx-auto px-6 md:px-12 -mt-12 relative z-20 space-y-24 pb-32">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-           <div className="lg:col-span-8 space-y-12">
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                 {[1,2,3,4].map(i => (
-                   <Skeleton key={i} className="h-32 bg-muted rounded-[2rem]" />
-                 ))}
-              </div>
-           </div>
-           <aside className="lg:col-span-4">
-              <Skeleton className="h-[400px] w-full bg-muted rounded-[2rem]" />
-           </aside>
+      <main className="relative z-20 mx-auto -mt-12 max-w-7xl space-y-24 px-6 pb-32 md:px-12">
+        <div className="grid grid-cols-1 items-start gap-12 lg:grid-cols-12">
+          <div className="space-y-12 lg:col-span-8">
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+              {[1, 2, 3, 4].map((i) => (
+                <Skeleton key={i} className="bg-muted h-32 rounded-[2rem]" />
+              ))}
+            </div>
+          </div>
+          <aside className="lg:col-span-4">
+            <Skeleton className="bg-muted h-[400px] w-full rounded-[2rem]" />
+          </aside>
         </div>
       </main>
-
     </div>
-  )
+  );
 }

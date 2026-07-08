@@ -34,7 +34,7 @@ export function ShareButton({ title, text }: ShareButtonProps) {
       } catch (err) {
         // User aborted or failed, ignore silently
         if ((err as Error).name !== "AbortError") {
-           console.error("Share failure:", err);
+          console.error("Share failure:", err);
         }
       }
     } else {
@@ -55,13 +55,19 @@ export function ShareButton({ title, text }: ShareButtonProps) {
       onClick={handleShare}
       variant="ghost"
       size="icon"
-      className="rounded-full bg-white/5 hover:bg-cyan-500/20 hover:text-cyan-400 border border-white/10 transition-all duration-300 group shrink-0"
+      className="group shrink-0 rounded-full border border-white/10 bg-white/5 transition-all duration-300 hover:bg-cyan-500/20 hover:text-cyan-400"
       aria-label="Podeli ulaznicu"
     >
       {copied ? (
-        <Icon name="check" className="text-[16px] text-emerald-400 animate-in zoom-in duration-200" />
+        <Icon
+          name="check"
+          className="animate-in zoom-in text-[16px] text-emerald-400 duration-200"
+        />
       ) : (
-        <Icon name="share" className="text-[16px] opacity-70 group-hover:opacity-100 transition-all group-hover:scale-110" />
+        <Icon
+          name="share"
+          className="text-[16px] opacity-70 transition-all group-hover:scale-110 group-hover:opacity-100"
+        />
       )}
     </Button>
   );

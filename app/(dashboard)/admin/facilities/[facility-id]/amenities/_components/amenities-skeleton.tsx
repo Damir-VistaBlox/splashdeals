@@ -1,62 +1,62 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { Card } from "@/components/ui/card"
+import * as React from "react";
+import { Card } from "@/components/ui/card";
 
 export function AmenitiesSkeleton() {
   return (
-    <Card className="rounded-2xl border border-border/50 bg-muted/40 backdrop-blur-xl p-6 space-y-6 shadow-2xl relative overflow-hidden animate-pulse">
+    <Card className="border-border/50 bg-muted/40 relative animate-pulse space-y-6 overflow-hidden rounded-2xl border p-6 shadow-2xl backdrop-blur-xl">
       {/* Search and filter bar skeletons */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="w-full max-w-md h-9 bg-background/40 rounded-lg border border-border/50 flex items-center px-3 gap-2">
-          <div className="size-4 rounded bg-muted" />
-          <div className="h-3 w-32 bg-muted rounded" />
+      <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+        <div className="bg-background/40 border-border/50 flex h-9 w-full max-w-md items-center gap-2 rounded-lg border px-3">
+          <div className="bg-muted size-4 rounded" />
+          <div className="bg-muted h-3 w-32 rounded" />
         </div>
         <div className="flex items-center gap-3">
-          <div className="h-4 w-28 bg-muted rounded" />
-          <div className="h-6 w-10 bg-muted rounded-full" />
+          <div className="bg-muted h-4 w-28 rounded" />
+          <div className="bg-muted h-6 w-10 rounded-full" />
         </div>
       </div>
 
       {/* Table skeleton */}
-      <div className="border border-border/50 rounded-xl overflow-hidden bg-background/20">
-        <div className="divide-y divide-border/50">
+      <div className="border-border/50 bg-background/20 overflow-hidden rounded-xl border">
+        <div className="divide-border/50 divide-y">
           {/* Header row skeleton */}
-          <div className="grid grid-cols-6 gap-4 p-4 bg-background/60 border-b border-border/50">
-            <div className="h-3 w-16 bg-muted rounded" />
-            <div className="h-3 w-28 bg-muted rounded" />
-            <div className="h-3 w-20 bg-muted rounded" />
-            <div className="h-3 w-24 bg-muted rounded" />
-            <div className="h-3 w-12 bg-muted rounded mx-auto" />
-            <div className="h-3 w-8 bg-muted rounded ml-auto" />
+          <div className="bg-background/60 border-border/50 grid grid-cols-6 gap-4 border-b p-4">
+            <div className="bg-muted h-3 w-16 rounded" />
+            <div className="bg-muted h-3 w-28 rounded" />
+            <div className="bg-muted h-3 w-20 rounded" />
+            <div className="bg-muted h-3 w-24 rounded" />
+            <div className="bg-muted mx-auto h-3 w-12 rounded" />
+            <div className="bg-muted ml-auto h-3 w-8 rounded" />
           </div>
 
           {/* Data row skeletons */}
           {[1, 2, 3, 4, 5].map((i) => (
-            <div key={i} className="grid grid-cols-6 gap-4 p-4 items-center">
-              <div className="h-6 w-10 bg-muted rounded-full" />
-              <div className="h-4 w-32 bg-muted rounded" />
-              <div className="h-5 w-16 bg-muted rounded-full" />
-              <div className="h-8 w-36 bg-muted rounded-lg" />
-              <div className="h-5 w-5 bg-muted rounded mx-auto" />
-              <div className="h-6 w-6 bg-muted rounded-lg ml-auto" />
+            <div key={i} className="grid grid-cols-6 items-center gap-4 p-4">
+              <div className="bg-muted h-6 w-10 rounded-full" />
+              <div className="bg-muted h-4 w-32 rounded" />
+              <div className="bg-muted h-5 w-16 rounded-full" />
+              <div className="bg-muted h-8 w-36 rounded-lg" />
+              <div className="bg-muted mx-auto h-5 w-5 rounded" />
+              <div className="bg-muted ml-auto h-6 w-6 rounded-lg" />
             </div>
           ))}
         </div>
       </div>
 
       {/* Add Infrastructure footer skeleton */}
-      <div className="pt-4 border-t border-border/50 space-y-3">
-        <div className="h-3 w-48 bg-muted rounded" />
-        <div className="flex flex-col md:flex-row items-center gap-3 bg-background/40 p-4 border border-border/50 rounded-xl">
-          <div className="flex-1 h-9 bg-muted rounded-lg" />
-          <div className="w-[140px] h-9 bg-muted rounded-lg" />
-          <div className="w-[160px] h-9 bg-muted rounded-lg" />
-          <div className="w-32 h-9 bg-muted rounded-lg" />
+      <div className="border-border/50 space-y-3 border-t pt-4">
+        <div className="bg-muted h-3 w-48 rounded" />
+        <div className="bg-background/40 border-border/50 flex flex-col items-center gap-3 rounded-xl border p-4 md:flex-row">
+          <div className="bg-muted h-9 flex-1 rounded-lg" />
+          <div className="bg-muted h-9 w-[140px] rounded-lg" />
+          <div className="bg-muted h-9 w-[160px] rounded-lg" />
+          <div className="bg-muted h-9 w-32 rounded-lg" />
         </div>
       </div>
     </Card>
-  )
+  );
 }
 
-export default AmenitiesSkeleton
+export default AmenitiesSkeleton;

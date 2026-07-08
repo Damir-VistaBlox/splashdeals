@@ -55,11 +55,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="sr" suppressHydrationWarning data-scroll-behavior="smooth">
       <head>
@@ -67,11 +63,7 @@ export default function RootLayout({
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-title" content="Splashdeals" />
         <link rel="preconnect" href="https://grainy-gradients.vercel.app" />
-        <link
-          rel="preload"
-          as="image"
-          href="https://grainy-gradients.vercel.app/noise.svg"
-        />
+        <link rel="preload" as="image" href="https://grainy-gradients.vercel.app/noise.svg" />
         <link
           rel="preconnect"
           href="https://f7t7eeiv4kcyjvws.public.blob.vercel-storage.com"
@@ -79,8 +71,13 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${geistSans.variable} antialiased selection:bg-primary/20 bg-background scroll-smooth`}
-        style={{ paddingTop: 'env(safe-area-inset-top)', paddingBottom: 'env(safe-area-inset-bottom)', paddingLeft: 'env(safe-area-inset-left)', paddingRight: 'env(safe-area-inset-right)' }}
+        className={`${geistSans.variable} selection:bg-primary/20 bg-background scroll-smooth antialiased`}
+        style={{
+          paddingTop: "env(safe-area-inset-top)",
+          paddingBottom: "env(safe-area-inset-bottom)",
+          paddingLeft: "env(safe-area-inset-left)",
+          paddingRight: "env(safe-area-inset-right)",
+        }}
       >
         <ThemeProvider>{children}</ThemeProvider>
       </body>

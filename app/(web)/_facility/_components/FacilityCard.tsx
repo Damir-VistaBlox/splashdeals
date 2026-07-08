@@ -3,18 +3,18 @@ import Link from "next/link";
 import Image from "next/image";
 import { Card } from "@/components/ui/card";
 interface Facility {
-  id: string
-  name: string
-  slug: string
-  category: string
-  city: string
-  streetName: string
-  streetNumber: string
-  postalCode: string
-  description: string | null
-  logoUrl?: string | null
-  media?: { url: string; type?: string; purpose?: string; isCardBackground?: boolean }[]
-  minPrice: number | null
+  id: string;
+  name: string;
+  slug: string;
+  category: string;
+  city: string;
+  streetName: string;
+  streetNumber: string;
+  postalCode: string;
+  description: string | null;
+  logoUrl?: string | null;
+  media?: { url: string; type?: string; purpose?: string; isCardBackground?: boolean }[];
+  minPrice: number | null;
 }
 interface FacilityCardProps {
   facility: Facility;
@@ -32,18 +32,23 @@ interface FacilityCardProps {
 export function FacilityCard({ facility, dict, fromLabel, isPriority = false }: FacilityCardProps) {
   const explicitBG = facility.media?.find((m) => m.isCardBackground);
   const aerialPhoto = facility.media?.find((m) => m.purpose === "AERIAL");
-  const backgroundPhoto = explicitBG || aerialPhoto || facility.media?.find((m) => m.type === "PHOTO" || !m.url.endsWith(".mp4")) || facility.media?.[0];
+  const backgroundPhoto =
+    explicitBG ||
+    aerialPhoto ||
+    facility.media?.find((m) => m.type === "PHOTO" || !m.url.endsWith(".mp4")) ||
+    facility.media?.[0];
 
   return (
-    <Link href={`/facilities/${facility.category.toLowerCase().replace(/_/g, '-')}/${facility.slug}`} className="block">
-      <Card 
-        className="h-[300px] sm:h-[400px] group overflow-hidden border-border hover:border-primary/30 transition-all duration-500 relative flex flex-col justify-end"
-      >
+    <Link
+      href={`/facilities/${facility.category.toLowerCase().replace(/_/g, "-")}/${facility.slug}`}
+      className="block"
+    >
+      <Card className="group border-border hover:border-primary/30 relative flex h-[300px] flex-col justify-end overflow-hidden transition-all duration-500 sm:h-[400px]">
         {facility.logoUrl && (
-          <div className="absolute top-4 right-4 sm:top-6 sm:right-6 z-20 h-10 w-10 sm:h-14 sm:w-14 rounded-2xl overflow-hidden border border-border bg-background/60 p-2 backdrop-blur-md flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform duration-500">
-            <div className="relative w-full h-full">
-              <Image 
-                src={facility.logoUrl} 
+          <div className="border-border bg-background/60 absolute top-4 right-4 z-20 flex h-10 w-10 items-center justify-center overflow-hidden rounded-2xl border p-2 shadow-lg backdrop-blur-md transition-transform duration-500 group-hover:scale-105 sm:top-6 sm:right-6 sm:h-14 sm:w-14">
+            <div className="relative h-full w-full">
+              <Image
+                src={facility.logoUrl}
                 alt={`${facility.name} Logo`}
                 fill
                 sizes="56px"
@@ -64,40 +69,48 @@ export function FacilityCard({ facility, dict, fromLabel, isPriority = false }: 
               priority={isPriority}
             />
           ) : (
-            <div className="w-full h-full bg-muted flex items-center justify-center">
-              <Icon name="auto_awesome" className="text-[48px] text-foreground" />
+            <div className="bg-muted flex h-full w-full items-center justify-center">
+              <Icon name="auto_awesome" className="text-foreground text-[48px]" />
             </div>
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
+          <div className="from-background via-background/50 absolute inset-0 bg-gradient-to-t to-transparent" />
         </div>
 
-        <div className="relative z-10 p-4 sm:p-6 flex flex-col gap-1 w-full bg-gradient-to-t from-background/80 via-background/40 to-transparent">
-          <span className="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-2 flex items-center gap-2">
-            <Icon name="navigation" className="text-[12px] text-primary rotate-45" />
+        <div className="from-background/80 via-background/40 relative z-10 flex w-full flex-col gap-1 bg-gradient-to-t to-transparent p-4 sm:p-6">
+          <span className="text-primary mb-2 flex items-center gap-2 text-[10px] font-black tracking-[0.2em] uppercase">
+            <Icon name="navigation" className="text-primary rotate-45 text-[12px]" />
             {dict?.categories?.[facility.category.toLowerCase()] || facility.category}
           </span>
-          <h3 className="text-xl sm:text-2xl font-black text-foreground italic tracking-tighter uppercase mb-3 leading-none group-hover:text-primary transition-colors">
+          <h3 className="text-foreground group-hover:text-primary mb-3 text-xl leading-none font-black tracking-tighter uppercase italic transition-colors sm:text-2xl">
             {facility.name}
           </h3>
-          
-          <div className="flex flex-col gap-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+
+          <div className="text-muted-foreground flex flex-col gap-2 text-[10px] font-bold tracking-widest uppercase">
             <div className="flex items-center gap-2">
-              <Icon name="location_on" className="text-[14px] text-muted-foreground shrink-0" />
-              <span className="truncate">{facility.streetName} {facility.streetNumber}, {facility.postalCode} {facility.city}</span>
+              <Icon name="location_on" className="text-muted-foreground shrink-0 text-[14px]" />
+              <span className="truncate">
+                {facility.streetName} {facility.streetNumber}, {facility.postalCode} {facility.city}
+              </span>
             </div>
-            
-            <div className="flex items-center justify-between border-t border-border pt-4 mt-2">
+
+            <div className="border-border mt-2 flex items-center justify-between border-t pt-4">
               {facility.minPrice ? (
-                <div className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">
-                  {fromLabel} <span className="text-base text-primary font-black block leading-none mt-1">{facility.minPrice} RSD</span>
+                <div className="text-muted-foreground text-[10px] font-black tracking-widest uppercase">
+                  {fromLabel}{" "}
+                  <span className="text-primary mt-1 block text-base leading-none font-black">
+                    {facility.minPrice} RSD
+                  </span>
                 </div>
               ) : (
                 <div />
               )}
-              
-              <div className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-[0.15em] text-primary bg-primary/10 border border-primary/20 px-4 py-2.5 rounded-xl transition-all duration-300 group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary group-hover:translate-x-1 shadow-lg shadow-primary/10">
+
+              <div className="text-primary bg-primary/10 border-primary/20 group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary shadow-primary/10 flex items-center gap-1.5 rounded-xl border px-4 py-2.5 text-[9px] font-black tracking-[0.15em] uppercase shadow-lg transition-all duration-300 group-hover:translate-x-1">
                 <span>Detaljnije</span>
-                <Icon name="navigation" className="text-[10px] rotate-90 transition-transform duration-300 group-hover:translate-x-0.5" />
+                <Icon
+                  name="navigation"
+                  className="rotate-90 text-[10px] transition-transform duration-300 group-hover:translate-x-0.5"
+                />
               </div>
             </div>
           </div>

@@ -1,31 +1,31 @@
-"use client"
+"use client";
 import { Icon } from "@/components/ui/Icon";
 
-import React from "react"
-import { cn } from "@/lib/utils"
+import React from "react";
+import { cn } from "@/lib/utils";
 
 interface Amenity {
-  id: string
-  name: string
-  icon: string
-  category: string | null
-  type: "BOOLEAN" | "QUANTIFIABLE" | "TEXT"
+  id: string;
+  name: string;
+  icon: string;
+  category: string | null;
+  type: "BOOLEAN" | "QUANTIFIABLE" | "TEXT";
 }
 
 interface FacilityAmenity {
-  amenityId: string
-  value: string | null
-  imageUrl?: string | null
-  scheduledAt?: string | null
-  isFeatured?: boolean
-  amenity: Amenity
+  amenityId: string;
+  value: string | null;
+  imageUrl?: string | null;
+  scheduledAt?: string | null;
+  isFeatured?: boolean;
+  amenity: Amenity;
 }
 
 import { Dict } from "@/lib/types";
 
 interface ShowcaseAmenitiesProps {
-  amenities: FacilityAmenity[]
-  dict: Dict
+  amenities: FacilityAmenity[];
+  dict: Dict;
 }
 
 /**
@@ -94,86 +94,88 @@ const AMENITY_ICON_MAP: Record<string, string> = {
   wind: "air",
   Car: "directions_car",
   car: "directions_car",
-}
+};
 
 function resolveAmenityIcon(iconName: string): string {
-  if (!iconName) return "star"
+  if (!iconName) return "star";
   // Direct match
-  if (AMENITY_ICON_MAP[iconName]) return AMENITY_ICON_MAP[iconName]
+  if (AMENITY_ICON_MAP[iconName]) return AMENITY_ICON_MAP[iconName];
   // Snake_case to Material Symbol (may already be a valid material symbol name)
-  return iconName.toLowerCase().replace(/[A-Z]/g, (c) => `_${c.toLowerCase()}`)
+  return iconName.toLowerCase().replace(/[A-Z]/g, (c) => `_${c.toLowerCase()}`);
 }
 
 export function ShowcaseAmenities({ amenities, dict }: ShowcaseAmenitiesProps) {
   // Filter out pending activations
-  const activeAmenities = amenities.filter(fa => {
-    if (!fa.scheduledAt) return true
-    return new Date(fa.scheduledAt) <= new Date()
-  })
+  const activeAmenities = amenities.filter((fa) => {
+    if (!fa.scheduledAt) return true;
+    return new Date(fa.scheduledAt) <= new Date();
+  });
 
   // Sort: Featured first, then rest
   const sortedAmenities = [...activeAmenities].sort((a, b) => {
-    if (a.isFeatured && !b.isFeatured) return -1
-    if (!a.isFeatured && b.isFeatured) return 1
-    return 0
-  })
+    if (a.isFeatured && !b.isFeatured) return -1;
+    if (!a.isFeatured && b.isFeatured) return 1;
+    return 0;
+  });
 
   const getTranslatedName = (name: string) => {
-    const key = name.toLowerCase().replace(/['\s]+/g, '_')
-    return (dict?.amenities as Record<string, string>)?.[key] || name
-  }
+    const key = name.toLowerCase().replace(/['\s]+/g, "_");
+    return (dict?.amenities as Record<string, string>)?.[key] || name;
+  };
 
-  if (sortedAmenities.length === 0) return null
+  if (sortedAmenities.length === 0) return null;
 
   return (
     <div className="w-full">
       {/* 🍱 Premium spaced grid layout */}
-      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 md:grid-cols-3">
         {sortedAmenities.map((fa) => {
-          const iconName = resolveAmenityIcon(fa.amenity.icon)
+          const iconName = resolveAmenityIcon(fa.amenity.icon);
 
           return (
             <div
               key={fa.amenityId}
-              className="relative group flex flex-row items-center gap-3 p-4 min-h-[76px] rounded-2xl border border-border bg-card/40 backdrop-blur-md hover:border-primary/30 hover:bg-muted/20 transition-all duration-500 cursor-default overflow-hidden sm:flex-col sm:items-center sm:justify-center sm:text-center sm:p-8 sm:min-h-[170px]"
+              className="group border-border bg-card/40 hover:border-primary/30 hover:bg-muted/20 relative flex min-h-[76px] cursor-default flex-row items-center gap-3 overflow-hidden rounded-2xl border p-4 backdrop-blur-md transition-all duration-500 sm:min-h-[170px] sm:flex-col sm:items-center sm:justify-center sm:p-8 sm:text-center"
             >
               {/* 🔮 Glow Hover Effect */}
-              <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-cyan-500/[0.02] to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
 
               {/* 🧿 Icon Container (Neon Glassmorphism) */}
-              <div className="relative z-10 flex items-center justify-center shrink-0 w-10 h-10 rounded-xl bg-white/[0.03] text-primary border border-border shadow-inner backdrop-blur-md transition-all duration-500 group-hover:scale-110 sm:w-14 sm:h-14 sm:rounded-2xl sm:mb-4">
-                <Icon name={iconName} className="text-[20px] text-primary sm:text-[24px]" />
+              <div className="text-primary border-border relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border bg-white/[0.03] shadow-inner backdrop-blur-md transition-all duration-500 group-hover:scale-110 sm:mb-4 sm:h-14 sm:w-14 sm:rounded-2xl">
+                <Icon name={iconName} className="text-primary text-[20px] sm:text-[24px]" />
               </div>
 
               {/* 🏷️ Info Container */}
-              <div className="relative z-10 flex flex-col justify-center text-left space-y-1 sm:items-center sm:text-center">
-                <h4 className="text-[11px] xs:text-xs font-black uppercase tracking-wider text-foreground/80 group-hover:text-white transition-colors leading-snug line-clamp-2 sm:line-clamp-none max-w-[130px] sm:max-w-[180px]">
+              <div className="relative z-10 flex flex-col justify-center space-y-1 text-left sm:items-center sm:text-center">
+                <h4 className="xs:text-xs text-foreground/80 line-clamp-2 max-w-[130px] text-[11px] leading-snug font-black tracking-wider uppercase transition-colors group-hover:text-white sm:line-clamp-none sm:max-w-[180px]">
                   {getTranslatedName(fa.amenity.name)}
                 </h4>
-                
+
                 {fa.amenity.type !== "BOOLEAN" && fa.value && (
-                  <div className={cn(
-                    "text-[9px] xs:text-[10px] uppercase tracking-widest line-clamp-1",
-                    fa.amenity.type === "TEXT" && fa.value.length > 20 
-                      ? "text-slate-400 font-medium normal-case tracking-normal leading-relaxed text-[11px] mt-1 text-left sm:text-center" 
-                      : "text-primary font-bold"
-                  )}>
+                  <div
+                    className={cn(
+                      "xs:text-[10px] line-clamp-1 text-[9px] tracking-widest uppercase",
+                      fa.amenity.type === "TEXT" && fa.value.length > 20
+                        ? "mt-1 text-left text-[11px] leading-relaxed font-medium tracking-normal text-slate-400 normal-case sm:text-center"
+                        : "text-primary font-bold",
+                    )}
+                  >
                     {fa.value}
                   </div>
                 )}
 
                 {/* Glowing availability badge */}
-                <div className="flex items-center gap-1.5 opacity-60 group-hover:opacity-100 transition-opacity mt-0.5 sm:mt-2 sm:justify-center">
-                  <div className="h-1.5 w-1.5 rounded-full bg-primary shadow-[0_0_8px_hsl(var(--primary)/0.6)] animate-pulse" />
-                  <span className="text-[8px] xs:text-[9px] font-black uppercase tracking-widest text-slate-500 group-hover:text-slate-400">
+                <div className="mt-0.5 flex items-center gap-1.5 opacity-60 transition-opacity group-hover:opacity-100 sm:mt-2 sm:justify-center">
+                  <div className="bg-primary h-1.5 w-1.5 animate-pulse rounded-full shadow-[0_0_8px_hsl(var(--primary)/0.6)]" />
+                  <span className="xs:text-[9px] text-[8px] font-black tracking-widest text-slate-500 uppercase group-hover:text-slate-400">
                     {dict?.amenities?.available || "Dostupno"}
                   </span>
                 </div>
               </div>
             </div>
-          )
+          );
         })}
       </div>
     </div>
-  )
+  );
 }

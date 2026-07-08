@@ -6,7 +6,6 @@ import { JsonLd } from "@/components/SEO/JsonLd";
 import { connection } from "next/server";
 
 export async function generateMetadata(): Promise<Metadata> {
-  
   const dict = await getDictionary();
 
   return {
@@ -27,19 +26,19 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function CartPage() {
   await connection();
-  
+
   const dict = await getDictionary();
 
   return (
     <>
-      <JsonLd 
+      <JsonLd
         id="cart-schema"
         data={{
           "@context": "https://schema.org",
           "@type": "WebPage",
-          "name": "Korpa | Splashdeals",
-          "description": "Pregledajte karte za akva parkove pre plaćanja."
-        }} 
+          name: "Korpa | Splashdeals",
+          description: "Pregledajte karte za akva parkove pre plaćanja.",
+        }}
       />
       <CartClient dict={dict} />
     </>

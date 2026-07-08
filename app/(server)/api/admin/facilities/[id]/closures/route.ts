@@ -1,52 +1,46 @@
-import { NextResponse } from "next/server"
-import { prisma } from "@/server/lib/prisma"
-import { authenticateRequest } from "@/server/lib/api-key-auth"
-import { requireSuperAdmin, validateFacilityAccess } from "@/server/lib/auth-guards"
-import { handleServerActionError } from "@/server/lib/server-action-error"
-import { z } from "zod"
+import { NextResponse } from "next/server";
+import { prisma } from "@/server/lib/prisma";
+import { authenticateRequest } from "@/server/lib/api-key-auth";
+import { requireSuperAdmin, validateFacilityAccess } from "@/server/lib/auth-guards";
+import { handleServerActionError } from "@/server/lib/server-action-error";
+import { z } from "zod";
 
 const closureSchema = z.object({
   startDate: z.string().datetime(),
   endDate: z.string().datetime(),
   reason: z.string().max(200).nullish(),
   isEmergency: z.boolean().default(false),
-})
+});
 
 /**
  * 🏢 Facility Closures API - List & Create
  */
-export async function GET(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const user = await authenticateRequest(request).catch(() => requireSuperAdmin())
-    const { id: facilityId } = await params
-    await validateFacilityAccess(facilityId, user)
+    const user = await authenticateRequest(request).catch(() => requireSuperAdmin());
+    const { id: facilityId } = await params;
+    await validateFacilityAccess(facilityId, user);
 
     const closures = await prisma.facilityClosure.findMany({
       where: { facilityId },
-      orderBy: { startDate: "desc" }
-    })
+      orderBy: { startDate: "desc" },
+    });
 
-    return NextResponse.json(closures)
+    return NextResponse.json(closures);
   } catch (error) {
-    const result = handleServerActionError(error)
-    return NextResponse.json(result, { status: result.error ? 400 : 500 })
+    const result = handleServerActionError(error);
+    return NextResponse.json(result, { status: result.error ? 400 : 500 });
   }
 }
 
-export async function POST(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const user = await authenticateRequest(request).catch(() => requireSuperAdmin())
-    const { id: facilityId } = await params
-    await validateFacilityAccess(facilityId, user)
+    const user = await authenticateRequest(request).catch(() => requireSuperAdmin());
+    const { id: facilityId } = await params;
+    await validateFacilityAccess(facilityId, user);
 
-    const json = await request.json()
-    const validated = closureSchema.parse(json)
+    const json = await request.json();
+    const validated = closureSchema.parse(json);
 
     const closure = await prisma.facilityClosure.create({
       data: {
@@ -55,12 +49,12 @@ export async function POST(
         endDate: new Date(validated.endDate),
         reason: validated.reason,
         isEmergency: validated.isEmergency,
-      }
-    })
+      },
+    });
 
-    return NextResponse.json(closure, { status: 201 })
+    return NextResponse.json(closure, { status: 201 });
   } catch (error) {
-    const result = handleServerActionError(error)
-    return NextResponse.json(result, { status: result.error ? 400 : 500 })
+    const result = handleServerActionError(error);
+    return NextResponse.json(result, { status: result.error ? 400 : 500 });
   }
 }

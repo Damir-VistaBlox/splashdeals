@@ -2,19 +2,16 @@ import { Icon } from "@/components/ui/Icon";
 import type { Metadata } from "next";
 import * as React from "react";
 
-import { AdminSidebar } from "@/app/(dashboard)/admin/_common/sidebar/admin-sidebar"
-import {
-  SidebarInset,
-  SidebarProvider,
-} from "@/components/ui/sidebar"
-import { BreadcrumbProvider } from "@/app/(dashboard)/admin/_common/breadcrumb-context"
-import { AdminLayoutShell } from "./_components/AdminLayoutShell"
-import { CommandPalette } from "@/app/(dashboard)/admin/_common/CommandPalette"
-import { AdminSkeleton } from "@/app/(dashboard)/admin/_common/AdminSkeleton"
-import { auth } from "@/server/lib/auth"
-import { headers } from "next/headers"
-import { redirect } from "next/navigation"
-import { connection } from "next/server"
+import { AdminSidebar } from "@/app/(dashboard)/admin/_common/sidebar/admin-sidebar";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { BreadcrumbProvider } from "@/app/(dashboard)/admin/_common/breadcrumb-context";
+import { AdminLayoutShell } from "./_components/AdminLayoutShell";
+import { CommandPalette } from "@/app/(dashboard)/admin/_common/CommandPalette";
+import { AdminSkeleton } from "@/app/(dashboard)/admin/_common/AdminSkeleton";
+import { auth } from "@/server/lib/auth";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+import { connection } from "next/server";
 
 export const metadata: Metadata = {
   title: "Splashdeals.rs Admin",
@@ -38,9 +35,7 @@ export default async function AdminRootLayout({
   return (
     <BreadcrumbProvider>
       <React.Suspense fallback={<AdminSkeleton />}>
-        <AuthenticatedLayout>
-          {children}
-        </AuthenticatedLayout>
+        <AuthenticatedLayout>{children}</AuthenticatedLayout>
       </React.Suspense>
     </BreadcrumbProvider>
   );
@@ -48,8 +43,8 @@ export default async function AdminRootLayout({
 
 async function AuthenticatedLayout({ children }: { children: React.ReactNode }) {
   await connection();
-  const session = await auth.api.getSession({ 
-    headers: await headers() 
+  const session = await auth.api.getSession({
+    headers: await headers(),
   });
 
   if (!session) {
@@ -75,16 +70,18 @@ async function AuthenticatedLayout({ children }: { children: React.ReactNode }) 
       <AdminSidebar variant="inset" user={session.user} />
       <SidebarInset className="overflow-hidden">
         <AdminLayoutShell user={session.user}>
-          <React.Suspense fallback={
-            <div className="flex flex-1 items-center justify-center min-h-[50vh]">
-              <Icon name="progress_activity" className="size-10 animate-spin text-primary/30" />
-            </div>
-          }>
+          <React.Suspense
+            fallback={
+              <div className="flex min-h-[50vh] flex-1 items-center justify-center">
+                <Icon name="progress_activity" className="text-primary/30 size-10 animate-spin" />
+              </div>
+            }
+          >
             {children}
           </React.Suspense>
         </AdminLayoutShell>
       </SidebarInset>
       <CommandPalette />
     </SidebarProvider>
-  )
+  );
 }

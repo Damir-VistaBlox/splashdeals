@@ -5,7 +5,6 @@ import { Icon } from "@/components/ui/Icon";
 import { LiquidButton } from "@/components/ui/LiquidButton";
 import { cn } from "@/lib/utils";
 
-
 interface CartButtonProps {
   isOnline: boolean;
   mounted: boolean;
@@ -18,21 +17,19 @@ export function CartButton({ isOnline, mounted, totalItems, openCart }: CartButt
     <div className="relative flex items-center gap-2">
       {/* Offline Indicator — CSS transition on mount/unmount */}
       {!isOnline && (
-        <div
-          className="flex items-center gap-1.5 px-2 py-1 bg-destructive/10 border border-destructive/20 rounded-lg text-[9px] font-black text-destructive uppercase tracking-wider shadow-lg transition-all duration-300"
-        >
-          <Icon name="cloud_off" className="text-[12px] animate-pulse" />
+        <div className="bg-destructive/10 border-destructive/20 text-destructive flex items-center gap-1.5 rounded-lg border px-2 py-1 text-[9px] font-black tracking-wider uppercase shadow-lg transition-all duration-300">
+          <Icon name="cloud_off" className="animate-pulse text-[12px]" />
           Nema Mreže
         </div>
       )}
 
-      {(mounted && totalItems > 0) ? (
+      {mounted && totalItems > 0 ? (
         <LiquidButton
           variant="primary"
           size="sm"
           className={cn(
-            "px-5 group h-11 transition-all",
-            !isOnline && "opacity-50 grayscale cursor-not-allowed"
+            "group h-11 px-5 transition-all",
+            !isOnline && "cursor-not-allowed opacity-50 grayscale",
           )}
           onClick={() => {
             if (!isOnline) return;
@@ -43,16 +40,14 @@ export function CartButton({ isOnline, mounted, totalItems, openCart }: CartButt
         >
           <div className="relative">
             <Icon name="shopping_bag" className="text-[16px]" />
-            <span
-              className="absolute -top-3 -right-3 bg-white text-background text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow-lg transition-all duration-300"
-            >
+            <span className="text-background absolute -top-3 -right-3 flex h-4 w-4 items-center justify-center rounded-full bg-white text-[10px] font-black shadow-lg transition-all duration-300">
               {totalItems}
             </span>
           </div>
           <span className="hidden sm:inline">Korpa</span>
         </LiquidButton>
       ) : (
-        <div className="h-11 w-[106px] invisible" />
+        <div className="invisible h-11 w-[106px]" />
       )}
     </div>
   );

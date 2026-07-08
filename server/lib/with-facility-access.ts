@@ -1,5 +1,5 @@
-import { validateFacilityAccess, type AuthedUser } from "@/server/lib/auth-guards"
-import { handleServerActionError } from "@/server/lib/server-action-error"
+import { validateFacilityAccess, type AuthedUser } from "@/server/lib/auth-guards";
+import { handleServerActionError } from "@/server/lib/server-action-error";
 
 /**
  * 🌊 Action Authorization Wrapper
@@ -7,20 +7,17 @@ import { handleServerActionError } from "@/server/lib/server-action-error"
  * Reduces boilerplate and ensures consistent security enforcement.
  * Auth failures are caught and returned as structured ActionResult errors.
  */
-type ActionHandler<TInput, TOutput> = (
-  input: TInput,
-  user: AuthedUser
-) => Promise<TOutput>
+type ActionHandler<TInput, TOutput> = (input: TInput, user: AuthedUser) => Promise<TOutput>;
 
 export function withFacilityAccess<TInput extends { facilityId: string }, TOutput>(
-  handler: ActionHandler<TInput, TOutput>
+  handler: ActionHandler<TInput, TOutput>,
 ): (input: TInput) => Promise<TOutput> {
   return async (input: TInput): Promise<TOutput> => {
     try {
-      const user = await validateFacilityAccess(input.facilityId)
-      return handler(input, user)
+      const user = await validateFacilityAccess(input.facilityId);
+      return handler(input, user);
     } catch (error) {
-      return handleServerActionError(error) as TOutput
+      return handleServerActionError(error) as TOutput;
     }
-  }
+  };
 }

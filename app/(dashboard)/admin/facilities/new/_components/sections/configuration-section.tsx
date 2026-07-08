@@ -1,9 +1,8 @@
-"use client"
+"use client";
 
 import { Icon } from "@/components/ui/Icon";
- 
 
-import { useFormContext } from "react-hook-form"
+import { useFormContext } from "react-hook-form";
 import {
   FormControl,
   FormDescription,
@@ -11,29 +10,29 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
+} from "@/components/ui/form";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import type { FacilityFormValues } from "@/server/lib/validations/facility"
+} from "@/components/ui/select";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import type { FacilityFormValues } from "@/server/lib/validations/facility";
 
 export function ConfigurationSection() {
-  const { control } = useFormContext<FacilityFormValues>()
+  const { control } = useFormContext<FacilityFormValues>();
 
   return (
-    <Card className="border-border/50 bg-muted/50 backdrop-blur-md overflow-hidden">
-      <CardHeader className="border-b border-border/50 bg-muted/30">
+    <Card className="border-border/50 bg-muted/50 overflow-hidden backdrop-blur-md">
+      <CardHeader className="border-border/50 bg-muted/30 border-b">
         <CardTitle className="flex items-center gap-2 text-lg">
-          <Icon name="security" className="text-[20px] text-primary" />
+          <Icon name="security" className="text-primary text-[20px]" />
           Configuration
         </CardTitle>
       </CardHeader>
-      <CardContent className="p-6 space-y-6">
+      <CardContent className="space-y-6 p-6">
         <FormField
           control={control}
           name="category"
@@ -42,7 +41,7 @@ export function ConfigurationSection() {
               <FormLabel>Category</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
-                  <SelectTrigger className="h-11 bg-muted/30 border-border">
+                  <SelectTrigger className="bg-muted/30 border-border h-11">
                     <SelectValue placeholder="Select type" />
                   </SelectTrigger>
                 </FormControl>
@@ -66,7 +65,7 @@ export function ConfigurationSection() {
               <FormLabel>Initial Status</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
-                  <SelectTrigger className="h-11 bg-muted/30 border-border">
+                  <SelectTrigger className="bg-muted/30 border-border h-11">
                     <SelectValue placeholder="Select status" />
                   </SelectTrigger>
                 </FormControl>
@@ -84,5 +83,5 @@ export function ConfigurationSection() {
         />
       </CardContent>
     </Card>
-  )
+  );
 }

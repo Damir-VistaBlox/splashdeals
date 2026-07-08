@@ -1,4 +1,4 @@
-import { z } from "zod"
+import { z } from "zod";
 
 export const mediaUploadSchema = z.object({
   url: z.string().url("Invalid image URL format").optional().or(z.literal("")),
@@ -9,9 +9,9 @@ export const mediaUploadSchema = z.object({
   caption: z.string().max(300, "Caption is too long").nullish(),
   isHero: z.boolean().default(false),
   isCardBackground: z.boolean().default(false),
-})
+});
 
-export type MediaUploadValues = z.infer<typeof mediaUploadSchema>
+export type MediaUploadValues = z.infer<typeof mediaUploadSchema>;
 
 export const renameMediaSchema = z.object({
   mediaId: z.string().uuid(),
@@ -23,8 +23,8 @@ export const renameMediaSchema = z.object({
     .max(100, "Ime fajla je predugačko (max 100 karaktera)")
     .regex(
       /^[a-zA-Z0-9_\-\p{Script=Latin}]+$/u,
-      "Dozvoljena su samo slova, brojevi, crtice i donje crte"
+      "Dozvoljena su samo slova, brojevi, crtice i donje crte",
     ),
-})
+});
 
-export type RenameMediaValues = z.infer<typeof renameMediaSchema>
+export type RenameMediaValues = z.infer<typeof renameMediaSchema>;

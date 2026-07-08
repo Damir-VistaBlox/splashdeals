@@ -13,12 +13,12 @@ export interface FacilitySchemaInput {
   lat?: number | string | null;
   lng?: number | string | null;
   createdAt?: Date | string;
-  media?: { 
-    url: string; 
-    type?: string; 
-    purpose?: string; 
-    duration?: string; 
-    caption?: string | null; 
+  media?: {
+    url: string;
+    type?: string;
+    purpose?: string;
+    duration?: string;
+    caption?: string | null;
     createdAt?: Date;
     isHero?: boolean;
     isCardBackground?: boolean;
@@ -42,7 +42,7 @@ export function getCategoryLabel(category: string): string {
 export function buildAttractionSchema(
   facility: FacilitySchemaInput,
   facilitySlug: string,
-  operatingHours: Record<string, unknown>[]
+  operatingHours: Record<string, unknown>[],
 ) {
   const heroImage = facility.media?.[0]?.url || `${SITE_URL}/og-image.png`;
   return {
@@ -64,16 +64,20 @@ export function buildAttractionSchema(
       postalCode: facility.postalCode,
       addressCountry: "RS",
     },
-    ...(facility.lat && facility.lng ? {
-      geo: {
-        "@type": "GeoCoordinates",
-        latitude: Number(facility.lat),
-        longitude: Number(facility.lng),
-      }
-    } : {}),
-    ...(operatingHours.length > 0 ? {
-      openingHoursSpecification: operatingHours
-    } : {}),
+    ...(facility.lat && facility.lng
+      ? {
+          geo: {
+            "@type": "GeoCoordinates",
+            latitude: Number(facility.lat),
+            longitude: Number(facility.lng),
+          },
+        }
+      : {}),
+    ...(operatingHours.length > 0
+      ? {
+          openingHoursSpecification: operatingHours,
+        }
+      : {}),
   };
 }
 
@@ -82,7 +86,7 @@ export function buildAttractionSchema(
 export function buildBusinessSchema(
   facility: FacilitySchemaInput,
   facilitySlug: string,
-  hasAggregateOffer: boolean
+  hasAggregateOffer: boolean,
 ) {
   const heroImage = facility.media?.[0]?.url || `${SITE_URL}/og-image.png`;
   return {
@@ -96,7 +100,7 @@ export function buildBusinessSchema(
     sameAs: [
       "https://www.instagram.com/splashdeals",
       "https://www.facebook.com/splashdeals.rs/",
-      "https://x.com/splashdeals"
+      "https://x.com/splashdeals",
     ].filter(Boolean),
     address: {
       "@type": "PostalAddress",
@@ -106,7 +110,7 @@ export function buildBusinessSchema(
       addressCountry: "RS",
     },
     containsPlace: {
-      "@id": `${SITE_URL}/${facilitySlug}#attraction`
+      "@id": `${SITE_URL}/${facilitySlug}#attraction`,
     },
   };
 }
@@ -118,12 +122,12 @@ export function buildProductSchema(
   facilitySlug: string,
   aggregateOffer: Record<string, unknown> | null,
   ticketCount: number,
-  additionalType: string
+  additionalType: string,
 ) {
   if (!aggregateOffer) return null;
-  
+
   const heroImage = facility.media?.[0]?.url || `${SITE_URL}/og-image.png`;
-  
+
   return {
     "@type": "Product",
     "@id": `${SITE_URL}/${facilitySlug}#product`,
@@ -148,7 +152,7 @@ export function buildVideoSchema(
   facility: FacilitySchemaInput,
   facilitySlug: string,
   heroMedia: Record<string, unknown> | null,
-  videoThumbnail: string
+  videoThumbnail: string,
 ) {
   if (heroMedia?.type !== "VIDEO") return null;
   if (!heroMedia?.duration) return null;
@@ -171,10 +175,10 @@ export function buildBreadcrumbSchema(
   facility: FacilitySchemaInput,
   facilitySlug: string,
   categorySlug: string,
-  categoryLabel: string
+  categoryLabel: string,
 ) {
-  const normalizedCategorySlug = categorySlug.toLowerCase().replace(/\s+/g, '-');
-  
+  const normalizedCategorySlug = categorySlug.toLowerCase().replace(/\s+/g, "-");
+
   return {
     "@type": "BreadcrumbList",
     "@id": `${SITE_URL}/${facilitySlug}#breadcrumb`,
@@ -284,8 +288,7 @@ export function buildFacilitySchema(params: BuildFacilitySchemaParams) {
           },
           offers: allTiers.map((tier) => {
             const hasDiscount =
-              tier.originalPrice != null &&
-              Number(tier.originalPrice) > Number(tier.price);
+              tier.originalPrice != null && Number(tier.originalPrice) > Number(tier.price);
 
             const priceSpecification = hasDiscount
               ? [
@@ -314,17 +317,13 @@ export function buildFacilitySchema(params: BuildFacilitySchemaParams) {
                   },
                 ];
 
-            const saleEndDate = tier.saleEnd
-              ? new Date(tier.saleEnd)
-              : null;
+            const saleEndDate = tier.saleEnd ? new Date(tier.saleEnd) : null;
             const priceValidUntil =
               saleEndDate && !isNaN(saleEndDate.getTime())
                 ? saleEndDate.toISOString().slice(0, 10)
                 : `${currentYear}-12-31`;
 
-            const saleStartDate = tier.saleStart
-              ? new Date(tier.saleStart)
-              : null;
+            const saleStartDate = tier.saleStart ? new Date(tier.saleStart) : null;
             const availabilityStarts =
               saleStartDate && !isNaN(saleStartDate.getTime())
                 ? saleStartDate.toISOString().slice(0, 10)
@@ -332,9 +331,7 @@ export function buildFacilitySchema(params: BuildFacilitySchemaParams) {
 
             const availabilityEnds = (() => {
               const end = tier.saleEnd ? new Date(tier.saleEnd) : null;
-              return end && !isNaN(end.getTime())
-                ? end.toISOString().slice(0, 10)
-                : null;
+              return end && !isNaN(end.getTime()) ? end.toISOString().slice(0, 10) : null;
             })();
 
             return {
@@ -365,12 +362,8 @@ export function buildFacilitySchema(params: BuildFacilitySchemaParams) {
                 ? {
                     eligibleQuantity: {
                       "@type": "QuantitativeValue",
-                      ...(tier.minPeople
-                        ? { minValue: Number(tier.minPeople) }
-                        : {}),
-                      ...(tier.maxPeople
-                        ? { maxValue: Number(tier.maxPeople) }
-                        : {}),
+                      ...(tier.minPeople ? { minValue: Number(tier.minPeople) } : {}),
+                      ...(tier.maxPeople ? { maxValue: Number(tier.maxPeople) } : {}),
                     },
                   }
                 : {}),
@@ -382,13 +375,9 @@ export function buildFacilitySchema(params: BuildFacilitySchemaParams) {
               provider: {
                 "@type": "LocalBusiness",
                 name: facility.name,
-                ...(facility.media?.[0]?.url
-                  ? { image: facility.media[0].url }
-                  : {}),
+                ...(facility.media?.[0]?.url ? { image: facility.media[0].url } : {}),
                 priceRange: "RSD",
-                ...(facility.publicPhone
-                  ? { telephone: facility.publicPhone }
-                  : {}),
+                ...(facility.publicPhone ? { telephone: facility.publicPhone } : {}),
                 address: {
                   "@type": "PostalAddress",
                   streetAddress: `${facility.streetName} ${facility.streetNumber}`,
@@ -403,12 +392,9 @@ export function buildFacilitySchema(params: BuildFacilitySchemaParams) {
       : null;
 
   const videoThumbnailFallback =
-    facility.media?.find((m) => m.type === "PHOTO" && m.isHero)
-      ?.url ??
-    facility.media?.find((m) => m.type === "PHOTO" && m.isCardBackground)
-      ?.url ??
-    facility.media?.find((m) => m.type === "PHOTO")
-      ?.url ??
+    facility.media?.find((m) => m.type === "PHOTO" && m.isHero)?.url ??
+    facility.media?.find((m) => m.type === "PHOTO" && m.isCardBackground)?.url ??
+    facility.media?.find((m) => m.type === "PHOTO")?.url ??
     "/og-image.png";
 
   const videoThumbnail: string =
@@ -437,13 +423,7 @@ export function buildFacilitySchema(params: BuildFacilitySchemaParams) {
     "@graph": [
       buildAttractionSchema(facility, facilitySlug, operatingHours),
       buildBusinessSchema(facility, facilitySlug, !!aggregateOffer),
-      buildProductSchema(
-        facility,
-        facilitySlug,
-        aggregateOffer,
-        ticketCount,
-        additionalType,
-      ),
+      buildProductSchema(facility, facilitySlug, aggregateOffer, ticketCount, additionalType),
       buildVideoSchema(facility, facilitySlug, heroMedia, videoThumbnail),
       buildBreadcrumbSchema(facility, facilitySlug, categorySlug, categoryLabel),
     ].filter(Boolean),

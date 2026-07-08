@@ -5,7 +5,6 @@ import Link from "next/link";
 import { Icon } from "@/components/ui/Icon";
 import { cn } from "@/lib/utils";
 
-
 interface City {
   id: string;
   name: string;
@@ -24,23 +23,23 @@ export function MobileCityPicker({ cities, dict, onCitySelect }: MobileCityPicke
   const sortedCities = React.useMemo(() => {
     if (!cities || !Array.isArray(cities)) return [];
     const popularSlugs = ["beograd", "novi-sad", "jagodina", "vrnjacka-banja", "subotica"];
-    const popular = cities.filter(c => popularSlugs.includes(c.slug.toLowerCase()));
-    const others = cities.filter(c => !popularSlugs.includes(c.slug.toLowerCase()));
+    const popular = cities.filter((c) => popularSlugs.includes(c.slug.toLowerCase()));
+    const others = cities.filter((c) => !popularSlugs.includes(c.slug.toLowerCase()));
     return [...popular, ...others];
   }, [cities]);
 
   return (
     <div className="space-y-3">
-      <div className="flex items-center gap-3 text-slate-500 text-[10px] font-black uppercase tracking-[0.2em]">
+      <div className="flex items-center gap-3 text-[10px] font-black tracking-[0.2em] text-slate-500 uppercase">
         <Icon name="location_on" className="text-[14px] text-slate-600" />
         {dict.nav.cities}
       </div>
 
       <div className="relative w-full">
         {/* Right gradient fade overlay */}
-        <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-background to-transparent pointer-events-none z-10" />
+        <div className="from-background pointer-events-none absolute top-0 right-0 bottom-0 z-10 w-12 bg-gradient-to-l to-transparent" />
 
-        <div className="flex gap-2 overflow-x-auto no-scrollbar pb-2 scroll-smooth select-none cursor-grab active:cursor-grabbing w-full px-1">
+        <div className="no-scrollbar flex w-full cursor-grab gap-2 overflow-x-auto scroll-smooth px-1 pb-2 select-none active:cursor-grabbing">
           {sortedCities.map((city) => {
             const popularSlugs = ["beograd", "novi-sad", "jagodina", "vrnjacka-banja", "subotica"];
             const isPopular = popularSlugs.includes(city.slug.toLowerCase());
@@ -50,13 +49,15 @@ export function MobileCityPicker({ cities, dict, onCitySelect }: MobileCityPicke
                 href={`/search?q=${encodeURIComponent(city.name)}`}
                 onClick={onCitySelect}
                 className={cn(
-                  "shrink-0 h-10 px-4 rounded-full flex items-center justify-center text-[10px] font-black uppercase tracking-widest transition-all duration-300 active:scale-95 border",
+                  "flex h-10 shrink-0 items-center justify-center rounded-full border px-4 text-[10px] font-black tracking-widest uppercase transition-all duration-300 active:scale-95",
                   isPopular
-                    ? "bg-primary/10 border-primary/30 text-primary shadow-[0_0_12px_rgba(6,182,212,0.05)] hover:bg-primary/20 hover:border-primary/40"
-                    : "bg-white/5 border-white/5 text-slate-400 hover:text-white hover:bg-white/10 hover:border-white/10"
+                    ? "bg-primary/10 border-primary/30 text-primary hover:bg-primary/20 hover:border-primary/40 shadow-[0_0_12px_rgba(6,182,212,0.05)]"
+                    : "border-white/5 bg-white/5 text-slate-400 hover:border-white/10 hover:bg-white/10 hover:text-white",
                 )}
               >
-                {isPopular && <Icon name="auto_awesome" className="text-[12px] mr-1.5 text-primary" />}
+                {isPopular && (
+                  <Icon name="auto_awesome" className="text-primary mr-1.5 text-[12px]" />
+                )}
                 {city.name}
               </Link>
             );
@@ -64,7 +65,7 @@ export function MobileCityPicker({ cities, dict, onCitySelect }: MobileCityPicke
           <Link
             href={`/`}
             onClick={onCitySelect}
-            className="shrink-0 h-10 px-5 rounded-full flex items-center justify-center text-[10px] font-black uppercase tracking-widest bg-white/5 border border-dashed border-white/15 text-primary/80 hover:text-primary hover:border-primary/30 transition-all active:scale-95"
+            className="text-primary/80 hover:text-primary hover:border-primary/30 flex h-10 shrink-0 items-center justify-center rounded-full border border-dashed border-white/15 bg-white/5 px-5 text-[10px] font-black tracking-widest uppercase transition-all active:scale-95"
           >
             {dict.nav.all_regions || "Sve Regije"}
           </Link>

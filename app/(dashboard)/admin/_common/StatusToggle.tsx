@@ -1,56 +1,59 @@
-"use client"
+"use client";
 
 import { Icon } from "@/components/ui/Icon";
 import { cn } from "@/lib/utils";
 
-import { useTransition } from "react"
-import { toast } from "sonner"
-import { useRouter } from "next/navigation"
-import { FacilityStatus } from "@prisma/client"
-import { Button } from "@/components/ui/button"
-import { updateFacilityStatusAction } from "@/server/actions/governance"
+import { useTransition } from "react";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { FacilityStatus } from "@prisma/client";
+import { Button } from "@/components/ui/button";
+import { updateFacilityStatusAction } from "@/server/actions/governance";
 
 interface StatusToggleProps {
-  facilityId: string
-  status: FacilityStatus
-  compact?: boolean
+  facilityId: string;
+  status: FacilityStatus;
+  compact?: boolean;
 }
 
 export function StatusToggle({ facilityId, status, compact }: StatusToggleProps) {
-  const [isPending, startTransition] = useTransition()
-  const router = useRouter()
+  const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
   const toggleStatus = (e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    
-    const nextStatus = status === "ACTIVE" ? "DRAFT" : "ACTIVE"
-    
+    e.preventDefault();
+    e.stopPropagation();
+
+    const nextStatus = status === "ACTIVE" ? "DRAFT" : "ACTIVE";
+
     startTransition(async () => {
       const result = await updateFacilityStatusAction({
         facilityId,
-        status: nextStatus as "DRAFT" | "ACTIVE" | "CLOSED" | "EMERGENCY_SHUTDOWN"
-      })
+        status: nextStatus as "DRAFT" | "ACTIVE" | "CLOSED" | "EMERGENCY_SHUTDOWN",
+      });
 
       if (result.success) {
-        toast.success(`Facility is now ${nextStatus}`)
-        router.refresh()
+        toast.success(`Facility is now ${nextStatus}`);
+        router.refresh();
       } else {
-        toast.error(result.error || "Transition failed")
+        toast.error(result.error || "Transition failed");
       }
-    })
-  }
+    });
+  };
 
   if (status !== "DRAFT" && status !== "ACTIVE") {
     return (
-      <div className={cn(
-        "inline-flex items-center px-2.5 py-0.5 rounded-md border text-[9px] font-black uppercase tracking-[0.15em]",
-        status === "EMERGENCY_SHUTDOWN" ? "bg-rose-500/10 text-rose-400 border-rose-500/20 shadow-[0_0_12px_rgba(244,63,94,0.1)]" :
-        "bg-muted/10 text-muted-foreground border-muted/20"
-      )}>
+      <div
+        className={cn(
+          "inline-flex items-center rounded-md border px-2.5 py-0.5 text-[9px] font-black tracking-[0.15em] uppercase",
+          status === "EMERGENCY_SHUTDOWN"
+            ? "border-rose-500/20 bg-rose-500/10 text-rose-400 shadow-[0_0_12px_rgba(244,63,94,0.1)]"
+            : "bg-muted/10 text-muted-foreground border-muted/20",
+        )}
+      >
         {status}
       </div>
-    )
+    );
   }
 
   if (compact) {
@@ -59,28 +62,28 @@ export function StatusToggle({ facilityId, status, compact }: StatusToggleProps)
         disabled={isPending}
         onClick={toggleStatus}
         className={cn(
-          "group relative inline-flex items-center px-2.5 py-0.5 rounded-md border text-[9px] font-black uppercase tracking-[0.15em] transition-all duration-300",
-          status === "ACTIVE" 
-            ? "bg-primary/10 text-primary border-primary/20 shadow-[0_0_12px_rgba(6,182,212,0.1)] hover:bg-primary/20" 
-            : "bg-amber-500/10 text-amber-400 border-amber-500/20 hover:bg-amber-500/20"
+          "group relative inline-flex items-center rounded-md border px-2.5 py-0.5 text-[9px] font-black tracking-[0.15em] uppercase transition-all duration-300",
+          status === "ACTIVE"
+            ? "bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 shadow-[0_0_12px_rgba(6,182,212,0.1)]"
+            : "border-amber-500/20 bg-amber-500/10 text-amber-400 hover:bg-amber-500/20",
         )}
       >
         <span className="flex items-center gap-1.5">
           {isPending ? (
-            <Icon name="progress_activity" className="text-[12px] animate-spin" />
+            <Icon name="progress_activity" className="animate-spin text-[12px]" />
           ) : status === "ACTIVE" ? (
-            <Icon name="bolt" className="text-[12px] text-primary" />
+            <Icon name="bolt" className="text-primary text-[12px]" />
           ) : (
             <Icon name="bolt" className="text-[12px] text-amber-500" />
           )}
           {status}
         </span>
-        
-        <div className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-muted border border-border rounded text-[8px] font-bold text-foreground opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
+
+        <div className="bg-muted border-border text-foreground pointer-events-none absolute -top-8 left-1/2 z-50 -translate-x-1/2 rounded border px-2 py-1 text-[8px] font-bold whitespace-nowrap opacity-0 transition-opacity group-hover:opacity-100">
           Click to {status === "ACTIVE" ? "Set Draft" : "Go Live"}
         </div>
       </button>
-    )
+    );
   }
 
   return (
@@ -89,10 +92,10 @@ export function StatusToggle({ facilityId, status, compact }: StatusToggleProps)
       size="sm"
       disabled={isPending}
       onClick={toggleStatus}
-      className="gap-2 border-border/50 bg-muted/10 hover:bg-muted/30 transition-all text-[10px] font-black uppercase tracking-widest h-8"
+      className="border-border/50 bg-muted/10 hover:bg-muted/30 h-8 gap-2 text-[10px] font-black tracking-widest uppercase transition-all"
     >
       {isPending ? (
-        <Icon name="progress_activity" className="text-[12px] animate-spin" />
+        <Icon name="progress_activity" className="animate-spin text-[12px]" />
       ) : status === "ACTIVE" ? (
         <Icon name="bolt" className="text-[12px] text-amber-500" />
       ) : (
@@ -100,7 +103,5 @@ export function StatusToggle({ facilityId, status, compact }: StatusToggleProps)
       )}
       {status === "ACTIVE" ? "Set to Draft" : "Go Live"}
     </Button>
-  )
+  );
 }
-
-

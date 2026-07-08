@@ -117,15 +117,25 @@ export async function DiscoveryTemplate({ params }: PageProps) {
         "@type": "BreadcrumbList",
         "@id": `https://www.splashdeals.rs/${categorySlug}#breadcrumb`,
         itemListElement: [
-          { "@type": "ListItem", position: 1, name: "Home", item: { "@id": "https://www.splashdeals.rs", name: "Home" } },
-          { "@type": "ListItem", position: 2, name: displayName, item: { "@id": `https://www.splashdeals.rs/${categorySlug}`, name: displayName } },
+          {
+            "@type": "ListItem",
+            position: 1,
+            name: "Home",
+            item: { "@id": "https://www.splashdeals.rs", name: "Home" },
+          },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: displayName,
+            item: { "@id": `https://www.splashdeals.rs/${categorySlug}`, name: displayName },
+          },
         ],
       },
     ],
   };
 
   return (
-    <div className="min-h-screen pb-32 pt-16 px-6 sm:px-12 max-w-7xl mx-auto">
+    <div className="mx-auto min-h-screen max-w-7xl px-6 pt-16 pb-32 sm:px-12">
       <JsonLd data={jsonLd} />
 
       <nav className="mb-12">
@@ -138,7 +148,7 @@ export async function DiscoveryTemplate({ params }: PageProps) {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage className="capitalize text-cyan-500 font-bold">
+              <BreadcrumbPage className="font-bold text-cyan-500 capitalize">
                 {displayName}
               </BreadcrumbPage>
             </BreadcrumbItem>
@@ -147,12 +157,12 @@ export async function DiscoveryTemplate({ params }: PageProps) {
       </nav>
 
       <header className="mb-20">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12">
+        <div className="mb-12 flex flex-col justify-between gap-8 md:flex-row md:items-end">
           <div className="max-w-3xl">
-            <span className="text-cyan-500 text-[10px] font-black uppercase tracking-[0.4em] mb-4 block animate-pulse">
+            <span className="mb-4 block animate-pulse text-[10px] font-black tracking-[0.4em] text-cyan-500 uppercase">
               {dict.facilities.category_discovery}
             </span>
-            <h1 className="text-5xl sm:text-8xl font-black tracking-tighter uppercase italic leading-[0.85] text-white">
+            <h1 className="text-5xl leading-[0.85] font-black tracking-tighter text-white uppercase italic sm:text-8xl">
               {dict.facilities.best_label} <br />{" "}
               <span className="text-splash capitalize">{displayName}</span>{" "}
               {dict.facilities.facilities_label}

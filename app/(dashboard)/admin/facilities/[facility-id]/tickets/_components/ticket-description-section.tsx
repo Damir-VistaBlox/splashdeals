@@ -1,21 +1,12 @@
-"use client"
+"use client";
 
-import type { Control, FieldValues, Path } from "react-hook-form"
-import {
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion"
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form"
-import { Textarea } from "@/components/ui/textarea"
+import type { Control, FieldValues, Path } from "react-hook-form";
+import { AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
+import { Textarea } from "@/components/ui/textarea";
 
 interface TicketDescriptionSectionProps<T extends FieldValues> {
-  control: Control<T>
+  control: Control<T>;
 }
 
 /**
@@ -27,27 +18,27 @@ export function TicketDescriptionSection<T extends FieldValues>({
   return (
     <AccordionItem
       value="description_section"
-      className="border border-border/50 bg-muted/10 rounded-2xl px-4 overflow-hidden transition-all hover:bg-muted/20"
+      className="border-border/50 bg-muted/10 hover:bg-muted/20 overflow-hidden rounded-2xl border px-4 transition-all"
     >
-      <AccordionTrigger className="text-sm font-bold hover:no-underline py-4 text-foreground/90">
+      <AccordionTrigger className="text-foreground/90 py-4 text-sm font-bold hover:no-underline">
         <div className="flex items-center gap-3">
           <div className="h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
           Opis i Sitna Slova
         </div>
       </AccordionTrigger>
-      <AccordionContent className="pb-5 space-y-4">
+      <AccordionContent className="space-y-4 pb-5">
         <FormField
           control={control}
           name={"finePrint" as Path<T>}
           render={({ field }) => (
             <FormItem className="space-y-1">
-              <FormLabel className="text-xs font-semibold text-muted-foreground">
+              <FormLabel className="text-muted-foreground text-xs font-semibold">
                 Važne Napomene (Sitna slova)
               </FormLabel>
               <FormControl>
                 <Textarea
                   placeholder="Npr. Nema povraćaja novca, samo radnim danima..."
-                  className="min-h-[70px] bg-background/60 border-border rounded-xl leading-relaxed text-xs text-foreground/80 placeholder-slate-600 focus:border-primary/50"
+                  className="bg-background/60 border-border text-foreground/80 focus:border-primary/50 min-h-[70px] rounded-xl text-xs leading-relaxed placeholder-slate-600"
                   {...field}
                   value={field.value || ""}
                 />
@@ -57,5 +48,5 @@ export function TicketDescriptionSection<T extends FieldValues>({
         />
       </AccordionContent>
     </AccordionItem>
-  )
+  );
 }

@@ -10,10 +10,9 @@ import dynamic from "next/dynamic";
 import { CartLoader } from "@/components/cart/CartLoader";
 import { GAScript } from "@/components/analytics/GoogleAnalytics";
 
-const Footer = dynamic(
-  () => import("@/components/layout/Footer").then((mod) => mod.Footer),
-  { ssr: true }
-);
+const Footer = dynamic(() => import("@/components/layout/Footer").then((mod) => mod.Footer), {
+  ssr: true,
+});
 
 import { WebVitals } from "./_components/WebVitals";
 import { BottomNav } from "@/components/layout/BottomNav";
@@ -53,11 +52,11 @@ async function WebLayoutContent({
     select: { slug: true, name: true, category: true },
   });
   const facilityMap = Object.fromEntries(
-    facilities.map((f) => [f.slug, { name: f.name, category: f.category }])
+    facilities.map((f) => [f.slug, { name: f.name, category: f.category }]),
   );
 
   return (
-    <div className="min-h-screen flex flex-col overflow-x-hidden font-sans">
+    <div className="flex min-h-screen flex-col overflow-x-hidden font-sans">
       <GlobalAmbient />
       <NavigationStructuredData />
       <Header dict={dict} cities={cities} />
@@ -68,7 +67,7 @@ async function WebLayoutContent({
       <main className="flex-grow pt-16 pb-16 sm:pb-0">
         <React.Suspense
           fallback={
-            <div className="flex-1 flex items-center justify-center p-20 animate-pulse bg-muted" />
+            <div className="bg-muted flex flex-1 animate-pulse items-center justify-center p-20" />
           }
         >
           {children}

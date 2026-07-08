@@ -36,7 +36,7 @@ function Counter({ value, suffix }: { value: string; suffix?: string }) {
           observer.disconnect();
         }
       },
-      { rootMargin: "-100px" }
+      { rootMargin: "-100px" },
     );
     observer.observe(el);
     return () => observer.disconnect();
@@ -58,9 +58,7 @@ function Counter({ value, suffix }: { value: string; suffix?: string }) {
         const eased = 1 - Math.pow(1 - progress, 3);
         const current = eased * targetValue;
 
-        setDisplayValue(
-          hasDecimals ? current.toFixed(1) : Math.round(current).toString()
-        );
+        setDisplayValue(hasDecimals ? current.toFixed(1) : Math.round(current).toString());
 
         if (progress < 1) {
           requestAnimationFrame(animateCount);
@@ -83,31 +81,31 @@ function Counter({ value, suffix }: { value: string; suffix?: string }) {
 
 export function StatsGrid({ stats }: StatsGridProps) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
       {stats.map((stat, index) => (
         <div
           key={stat.id}
           className="animate-fade-in-up"
           style={{ animationDelay: `${index * 0.1}s` }}
         >
-          <Card className="p-8 h-full flex flex-col justify-center items-center text-center group hover:border-primary/50 transition-colors duration-500 overflow-hidden">
-            <div className="text-4xl md:text-5xl font-black mb-2 bg-gradient-to-br from-foreground to-muted-foreground bg-clip-text text-transparent group-hover:from-primary group-hover:to-primary/70 transition-all flex items-baseline">
+          <Card className="group hover:border-primary/50 flex h-full flex-col items-center justify-center overflow-hidden p-8 text-center transition-colors duration-500">
+            <div className="from-foreground to-muted-foreground group-hover:from-primary group-hover:to-primary/70 mb-2 flex items-baseline bg-gradient-to-br bg-clip-text text-4xl font-black text-transparent transition-all md:text-5xl">
               <Counter value={stat.value} suffix={stat.suffix} />
             </div>
-            <div className="text-sm font-bold text-primary/80 uppercase tracking-widest mb-1">
+            <div className="text-primary/80 mb-1 text-sm font-bold tracking-widest uppercase">
               {stat.label}
             </div>
             {stat.sublabel && (
-              <div className="text-xs text-muted-foreground leading-relaxed max-w-[200px]">
+              <div className="text-muted-foreground max-w-[200px] text-xs leading-relaxed">
                 {stat.sublabel}
               </div>
             )}
-            
+
             {/* 🧪 Decorative accent */}
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-            
+            <div className="via-primary/20 absolute top-0 left-0 h-1 w-full bg-gradient-to-r from-transparent to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
+
             {/* 💎 Glass shine effect */}
-            <div className="absolute -inset-x-full top-0 h-full w-1/2 z-0 bg-gradient-to-r from-transparent via-foreground/5 to-transparent skew-x-[-25deg] group-hover:animate-shimmer transition-all" />
+            <div className="via-foreground/5 group-hover:animate-shimmer absolute -inset-x-full top-0 z-0 h-full w-1/2 skew-x-[-25deg] bg-gradient-to-r from-transparent to-transparent transition-all" />
           </Card>
         </div>
       ))}

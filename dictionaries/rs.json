@@ -309,11 +309,7 @@
     "sr_label": "Pretražite akva parkove, gradove ili akcije",
     "placeholder": "Pretražite akva parkove, gradove ili akcije...",
     "recent_searches": "Nedavne Pretrage",
-    "recent_chips": [
-      "Petroland",
-      "Beograd",
-      "Porodične Akcije"
-    ],
+    "recent_chips": ["Petroland", "Beograd", "Porodične Akcije"],
     "searching": "Pretražujemo Srpske Vode...",
     "no_results": "Nema pronađenih iskustava",
     "to_close": "za zatvaranje",

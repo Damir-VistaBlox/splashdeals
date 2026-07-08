@@ -11,11 +11,5 @@ interface JsonLdProps {
  */
 export function JsonLd({ data, id = "json-ld" }: JsonLdProps) {
   const jsonLd = JSON.stringify(data);
-  return (
-    <script
-      id={id}
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: jsonLd }}
-    />
-  );
+  return <script id={id} type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} />;
 }

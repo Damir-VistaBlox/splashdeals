@@ -1,27 +1,24 @@
-import { NextResponse } from "next/server"
-import { prisma } from "@/server/lib/prisma"
-import { authenticateRequest } from "@/server/lib/api-key-auth"
-import { requireSuperAdmin, validateFacilityAccess } from "@/server/lib/auth-guards"
-import { updateFacilityGovernanceSchema } from "@/server/lib/validations/facility"
-import { handleServerActionError } from "@/server/lib/server-action-error"
-export async function PATCH(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
+import { NextResponse } from "next/server";
+import { prisma } from "@/server/lib/prisma";
+import { authenticateRequest } from "@/server/lib/api-key-auth";
+import { requireSuperAdmin, validateFacilityAccess } from "@/server/lib/auth-guards";
+import { updateFacilityGovernanceSchema } from "@/server/lib/validations/facility";
+import { handleServerActionError } from "@/server/lib/server-action-error";
+export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     // 1. Authenticate (API Key or Session)
-    const user = await authenticateRequest(request).catch(() => requireSuperAdmin())
-    const { id: facilityId } = await params
+    const user = await authenticateRequest(request).catch(() => requireSuperAdmin());
+    const { id: facilityId } = await params;
 
     // 2. Authorize
-    await validateFacilityAccess(facilityId, user)
+    await validateFacilityAccess(facilityId, user);
 
     // 3. Validate Payload
-    const json = await request.json()
+    const json = await request.json();
     const validated = updateFacilityGovernanceSchema.parse({
       ...json,
       facilityId, // Ensure ID from URL matches
-    })
+    });
 
     // 4. Update Database
     const facility = await prisma.$transaction(async (tx) => {
@@ -46,31 +43,31 @@ export async function PATCH(
           seoArticle: validated.seoArticle,
           transitGuide: validated.transitGuide,
           status: validated.status,
-        }
-      })
+        },
+      });
 
       // Sync operating hours if provided
       if (validated.hours) {
         await tx.operatingHours.deleteMany({
-          where: { facilityId }
-        })
+          where: { facilityId },
+        });
         await tx.operatingHours.createMany({
-          data: validated.hours.map(h => ({
+          data: validated.hours.map((h) => ({
             facilityId,
             dayOfWeek: h.dayOfWeek,
             openTime: h.openTime,
             closeTime: h.closeTime,
-            isClosed: h.isClosed
-          }))
-        })
+            isClosed: h.isClosed,
+          })),
+        });
       }
 
-      return updated
-    })
+      return updated;
+    });
 
-    return NextResponse.json(facility)
+    return NextResponse.json(facility);
   } catch (error) {
-    const result = handleServerActionError(error)
-    return NextResponse.json(result, { status: result.error ? 400 : 500 })
+    const result = handleServerActionError(error);
+    return NextResponse.json(result, { status: result.error ? 400 : 500 });
   }
 }

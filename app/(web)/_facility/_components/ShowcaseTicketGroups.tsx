@@ -1,14 +1,14 @@
-"use client"
-import { Icon } from "@/components/ui/Icon"
-import { useState, useEffect } from "react"
-import { Card } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { useCart, MAX_QUANTITY_PER_ITEM } from "@/hooks/use-cart"
-import { cn } from "@/lib/utils"
-import Image from "next/image"
-import { TicketPurchaseModal } from "./TicketPurchaseModal"
-import { Spinner } from "@/components/ui/spinner"
+"use client";
+import { Icon } from "@/components/ui/Icon";
+import { useState, useEffect } from "react";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { useCart, MAX_QUANTITY_PER_ITEM } from "@/hooks/use-cart";
+import { cn } from "@/lib/utils";
+import Image from "next/image";
+import { TicketPurchaseModal } from "./TicketPurchaseModal";
+import { Spinner } from "@/components/ui/spinner";
 
 interface TicketTier {
   id: string;
@@ -64,7 +64,7 @@ const parseFacilityName = (name: string) => {
     if (name.startsWith(prefix)) {
       return {
         prefix,
-        main: name.slice(prefix.length).trim()
+        main: name.slice(prefix.length).trim(),
       };
     }
   }
@@ -116,17 +116,28 @@ interface ShowcaseTicketGroupsProps {
     city: string;
     slug: string | null;
   };
-  ticketProductMap?: Record<string, {
-    id: string;
-    title: string;
-    label: string | null;
-    minPeople: number;
-    maxPeople: number | null;
-    prices: PriceOption[];
-  }>;
+  ticketProductMap?: Record<
+    string,
+    {
+      id: string;
+      title: string;
+      label: string | null;
+      minPeople: number;
+      maxPeople: number | null;
+      prices: PriceOption[];
+    }
+  >;
 }
 
-export function ShowcaseTicketGroups({ groups, facilityId, facilitySlug, facilityName, category, facility, ticketProductMap }: ShowcaseTicketGroupsProps) {
+export function ShowcaseTicketGroups({
+  groups,
+  facilityId,
+  facilitySlug,
+  facilityName,
+  category,
+  facility,
+  ticketProductMap,
+}: ShowcaseTicketGroupsProps) {
   const { prefix, main } = parseFacilityName(facilityName);
   const [activeGroupId, setActiveGroupId] = useState<string>(groups[0]?.id || "");
   const [quantities, setQuantities] = useState<Record<string, number>>({});
@@ -138,16 +149,16 @@ export function ShowcaseTicketGroups({ groups, facilityId, facilitySlug, facilit
 
   const getQuantity = (id: string) => quantities[id] || 0;
   const setQuantity = (id: string, q: number) => {
-    if (typeof navigator !== 'undefined' && "vibrate" in navigator) {
+    if (typeof navigator !== "undefined" && "vibrate" in navigator) {
       navigator.vibrate(10);
     }
-    setQuantities(prev => ({ ...prev, [id]: Math.max(0, q) }));
+    setQuantities((prev) => ({ ...prev, [id]: Math.max(0, q) }));
   };
 
   if (groups.length === 0) {
     return (
-      <div className="w-full py-24 text-center space-y-4">
-        <Icon name="shopping_bag" className="text-[48px] text-foreground mx-auto" />
+      <div className="w-full space-y-4 py-24 text-center">
+        <Icon name="shopping_bag" className="text-foreground mx-auto text-[48px]" />
         <p className="text-muted-foreground italic">Trenutno nema dostupnih ponuda.</p>
       </div>
     );
@@ -187,11 +198,11 @@ export function ShowcaseTicketGroups({ groups, facilityId, facilitySlug, facilit
   };
 
   return (
-    <div className="space-y-8 w-full max-w-6xl mx-auto pb-24 md:pb-0">
+    <div className="mx-auto w-full max-w-6xl space-y-8 pb-24 md:pb-0">
       {/* Scrollable glass pill tabs container */}
-      <div className="relative w-full mb-8">
-        <div className="absolute right-[-24px] top-0 bottom-0 w-16 bg-gradient-to-l from-background via-background/60 to-transparent pointer-events-none z-10 md:hidden" />
-        <div className="overflow-x-auto no-scrollbar scroll-smooth flex gap-2 pb-2 pt-1 px-6 -mx-6 md:mx-0 md:px-1 md:py-1 bg-transparent md:bg-muted/50 md:backdrop-blur-md rounded-none md:rounded-full border-none md:border md:border-border">
+      <div className="relative mb-8 w-full">
+        <div className="from-background via-background/60 pointer-events-none absolute top-0 right-[-24px] bottom-0 z-10 w-16 bg-gradient-to-l to-transparent md:hidden" />
+        <div className="no-scrollbar md:bg-muted/50 md:border-border -mx-6 flex gap-2 overflow-x-auto scroll-smooth rounded-none border-none bg-transparent px-6 pt-1 pb-2 md:mx-0 md:rounded-full md:border md:px-1 md:py-1 md:backdrop-blur-md">
           {groups.map((group) => {
             const isActive = group.id === activeGroupId;
             return (
@@ -199,15 +210,13 @@ export function ShowcaseTicketGroups({ groups, facilityId, facilitySlug, facilit
                 key={group.id}
                 onClick={() => setActiveGroupId(group.id)}
                 className={cn(
-                  "relative px-6 py-3 rounded-full text-xs font-black uppercase tracking-widest transition-all duration-300 shrink-0 select-none",
-                  isActive 
-                    ? "text-primary-foreground" 
-                    : "text-muted-foreground hover:text-foreground bg-muted/50 md:bg-transparent border border-border md:border-none"
+                  "relative shrink-0 rounded-full px-6 py-3 text-xs font-black tracking-widest uppercase transition-all duration-300 select-none",
+                  isActive
+                    ? "text-primary-foreground"
+                    : "text-muted-foreground hover:text-foreground bg-muted/50 border-border border md:border-none md:bg-transparent",
                 )}
               >
-                {isActive && (
-                  <div className="absolute inset-0 bg-primary rounded-full" />
-                )}
+                {isActive && <div className="bg-primary absolute inset-0 rounded-full" />}
                 <span className="relative z-10">{group.title}</span>
               </button>
             );
@@ -217,7 +226,7 @@ export function ShowcaseTicketGroups({ groups, facilityId, facilitySlug, facilit
 
       {activeGroup && (
         <div key={activeGroupId} className="w-full space-y-6">
-          {(activeGroup.description) && (
+          {activeGroup.description && (
             <div className="px-2 md:hidden">
               <p className="text-muted-foreground text-sm font-medium italic">
                 {activeGroup.description}
@@ -238,7 +247,7 @@ export function ShowcaseTicketGroups({ groups, facilityId, facilitySlug, facilit
                 onAdd={() => setSelectedTicket(activeGroup.tiers[0])}
               />
             ) : activeGroup.tiers.length >= 5 ? (
-              <Card className="p-8 border-border overflow-visible">
+              <Card className="border-border overflow-visible p-8">
                 <TierGrid
                   prefix={prefix}
                   main={main}
@@ -249,7 +258,7 @@ export function ShowcaseTicketGroups({ groups, facilityId, facilitySlug, facilit
                 />
               </Card>
             ) : (
-              <Card className="p-8 border-border overflow-visible">
+              <Card className="border-border overflow-visible p-8">
                 <TierList
                   prefix={prefix}
                   main={main}
@@ -263,10 +272,14 @@ export function ShowcaseTicketGroups({ groups, facilityId, facilitySlug, facilit
           </div>
 
           {/* Mobile: Accordion-style rows */}
-          <div className="block md:hidden space-y-2">
+          <div className="block space-y-2 md:hidden">
             {activeGroup.tiers.map((tier: TicketTier) => {
               const label = (tier.label || "").toLowerCase();
-              const isFeatured = label.includes("porodičn") || label.includes("paket") || label.includes("sezonsk") || label.includes("grupa");
+              const isFeatured =
+                label.includes("porodičn") ||
+                label.includes("paket") ||
+                label.includes("sezonsk") ||
+                label.includes("grupa");
               return (
                 <MobileTicketAccordion
                   key={tier.id}
@@ -275,7 +288,9 @@ export function ShowcaseTicketGroups({ groups, facilityId, facilitySlug, facilit
                   isHighlighted={isFeatured}
                   isExpanded={expandedTier === tier.id}
                   onToggle={() => setExpandedTier(expandedTier === tier.id ? null : tier.id)}
-                  cartCount={cartItems.filter(i => i.ticketId === tier.id).reduce((a, i) => a + i.quantity, 0)}
+                  cartCount={cartItems
+                    .filter((i) => i.ticketId === tier.id)
+                    .reduce((a, i) => a + i.quantity, 0)}
                   ticketProductMap={ticketProductMap}
                 />
               );
@@ -286,20 +301,24 @@ export function ShowcaseTicketGroups({ groups, facilityId, facilitySlug, facilit
 
       {/* Sticky Drawer */}
       {totalItems > 0 && (
-        <div className="fixed bottom-20 left-4 right-4 z-[999] md:hidden animate-in slide-in-from-bottom duration-300">
-          <div className="mobile-glass rounded-3xl p-4 shadow-[0_0_25px_rgba(6,182,212,0.1)] flex items-center justify-between gap-4">
+        <div className="animate-in slide-in-from-bottom fixed right-4 bottom-20 left-4 z-[999] duration-300 md:hidden">
+          <div className="mobile-glass flex items-center justify-between gap-4 rounded-3xl p-4 shadow-[0_0_25px_rgba(6,182,212,0.1)]">
             <div className="space-y-0.5">
-              <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Korpa</span>
+              <span className="text-muted-foreground text-[9px] font-black tracking-widest uppercase">
+                Korpa
+              </span>
               <div className="flex items-baseline gap-2">
-                <span className="text-sm font-black text-foreground">
-                  {totalItems} {totalItems === 1 ? 'ulaznica' : 'ulaznice'}
+                <span className="text-foreground text-sm font-black">
+                  {totalItems} {totalItems === 1 ? "ulaznica" : "ulaznice"}
                 </span>
-                <span className="text-xs font-bold text-primary">{totalPrice.toLocaleString("sr-Latn")} RSD</span>
+                <span className="text-primary text-xs font-bold">
+                  {totalPrice.toLocaleString("sr-Latn")} RSD
+                </span>
               </div>
             </div>
             <button
-              onClick={() => window.location.href = "/cart"}
-              className="px-6 h-12 bg-primary hover:bg-primary/90 active:scale-95 transition-all text-primary-foreground font-black text-xs uppercase tracking-widest rounded-2xl flex items-center gap-2 shadow-[0_0_20px_rgba(6,182,212,0.3)] shrink-0 cursor-pointer"
+              onClick={() => (window.location.href = "/cart")}
+              className="bg-primary hover:bg-primary/90 text-primary-foreground flex h-12 shrink-0 cursor-pointer items-center gap-2 rounded-2xl px-6 text-xs font-black tracking-widest uppercase shadow-[0_0_20px_rgba(6,182,212,0.3)] transition-all active:scale-95"
             >
               <span>Kupi</span>
               <Icon name="arrow_forward" className="text-[16px]" />
@@ -323,24 +342,39 @@ export function ShowcaseTicketGroups({ groups, facilityId, facilitySlug, facilit
 
 // ─── Mobile Accordion ─────────────────────────────────────────
 
-function MobileTicketAccordion({ tier, facility, isHighlighted, isExpanded, onToggle, cartCount, ticketProductMap }: {
+function MobileTicketAccordion({
+  tier,
+  facility,
+  isHighlighted,
+  isExpanded,
+  onToggle,
+  cartCount,
+  ticketProductMap,
+}: {
   tier: TicketTier;
   facility: { id: string; name: string; category: string };
   isHighlighted: boolean;
   isExpanded: boolean;
   onToggle: () => void;
   cartCount: number;
-  ticketProductMap?: Record<string, {
-    id: string;
-    title: string;
-    label: string | null;
-    minPeople: number;
-    maxPeople: number | null;
-    prices: PriceOption[];
-  }>;
+  ticketProductMap?: Record<
+    string,
+    {
+      id: string;
+      title: string;
+      label: string | null;
+      minPeople: number;
+      maxPeople: number | null;
+      prices: PriceOption[];
+    }
+  >;
 }) {
   const hasDiscount = tier.originalPrice && Number(tier.originalPrice) > Number(tier.price);
-  const discountPercent = hasDiscount ? Math.round(((Number(tier.originalPrice) - Number(tier.price)) / Number(tier.originalPrice)) * 100) : 0;
+  const discountPercent = hasDiscount
+    ? Math.round(
+        ((Number(tier.originalPrice) - Number(tier.price)) / Number(tier.originalPrice)) * 100,
+      )
+    : 0;
   const addItem = useCart((state) => state.addItem);
 
   // ─── Expanded content state ─────────────────────────────────
@@ -351,7 +385,7 @@ function MobileTicketAccordion({ tier, facility, isHighlighted, isExpanded, onTo
   const [isAdding, setIsAdding] = useState(false);
   const [isAdded, setIsAdded] = useState(false);
 
-// Resolve prices from the prop map (no API call needed)
+  // Resolve prices from the prop map (no API call needed)
   useEffect(() => {
     if (!isExpanded || !ticketProductMap) return;
     requestAnimationFrame(() => setLoadingPrices(true));
@@ -370,7 +404,8 @@ function MobileTicketAccordion({ tier, facility, isHighlighted, isExpanded, onTo
   }, [isExpanded, ticketProductMap, tier.id]);
 
   const activeProduct = products.find((p) => p.id === tier.id);
-  const activePrice = activeProduct?.prices.find((p) => p.id === selectedPrice) ?? activeProduct?.prices[0] ?? null;
+  const activePrice =
+    activeProduct?.prices.find((p) => p.id === selectedPrice) ?? activeProduct?.prices[0] ?? null;
   const bestDealId = activeProduct ? findBestDeal(activeProduct.prices) : null;
 
   const handleAdd = () => {
@@ -386,7 +421,9 @@ function MobileTicketAccordion({ tier, facility, isHighlighted, isExpanded, onTo
       currency: "RSD",
       requiresIdentity: false,
       requiresPhoto: false,
-      validityType: activeProduct.title.toLowerCase().includes("sezonsk") ? "SUMMER_SEASON" : "FLEXIBLE_30_DAY",
+      validityType: activeProduct.title.toLowerCase().includes("sezonsk")
+        ? "SUMMER_SEASON"
+        : "FLEXIBLE_30_DAY",
       minPeople: activeProduct.minPeople || 1,
       maxPeople: activeProduct.maxPeople || null,
       imageUrl: null,
@@ -404,66 +441,86 @@ function MobileTicketAccordion({ tier, facility, isHighlighted, isExpanded, onTo
   };
 
   return (
-    <div className="border-b border-border/40 overflow-hidden transition-all duration-300">
+    <div className="border-border/40 overflow-hidden border-b transition-all duration-300">
       {/* Collapsed row */}
       <button
         onClick={onToggle}
-        className="w-full flex items-center justify-between px-3 py-3 transition-colors hover:bg-muted/10 active:bg-muted/20"
+        className="hover:bg-muted/10 active:bg-muted/20 flex w-full items-center justify-between px-3 py-3 transition-colors"
       >
-        <div className="flex items-center gap-2 min-w-0 flex-1 text-left">
+        <div className="flex min-w-0 flex-1 items-center gap-2 text-left">
           {tier.imageUrl && (
-            <div className="relative w-10 h-10 shrink-0 rounded-xl overflow-hidden border border-border/50">
-              <Image src={tier.imageUrl} alt={tier.label || tier.title} fill className="object-cover" sizes="40px" />
+            <div className="border-border/50 relative h-10 w-10 shrink-0 overflow-hidden rounded-xl border">
+              <Image
+                src={tier.imageUrl}
+                alt={tier.label || tier.title}
+                fill
+                className="object-cover"
+                sizes="40px"
+              />
             </div>
           )}
-          <span className="text-sm font-bold text-foreground tracking-tight truncate">{tier.label}</span>
+          <span className="text-foreground truncate text-sm font-bold tracking-tight">
+            {tier.label}
+          </span>
           {hasDiscount && (
-            <span className="shrink-0 inline-flex items-center justify-center w-[22px] h-[22px] bg-secondary text-secondary-foreground font-black text-[9px] leading-none rounded-full shadow-sm">
+            <span className="bg-secondary text-secondary-foreground inline-flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-full text-[9px] leading-none font-black shadow-sm">
               {discountPercent}
             </span>
           )}
           {isHighlighted && (
-            <span className="shrink-0 text-[7px] font-black uppercase tracking-widest bg-primary/15 text-primary px-1.5 py-0.5 rounded-full leading-none">
+            <span className="bg-primary/15 text-primary shrink-0 rounded-full px-1.5 py-0.5 text-[7px] leading-none font-black tracking-widest uppercase">
               Najpopularnije
             </span>
           )}
           {cartCount > 0 && (
-            <span className="shrink-0 inline-flex items-center justify-center w-5 h-5 bg-primary text-primary-foreground text-[9px] font-black rounded-full">
+            <span className="bg-primary text-primary-foreground inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[9px] font-black">
               {cartCount}
             </span>
           )}
         </div>
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex shrink-0 items-center gap-2">
           {tier.originalPrice && Number(tier.originalPrice) > 0 && (
             <div className="flex items-baseline gap-1">
-              <span className="text-[10px] font-bold text-muted-foreground line-through tabular-nums leading-none">
+              <span className="text-muted-foreground text-[10px] leading-none font-bold tabular-nums line-through">
                 {Number(tier.originalPrice).toLocaleString("sr-RS")}
               </span>
-              <span className="text-[7px] text-muted-foreground font-bold">RSD</span>
+              <span className="text-muted-foreground text-[7px] font-bold">RSD</span>
             </div>
           )}
-          <Icon name={isExpanded ? "expand_less" : "expand_more"} className="text-[18px] text-muted-foreground" />
+          <Icon
+            name={isExpanded ? "expand_less" : "expand_more"}
+            className="text-muted-foreground text-[18px]"
+          />
         </div>
       </button>
 
       {/* Expanded content */}
       {isExpanded && (
-        <div className="px-3 pb-4 animate-fade-in">
+        <div className="animate-fade-in px-3 pb-4">
           {loadingPrices ? (
             <div className="flex items-center justify-center py-8">
               <Spinner />
             </div>
           ) : !activeProduct || activeProduct.prices.length === 0 ? (
-            <p className="text-xs text-muted-foreground italic py-4 text-center">Nema dostupnih varijanti.</p>
+            <p className="text-muted-foreground py-4 text-center text-xs italic">
+              Nema dostupnih varijanti.
+            </p>
           ) : (
             <div className="space-y-3">
               {/* Variation options */}
-              <div className="divide-y divide-border/40">
-                <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest pb-1.5 block">Izaberite varijantu</span>
+              <div className="divide-border/40 divide-y">
+                <span className="text-muted-foreground block pb-1.5 text-[8px] font-black tracking-widest uppercase">
+                  Izaberite varijantu
+                </span>
                 {activeProduct.prices.map((p) => {
                   const isSel = selectedPrice === p.id;
                   const hasDisc = p.originalPrice && p.originalPrice > p.price;
-                  const discPct = hasDisc ? Math.round(((Number(p.originalPrice) - Number(p.price)) / Number(p.originalPrice)) * 100) : 0;
+                  const discPct = hasDisc
+                    ? Math.round(
+                        ((Number(p.originalPrice) - Number(p.price)) / Number(p.originalPrice)) *
+                          100,
+                      )
+                    : 0;
                   const dayLabel = DAY_LABELS[p.dayType ?? "ALL"];
                   const timeLabel = TIME_LABELS[p.timeSlot ?? "FULL_DAY"];
                   const displayLabel = p.label || `${dayLabel} — ${timeLabel}`;
@@ -472,23 +529,27 @@ function MobileTicketAccordion({ tier, facility, isHighlighted, isExpanded, onTo
                     <button
                       key={p.id}
                       onClick={() => setSelectedPrice(p.id)}
-                      className={`w-full text-left py-2.5 flex items-center justify-between transition-colors ${
+                      className={`flex w-full items-center justify-between py-2.5 text-left transition-colors ${
                         isSel ? "bg-primary/[0.02]" : "hover:bg-muted/10 active:bg-muted/20"
                       }`}
                     >
-                      <div className="flex items-center gap-2 min-w-0 flex-1">
-                        <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${
-                          isSel ? "border-primary" : "border-muted-foreground/30"
-                        }`}>
-                          {isSel && <div className="w-2 h-2 rounded-full bg-primary" />}
+                      <div className="flex min-w-0 flex-1 items-center gap-2">
+                        <div
+                          className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-2 transition-all ${
+                            isSel ? "border-primary" : "border-muted-foreground/30"
+                          }`}
+                        >
+                          {isSel && <div className="bg-primary h-2 w-2 rounded-full" />}
                         </div>
                         <div className="min-w-0">
-                          <span className="text-sm font-bold text-foreground block truncate">{displayLabel}</span>
+                          <span className="text-foreground block truncate text-sm font-bold">
+                            {displayLabel}
+                          </span>
                           {hasDisc && (
-                            <span className="text-[9px] text-muted-foreground flex items-center gap-1">
+                            <span className="text-muted-foreground flex items-center gap-1 text-[9px]">
                               Ušteda {discPct}%
                               {p.id === bestDealId && (
-                                <span className="text-[7px] font-black uppercase tracking-widest bg-secondary/20 text-secondary px-1 py-[1px] rounded-full leading-none">
+                                <span className="bg-secondary/20 text-secondary rounded-full px-1 py-[1px] text-[7px] leading-none font-black tracking-widest uppercase">
                                   Najbolja ponuda
                                 </span>
                               )}
@@ -496,11 +557,13 @@ function MobileTicketAccordion({ tier, facility, isHighlighted, isExpanded, onTo
                           )}
                         </div>
                       </div>
-                      <div className="flex items-baseline gap-1.5 shrink-0">
-                        <span className="text-sm font-black text-foreground">{p.price.toLocaleString("sr-RS")}</span>
-                        <span className="text-[9px] font-bold text-primary">RSD</span>
+                      <div className="flex shrink-0 items-baseline gap-1.5">
+                        <span className="text-foreground text-sm font-black">
+                          {p.price.toLocaleString("sr-RS")}
+                        </span>
+                        <span className="text-primary text-[9px] font-bold">RSD</span>
                         {hasDisc && (
-                          <span className="text-[8px] text-muted-foreground line-through ml-0.5">
+                          <span className="text-muted-foreground ml-0.5 text-[8px] line-through">
                             {p.originalPrice?.toLocaleString("sr-RS")}
                           </span>
                         )}
@@ -512,20 +575,30 @@ function MobileTicketAccordion({ tier, facility, isHighlighted, isExpanded, onTo
 
               {/* Quantity + Total + CTA */}
               <div className="flex items-center justify-between pt-2">
-                <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Količina</span>
-                <div className="flex items-center bg-muted/60 rounded-2xl p-1 border border-border shadow-inner">
+                <span className="text-muted-foreground text-[9px] font-black tracking-widest uppercase">
+                  Količina
+                </span>
+                <div className="bg-muted/60 border-border flex items-center rounded-2xl border p-1 shadow-inner">
                   <button
                     onClick={() => setQty(Math.max(activeProduct.minPeople || 1, qty - 1))}
-                    className="w-8 h-8 flex items-center justify-center hover:bg-muted/40 active:bg-muted/60 rounded-xl transition-all text-muted-foreground hover:text-foreground active:scale-90"
+                    className="hover:bg-muted/40 active:bg-muted/60 text-muted-foreground hover:text-foreground flex h-8 w-8 items-center justify-center rounded-xl transition-all active:scale-90"
                     disabled={isAdding || isAdded || qty <= (activeProduct.minPeople || 1)}
                   >
                     <Icon name="remove" className="text-[12px]" />
                   </button>
-                  <span className="w-8 text-center font-black text-foreground text-sm select-none">{qty}</span>
+                  <span className="text-foreground w-8 text-center text-sm font-black select-none">
+                    {qty}
+                  </span>
                   <button
-                    onClick={() => setQty(Math.min(activeProduct.maxPeople ?? MAX_QUANTITY_PER_ITEM, qty + 1))}
-                    className="w-8 h-8 flex items-center justify-center hover:bg-muted/40 active:bg-muted/60 rounded-xl transition-all text-muted-foreground hover:text-foreground active:scale-90"
-                    disabled={isAdding || isAdded || qty >= (activeProduct.maxPeople ?? MAX_QUANTITY_PER_ITEM)}
+                    onClick={() =>
+                      setQty(Math.min(activeProduct.maxPeople ?? MAX_QUANTITY_PER_ITEM, qty + 1))
+                    }
+                    className="hover:bg-muted/40 active:bg-muted/60 text-muted-foreground hover:text-foreground flex h-8 w-8 items-center justify-center rounded-xl transition-all active:scale-90"
+                    disabled={
+                      isAdding ||
+                      isAdded ||
+                      qty >= (activeProduct.maxPeople ?? MAX_QUANTITY_PER_ITEM)
+                    }
                   >
                     <Icon name="add" className="text-[12px]" />
                   </button>
@@ -533,9 +606,11 @@ function MobileTicketAccordion({ tier, facility, isHighlighted, isExpanded, onTo
               </div>
 
               {activePrice && (
-                <div className="flex justify-between items-center">
-                  <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Ukupno</span>
-                  <span className="text-lg font-black text-foreground">
+                <div className="flex items-center justify-between">
+                  <span className="text-muted-foreground text-[10px] font-bold tracking-widest uppercase">
+                    Ukupno
+                  </span>
+                  <span className="text-foreground text-lg font-black">
                     {(activePrice.price * qty).toLocaleString("sr-RS")} RSD
                   </span>
                 </div>
@@ -544,7 +619,7 @@ function MobileTicketAccordion({ tier, facility, isHighlighted, isExpanded, onTo
               <button
                 onClick={handleAdd}
                 disabled={isAdding || isAdded || !activePrice}
-                className={`w-full h-12 rounded-2xl border flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-widest transition-all duration-300 ${
+                className={`flex h-12 w-full items-center justify-center gap-2 rounded-2xl border text-[10px] font-black tracking-widest uppercase transition-all duration-300 ${
                   isAdded
                     ? "border-primary/30 bg-primary/10 text-primary"
                     : isAdding
@@ -553,11 +628,20 @@ function MobileTicketAccordion({ tier, facility, isHighlighted, isExpanded, onTo
                 }`}
               >
                 {isAdded ? (
-                  <><Icon name="check" className="text-[16px] animate-scale-in" /><span>Dodato u korpu!</span></>
+                  <>
+                    <Icon name="check" className="animate-scale-in text-[16px]" />
+                    <span>Dodato u korpu!</span>
+                  </>
                 ) : isAdding ? (
-                  <><Spinner className="mr-2 inline" style={{width:"1rem",height:"1rem"}} /><span>Dodavanje...</span></>
+                  <>
+                    <Spinner className="mr-2 inline" style={{ width: "1rem", height: "1rem" }} />
+                    <span>Dodavanje...</span>
+                  </>
                 ) : (
-                  <><Icon name="shopping_bag" className="text-[16px]" /><span>Dodaj u korpu</span></>
+                  <>
+                    <Icon name="shopping_bag" className="text-[16px]" />
+                    <span>Dodaj u korpu</span>
+                  </>
                 )}
               </button>
             </div>
@@ -570,7 +654,15 @@ function MobileTicketAccordion({ tier, facility, isHighlighted, isExpanded, onTo
 
 // ─── Desktop components (unchanged) ────────────────────────────
 
-function SingleTierCard({ group, tier, quantity, setQuantity, onAdd, prefix: _prefix, main }: {
+function SingleTierCard({
+  group,
+  tier,
+  quantity,
+  setQuantity,
+  onAdd,
+  prefix: _prefix,
+  main,
+}: {
   group: TicketGroup;
   tier: TicketTier;
   quantity: number;
@@ -580,21 +672,24 @@ function SingleTierCard({ group, tier, quantity, setQuantity, onAdd, prefix: _pr
   main: string;
 }) {
   return (
-    <Card id={`ticket-${tier.id}`} className="p-12 flex flex-col md:flex-row items-center justify-between gap-12 group border-border">
-      <div className="space-y-4 text-center md:text-left flex-1">
-        <div className="flex flex-wrap gap-2 justify-center md:justify-start">
-          <Badge className="bg-primary/10 text-primary font-black uppercase tracking-widest text-[10px] border-primary/20">
+    <Card
+      id={`ticket-${tier.id}`}
+      className="group border-border flex flex-col items-center justify-between gap-12 p-12 md:flex-row"
+    >
+      <div className="flex-1 space-y-4 text-center md:text-left">
+        <div className="flex flex-wrap justify-center gap-2 md:justify-start">
+          <Badge className="bg-primary/10 text-primary border-primary/20 text-[10px] font-black tracking-widest uppercase">
             {tier.isSeasonPass ? "Sezonska karta" : "Ulaznica"}
           </Badge>
           {tier.maxPeople && tier.maxPeople > 1 && (
-            <Badge className="bg-emerald-500/10 text-emerald-400 font-black uppercase tracking-widest text-[10px] border-emerald-500/20">
+            <Badge className="border-emerald-500/20 bg-emerald-500/10 text-[10px] font-black tracking-widest text-emerald-400 uppercase">
               Porodični paket
             </Badge>
           )}
         </div>
         {tier.imageUrl && (
           <div className="flex items-start gap-4">
-            <div className="relative w-24 h-24 shrink-0 rounded-xl overflow-hidden border border-border/50">
+            <div className="border-border/50 relative h-24 w-24 shrink-0 overflow-hidden rounded-xl border">
               <Image
                 src={tier.imageUrl}
                 alt={tier.title || tier.label}
@@ -604,10 +699,10 @@ function SingleTierCard({ group, tier, quantity, setQuantity, onAdd, prefix: _pr
               />
             </div>
             <div className="space-y-2">
-              <h3 className="text-xl md:text-3xl font-black text-foreground italic tracking-tighter uppercase leading-none group-hover:text-primary transition-colors">
+              <h3 className="text-foreground group-hover:text-primary text-xl leading-none font-black tracking-tighter uppercase italic transition-colors md:text-3xl">
                 {group.title}
               </h3>
-              <p className="text-muted-foreground font-medium max-w-md italic">
+              <p className="text-muted-foreground max-w-md font-medium italic">
                 {group.description || "Digitalna ulaznica za premium pristup sadržajima parka."}
               </p>
             </div>
@@ -615,92 +710,122 @@ function SingleTierCard({ group, tier, quantity, setQuantity, onAdd, prefix: _pr
         )}
         {!tier.imageUrl && (
           <div className="space-y-2">
-            <h3 className="text-xl md:text-3xl font-black text-foreground italic tracking-tighter uppercase leading-none group-hover:text-primary transition-colors">
+            <h3 className="text-foreground group-hover:text-primary text-xl leading-none font-black tracking-tighter uppercase italic transition-colors md:text-3xl">
               {group.title}
             </h3>
-            <p className="text-muted-foreground font-medium max-w-md italic">
+            <p className="text-muted-foreground max-w-md font-medium italic">
               {group.description || "Digitalna ulaznica za premium pristup sadržajima parka."}
             </p>
           </div>
         )}
       </div>
 
-      <div className="w-full md:w-auto space-y-8 bg-muted/50 p-8 rounded-[2.5rem] border border-border backdrop-blur-3xl min-w-[320px]">
+      <div className="bg-muted/50 border-border w-full min-w-[320px] space-y-8 rounded-[2.5rem] border p-8 backdrop-blur-3xl md:w-auto">
         {/* Mobile only */}
-        <div className="flex md:hidden items-center justify-between gap-4">
+        <div className="flex items-center justify-between gap-4 md:hidden">
           {tier.originalPrice && Number(tier.originalPrice) > Number(tier.price) ? (
-            <div className="flex items-center gap-2 w-full justify-between">
-              <div className="bg-rose-950/20 border border-rose-500/20 px-3 py-1.5 rounded-xl flex flex-col items-center justify-center min-w-[100px] flex-1">
-                <span className="text-[8px] font-black text-rose-400 uppercase tracking-widest leading-none mb-1">
+            <div className="flex w-full items-center justify-between gap-2">
+              <div className="flex min-w-[100px] flex-1 flex-col items-center justify-center rounded-xl border border-rose-500/20 bg-rose-950/20 px-3 py-1.5">
+                <span className="mb-1 text-[8px] leading-none font-black tracking-widest text-rose-400 uppercase">
                   {main} cene
                 </span>
-                <span className="relative text-sm font-bold text-muted-foreground leading-none">
-                  {tier.originalPrice} <span className="text-[9px] text-muted-foreground">RSD</span>
-                  <span className="absolute left-[-2px] right-[-2px] top-1/2 h-[1.5px] bg-rose-500 -rotate-12 pointer-events-none" />
+                <span className="text-muted-foreground relative text-sm leading-none font-bold">
+                  {tier.originalPrice} <span className="text-muted-foreground text-[9px]">RSD</span>
+                  <span className="pointer-events-none absolute top-1/2 right-[-2px] left-[-2px] h-[1.5px] -rotate-12 bg-rose-500" />
                 </span>
               </div>
-              <div className="bg-primary/10 border border-primary/30 px-3 py-1.5 rounded-xl flex flex-col items-center justify-center min-w-[110px] flex-1 shadow-[0_0_15px_rgba(6,182,212,0.1)]">
-                <span className="text-[8px] font-black text-primary uppercase tracking-widest leading-none mb-1">Kupi online</span>
-                <span className="text-base font-black text-foreground leading-none">{tier.price} RSD</span>
+              <div className="bg-primary/10 border-primary/30 flex min-w-[110px] flex-1 flex-col items-center justify-center rounded-xl border px-3 py-1.5 shadow-[0_0_15px_rgba(6,182,212,0.1)]">
+                <span className="text-primary mb-1 text-[8px] leading-none font-black tracking-widest uppercase">
+                  Kupi online
+                </span>
+                <span className="text-foreground text-base leading-none font-black">
+                  {tier.price} RSD
+                </span>
               </div>
             </div>
           ) : (
             <div className="space-y-1">
-              <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Cena</span>
+              <span className="text-muted-foreground text-[10px] font-black tracking-widest uppercase">
+                Cena
+              </span>
               <div className="flex items-baseline gap-2">
-                <span className="text-4xl font-black text-foreground tracking-tighter">{tier.price}</span>
-                <span className="text-xs font-black text-primary uppercase">RSD</span>
+                <span className="text-foreground text-4xl font-black tracking-tighter">
+                  {tier.price}
+                </span>
+                <span className="text-primary text-xs font-black uppercase">RSD</span>
               </div>
             </div>
           )}
         </div>
 
         {/* Desktop only */}
-        <div className="hidden md:flex items-end justify-between gap-6 w-full">
+        <div className="hidden w-full items-end justify-between gap-6 md:flex">
           {tier.originalPrice && Number(tier.originalPrice) > Number(tier.price) ? (
-            <div className="flex items-end justify-between w-full">
+            <div className="flex w-full items-end justify-between">
               <div className="space-y-1.5 pr-2">
-                <span className="text-[9px] font-black uppercase tracking-wider text-muted-foreground block">
+                <span className="text-muted-foreground block text-[9px] font-black tracking-wider uppercase">
                   {main} cene
                 </span>
                 <div className="relative inline-flex items-center">
-                  <span className="text-3xl font-black text-muted-foreground italic tracking-tight opacity-70">
+                  <span className="text-muted-foreground text-3xl font-black tracking-tight italic opacity-70">
                     {tier.originalPrice}
                   </span>
-                  <span className="text-[10px] text-muted-foreground font-bold ml-1 opacity-70">RSD</span>
-                  <span className="absolute left-[-4px] right-[-4px] top-1/2 h-[3px] bg-rose-500 -rotate-12 origin-center pointer-events-none shadow-[0_0_8px_rgba(244,63,94,0.6)]" aria-hidden="true" />
+                  <span className="text-muted-foreground ml-1 text-[10px] font-bold opacity-70">
+                    RSD
+                  </span>
+                  <span
+                    className="pointer-events-none absolute top-1/2 right-[-4px] left-[-4px] h-[3px] origin-center -rotate-12 bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.6)]"
+                    aria-hidden="true"
+                  />
                 </div>
               </div>
               <div className="space-y-1 text-right">
-                <span className="text-[9px] font-black uppercase tracking-wider text-primary block animate-pulse">Kupi online & uštedi</span>
-                <div className="flex items-baseline gap-1.5 justify-end">
-                  <span className="text-5xl font-black text-foreground tracking-tighter bg-gradient-to-r from-foreground to-muted-foreground/40 bg-clip-text text-transparent">{tier.price}</span>
-                  <span className="text-xs font-black text-primary uppercase">RSD</span>
+                <span className="text-primary block animate-pulse text-[9px] font-black tracking-wider uppercase">
+                  Kupi online & uštedi
+                </span>
+                <div className="flex items-baseline justify-end gap-1.5">
+                  <span className="text-foreground from-foreground to-muted-foreground/40 bg-gradient-to-r bg-clip-text text-5xl font-black tracking-tighter text-transparent">
+                    {tier.price}
+                  </span>
+                  <span className="text-primary text-xs font-black uppercase">RSD</span>
                 </div>
               </div>
             </div>
           ) : (
             <div className="space-y-1">
-              <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Cena</span>
+              <span className="text-muted-foreground text-[10px] font-black tracking-widest uppercase">
+                Cena
+              </span>
               <div className="flex items-baseline gap-2">
-                <span className="text-5xl font-black text-foreground tracking-tighter">{tier.price}</span>
-                <span className="text-xs font-black text-primary uppercase">RSD</span>
+                <span className="text-foreground text-5xl font-black tracking-tighter">
+                  {tier.price}
+                </span>
+                <span className="text-primary text-xs font-black uppercase">RSD</span>
               </div>
             </div>
           )}
         </div>
 
-        <div className="flex items-center justify-between bg-black/20 rounded-2xl p-2 border border-border">
-          <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="w-12 h-12 flex items-center justify-center hover:bg-muted/50 rounded-xl transition-colors text-muted-foreground">
+        <div className="border-border flex items-center justify-between rounded-2xl border bg-black/20 p-2">
+          <button
+            onClick={() => setQuantity(Math.max(1, quantity - 1))}
+            className="hover:bg-muted/50 text-muted-foreground flex h-12 w-12 items-center justify-center rounded-xl transition-colors"
+          >
             <Icon name="remove" className="text-[20px]" />
           </button>
-          <span className="text-2xl font-black text-foreground">{quantity}</span>
-          <button onClick={() => setQuantity(quantity + 1)} className="w-12 h-12 flex items-center justify-center hover:bg-muted/50 rounded-xl transition-colors text-muted-foreground">
+          <span className="text-foreground text-2xl font-black">{quantity}</span>
+          <button
+            onClick={() => setQuantity(quantity + 1)}
+            className="hover:bg-muted/50 text-muted-foreground flex h-12 w-12 items-center justify-center rounded-xl transition-colors"
+          >
             <Icon name="add" className="text-[20px]" />
           </button>
         </div>
 
-        <Button onClick={onAdd} className="w-full h-16 text-xs font-black tracking-[0.2em] uppercase bg-primary text-black hover:bg-primary/90 rounded-full">
+        <Button
+          onClick={onAdd}
+          className="bg-primary hover:bg-primary/90 h-16 w-full rounded-full text-xs font-black tracking-[0.2em] text-black uppercase"
+        >
           Dodaj u korpu
         </Button>
       </div>
@@ -708,7 +833,14 @@ function SingleTierCard({ group, tier, quantity, setQuantity, onAdd, prefix: _pr
   );
 }
 
-function TierList({ tiers, quantities, setQuantity, onAdd, prefix: _prefix, main: _main }: {
+function TierList({
+  tiers,
+  quantities,
+  setQuantity,
+  onAdd,
+  prefix: _prefix,
+  main: _main,
+}: {
   tiers: TicketTier[];
   quantities: Record<string, number>;
   setQuantity: (id: string, qty: number) => void;
@@ -719,55 +851,91 @@ function TierList({ tiers, quantities, setQuantity, onAdd, prefix: _prefix, main
   return (
     <div className="space-y-4">
       {tiers.map((tier: TicketTier) => (
-        <div key={tier.id} id={`ticket-${tier.id}`} className="flex flex-col md:flex-row md:items-center justify-between gap-3 p-3 rounded-2xl bg-muted/20 border border-border hover:bg-muted/50 transition-all group">
-          <div className="flex-1 flex items-start gap-2 w-full">
+        <div
+          key={tier.id}
+          id={`ticket-${tier.id}`}
+          className="bg-muted/20 border-border hover:bg-muted/50 group flex flex-col justify-between gap-3 rounded-2xl border p-3 transition-all md:flex-row md:items-center"
+        >
+          <div className="flex w-full flex-1 items-start gap-2">
             {tier.imageUrl && (
-              <div className="relative w-14 h-14 shrink-0 rounded-xl overflow-hidden border border-border/50">
-                <Image src={tier.imageUrl} alt={tier.label || tier.title} fill className="object-cover" sizes="56px" />
+              <div className="border-border/50 relative h-14 w-14 shrink-0 overflow-hidden rounded-xl border">
+                <Image
+                  src={tier.imageUrl}
+                  alt={tier.label || tier.title}
+                  fill
+                  className="object-cover"
+                  sizes="56px"
+                />
               </div>
             )}
-            <div className="flex-1 space-y-1 text-center md:text-left w-full">
-              <div className="flex items-center justify-center md:justify-start gap-1.5 flex-wrap">
-                <h4 className="text-sm md:text-base font-black text-foreground uppercase italic tracking-tight">{tier.label}</h4>
-                {tier.dayType && tier.dayType !== 'ALL' && (
-                  <Badge className="bg-slate-500/10 text-muted-foreground text-[9px] font-black uppercase tracking-tighter border-slate-500/20">
-                    {tier.dayType === 'WEEKDAY' ? 'Radni dan' : 'Vikend'}
+            <div className="w-full flex-1 space-y-1 text-center md:text-left">
+              <div className="flex flex-wrap items-center justify-center gap-1.5 md:justify-start">
+                <h4 className="text-foreground text-sm font-black tracking-tight uppercase italic md:text-base">
+                  {tier.label}
+                </h4>
+                {tier.dayType && tier.dayType !== "ALL" && (
+                  <Badge className="text-muted-foreground border-slate-500/20 bg-slate-500/10 text-[9px] font-black tracking-tighter uppercase">
+                    {tier.dayType === "WEEKDAY" ? "Radni dan" : "Vikend"}
                   </Badge>
                 )}
-                {tier.timeSlot && tier.timeSlot !== 'FULL_DAY' && (
-                  <Badge className="bg-slate-500/10 text-muted-foreground text-[9px] font-black uppercase tracking-tighter border-slate-500/20">
-                    {tier.timeSlot === 'AFTER_16H' ? 'Posle 16h' : tier.timeSlot === 'THREE_HOUR' ? '3 sata' : ''}
+                {tier.timeSlot && tier.timeSlot !== "FULL_DAY" && (
+                  <Badge className="text-muted-foreground border-slate-500/20 bg-slate-500/10 text-[9px] font-black tracking-tighter uppercase">
+                    {tier.timeSlot === "AFTER_16H"
+                      ? "Posle 16h"
+                      : tier.timeSlot === "THREE_HOUR"
+                        ? "3 sata"
+                        : ""}
                   </Badge>
                 )}
-                {tier.isSeasonPass && <Badge className="bg-amber-500/10 text-amber-400 text-[9px] font-black uppercase tracking-tighter border-amber-500/20">Sezonska</Badge>}
+                {tier.isSeasonPass && (
+                  <Badge className="border-amber-500/20 bg-amber-500/10 text-[9px] font-black tracking-tighter text-amber-400 uppercase">
+                    Sezonska
+                  </Badge>
+                )}
               </div>
             </div>
           </div>
 
-          <div className="flex items-center justify-between md:justify-end gap-6 w-full md:w-auto mt-0 shrink-0">
-            <div className="flex flex-col items-start md:items-end w-full md:w-auto">
+          <div className="mt-0 flex w-full shrink-0 items-center justify-between gap-6 md:w-auto md:justify-end">
+            <div className="flex w-full flex-col items-start md:w-auto md:items-end">
               {tier.originalPrice && Number(tier.originalPrice) > Number(tier.price) ? (
                 <div className="flex items-baseline gap-2">
-                  <span className="text-xs font-bold text-muted-foreground line-through">{tier.originalPrice} RSD</span>
+                  <span className="text-muted-foreground text-xs font-bold line-through">
+                    {tier.originalPrice} RSD
+                  </span>
                 </div>
               ) : null}
               <div className="flex items-baseline gap-1">
-                <span className="text-xl md:text-2xl font-black text-foreground tracking-tight">{tier.price}</span>
-                <span className="text-[9px] font-bold text-primary uppercase">RSD</span>
+                <span className="text-foreground text-xl font-black tracking-tight md:text-2xl">
+                  {tier.price}
+                </span>
+                <span className="text-primary text-[9px] font-bold uppercase">RSD</span>
               </div>
             </div>
 
-            <div className="flex items-center gap-1 bg-black/20 rounded-lg p-1 border border-border">
-              <button onClick={() => setQuantity(tier.id, (quantities[tier.id] || 0) - 1)} className="w-8 h-8 flex items-center justify-center hover:bg-muted/50 rounded-md transition-colors text-muted-foreground active:scale-90">
+            <div className="border-border flex items-center gap-1 rounded-lg border bg-black/20 p-1">
+              <button
+                onClick={() => setQuantity(tier.id, (quantities[tier.id] || 0) - 1)}
+                className="hover:bg-muted/50 text-muted-foreground flex h-8 w-8 items-center justify-center rounded-md transition-colors active:scale-90"
+              >
                 <Icon name="remove" className="text-[14px]" />
               </button>
-              <span className="w-8 text-center text-sm font-black text-foreground select-none">{quantities[tier.id] || 0}</span>
-              <button onClick={() => setQuantity(tier.id, (quantities[tier.id] || 0) + 1)} className="w-8 h-8 flex items-center justify-center hover:bg-muted/50 rounded-md transition-colors text-muted-foreground active:scale-90">
+              <span className="text-foreground w-8 text-center text-sm font-black select-none">
+                {quantities[tier.id] || 0}
+              </span>
+              <button
+                onClick={() => setQuantity(tier.id, (quantities[tier.id] || 0) + 1)}
+                className="hover:bg-muted/50 text-muted-foreground flex h-8 w-8 items-center justify-center rounded-md transition-colors active:scale-90"
+              >
                 <Icon name="add" className="text-[14px]" />
               </button>
             </div>
 
-            <Button onClick={() => onAdd(tier)} size="sm" className="h-9 px-4 text-[9px] font-black uppercase tracking-widest rounded-lg bg-primary text-black hover:bg-primary/90 shrink-0">
+            <Button
+              onClick={() => onAdd(tier)}
+              size="sm"
+              className="bg-primary hover:bg-primary/90 h-9 shrink-0 rounded-lg px-4 text-[9px] font-black tracking-widest text-black uppercase"
+            >
               Dodaj
             </Button>
           </div>
@@ -777,7 +945,14 @@ function TierList({ tiers, quantities, setQuantity, onAdd, prefix: _prefix, main
   );
 }
 
-function TierGrid({ tiers, quantities, setQuantity, onAdd, prefix: _prefix, main: _main }: {
+function TierGrid({
+  tiers,
+  quantities,
+  setQuantity,
+  onAdd,
+  prefix: _prefix,
+  main: _main,
+}: {
   tiers: TicketTier[];
   quantities: Record<string, number>;
   setQuantity: (id: string, qty: number) => void;
@@ -786,33 +961,58 @@ function TierGrid({ tiers, quantities, setQuantity, onAdd, prefix: _prefix, main
   main: string;
 }) {
   return (
-    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
       {tiers.map((tier: TicketTier) => (
-        <div key={tier.id} id={`ticket-${tier.id}`} className="flex flex-col gap-6 p-6 rounded-2xl bg-muted/20 border border-border hover:bg-muted/50 transition-all group">
+        <div
+          key={tier.id}
+          id={`ticket-${tier.id}`}
+          className="bg-muted/20 border-border hover:bg-muted/50 group flex flex-col gap-6 rounded-2xl border p-6 transition-all"
+        >
           {tier.imageUrl && (
-            <div className="relative w-20 h-20 rounded-xl overflow-hidden border border-border/50 self-start">
-              <Image src={tier.imageUrl} alt={tier.label || tier.title} fill className="object-cover" sizes="80px" />
+            <div className="border-border/50 relative h-20 w-20 self-start overflow-hidden rounded-xl border">
+              <Image
+                src={tier.imageUrl}
+                alt={tier.label || tier.title}
+                fill
+                className="object-cover"
+                sizes="80px"
+              />
             </div>
           )}
           <div className="space-y-1">
-            <h4 className="text-base font-black text-foreground uppercase italic tracking-tight">{tier.label}</h4>
-            <p className="text-xs text-muted-foreground">{tier.description || ""}</p>
+            <h4 className="text-foreground text-base font-black tracking-tight uppercase italic">
+              {tier.label}
+            </h4>
+            <p className="text-muted-foreground text-xs">{tier.description || ""}</p>
           </div>
           <div className="mt-auto space-y-4">
             <div className="flex items-baseline gap-1">
-              <span className="text-3xl font-black text-foreground tracking-tight">{tier.price}</span>
-              <span className="text-[10px] font-bold text-primary uppercase">RSD</span>
+              <span className="text-foreground text-3xl font-black tracking-tight">
+                {tier.price}
+              </span>
+              <span className="text-primary text-[10px] font-bold uppercase">RSD</span>
             </div>
-            <div className="flex items-center gap-1 bg-black/20 rounded-lg p-1 border border-border">
-              <button onClick={() => setQuantity(tier.id, (quantities[tier.id] || 0) - 1)} className="w-8 h-8 flex items-center justify-center hover:bg-muted/50 rounded-md transition-colors text-muted-foreground">
+            <div className="border-border flex items-center gap-1 rounded-lg border bg-black/20 p-1">
+              <button
+                onClick={() => setQuantity(tier.id, (quantities[tier.id] || 0) - 1)}
+                className="hover:bg-muted/50 text-muted-foreground flex h-8 w-8 items-center justify-center rounded-md transition-colors"
+              >
                 <Icon name="remove" className="text-[14px]" />
               </button>
-              <span className="w-8 text-center text-sm font-black text-foreground select-none">{quantities[tier.id] || 0}</span>
-              <button onClick={() => setQuantity(tier.id, (quantities[tier.id] || 0) + 1)} className="w-8 h-8 flex items-center justify-center hover:bg-muted/50 rounded-md transition-colors text-muted-foreground">
+              <span className="text-foreground w-8 text-center text-sm font-black select-none">
+                {quantities[tier.id] || 0}
+              </span>
+              <button
+                onClick={() => setQuantity(tier.id, (quantities[tier.id] || 0) + 1)}
+                className="hover:bg-muted/50 text-muted-foreground flex h-8 w-8 items-center justify-center rounded-md transition-colors"
+              >
                 <Icon name="add" className="text-[14px]" />
               </button>
             </div>
-            <Button onClick={() => onAdd(tier)} className="w-full h-10 text-[9px] font-black uppercase tracking-widest rounded-lg bg-primary text-black hover:bg-primary/90">
+            <Button
+              onClick={() => onAdd(tier)}
+              className="bg-primary hover:bg-primary/90 h-10 w-full rounded-lg text-[9px] font-black tracking-widest text-black uppercase"
+            >
               Dodaj
             </Button>
           </div>

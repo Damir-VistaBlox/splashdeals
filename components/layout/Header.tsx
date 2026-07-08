@@ -16,13 +16,7 @@ export const Header = ({ dict: _dict, cities }: HeaderProps) => {
   const openCart = useUIState((state) => state.openCart);
   const totalItems = useCart((state) => state.getTotalItems());
 
-  const {
-    scrolled,
-    isOnline,
-    isTabActive,
-    isReducedMotion,
-    mounted,
-  } = useHeaderScroll();
+  const { scrolled, isOnline, isTabActive, isReducedMotion, mounted } = useHeaderScroll();
 
   // Init cart sync on mount
   React.useEffect(() => {
@@ -33,15 +27,11 @@ export const Header = ({ dict: _dict, cities }: HeaderProps) => {
   return (
     <>
       <header
-        className={`
-          fixed top-0 inset-x-0 z-[999] border-b transition-all duration-500
-          flex flex-col justify-center px-4 md:px-12
-          ${
-            scrolled
-              ? "bg-background/98 backdrop-blur-[40px] border-border/50"
-              : "bg-background/95 backdrop-blur-[20px] border-border/30"
-          }
-        `}
+        className={`fixed inset-x-0 top-0 z-[999] flex flex-col justify-center border-b px-4 transition-all duration-500 md:px-12 ${
+          scrolled
+            ? "bg-background/98 border-border/50 backdrop-blur-[40px]"
+            : "bg-background/95 border-border/30 backdrop-blur-[20px]"
+        } `}
       >
         <DesktopTopNav
           cities={cities}
@@ -56,9 +46,7 @@ export const Header = ({ dict: _dict, cities }: HeaderProps) => {
         />
 
         {/* ⚡ Online status dot for tab bar */}
-        {isOnline === false && (
-          <div className="hidden" role="status" aria-label="offline" />
-        )}
+        {isOnline === false && <div className="hidden" role="status" aria-label="offline" />}
       </header>
     </>
   );

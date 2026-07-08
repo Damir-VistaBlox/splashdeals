@@ -1,25 +1,25 @@
-"use client"
+"use client";
 
-import { useState, useCallback } from "react"
-import { useRouter } from "next/navigation"
-import { toast } from "sonner"
-import { Icon } from "@/components/ui/Icon"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { useState, useCallback } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { Icon } from "@/components/ui/Icon";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from "@/components/ui/select";
 import {
   createSectionAction,
   updateSectionAction,
   deleteSectionAction,
-} from "@/app/(server)/actions/navigation"
-import type { SectionWithItems } from "./types"
+} from "@/app/(server)/actions/navigation";
+import type { SectionWithItems } from "./types";
 
 const STYLE_OPTIONS = [
   { value: "LINKS", label: "Linkovi (ikona + naziv + opis)" },
@@ -27,40 +27,40 @@ const STYLE_OPTIONS = [
   { value: "DYNAMIC_CITIES", label: "Dinamički gradovi (API)" },
   { value: "FOOTER_BADGE", label: "Footer bedž (tekst + ikona)" },
   { value: "VISUAL", label: "Vizuelni blok (skener / kartica)" },
-] as const
+] as const;
 
 const COLUMN_OPTIONS = [
   { value: 0, label: "Kolona 0 (2fr)" },
   { value: 1, label: "Kolona 1 (1fr)" },
   { value: 2, label: "Kolona 2 (1fr)" },
-]
+];
 
 interface SectionDrawerProps {
-  menuId: string
-  section?: SectionWithItems | null
-  open: boolean
-  onClose: () => void
-  onSaved: () => void
+  menuId: string;
+  section?: SectionWithItems | null;
+  open: boolean;
+  onClose: () => void;
+  onSaved: () => void;
 }
 
 export function SectionDrawer({ menuId, section, open, onClose, onSaved }: SectionDrawerProps) {
-  const router = useRouter()
-  const [heading, setHeading] = useState(section?.heading || "")
-  const [column, setColumn] = useState(section?.column ?? 0)
-  const [style, setStyle] = useState(section?.style || "LINKS")
-  const [saving, setSaving] = useState(false)
+  const router = useRouter();
+  const [heading, setHeading] = useState(section?.heading || "");
+  const [column, setColumn] = useState(section?.column ?? 0);
+  const [style, setStyle] = useState(section?.style || "LINKS");
+  const [saving, setSaving] = useState(false);
 
   // Reset on open
   useState(() => {
     if (open) {
-      setHeading(section?.heading || "")
-      setColumn(section?.column ?? 0)
-      setStyle(section?.style || "LINKS")
+      setHeading(section?.heading || "");
+      setColumn(section?.column ?? 0);
+      setStyle(section?.style || "LINKS");
     }
-  })
+  });
 
   const handleSave = useCallback(async () => {
-    setSaving(true)
+    setSaving(true);
     try {
       const data = {
         menuId,
@@ -70,59 +70,59 @@ export function SectionDrawer({ menuId, section, open, onClose, onSaved }: Secti
         config: null,
         sortOrder: section?.sortOrder ?? 0,
         isActive: true,
-      }
+      };
 
       if (section) {
-        const result = await updateSectionAction(section.id, data)
+        const result = await updateSectionAction(section.id, data);
         if (result.success) {
-          toast.success("Sekcija ažurirana")
-          onSaved()
-          onClose()
+          toast.success("Sekcija ažurirana");
+          onSaved();
+          onClose();
         } else {
-          toast.error(result.error || "Greška")
+          toast.error(result.error || "Greška");
         }
       } else {
-        const result = await createSectionAction(data)
+        const result = await createSectionAction(data);
         if (result.success) {
-          toast.success("Sekcija kreirana")
-          onSaved()
-          onClose()
+          toast.success("Sekcija kreirana");
+          onSaved();
+          onClose();
         } else {
-          toast.error(result.error || "Greška")
+          toast.error(result.error || "Greška");
         }
       }
     } finally {
-      setSaving(false)
-      router.refresh()
+      setSaving(false);
+      router.refresh();
     }
-  }, [menuId, section, heading, column, style, onClose, onSaved, router])
+  }, [menuId, section, heading, column, style, onClose, onSaved, router]);
 
   const handleDelete = useCallback(async () => {
-    if (!section) return
-    if (!confirm(`Obrisati sekciju "${section.heading || style}"?`)) return
-    setSaving(true)
+    if (!section) return;
+    if (!confirm(`Obrisati sekciju "${section.heading || style}"?`)) return;
+    setSaving(true);
     try {
-      const result = await deleteSectionAction(section.id)
+      const result = await deleteSectionAction(section.id);
       if (result.success) {
-        toast.success("Sekcija obrisana")
-        onSaved()
-        onClose()
+        toast.success("Sekcija obrisana");
+        onSaved();
+        onClose();
       } else {
-        toast.error(result.error || "Greška")
+        toast.error(result.error || "Greška");
       }
     } finally {
-      setSaving(false)
-      router.refresh()
+      setSaving(false);
+      router.refresh();
     }
-  }, [section, style, onClose, onSaved, router])
+  }, [section, style, onClose, onSaved, router]);
 
-  if (!open) return null
+  if (!open) return null;
 
   return (
     <>
       <div className="fixed inset-0 z-40 bg-black/50" onClick={onClose} />
-      <div className="fixed inset-y-0 right-0 z-50 w-full max-w-md border-l bg-background p-6 shadow-lg">
-        <div className="flex items-center justify-between mb-6">
+      <div className="bg-background fixed inset-y-0 right-0 z-50 w-full max-w-md border-l p-6 shadow-lg">
+        <div className="mb-6 flex items-center justify-between">
           <h2 className="text-lg font-semibold">{section ? "Uredi sekciju" : "Nova sekcija"}</h2>
           <Button variant="ghost" size="sm" onClick={onClose}>
             <Icon name="close" className="size-4" />
@@ -187,5 +187,5 @@ export function SectionDrawer({ menuId, section, open, onClose, onSaved }: Secti
         </div>
       </div>
     </>
-  )
+  );
 }

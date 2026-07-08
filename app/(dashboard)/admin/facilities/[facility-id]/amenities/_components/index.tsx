@@ -1,1 +1,1 @@
-export { CompactAmenitiesTableContainer } from "./amenities-container"
+export { CompactAmenitiesTableContainer } from "./amenities-container";

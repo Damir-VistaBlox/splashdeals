@@ -1,13 +1,12 @@
-"use client"
+"use client";
 
 import { Icon } from "@/components/ui/Icon";
- 
 
-import { ColumnDef } from "@tanstack/react-table"
-import { Facility } from "@prisma/client"
-import { Checkbox } from "@/components/ui/checkbox"
+import { ColumnDef } from "@tanstack/react-table";
+import { Facility } from "@prisma/client";
+import { Checkbox } from "@/components/ui/checkbox";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 
 import {
   DropdownMenu,
@@ -16,13 +15,13 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import Link from "next/link"
-import { StatusToggle } from "@/app/(dashboard)/admin/_common/StatusToggle"
+} from "@/components/ui/dropdown-menu";
+import Link from "next/link";
+import { StatusToggle } from "@/app/(dashboard)/admin/_common/StatusToggle";
 
 // Using a static wrapper component for rendering cells that might trigger non-deterministic behavior
 function ClientCell({ children }: { children: React.ReactNode }) {
-  return <div suppressHydrationWarning>{children}</div>
+  return <div suppressHydrationWarning>{children}</div>;
 }
 
 export const columns: ColumnDef<Facility>[] = [
@@ -31,8 +30,7 @@ export const columns: ColumnDef<Facility>[] = [
     header: ({ table }) => (
       <Checkbox
         checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
+          table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select all"
@@ -55,26 +53,26 @@ export const columns: ColumnDef<Facility>[] = [
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="-ml-4 h-8 data-[state=open]:bg-accent"
+          className="data-[state=open]:bg-accent -ml-4 h-8"
         >
           Facility Name
           <Icon name="swap_vert" className="ml-2 text-[16px]" />
         </Button>
-      )
+      );
     },
     cell: ({ row }) => {
       return (
         <div className="flex items-center gap-2">
-          <Icon name="business" className="text-[16px] text-muted-foreground" />
-          <Link 
+          <Icon name="business" className="text-muted-foreground text-[16px]" />
+          <Link
             href={`/admin/facilities/${row.original.id}`}
-            className="font-semibold after:absolute after:inset-0 after:rounded-md hover:underline decoration-primary decoration-2 underline-offset-4"
+            className="decoration-primary font-semibold decoration-2 underline-offset-4 after:absolute after:inset-0 after:rounded-md hover:underline"
           >
             {row.getValue("name")}
           </Link>
         </div>
-      )
-    }
+      );
+    },
   },
   {
     accessorKey: "category",
@@ -83,12 +81,12 @@ export const columns: ColumnDef<Facility>[] = [
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="-ml-4 h-8 data-[state=open]:bg-accent"
+          className="data-[state=open]:bg-accent -ml-4 h-8"
         >
           Category
           <Icon name="swap_vert" className="ml-2 text-[16px]" />
         </Button>
-      )
+      );
     },
   },
   {
@@ -98,28 +96,28 @@ export const columns: ColumnDef<Facility>[] = [
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="-ml-4 h-8 data-[state=open]:bg-accent"
+          className="data-[state=open]:bg-accent -ml-4 h-8"
         >
           Location
           <Icon name="swap_vert" className="ml-2 text-[16px]" />
         </Button>
-      )
+      );
     },
     cell: ({ row }) => {
-      const city = row.original.city
-      const street = row.original.streetName
+      const city = row.original.city;
+      const street = row.original.streetName;
       return (
         <div className="flex flex-col gap-0.5">
-          <div className="flex items-center gap-1.5 text-foreground font-medium">
-            <Icon name="location_on" className="text-[14px] text-primary/70" />
+          <div className="text-foreground flex items-center gap-1.5 font-medium">
+            <Icon name="location_on" className="text-primary/70 text-[14px]" />
             <span className="text-xs">{city}</span>
           </div>
-          <span className="text-[10px] text-muted-foreground font-mono pl-5">
+          <span className="text-muted-foreground pl-5 font-mono text-[10px]">
             {street || "No street data"}
           </span>
         </div>
-      )
-    }
+      );
+    },
   },
 
   {
@@ -129,22 +127,16 @@ export const columns: ColumnDef<Facility>[] = [
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="-ml-4 h-8 data-[state=open]:bg-accent"
+          className="data-[state=open]:bg-accent -ml-4 h-8"
         >
           Status
           <Icon name="swap_vert" className="ml-2 text-[16px]" />
         </Button>
-      )
+      );
     },
     cell: ({ row }) => {
-      return (
-        <StatusToggle 
-          facilityId={row.original.id} 
-          status={row.original.status} 
-          compact 
-        />
-      )
-    }
+      return <StatusToggle facilityId={row.original.id} status={row.original.status} compact />;
+    },
   },
   {
     accessorKey: "createdAt",
@@ -153,43 +145,43 @@ export const columns: ColumnDef<Facility>[] = [
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="-ml-4 h-8 data-[state=open]:bg-accent"
+          className="data-[state=open]:bg-accent -ml-4 h-8"
         >
           Onboarded
           <Icon name="swap_vert" className="ml-2 text-[16px]" />
         </Button>
-      )
+      );
     },
     cell: ({ row }) => {
       return (
         <ClientCell>
           <span className="font-mono text-[10px]">
-            {new Date(row.getValue("createdAt")).toISOString().split('T')[0]}
+            {new Date(row.getValue("createdAt")).toISOString().split("T")[0]}
           </span>
         </ClientCell>
-      )
-    }
+      );
+    },
   },
   {
     id: "actions",
     cell: ({ row }) => {
-      const facility = row.original
+      const facility = row.original;
 
       return (
         <div className="relative z-30">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0" aria-label="Open menu">
-              <span className="sr-only">Open menu</span>
-              <Icon name="more_horiz" className="text-[16px]" />
-            </Button>
+              <Button variant="ghost" className="h-8 w-8 p-0" aria-label="Open menu">
+                <span className="sr-only">Open menu</span>
+                <Icon name="more_horiz" className="text-[16px]" />
+              </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuItem
                 onClick={() => {
-                  if (typeof navigator !== 'undefined') {
-                    navigator.clipboard.writeText(facility.id)
+                  if (typeof navigator !== "undefined") {
+                    navigator.clipboard.writeText(facility.id);
                   }
                 }}
               >
@@ -207,7 +199,7 @@ export const columns: ColumnDef<Facility>[] = [
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-      )
+      );
     },
   },
-]
+];

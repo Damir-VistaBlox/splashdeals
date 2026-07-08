@@ -1,13 +1,13 @@
-import { prisma } from "@/server/lib/prisma"
-import { requireAdmin } from "@/server/lib/auth-guards"
-import { NavigationManager } from "./_components/NavigationManager"
+import { prisma } from "@/server/lib/prisma";
+import { requireAdmin } from "@/server/lib/auth-guards";
+import { NavigationManager } from "./_components/NavigationManager";
 
 export const metadata = {
   title: "Navigacija | CMS | Splashdeals",
-}
+};
 
 export default async function NavigationPage() {
-  await requireAdmin()
+  await requireAdmin();
 
   const menus = await prisma.navigationMenu.findMany({
     orderBy: { sortOrder: "asc" },
@@ -21,7 +21,7 @@ export default async function NavigationPage() {
         },
       },
     },
-  })
+  });
 
-  return <NavigationManager initialMenus={JSON.parse(JSON.stringify(menus))} />
+  return <NavigationManager initialMenus={JSON.parse(JSON.stringify(menus))} />;
 }

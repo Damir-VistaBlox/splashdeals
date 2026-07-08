@@ -29,11 +29,11 @@ export default async function CheckoutPage() {
         data={{
           "@context": "https://schema.org",
           "@type": "WebPage",
-          "name": "Naplata | Splashdeals",
-          "description": "Završite kupovinu digitalnih ulaznica za akva parkove.",
+          name: "Naplata | Splashdeals",
+          description: "Završite kupovinu digitalnih ulaznica za akva parkove.",
         }}
       />
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center">
         <p className="text-muted-foreground">Preusmeravanje...</p>
       </div>
     </>

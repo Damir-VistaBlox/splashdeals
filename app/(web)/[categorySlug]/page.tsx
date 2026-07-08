@@ -58,11 +58,7 @@ export default async function CategoryPage({ params }: PageProps) {
 
   // Try as category first
   if (isKnownCategory(categorySlug.toLowerCase())) {
-    return (
-      <DiscoveryTemplate
-        params={Promise.resolve({ categorySlug })}
-      />
-    );
+    return <DiscoveryTemplate params={Promise.resolve({ categorySlug })} />;
   }
 
   // Try as category via DB lookup
@@ -73,11 +69,7 @@ export default async function CategoryPage({ params }: PageProps) {
   });
 
   if (hasCategory) {
-    return (
-      <DiscoveryTemplate
-        params={Promise.resolve({ categorySlug })}
-      />
-    );
+    return <DiscoveryTemplate params={Promise.resolve({ categorySlug })} />;
   }
 
   // Try as facility slug

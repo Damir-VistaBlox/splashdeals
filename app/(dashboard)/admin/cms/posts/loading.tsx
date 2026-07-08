@@ -1,5 +1,5 @@
-import { AdminSkeleton } from "@/app/(dashboard)/admin/_common/AdminSkeleton"
+import { AdminSkeleton } from "@/app/(dashboard)/admin/_common/AdminSkeleton";
 
 export default function Loading() {
-  return <AdminSkeleton />
+  return <AdminSkeleton />;
 }

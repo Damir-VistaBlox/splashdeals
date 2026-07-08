@@ -1,4 +1,4 @@
-"use server"
+"use server";
 
 import { z } from "zod";
 import { put, del } from "@vercel/blob";
@@ -6,55 +6,55 @@ import { prisma } from "@/server/lib/prisma";
 import { processImageToWebP } from "@/server/lib/media";
 import { MediaType, MediaPurpose } from "@prisma/client";
 import { revalidatePath } from "next/cache";
-import { handleServerActionError } from "@/server/lib/server-action-error"
-import { validateAction } from "@/server/lib/actions/validator"
-import { validateFacilityAccess } from "@/server/lib/auth-guards"
-import { renameMediaSchema } from "@/server/lib/validations/media"
+import { handleServerActionError } from "@/server/lib/server-action-error";
+import { validateAction } from "@/server/lib/actions/validator";
+import { validateFacilityAccess } from "@/server/lib/auth-guards";
+import { renameMediaSchema } from "@/server/lib/validations/media";
 
 const updateMediaPurposeSchema = z.object({
   mediaId: z.string().uuid(),
   purpose: z.nativeEnum(MediaPurpose),
-})
+});
 
 const toggleMediaRoleSchema = z.object({
   mediaId: z.string().uuid(),
   facilityId: z.string().uuid(),
-})
+});
 
 const deleteMediaSchema = z.object({
   mediaId: z.string().uuid(),
   facilityId: z.string().uuid(),
-})
+});
 
 const updateMediaOrderSchema = z.object({
   facilityId: z.string().uuid(),
   mediaIds: z.array(z.string().uuid()),
-})
+});
 
 const syncMediaSchema = z.object({
   facilityId: z.string().uuid(),
   blobUrl: z.string(),
   contentType: z.string(),
   thumbnailUrl: z.string().nullable().optional(),
-})
+});
 
 const updateMediaCaptionSchema = z.object({
   mediaId: z.string().uuid(),
   facilityId: z.string().uuid(),
   caption: z.string().max(255).nullable(),
-})
+});
 
 const updateMediaFocalPointSchema = z.object({
   mediaId: z.string().uuid(),
   facilityId: z.string().uuid(),
   focalPoint: z.string().max(20).nullable(), // Format: "X,Y" e.g., "50,30"
-})
+});
 
 const bulkUpdateMediaCaptionSchema = z.object({
   mediaIds: z.array(z.string().uuid()),
   facilityId: z.string().uuid(),
   caption: z.string().max(255).nullable(),
-})
+});
 
 const purposeValues = new Set(Object.values(MediaPurpose));
 
@@ -81,10 +81,16 @@ export async function uploadMediaAction(formData: FormData) {
       purpose = rawPurpose as MediaPurpose;
     }
 
-    await validateFacilityAccess(facilityId)
+    await validateFacilityAccess(facilityId);
 
     // Phase 1: Process all files outside transaction (no DB ops)
-    const processedFiles: { facilityId: string; url: string; type: MediaType; purpose: MediaPurpose; thumbnailUrl?: string | null }[] = [];
+    const processedFiles: {
+      facilityId: string;
+      url: string;
+      type: MediaType;
+      purpose: MediaPurpose;
+      thumbnailUrl?: string | null;
+    }[] = [];
     for (const file of files) {
       const buffer = Buffer.from(await file.arrayBuffer());
       const isImage = file.type.startsWith("image/");
@@ -96,8 +102,8 @@ export async function uploadMediaAction(formData: FormData) {
 
       if (isImage) {
         const processedBuffer = await processImageToWebP(buffer);
-        const filename = `facilities/${facilityId}/photos/${Date.now()}-${file.name.split('.')[0]}.webp`;
-        
+        const filename = `facilities/${facilityId}/photos/${Date.now()}-${file.name.split(".")[0]}.webp`;
+
         const blob = await put(filename, processedBuffer, {
           access: "public",
           contentType: "image/webp",
@@ -108,7 +114,7 @@ export async function uploadMediaAction(formData: FormData) {
         try {
           const { generateThumbnail } = await import("@/server/lib/media");
           const thumbBuffer = await generateThumbnail(buffer);
-          const thumbFilename = `facilities/${facilityId}/photos/thumbnails/${Date.now()}-${file.name.split('.')[0]}.webp`;
+          const thumbFilename = `facilities/${facilityId}/photos/thumbnails/${Date.now()}-${file.name.split(".")[0]}.webp`;
           const thumbBlob = await put(thumbFilename, thumbBuffer, {
             access: "public",
             contentType: "image/webp",
@@ -122,7 +128,13 @@ export async function uploadMediaAction(formData: FormData) {
       }
 
       if (finalUrl) {
-        processedFiles.push({ facilityId, url: finalUrl, type: mediaType, purpose, thumbnailUrl: thumbUrl });
+        processedFiles.push({
+          facilityId,
+          url: finalUrl,
+          type: mediaType,
+          purpose,
+          thumbnailUrl: thumbUrl,
+        });
       }
     }
 
@@ -137,8 +149,8 @@ export async function uploadMediaAction(formData: FormData) {
 
       return Promise.all(
         processedFiles.map((data) =>
-          tx.facilityMedia.create({ data: { ...data, order: order++ } })
-        )
+          tx.facilityMedia.create({ data: { ...data, order: order++ } }),
+        ),
       );
     });
 
@@ -146,7 +158,7 @@ export async function uploadMediaAction(formData: FormData) {
     revalidatePath(`/facilities/[categorySlug]/[facilitySlug]`, "layout");
     return { success: true, media: results };
   } catch (error) {
-    return handleServerActionError(error, "media-actions")
+    return handleServerActionError(error, "media-actions");
   }
 }
 
@@ -157,52 +169,52 @@ export async function uploadMediaAction(formData: FormData) {
  */
 export async function renameMediaAction(mediaId: string, facilityId: string, newName: string) {
   try {
-    const validation = renameMediaSchema.parse({ mediaId, facilityId, newName })
-    const { mediaId: mid, facilityId: fid, newName: name } = validation
+    const validation = renameMediaSchema.parse({ mediaId, facilityId, newName });
+    const { mediaId: mid, facilityId: fid, newName: name } = validation;
 
-    await validateFacilityAccess(fid)
+    await validateFacilityAccess(fid);
 
     // Get the current media record
-    const media = await prisma.facilityMedia.findUnique({ where: { id: mid } })
-    if (!media) throw new Error("Medij nije pronađen")
-    if (media.facilityId !== fid) throw new Error("Medij ne pripada ovom objektu")
+    const media = await prisma.facilityMedia.findUnique({ where: { id: mid } });
+    if (!media) throw new Error("Medij nije pronađen");
+    if (media.facilityId !== fid) throw new Error("Medij ne pripada ovom objektu");
 
     // Parse URL to extract extension
-    const urlObj = new URL(media.url)
-    const pathSegments = urlObj.pathname.split("/")
-    const oldFilename = pathSegments[pathSegments.length - 1] ?? ""
-    const extIndex = oldFilename.lastIndexOf(".")
-    const extension = extIndex !== -1 ? oldFilename.slice(extIndex) : ""
+    const urlObj = new URL(media.url);
+    const pathSegments = urlObj.pathname.split("/");
+    const oldFilename = pathSegments[pathSegments.length - 1] ?? "";
+    const extIndex = oldFilename.lastIndexOf(".");
+    const extension = extIndex !== -1 ? oldFilename.slice(extIndex) : "";
 
     // Fetch existing blob
-    const response = await fetch(media.url)
-    if (!response.ok) throw new Error("Neuspešno preuzimanje postojećeg fajla sa storage-a")
-    const buffer = Buffer.from(await response.arrayBuffer())
+    const response = await fetch(media.url);
+    if (!response.ok) throw new Error("Neuspešno preuzimanje postojećeg fajla sa storage-a");
+    const buffer = Buffer.from(await response.arrayBuffer());
 
     // Upload with new name (keep directory and extension)
-    const oldDir = pathSegments.slice(0, -1).join("/")
-    const newPath = `${oldDir}/${Date.now()}-${name}${extension}`
+    const oldDir = pathSegments.slice(0, -1).join("/");
+    const newPath = `${oldDir}/${Date.now()}-${name}${extension}`;
     const blob = await put(newPath, buffer, {
       access: "public",
       contentType: response.headers.get("content-type") || "image/webp",
-    })
+    });
 
     // Delete old blob (non-blocking — rename succeeded even if cleanup fails)
     await del(media.url).catch((err) => {
-      console.error("[renameMediaAction] Failed to delete old blob:", media.url, err)
-    })
+      console.error("[renameMediaAction] Failed to delete old blob:", media.url, err);
+    });
 
     // Update database
     const updated = await prisma.facilityMedia.update({
       where: { id: mid },
       data: { url: blob.url },
-    })
+    });
 
-    revalidatePath(`/admin/facilities/${fid}/media`)
-    revalidatePath(`/facilities/[categorySlug]/[facilitySlug]`, "layout")
-    return { success: true, media: updated }
+    revalidatePath(`/admin/facilities/${fid}/media`);
+    revalidatePath(`/facilities/[categorySlug]/[facilitySlug]`, "layout");
+    return { success: true, media: updated };
   } catch (error) {
-    return handleServerActionError(error, "media-actions")
+    return handleServerActionError(error, "media-actions");
   }
 }
 
@@ -251,7 +263,7 @@ export async function updateMediaPurposeAction(mediaId: string, purpose: MediaPu
 
     return { success: true, media: updated };
   } catch (error) {
-    return handleServerActionError(error, "media-actions")
+    return handleServerActionError(error, "media-actions");
   }
 }
 
@@ -263,7 +275,7 @@ export async function deleteMediaAction(mediaId: string, facilityId: string) {
     const validation = await validateAction(deleteMediaSchema, { mediaId, facilityId });
     if (!validation.success) throw new Error(validation.error);
 
-    await validateFacilityAccess(facilityId)
+    await validateFacilityAccess(facilityId);
     const media = await prisma.facilityMedia.findUnique({
       where: { id: mediaId },
     });
@@ -278,7 +290,7 @@ export async function deleteMediaAction(mediaId: string, facilityId: string) {
     revalidatePath(`/admin/facilities/${facilityId}/media`);
     return { success: true };
   } catch (error) {
-    return handleServerActionError(error, "media-actions")
+    return handleServerActionError(error, "media-actions");
   }
 }
 
@@ -290,39 +302,49 @@ export async function updateMediaOrderAction(facilityId: string, mediaIds: strin
     const validation = await validateAction(updateMediaOrderSchema, { facilityId, mediaIds });
     if (!validation.success) throw new Error(validation.error);
 
-    await validateFacilityAccess(facilityId)
+    await validateFacilityAccess(facilityId);
     await prisma.$transaction(
       validation.data.mediaIds.map((id: string, index: number) =>
         prisma.facilityMedia.update({
           where: { id },
           data: { order: index },
-        })
-      )
+        }),
+      ),
     );
 
     revalidatePath(`/admin/facilities/${facilityId}/media`);
     return { success: true };
   } catch (error) {
-    return handleServerActionError(error, "media-actions")
+    return handleServerActionError(error, "media-actions");
   }
 }
 
 /**
  * 🌊 High-Bandwidth Sync (LocalDev Bridge)
  */
-export async function syncMediaAction(facilityId: string, blobUrl: string, contentType: string, thumbnailUrl?: string | null) {
+export async function syncMediaAction(
+  facilityId: string,
+  blobUrl: string,
+  contentType: string,
+  thumbnailUrl?: string | null,
+) {
   try {
-    const validation = await validateAction(syncMediaSchema, { facilityId, blobUrl, contentType, thumbnailUrl });
+    const validation = await validateAction(syncMediaSchema, {
+      facilityId,
+      blobUrl,
+      contentType,
+      thumbnailUrl,
+    });
     if (!validation.success) throw new Error(validation.error);
 
-    await validateFacilityAccess(facilityId)
+    await validateFacilityAccess(facilityId);
     const isVideo = validation.data.contentType.startsWith("video/");
     const mediaType: MediaType = isVideo ? MediaType.VIDEO : MediaType.PHOTO;
 
     const existing = await prisma.facilityMedia.findFirst({
-      where: { url: validation.data.blobUrl }
+      where: { url: validation.data.blobUrl },
     });
-    
+
     if (existing) return { success: true, media: existing };
 
     const lastMedia = await prisma.facilityMedia.findFirst({
@@ -346,7 +368,7 @@ export async function syncMediaAction(facilityId: string, blobUrl: string, conte
 
     return { success: true, media };
   } catch (error) {
-    return handleServerActionError(error, "media-actions")
+    return handleServerActionError(error, "media-actions");
   }
 }
 
@@ -384,7 +406,7 @@ export async function toggleMediaHeroAction(mediaId: string, facilityId: string)
     revalidatePath(`/facilities/[categorySlug]/[facilitySlug]`, "layout");
     return { success: true, media: updated };
   } catch (error) {
-    return handleServerActionError(error, "media-actions")
+    return handleServerActionError(error, "media-actions");
   }
 }
 
@@ -422,7 +444,7 @@ export async function toggleMediaCardBackgroundAction(mediaId: string, facilityI
     revalidatePath(`/facilities/[categorySlug]/[facilitySlug]`, "layout");
     return { success: true, media: updated };
   } catch (error) {
-    return handleServerActionError(error, "media-actions")
+    return handleServerActionError(error, "media-actions");
   }
 }
 
@@ -448,16 +470,24 @@ export async function toggleMediaGalleryVisibilityAction(mediaId: string, facili
     revalidatePath(`/facilities/[categorySlug]/[facilitySlug]`, "layout");
     return { success: true, media: updated };
   } catch (error) {
-    return handleServerActionError(error, "media-actions")
+    return handleServerActionError(error, "media-actions");
   }
 }
 
 /**
  * Updates the caption/alt tag description of a media item.
  */
-export async function updateMediaCaptionAction(mediaId: string, facilityId: string, caption: string | null) {
+export async function updateMediaCaptionAction(
+  mediaId: string,
+  facilityId: string,
+  caption: string | null,
+) {
   try {
-    const validation = await validateAction(updateMediaCaptionSchema, { mediaId, facilityId, caption });
+    const validation = await validateAction(updateMediaCaptionSchema, {
+      mediaId,
+      facilityId,
+      caption,
+    });
     if (!validation.success) throw new Error(validation.error);
 
     await validateFacilityAccess(facilityId);
@@ -471,16 +501,24 @@ export async function updateMediaCaptionAction(mediaId: string, facilityId: stri
 
     return { success: true, media: updated };
   } catch (error) {
-    return handleServerActionError(error, "media-actions")
+    return handleServerActionError(error, "media-actions");
   }
 }
 
 /**
  * Updates the focal point coordinates of a media item.
  */
-export async function updateMediaFocalPointAction(mediaId: string, facilityId: string, focalPoint: string | null) {
+export async function updateMediaFocalPointAction(
+  mediaId: string,
+  facilityId: string,
+  focalPoint: string | null,
+) {
   try {
-    const validation = await validateAction(updateMediaFocalPointSchema, { mediaId, facilityId, focalPoint });
+    const validation = await validateAction(updateMediaFocalPointSchema, {
+      mediaId,
+      facilityId,
+      focalPoint,
+    });
     if (!validation.success) throw new Error(validation.error);
 
     await validateFacilityAccess(facilityId);
@@ -494,16 +532,24 @@ export async function updateMediaFocalPointAction(mediaId: string, facilityId: s
 
     return { success: true, media: updated };
   } catch (error) {
-    return handleServerActionError(error, "media-actions")
+    return handleServerActionError(error, "media-actions");
   }
 }
 
 /**
  * Bulk updates captions/alt tags for multiple media items.
  */
-export async function bulkUpdateMediaCaptionAction(mediaIds: string[], facilityId: string, caption: string | null) {
+export async function bulkUpdateMediaCaptionAction(
+  mediaIds: string[],
+  facilityId: string,
+  caption: string | null,
+) {
   try {
-    const validation = await validateAction(bulkUpdateMediaCaptionSchema, { mediaIds, facilityId, caption });
+    const validation = await validateAction(bulkUpdateMediaCaptionSchema, {
+      mediaIds,
+      facilityId,
+      caption,
+    });
     if (!validation.success) throw new Error(validation.error);
 
     await validateFacilityAccess(facilityId);
@@ -520,7 +566,6 @@ export async function bulkUpdateMediaCaptionAction(mediaIds: string[], facilityI
 
     return { success: true };
   } catch (error) {
-    return handleServerActionError(error, "media-actions")
+    return handleServerActionError(error, "media-actions");
   }
 }
-

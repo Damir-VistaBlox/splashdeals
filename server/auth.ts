@@ -7,7 +7,7 @@ export const authOptions = {
   // Strategy: Better Auth Custom Provider
   // Role: 6-Digit Gatekeeper PIN for Facility Staff
   // Email: Magic Links for "Email Wallet" customers
-  
+
   secret: process.env.BETTER_AUTH_SECRET,
   database: "postgresql", // Points to Prisma Neon schema
 };

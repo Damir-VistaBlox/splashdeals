@@ -1,11 +1,11 @@
-import { SuccessSkeleton } from "./_components/SuccessSkeleton"
+import { SuccessSkeleton } from "./_components/SuccessSkeleton";
 
 export default function SuccessLoading() {
   return (
-    <div className="min-h-screen bg-background text-foreground flex items-center justify-center p-6 md:p-12">
-      <div className="max-w-4xl w-full">
+    <div className="bg-background text-foreground flex min-h-screen items-center justify-center p-6 md:p-12">
+      <div className="w-full max-w-4xl">
         <SuccessSkeleton />
       </div>
     </div>
-  )
+  );
 }

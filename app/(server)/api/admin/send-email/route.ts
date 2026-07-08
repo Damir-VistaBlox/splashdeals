@@ -1,15 +1,15 @@
-import { NextResponse } from "next/server"
-import { authenticateRequest } from "@/server/lib/api-key-auth"
-import { requireSuperAdmin } from "@/server/lib/auth-guards"
-import { sendEmail } from "@/server/lib/email"
-import { z } from "zod"
+import { NextResponse } from "next/server";
+import { authenticateRequest } from "@/server/lib/api-key-auth";
+import { requireSuperAdmin } from "@/server/lib/auth-guards";
+import { sendEmail } from "@/server/lib/email";
+import { z } from "zod";
 
 const sendEmailSchema = z.object({
   to: z.string().email("Neispravna email adresa"),
   subject: z.string().min(1, "Naslov je obavezan").max(200, "Naslov je predugačak"),
   text: z.string().min(1, "Sadržaj je obavezan"),
   html: z.string().optional(),
-})
+});
 
 /**
  * 📧 Agent Email API — Send email via configured SMTP
@@ -23,11 +23,11 @@ const sendEmailSchema = z.object({
 export async function POST(request: Request) {
   try {
     // Authenticate via API key or session
-    await authenticateRequest(request).catch(() => requireSuperAdmin())
+    await authenticateRequest(request).catch(() => requireSuperAdmin());
 
     // Validate payload
-    const json = await request.json()
-    const validated = sendEmailSchema.parse(json)
+    const json = await request.json();
+    const validated = sendEmailSchema.parse(json);
 
     // Send email
     await sendEmail({
@@ -35,24 +35,25 @@ export async function POST(request: Request) {
       subject: validated.subject,
       text: validated.text,
       html: validated.html || validated.text,
-    })
+    });
 
     return NextResponse.json({
       success: true,
       message: `Email poslat na ${validated.to}`,
-    })
+    });
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { success: false, error: "Proverite unete podatke.", fieldErrors: error.flatten().fieldErrors },
-        { status: 400 }
-      )
+        {
+          success: false,
+          error: "Proverite unete podatke.",
+          fieldErrors: error.flatten().fieldErrors,
+        },
+        { status: 400 },
+      );
     }
 
-    const message = error instanceof Error ? error.message : "Greška pri slanju emaila"
-    return NextResponse.json(
-      { success: false, error: message },
-      { status: 500 }
-    )
+    const message = error instanceof Error ? error.message : "Greška pri slanju emaila";
+    return NextResponse.json({ success: false, error: message }, { status: 500 });
   }
 }

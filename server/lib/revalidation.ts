@@ -1,4 +1,4 @@
-import { revalidatePath } from "next/cache"
+import { revalidatePath } from "next/cache";
 
 export const ADMIN_PATHS = {
   facilities: {

@@ -1,5 +1,5 @@
-import { MetadataRoute } from 'next';
-import { getAllSlugs } from '@/lib/routing/categories';
+import { MetadataRoute } from "next";
+import { getAllSlugs } from "@/lib/routing/categories";
 
 /**
  * 🌊 Robots Configuration (Next.js Best Practice)
@@ -13,8 +13,8 @@ export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
       {
-        userAgent: '*',
-        allow: '/',
+        userAgent: "*",
+        allow: "/",
         disallow: [
           // NOTE: Internationalized /en and /rs prefixes are NOT disallowed here.
           // Google has 23K+ old URLs under /rs/* from prior crawling.
@@ -23,80 +23,76 @@ export default function robots(): MetadataRoute.Robots {
           // The redirects handle consolidation; robots.txt must allow the crawl.
 
           // 🛡️ Hermetically seal administrative and sensitive paths
-          '/admin',
-          '/*/admin',
-          '/api/',
-          '/*/api/',
+          "/admin",
+          "/*/admin",
+          "/api/",
+          "/*/api/",
 
           // 🛠️ Block internal Next.js paths and data manifests
-          '/_next/',
-          '/middleware-manifest.json',
+          "/_next/",
+          "/middleware-manifest.json",
 
           // 🔒 Block private user paths
-          '/cart',
-          '/*/cart',
-          '/checkout',
-          '/*/checkout',
-          '/account',
-          '/*/account',
+          "/cart",
+          "/*/cart",
+          "/checkout",
+          "/*/checkout",
+          "/account",
+          "/*/account",
 
           // 💳 Block order confirmation pages
-          '/success',
-          '/*/success',
+          "/success",
+          "/*/success",
 
           // 🛡️ Block Cloudflare-obfuscated email recovery pages
-          '/cdn-cgi/',
-          '/cdn-cgi/*',
+          "/cdn-cgi/",
+          "/cdn-cgi/*",
         ],
       },
       {
         // 🤖 Bingbot: Dedicated rule to optimize crawl budget and indexing
-        userAgent: 'bingbot',
-        allow: '/',
+        userAgent: "bingbot",
+        allow: "/",
         disallow: [
           // NOTE: Same as above — allow crawling of /en and /rs prefixes
           // so Bing can follow redirects to canonical URLs.
 
           // 🛡️ Hermetically seal administrative and sensitive paths
-          '/admin',
-          '/*/admin',
-          '/api/',
-          '/*/api/',
+          "/admin",
+          "/*/admin",
+          "/api/",
+          "/*/api/",
 
           // 🛠️ Block internal Next.js paths and data manifests
-          '/_next/',
-          '/middleware-manifest.json',
+          "/_next/",
+          "/middleware-manifest.json",
 
           // 🔒 Block private user paths
-          '/cart',
-          '/*/cart',
-          '/checkout',
-          '/*/checkout',
-          '/account',
-          '/*/account',
+          "/cart",
+          "/*/cart",
+          "/checkout",
+          "/*/checkout",
+          "/account",
+          "/*/account",
 
           // 💳 Block order confirmation pages
-          '/success',
-          '/*/success',
+          "/success",
+          "/*/success",
 
           // 🛡️ Block Cloudflare-obfuscated email recovery pages
-          '/cdn-cgi/',
-          '/cdn-cgi/*',
+          "/cdn-cgi/",
+          "/cdn-cgi/*",
         ],
       },
       {
         // 🤖 Support Generative Search (GEO)
         // Allow leading AI bots to index public deals for recommendations.
-        userAgent: ['GPTBot', 'ChatGPT-User', 'ClaudeBot', 'PerplexityBot'],
-        allow: [
-          '/',
-          ...getAllSlugs().map((s) => `/${s}/`),
-          '/how-it-works',
-        ],
-        disallow: ['/admin', '/api', '/checkout', '/success', '/cdn-cgi/', '/cdn-cgi/*'],
-      }
+        userAgent: ["GPTBot", "ChatGPT-User", "ClaudeBot", "PerplexityBot"],
+        allow: ["/", ...getAllSlugs().map((s) => `/${s}/`), "/how-it-works"],
+        disallow: ["/admin", "/api", "/checkout", "/success", "/cdn-cgi/", "/cdn-cgi/*"],
+      },
     ],
-    sitemap: 'https://www.splashdeals.rs/sitemap.xml',
-    host: 'https://www.splashdeals.rs',
+    sitemap: "https://www.splashdeals.rs/sitemap.xml",
+    host: "https://www.splashdeals.rs",
   };
 }

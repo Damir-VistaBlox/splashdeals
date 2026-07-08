@@ -1,6 +1,6 @@
-import 'dotenv/config'
-import { PrismaClient } from '@prisma/client'
-import type { Amenity, FacilityStatus } from '@prisma/client'
+import "dotenv/config";
+import { PrismaClient } from "@prisma/client";
+import type { Amenity, FacilityStatus } from "@prisma/client";
 import { PrismaNeon } from "@prisma/adapter-neon";
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
@@ -8,63 +8,63 @@ import { prismaAdapter } from "better-auth/adapters/prisma";
 const connectionString = process.env.DATABASE_URL || "";
 const adapter = new PrismaNeon({ connectionString });
 
-const prisma = new PrismaClient({ adapter })
+const prisma = new PrismaClient({ adapter });
 
 async function main() {
-  console.log('🌱 Starting extensive Splashdeals database seed...')
+  console.log("🌱 Starting extensive Splashdeals database seed...");
 
   // 0. Clean the slate
-  await prisma.issuedTicket.deleteMany({})
-  await prisma.transaction.deleteMany({})
-  await prisma.ticketCategory.deleteMany({})
-  await prisma.facilityAmenity.deleteMany({})
-  await prisma.facilityCity.deleteMany({})
-  await prisma.operatingHours.deleteMany({})
-  await prisma.facilityMedia.deleteMany({})
-  await prisma.facility.deleteMany({})
-  await prisma.amenity.deleteMany({})
-  await prisma.city.deleteMany({})
-  await prisma.user.deleteMany({})
+  await prisma.issuedTicket.deleteMany({});
+  await prisma.transaction.deleteMany({});
+  await prisma.ticketCategory.deleteMany({});
+  await prisma.facilityAmenity.deleteMany({});
+  await prisma.facilityCity.deleteMany({});
+  await prisma.operatingHours.deleteMany({});
+  await prisma.facilityMedia.deleteMany({});
+  await prisma.facility.deleteMany({});
+  await prisma.amenity.deleteMany({});
+  await prisma.city.deleteMany({});
+  await prisma.user.deleteMany({});
 
-  console.log('🧹 Database wiped cleanly.')
-  
+  console.log("🧹 Database wiped cleanly.");
+
   // 0.1 Seed Admin User
   const adminEmail = process.env.ADMIN_SEED_EMAIL || "admin@splashdeals.rs";
   const adminPassword = process.env.ADMIN_SEED_PASSWORD;
-  
+
   if (!adminPassword) {
     console.warn("⚠️ Skipping admin seed: ADMIN_SEED_PASSWORD not set.");
   } else {
-  console.log(`👤 Seeding admin user: ${adminEmail}`);
-  
-  const auth = betterAuth({
-    database: prismaAdapter(prisma, { provider: "postgresql" }),
-    emailAndPassword: { enabled: true },
-  });
+    console.log(`👤 Seeding admin user: ${adminEmail}`);
 
-  try {
-    const result = await auth.api.signUpEmail({
-      body: {
-        email: adminEmail,
-        password: adminPassword,
-        name: "Super Admin",
-      },
+    const auth = betterAuth({
+      database: prismaAdapter(prisma, { provider: "postgresql" }),
+      emailAndPassword: { enabled: true },
     });
 
-    if (result?.user) {
-      await prisma.user.update({
-        where: { id: result.user.id },
-        data: { role: "SUPER_ADMIN" },
+    try {
+      const result = await auth.api.signUpEmail({
+        body: {
+          email: adminEmail,
+          password: adminPassword,
+          name: "Super Admin",
+        },
       });
-      console.log("✅ Admin user created and elevated to SUPER_ADMIN.");
+
+      if (result?.user) {
+        await prisma.user.update({
+          where: { id: result.user.id },
+          data: { role: "SUPER_ADMIN" },
+        });
+        console.log("✅ Admin user created and elevated to SUPER_ADMIN.");
+      }
+    } catch (err: unknown) {
+      if (err instanceof Error && err.message?.includes("already exists")) {
+        console.log("⚠️ Admin user already exists, skipping creation.");
+      } else {
+        console.error("❌ Failed to seed admin user:", err);
+      }
     }
-  } catch (err: unknown) {
-    if (err instanceof Error && err.message?.includes("already exists")) {
-       console.log("⚠️ Admin user already exists, skipping creation.");
-    } else {
-       console.error("❌ Failed to seed admin user:", err);
-    }
-  }
   }
 
   // 1. Seed Strategic Cities/Regions
@@ -99,12 +99,12 @@ async function main() {
     { name: "Airport Area", slug: "airport-area" },
     { name: "Bačka", slug: "backa" },
     { name: "Srem", slug: "srem" },
-  ]
+  ];
 
   for (const city of citiesData) {
-    await prisma.city.create({ data: city })
+    await prisma.city.create({ data: city });
   }
-  console.log(`✅ Seeded ${citiesData.length} strategic regions.`)
+  console.log(`✅ Seeded ${citiesData.length} strategic regions.`);
 
   // 2. Seed Amenities Registry
   const amenitiesData = [
@@ -124,12 +124,12 @@ async function main() {
     { name: "Free WiFi", icon: "Wifi", category: "Services" },
     { name: "First Aid", icon: "HeartPulse", category: "Services" },
     { name: "Wellness & Spa", icon: "Flower2", category: "Services" },
-  ]
+  ];
 
-  const createdAmenities: Record<string, Amenity> = {}
+  const createdAmenities: Record<string, Amenity> = {};
   for (const am of amenitiesData) {
-    const record = await prisma.amenity.create({ data: am })
-    createdAmenities[am.name] = record
+    const record = await prisma.amenity.create({ data: am });
+    createdAmenities[am.name] = record;
   }
 
   // 3. Seed Facilities & REAL TICKETS
@@ -142,9 +142,11 @@ async function main() {
       streetName: "Novosadski put",
       streetNumber: "bb",
       postalCode: "21470",
-      lat: 45.362, lng: 19.589,
+      lat: 45.362,
+      lng: 19.589,
       status: "ACTIVE",
-      description: "Najveći akva park u Srbiji. Preko 10 tobogana, ogroman bazen sa talasima i specijalizovane dečije zone.",
+      description:
+        "Najveći akva park u Srbiji. Preko 10 tobogana, ogroman bazen sa talasima i specijalizovane dečije zone.",
       amenities: ["Water Slides", "Wave Pool", "Kids' Pool", "Restaurant", "Parking"],
       regions: ["backi-petrovac", "novi-sad", "vojvodina"],
       tickets: [
@@ -153,8 +155,8 @@ async function main() {
         { title: "Dnevna Karta - Deca (Radni dan)", type: "CHILD", price: 490 },
         { title: "Dnevna Karta - Deca (Vikend)", type: "CHILD", price: 990 },
         { title: "Studenti / Penzioneri (Radni dan)", type: "ADULT", price: 690 },
-        { title: "Studenti / Penzioneri (Vikend)", type: "ADULT", price: 1190 }
-      ]
+        { title: "Studenti / Penzioneri (Vikend)", type: "ADULT", price: 1190 },
+      ],
     },
     {
       name: "Aqua Park Izvor",
@@ -164,16 +166,18 @@ async function main() {
       streetName: "Mišarska",
       streetNumber: "2",
       postalCode: "34300",
-      lat: 44.306, lng: 20.558,
+      lat: 44.306,
+      lng: 20.558,
       status: "ACTIVE",
-      description: "Vrhunski akva park i luksuzni wellness centar. Sadrži 12 tobogana i profesionalne termalne sadržaje.",
+      description:
+        "Vrhunski akva park i luksuzni wellness centar. Sadrži 12 tobogana i profesionalne termalne sadržaje.",
       amenities: ["Water Slides", "Thermal Water", "Wellness & Spa", "Kids' Pool", "Restaurant"],
       regions: ["arandjelovac", "central-serbia"],
       tickets: [
         { title: "SPA Day Pass - Odrasli (Radni dan)", type: "ADULT", price: 6000 },
         { title: "SPA Day Pass - Odrasli (Vikend)", type: "ADULT", price: 7000 },
-        { title: "Dnevna karta za Aqua park (Sezonska)", type: "ADULT", price: 1500 }
-      ]
+        { title: "Dnevna karta za Aqua park (Sezonska)", type: "ADULT", price: 1500 },
+      ],
     },
     {
       name: "Aqua Park Jagodina",
@@ -183,15 +187,17 @@ async function main() {
       streetName: "Stevana Prvovenčanog",
       streetNumber: "bb",
       postalCode: "35000",
-      lat: 43.966, lng: 21.263,
+      lat: 43.966,
+      lng: 21.263,
       status: "ACTIVE",
-      description: "Prvi akva park u Srbiji, sa 7 bazena i 9 tobogana uključujući čuveni 'Kamikaze'.",
+      description:
+        "Prvi akva park u Srbiji, sa 7 bazena i 9 tobogana uključujući čuveni 'Kamikaze'.",
       amenities: ["Water Slides", "Olympic Pool", "Kids' Pool", "Cafe Bar", "Parking"],
       regions: ["jagodina", "central-serbia"],
       tickets: [
         { title: "Dnevna Karta - Odrasli", type: "ADULT", price: 1200 },
-        { title: "Dnevna Karta - Deca (do 12 god)", type: "CHILD", price: 700 }
-      ]
+        { title: "Dnevna Karta - Deca (do 12 god)", type: "CHILD", price: 700 },
+      ],
     },
     {
       name: "Hollywoodland Belgrade",
@@ -201,9 +207,11 @@ async function main() {
       streetName: "Jakovački kormandin",
       streetNumber: "10",
       postalCode: "11271",
-      lat: 44.793, lng: 20.285,
+      lat: 44.793,
+      lng: 20.285,
       status: "ACTIVE",
-      description: "Prvi zatvoreno-otvoreni akva park u Beogradu. Tematski tobogani, wellness zone i zabava tokom cele godine.",
+      description:
+        "Prvi zatvoreno-otvoreni akva park u Beogradu. Tematski tobogani, wellness zone i zabava tokom cele godine.",
       amenities: ["Indoor Pool", "Water Slides", "Wellness & Spa", "Kids' Pool", "Restaurant"],
       regions: ["belgrade", "airport-area"],
       tickets: [
@@ -211,8 +219,8 @@ async function main() {
         { title: "Dnevna Karta - Odrasli (Vikend)", type: "ADULT", price: 1500 },
         { title: "Dnevna Karta - Deca (Radni dan)", type: "CHILD", price: 800 },
         { title: "Dnevna Karta - Deca (Vikend)", type: "CHILD", price: 1000 },
-        { title: "Noćno Kupanje", type: "ADULT", price: 1500 }
-      ]
+        { title: "Noćno Kupanje", type: "ADULT", price: 1500 },
+      ],
     },
     {
       name: "Aqua Park Mlavske Terme",
@@ -222,15 +230,16 @@ async function main() {
       streetName: "Banja Ždrelo",
       streetNumber: "bb",
       postalCode: "12300",
-      lat: 44.2965, lng: 21.5075,
+      lat: 44.2965,
+      lng: 21.5075,
       status: "ACTIVE",
       description: "Termalni raj sa celogodišnjim kupanjem u lekovitoj vodi temperature 30-40°C.",
       amenities: ["Thermal Water", "Indoor Pool", "Water Slides", "Wellness & Spa", "Parking"],
       regions: ["petrovac-na-mlavi", "central-serbia"],
       tickets: [
         { title: "Dnevna Karta - Odrasli", type: "ADULT", price: 1200 },
-        { title: "Dnevna Karta - Deca (2-12 god)", type: "CHILD", price: 800 }
-      ]
+        { title: "Dnevna Karta - Deca (2-12 god)", type: "CHILD", price: 800 },
+      ],
     },
     {
       name: "SRC Tašmajdan",
@@ -240,15 +249,17 @@ async function main() {
       streetName: "Beogradska",
       streetNumber: "71",
       postalCode: "11000",
-      lat: 44.809, lng: 20.470,
+      lat: 44.809,
+      lng: 20.47,
       status: "ACTIVE",
-      description: "Kultni beogradski plivački kompleks sa otvorenim olimpijskim i zatvorenim bazenima.",
+      description:
+        "Kultni beogradski plivački kompleks sa otvorenim olimpijskim i zatvorenim bazenima.",
       amenities: ["Olympic Pool", "Indoor Pool", "Locker Rooms", "Cafe Bar", "First Aid"],
       regions: ["belgrade"],
       tickets: [
         { title: "Dnevni termin - Odrasli", type: "ADULT", price: 600 },
-        { title: "Dnevni termin - Deca", type: "CHILD", price: 300 }
-      ]
+        { title: "Dnevni termin - Deca", type: "CHILD", price: 300 },
+      ],
     },
     {
       name: "SC Milan Gale Muškatirović",
@@ -258,15 +269,16 @@ async function main() {
       streetName: "Tadeuša Košćuška",
       streetNumber: "63",
       postalCode: "11000",
-      lat: 44.8306, lng: 20.4501,
+      lat: 44.8306,
+      lng: 20.4501,
       status: "ACTIVE",
       description: "Legendarni sportski centar na ušću Save u Dunav.",
       amenities: ["Olympic Pool", "Indoor Pool", "Locker Rooms", "Parking", "Cafe Bar"],
       regions: ["belgrade"],
       tickets: [
         { title: "Dnevna Karta - Odrasli", type: "ADULT", price: 600 },
-        { title: "Dnevna Karta - Deca", type: "CHILD", price: 300 }
-      ]
+        { title: "Dnevna Karta - Deca", type: "CHILD", price: 300 },
+      ],
     },
     {
       name: "SC 11. April",
@@ -276,15 +288,16 @@ async function main() {
       streetName: "Autoput",
       streetNumber: "2",
       postalCode: "11070",
-      lat: 44.821, lng: 20.395,
+      lat: 44.821,
+      lng: 20.395,
       status: "ACTIVE",
       description: "Centar letnje rekreacije na Novom Beogradu sa tri velika otvorena bazena.",
       amenities: ["Olympic Pool", "Indoor Pool", "Kids' Pool", "Parking", "Locker Rooms"],
       regions: ["belgrade"],
       tickets: [
         { title: "Dnevni termin - Odrasli", type: "ADULT", price: 600 },
-        { title: "Porodični Paket", type: "FAMILY_BUNDLE", price: 1200 }
-      ]
+        { title: "Porodični Paket", type: "FAMILY_BUNDLE", price: 1200 },
+      ],
     },
     {
       name: "Aqua Park Podina",
@@ -294,15 +307,17 @@ async function main() {
       streetName: "IX Brigade",
       streetNumber: "bb",
       postalCode: "18230",
-      lat: 43.6425, lng: 21.8680,
+      lat: 43.6425,
+      lng: 21.868,
       status: "ACTIVE",
-      description: "Moderan akva park u Soko Banji, idealan za porodice koje traže planinski vazduh i zabavu na vodi.",
+      description:
+        "Moderan akva park u Soko Banji, idealan za porodice koje traže planinski vazduh i zabavu na vodi.",
       amenities: ["Water Slides", "Kids' Pool", "Parking", "Cafe Bar", "Changing Rooms"],
       regions: ["soko-banja", "central-serbia"],
       tickets: [
         { title: "Dnevna Karta - Odrasli", type: "ADULT", price: 600 },
-        { title: "Dnevna Karta - Deca (do 12 god)", type: "CHILD", price: 400 }
-      ]
+        { title: "Dnevna Karta - Deca (do 12 god)", type: "CHILD", price: 400 },
+      ],
     },
     {
       name: "SC Čair Niš",
@@ -312,15 +327,16 @@ async function main() {
       streetName: "IX Brigade",
       streetNumber: "10",
       postalCode: "18000",
-      lat: 43.3150, lng: 21.9056,
+      lat: 43.315,
+      lng: 21.9056,
       status: "ACTIVE",
       description: "Vodeći plivački centar u Nišu sa bogatim zatvorenim i otvorenim sadržajima.",
       amenities: ["Olympic Pool", "Indoor Pool", "Locker Rooms", "Parking", "Restaurant"],
       regions: ["nis", "central-serbia"],
       tickets: [
         { title: "Dnevna Karta - Odrasli", type: "ADULT", price: 500 },
-        { title: "Dnevna Karta - Deca", type: "CHILD", price: 300 }
-      ]
+        { title: "Dnevna Karta - Deca", type: "CHILD", price: 300 },
+      ],
     },
     {
       name: "Banja Junaković",
@@ -330,15 +346,16 @@ async function main() {
       streetName: "Banjski put",
       streetNumber: "71",
       postalCode: "25263",
-      lat: 45.6773, lng: 19.0314,
+      lat: 45.6773,
+      lng: 19.0314,
       status: "ACTIVE",
       description: "Čuveno termalno lečilište sa više bazena i tobogana u srcu Bačke.",
       amenities: ["Thermal Water", "Water Slides", "Kids' Pool", "Restaurant", "Wellness & Spa"],
       regions: ["apatin", "backa", "vojvodina"],
       tickets: [
         { title: "Dnevna Karta - Odrasli", type: "ADULT", price: 700 },
-        { title: "Dnevna Karta - Deca", type: "CHILD", price: 400 }
-      ]
+        { title: "Dnevna Karta - Deca", type: "CHILD", price: 400 },
+      ],
     },
     {
       name: "SRC Petnica",
@@ -348,15 +365,17 @@ async function main() {
       streetName: "Petnica",
       streetNumber: "bb",
       postalCode: "14000",
-      lat: 44.2483, lng: 19.9283,
+      lat: 44.2483,
+      lng: 19.9283,
       status: "ACTIVE",
-      description: "Legendarni rekreativni centar kod Petničke pećine, poznat po kristalno čistoj izvorskoj vodi.",
+      description:
+        "Legendarni rekreativni centar kod Petničke pećine, poznat po kristalno čistoj izvorskoj vodi.",
       amenities: ["Olympic Pool", "Kids' Pool", "Restaurant", "Parking"],
       regions: ["valjevo", "central-serbia"],
       tickets: [
         { title: "Dnevna Karta - Odrasli", type: "ADULT", price: 300 },
-        { title: "Dnevna Karta - Deca (Vikend)", type: "CHILD", price: 200 }
-      ]
+        { title: "Dnevna Karta - Deca (Vikend)", type: "CHILD", price: 200 },
+      ],
     },
     {
       name: "Bazen Borkovac",
@@ -366,7 +385,8 @@ async function main() {
       streetName: "Orlovićeva",
       streetNumber: "bb",
       postalCode: "22400",
-      lat: 45.0256, lng: 19.8244,
+      lat: 45.0256,
+      lng: 19.8244,
       status: "ACTIVE",
       description: "Mirni otvoreni bazen okružen borovom šumom Borkovac.",
       amenities: ["Kids' Pool", "Cafe Bar", "Parking", "Locker Rooms"],
@@ -374,8 +394,8 @@ async function main() {
       tickets: [
         { title: "Dnevna Karta - Odrasli (Radni dan)", type: "ADULT", price: 400 },
         { title: "Dnevna Karta - Odrasli (Vikend)", type: "ADULT", price: 500 },
-        { title: "Dnevna Karta - Deca (7-15 god)", type: "CHILD", price: 250 }
-      ]
+        { title: "Dnevna Karta - Deca (7-15 god)", type: "CHILD", price: 250 },
+      ],
     },
     {
       name: "Srebrno Jezero Aquapark",
@@ -385,7 +405,8 @@ async function main() {
       streetName: "Srebrno Jezero",
       streetNumber: "bb",
       postalCode: "12220",
-      lat: 44.7578, lng: 21.4936,
+      lat: 44.7578,
+      lng: 21.4936,
       status: "ACTIVE",
       description: "Popularna letnja destinacija na obali Srebrnog jezera.",
       amenities: ["Water Slides", "Wave Pool", "Restaurant", "Parking", "Cafe Bar"],
@@ -394,8 +415,8 @@ async function main() {
         { title: "Dnevna Karta - Odrasli (Radni dan)", type: "ADULT", price: 1000 },
         { title: "Dnevna Karta - Odrasli (Vikend)", type: "ADULT", price: 1200 },
         { title: "Dnevna Karta - Deca (Radni dan)", type: "CHILD", price: 700 },
-        { title: "Dnevna Karta - Deca (Vikend)", type: "CHILD", price: 800 }
-      ]
+        { title: "Dnevna Karta - Deca (Vikend)", type: "CHILD", price: 800 },
+      ],
     },
     {
       name: "Banja Vrujci Aquapark",
@@ -405,7 +426,8 @@ async function main() {
       streetName: "Banja Vrujci",
       streetNumber: "bb",
       postalCode: "14242",
-      lat: 44.2250, lng: 20.2056,
+      lat: 44.225,
+      lng: 20.2056,
       status: "ACTIVE",
       description: "Najnoviji akva park koji koristi lekovite termalno-mineralne vode.",
       amenities: ["Thermal Water", "Water Slides", "Kids' Pool", "Restaurant", "Parking"],
@@ -414,8 +436,8 @@ async function main() {
         { title: "Bazen - Odrasli (Radni dan)", type: "ADULT", price: 800 },
         { title: "Bazen - Odrasli (Vikend)", type: "ADULT", price: 950 },
         { title: "Bazen - Deca (5-10 god)", type: "CHILD", price: 600 },
-        { title: "Doplata za Akva-park", type: "ADULT", price: 500 }
-      ]
+        { title: "Doplata za Akva-park", type: "ADULT", price: 500 },
+      ],
     },
     {
       name: "SC Jezero Kikinda",
@@ -425,15 +447,16 @@ async function main() {
       streetName: "Branka Vujina",
       streetNumber: "bb",
       postalCode: "23300",
-      lat: 45.8247, lng: 20.4561,
+      lat: 45.8247,
+      lng: 20.4561,
       status: "ACTIVE",
       description: "Veliki severni sportski centar sa olimpijskim i rekreativnim bazenima.",
       amenities: ["Olympic Pool", "Indoor Pool", "Kids' Pool", "Parking", "Locker Rooms"],
       regions: ["kikinda", "vojvodina"],
       tickets: [
         { title: "Dnevna Karta - Odrasli", type: "ADULT", price: 300 },
-        { title: "Dnevna Karta - Deca", type: "CHILD", price: 200 }
-      ]
+        { title: "Dnevna Karta - Deca", type: "CHILD", price: 200 },
+      ],
     },
     {
       name: "Gradski bazen Inđija",
@@ -443,15 +466,16 @@ async function main() {
       streetName: "Novosadski put",
       streetNumber: "bb",
       postalCode: "22320",
-      lat: 45.0531, lng: 20.0764,
+      lat: 45.0531,
+      lng: 20.0764,
       status: "ACTIVE",
       description: "Omiljeno letnje mesto u Sremu sa prelepim zelenim površinama.",
       amenities: ["Kids' Pool", "Parking", "Cafe Bar", "Locker Rooms"],
       regions: ["indjija", "srem", "vojvodina"],
       tickets: [
         { title: "Dnevna Karta - Odrasli", type: "ADULT", price: 350 },
-        { title: "Dnevna Karta - Deca", type: "CHILD", price: 150 }
-      ]
+        { title: "Dnevna Karta - Deca", type: "CHILD", price: 150 },
+      ],
     },
     {
       name: "Gradski bazen Stara Pazova",
@@ -461,15 +485,16 @@ async function main() {
       streetName: "Staropazovački put",
       streetNumber: "bb",
       postalCode: "22300",
-      lat: 44.9758, lng: 20.1742,
+      lat: 44.9758,
+      lng: 20.1742,
       status: "ACTIVE",
       description: "Moderan kompleks bazena za letnju rekreaciju.",
       amenities: ["Kids' Pool", "Water Slides", "Cafe Bar", "Parking", "Locker Rooms"],
       regions: ["stara-pazova", "srem", "vojvodina"],
       tickets: [
         { title: "Dnevna Karta - Odrasli", type: "ADULT", price: 400 },
-        { title: "Dnevna Karta - Deca", type: "CHILD", price: 200 }
-      ]
+        { title: "Dnevna Karta - Deca", type: "CHILD", price: 200 },
+      ],
     },
     {
       name: "Aqua Park Sunny Hill",
@@ -479,15 +504,16 @@ async function main() {
       streetName: "Mare Jakovljević",
       streetNumber: "9A",
       postalCode: "36210",
-      lat: 43.6149, lng: 20.9016,
+      lat: 43.6149,
+      lng: 20.9016,
       status: "ACTIVE",
       description: "Luksuzni akva rizort sa panoramskim pogledom na Vrnjačku Banju.",
       amenities: ["Water Slides", "Wellness & Spa", "Restaurant", "Parking", "Hydromassage"],
       regions: ["vrnjacka-banja", "central-serbia"],
       tickets: [
         { title: "Dnevni pass - Odrasli", type: "ADULT", price: 1200 },
-        { title: "Dnevni pass - Deca", type: "CHILD", price: 800 }
-      ]
+        { title: "Dnevni pass - Deca", type: "CHILD", price: 800 },
+      ],
     },
     {
       name: "Gradski bazen Kruševac",
@@ -497,15 +523,16 @@ async function main() {
       streetName: "Nikole Tesle",
       streetNumber: "bb",
       postalCode: "37000",
-      lat: 43.5858, lng: 21.3167,
+      lat: 43.5858,
+      lng: 21.3167,
       status: "ACTIVE",
       description: "Centralni plivački centar sa olimpijskim i dečijim bazenima.",
       amenities: ["Olympic Pool", "Kids' Pool", "Parking", "Cafe Bar", "Locker Rooms"],
       regions: ["krusevac", "central-serbia"],
       tickets: [
         { title: "Dnevna Karta - Odrasli", type: "ADULT", price: 350 },
-        { title: "Dnevna Karta - Deca", type: "CHILD", price: 200 }
-      ]
+        { title: "Dnevna Karta - Deca", type: "CHILD", price: 200 },
+      ],
     },
     {
       name: "Gradski bazen Čačak",
@@ -515,15 +542,16 @@ async function main() {
       streetName: "Bulevar Vuka Karadžića",
       streetNumber: "bb",
       postalCode: "32000",
-      lat: 43.8914, lng: 20.3411,
+      lat: 43.8914,
+      lng: 20.3411,
       status: "ACTIVE",
       description: "Popularno letnje rekreativno mesto pored Zapadne Morave.",
       amenities: ["Kids' Pool", "Parking", "Cafe Bar", "Locker Rooms", "Restaurant"],
       regions: ["cacak", "central-serbia"],
       tickets: [
         { title: "Dnevna Karta - Odrasli", type: "ADULT", price: 350 },
-        { title: "Dnevna Karta - Deca", type: "CHILD", price: 200 }
-      ]
+        { title: "Dnevna Karta - Deca", type: "CHILD", price: 200 },
+      ],
     },
     {
       name: "SRC Dubočica Leskovac",
@@ -533,15 +561,16 @@ async function main() {
       streetName: "Kralja Petra I",
       streetNumber: "bb",
       postalCode: "16000",
-      lat: 42.9986, lng: 21.9422,
+      lat: 42.9986,
+      lng: 21.9422,
       status: "ACTIVE",
       description: "Ključni plivački trenažni centar u južnoj Srbiji.",
       amenities: ["Olympic Pool", "Indoor Pool", "Locker Rooms", "Parking", "Cafe Bar"],
       regions: ["leskovac", "central-serbia"],
       tickets: [
         { title: "Dnevni termin - Odrasli", type: "ADULT", price: 120 },
-        { title: "Dnevni termin - Deca", type: "CHILD", price: 100 }
-      ]
+        { title: "Dnevni termin - Deca", type: "CHILD", price: 100 },
+      ],
     },
     {
       name: "Gradski bazen Šabac",
@@ -551,15 +580,16 @@ async function main() {
       streetName: "Hajduk Veljkova",
       streetNumber: "bb",
       postalCode: "15000",
-      lat: 44.7558, lng: 19.6917,
+      lat: 44.7558,
+      lng: 19.6917,
       status: "ACTIVE",
       description: "Moderan zatvoreni bazenski kompleks za profesionalni sport i javnu zabavu.",
       amenities: ["Indoor Pool", "Wellness & Spa", "Locker Rooms", "Parking", "Cafe Bar"],
       regions: ["sabac", "central-serbia"],
       tickets: [
         { title: "Dnevni termin - Odrasli", type: "ADULT", price: 350 },
-        { title: "Noćno Kupanje", type: "ADULT", price: 550 }
-      ]
+        { title: "Noćno Kupanje", type: "ADULT", price: 550 },
+      ],
     },
     {
       name: "SC Olimp",
@@ -569,15 +599,16 @@ async function main() {
       streetName: "Vjekoslava Kovača",
       streetNumber: "11",
       postalCode: "11000",
-      lat: 44.794, lng: 20.511,
+      lat: 44.794,
+      lng: 20.511,
       status: "ACTIVE",
       description: "Mirna sportska oaza na obroncima Zvezdarske šume.",
       amenities: ["Olympic Pool", "Kids' Pool", "Parking", "Cafe Bar", "Locker Rooms"],
       regions: ["belgrade"],
       tickets: [
         { title: "Dnevni termin - Odrasli", type: "ADULT", price: 600 },
-        { title: "Dnevni termin - Deca", type: "CHILD", price: 300 }
-      ]
+        { title: "Dnevni termin - Deca", type: "CHILD", price: 300 },
+      ],
     },
     {
       name: "SC Banjica",
@@ -587,15 +618,16 @@ async function main() {
       streetName: "Crnotravska",
       streetNumber: "4",
       postalCode: "11000",
-      lat: 44.764, lng: 20.472,
+      lat: 44.764,
+      lng: 20.472,
       status: "ACTIVE",
       description: "Tradicionalni dom beogradskog vaterpola i atletskog plivanja.",
       amenities: ["Olympic Pool", "Indoor Pool", "Locker Rooms", "Parking", "Cafe Bar"],
       regions: ["belgrade"],
       tickets: [
         { title: "Dnevni termin - Odrasli", type: "ADULT", price: 600 },
-        { title: "Dnevni termin - Deca", type: "CHILD", price: 300 }
-      ]
+        { title: "Dnevni termin - Deca", type: "CHILD", price: 300 },
+      ],
     },
     {
       name: "Ada Ciganlija",
@@ -605,18 +637,20 @@ async function main() {
       streetName: "Ada Ciganlija",
       streetNumber: "2",
       postalCode: "11000",
-      lat: 44.787, lng: 20.415,
+      lat: 44.787,
+      lng: 20.415,
       status: "ACTIVE",
-      description: "Beogradsko 'more'. Ogromna rekreativna zona sa šljunkovitim plažama, sportskim terenima i brojnim kafićima.",
+      description:
+        "Beogradsko 'more'. Ogromna rekreativna zona sa šljunkovitim plažama, sportskim terenima i brojnim kafićima.",
       amenities: ["Parking", "Cafe Bar", "Restaurant", "First Aid", "Free WiFi"],
       regions: ["belgrade"],
       tickets: [
         { title: "Zakup Ležaljke (Radni dan)", type: "ADULT", price: 500 },
         { title: "Zakup Ležaljke (Vikend)", type: "ADULT", price: 800 },
-        { title: "Dnevni Parking (JKP)", type: "ADULT", price: 200 }
-      ]
+        { title: "Dnevni Parking (JKP)", type: "ADULT", price: 200 },
+      ],
     },
-  ]
+  ];
 
   for (const f of facilities) {
     const facility = await prisma.facility.create({
@@ -632,34 +666,34 @@ async function main() {
         lng: f.lng,
         status: f.status as FacilityStatus,
         description: f.description,
-      }
-    })
+      },
+    });
 
     // Add Amenities
     for (const amName of f.amenities) {
-      const amenity = createdAmenities[amName]
+      const amenity = createdAmenities[amName];
       if (amenity) {
         await prisma.facilityAmenity.create({
           data: {
             facilityId: facility.id,
             amenityId: amenity.id,
-            value: "Standard"
-          }
-        })
+            value: "Standard",
+          },
+        });
       }
     }
 
     // Add Regions
     for (const regSlug of f.regions) {
-      const city = await prisma.city.findUnique({ where: { slug: regSlug } })
+      const city = await prisma.city.findUnique({ where: { slug: regSlug } });
       if (city) {
         await prisma.facilityCity.create({
           data: {
             facilityId: facility.id,
             cityId: city.id,
-            isPrimary: regSlug === f.slug // Approximation
-          }
-        })
+            isPrimary: regSlug === f.slug, // Approximation
+          },
+        });
       }
     }
 
@@ -671,9 +705,9 @@ async function main() {
           dayOfWeek: day,
           openTime: "09:00",
           closeTime: "20:00",
-          isClosed: false
-        }
-      })
+          isClosed: false,
+        },
+      });
     }
 
     // Ticket seeding — DEPRECATED (model removed)
@@ -697,18 +731,20 @@ async function main() {
     })
     */
 
-    console.log(`✅ Seeded ${facility.name} with ${f.tickets.length} Real Tickets.`)
+    console.log(`✅ Seeded ${facility.name} with ${f.tickets.length} Real Tickets.`);
   }
 
-  console.log('🏁 Seeding finished successfully! Database is now a real-world Serbian Aqua Registry with full pricing logic.')
+  console.log(
+    "🏁 Seeding finished successfully! Database is now a real-world Serbian Aqua Registry with full pricing logic.",
+  );
 }
 
 main()
   .then(async () => {
-    await prisma.$disconnect()
+    await prisma.$disconnect();
   })
   .catch(async (e) => {
-    console.error(e)
-    await prisma.$disconnect()
-    process.exit(1)
-  })
+    console.error(e);
+    await prisma.$disconnect();
+    process.exit(1);
+  });

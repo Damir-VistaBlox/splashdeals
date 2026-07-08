@@ -1,37 +1,37 @@
-"use client"
+"use client";
 import { Icon } from "@/components/ui/Icon";
-import { Button } from "@/components/ui/button"
-import { useEffect } from "react"
-import Link from "next/link"
+import { Button } from "@/components/ui/button";
+import { useEffect } from "react";
+import Link from "next/link";
 
 export default function FacilitiesError({
   error,
   reset,
 }: {
-  error: Error & { digest?: string }
-  reset: () => void
+  error: Error & { digest?: string };
+  reset: () => void;
 }) {
   useEffect(() => {
-    console.error("Facilities Error:", error)
-  }, [error])
+    console.error("Facilities Error:", error);
+  }, [error]);
 
   return (
-    <div className="relative min-h-[60vh] flex items-center justify-center p-6">
-      <div className="absolute inset-0 z-0 opacity-10 pointer-events-none">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-cyan-500/10 rounded-full blur-[100px]" />
+    <div className="relative flex min-h-[60vh] items-center justify-center p-6">
+      <div className="pointer-events-none absolute inset-0 z-0 opacity-10">
+        <div className="absolute top-1/2 left-1/2 h-[400px] w-[400px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-500/10 blur-[100px]" />
       </div>
 
-      <div className="max-w-md w-full p-8 text-center space-y-6 relative z-10">
-        <div className="inline-flex items-center justify-center h-20 w-20 rounded-full bg-muted/30 border border-border text-muted-foreground">
+      <div className="relative z-10 w-full max-w-md space-y-6 p-8 text-center">
+        <div className="bg-muted/30 border-border text-muted-foreground inline-flex h-20 w-20 items-center justify-center rounded-full border">
           <Icon name="gpp_maybe" className="text-[40px]" />
         </div>
 
         <div className="space-y-2">
-          <h1 className="text-2xl font-black italic tracking-tighter uppercase text-foreground">
+          <h1 className="text-foreground text-2xl font-black tracking-tighter uppercase italic">
             Objekti <span className="text-muted-foreground">Greška</span>
-           </h1>
-           <p className="text-muted-foreground text-sm max-w-xs mx-auto">
-              Nije moguće učitati listu objekata. Molimo pokušajte ponovo.
+          </h1>
+          <p className="text-muted-foreground mx-auto max-w-xs text-sm">
+            Nije moguće učitati listu objekata. Molimo pokušajte ponovo.
           </p>
         </div>
 
@@ -39,12 +39,16 @@ export default function FacilitiesError({
           <Button
             onClick={reset}
             variant="outline"
-            className="w-full px-8 py-4 rounded-xl bg-muted/30 hover:bg-muted/50 border border-border/50 font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 transition-all"
+            className="bg-muted/30 hover:bg-muted/50 border-border/50 flex w-full items-center justify-center gap-2 rounded-xl border px-8 py-4 text-[10px] font-black tracking-widest uppercase transition-all"
           >
             <Icon name="refresh" className="text-[16px]" />
             Pokušaj ponovo
           </Button>
-          <Button asChild variant="secondary" className="w-full px-8 py-4 rounded-xl bg-muted/80 hover:bg-foreground/10 text-foreground font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 transition-all">
+          <Button
+            asChild
+            variant="secondary"
+            className="bg-muted/80 hover:bg-foreground/10 text-foreground flex w-full items-center justify-center gap-2 rounded-xl px-8 py-4 text-[10px] font-black tracking-widest uppercase transition-all"
+          >
             <Link href="/admin/facilities">
               <Icon name="apartment" className="text-[16px]" />
               Svi objekti
@@ -53,5 +57,5 @@ export default function FacilitiesError({
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -1,40 +1,44 @@
 import { Icon } from "@/components/ui/Icon";
-import { Skeleton } from "@/components/ui/skeleton"
-import { Card } from "@/components/ui/card"
+import { Skeleton } from "@/components/ui/skeleton";
+import { Card } from "@/components/ui/card";
 export default function CartLoading() {
   return (
-    <div className="container max-w-6xl mx-auto py-24 px-6">
-      <div className="flex flex-col lg:flex-row gap-12">
-        
+    <div className="container mx-auto max-w-6xl px-6 py-24">
+      <div className="flex flex-col gap-12 lg:flex-row">
         {/* 🛒 ITEM LIST SKELETON */}
         <div className="flex-grow space-y-8">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-muted-foreground/40">
+            <div className="text-muted-foreground/40 flex items-center gap-2">
               <Icon name="arrow_back" className="text-[16px]" />
-              <span className="text-[10px] uppercase font-black tracking-widest">Nazad na karte</span>
+              <span className="text-[10px] font-black tracking-widest uppercase">
+                Nazad na karte
+              </span>
             </div>
-            <Skeleton className="h-8 w-44 bg-muted rounded-xl" />
+            <Skeleton className="bg-muted h-8 w-44 rounded-xl" />
           </div>
 
           <div className="space-y-4">
             {[1, 2].map((i) => (
-              <Card key={i} className="p-6 border-border bg-gradient-to-r from-muted to-transparent">
-                <div className="flex flex-col md:flex-row items-center gap-8">
+              <Card
+                key={i}
+                className="border-border from-muted bg-gradient-to-r to-transparent p-6"
+              >
+                <div className="flex flex-col items-center gap-8 md:flex-row">
                   {/* Icon/Image Placeholder */}
-                  <div className="w-20 h-20 rounded-2xl bg-muted flex items-center justify-center flex-shrink-0" />
+                  <div className="bg-muted flex h-20 w-20 flex-shrink-0 items-center justify-center rounded-2xl" />
 
                   {/* Info */}
-                  <div className="flex-grow space-y-3 w-full text-center md:text-left">
-                    <div className="flex flex-wrap justify-center md:justify-start gap-2">
-                      <Skeleton className="h-4 w-24 bg-muted rounded-full" />
-                      <Skeleton className="h-4 w-20 bg-muted rounded-full" />
+                  <div className="w-full flex-grow space-y-3 text-center md:text-left">
+                    <div className="flex flex-wrap justify-center gap-2 md:justify-start">
+                      <Skeleton className="bg-muted h-4 w-24 rounded-full" />
+                      <Skeleton className="bg-muted h-4 w-20 rounded-full" />
                     </div>
-                    <Skeleton className="h-6 w-48 bg-muted rounded-lg mx-auto md:mx-0" />
-                    <Skeleton className="h-4 w-32 bg-muted rounded-md mx-auto md:mx-0" />
+                    <Skeleton className="bg-muted mx-auto h-6 w-48 rounded-lg md:mx-0" />
+                    <Skeleton className="bg-muted mx-auto h-4 w-32 rounded-md md:mx-0" />
                   </div>
 
                   {/* Quantity Controls */}
-                  <div className="w-32 h-14 bg-muted rounded-2xl flex-shrink-0" />
+                  <div className="bg-muted h-14 w-32 flex-shrink-0 rounded-2xl" />
                 </div>
               </Card>
             ))}
@@ -42,29 +46,28 @@ export default function CartLoading() {
         </div>
 
         {/* 📋 SUMMARY SKELETON */}
-        <div className="w-full lg:w-96 flex-shrink-0 space-y-6 pt-12 lg:pt-0">
-          <Card className="p-8 border-primary/10 bg-card/50 relative overflow-hidden space-y-8">
+        <div className="w-full flex-shrink-0 space-y-6 pt-12 lg:w-96 lg:pt-0">
+          <Card className="border-primary/10 bg-card/50 relative space-y-8 overflow-hidden p-8">
             <div className="space-y-4">
-              <Skeleton className="h-6 w-36 bg-muted rounded-lg" />
-              <Skeleton className="h-10 w-28 bg-muted rounded-xl" />
+              <Skeleton className="bg-muted h-6 w-36 rounded-lg" />
+              <Skeleton className="bg-muted h-10 w-28 rounded-xl" />
             </div>
 
-            <div className="space-y-3 pt-6 border-t border-border">
+            <div className="border-border space-y-3 border-t pt-6">
               <div className="flex justify-between">
-                <Skeleton className="h-4 w-20 bg-muted rounded-md" />
-                <Skeleton className="h-4 w-16 bg-muted rounded-md" />
+                <Skeleton className="bg-muted h-4 w-20 rounded-md" />
+                <Skeleton className="bg-muted h-4 w-16 rounded-md" />
               </div>
               <div className="flex justify-between">
-                <Skeleton className="h-4 w-24 bg-muted rounded-md" />
-                <Skeleton className="h-4 w-12 bg-muted rounded-md" />
+                <Skeleton className="bg-muted h-4 w-24 rounded-md" />
+                <Skeleton className="bg-muted h-4 w-12 rounded-md" />
               </div>
             </div>
 
-            <Skeleton className="h-16 w-full bg-muted rounded-2xl pt-2" />
+            <Skeleton className="bg-muted h-16 w-full rounded-2xl pt-2" />
           </Card>
         </div>
-
       </div>
     </div>
-  )
+  );
 }
