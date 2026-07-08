@@ -49,6 +49,19 @@ const nextConfig: NextConfig = {
     ],
   },
 
+  async redirects() {
+    return [
+      // /facilities/{category}/{slug} → /{slug}
+      // Google indexed these before the flat URL migration. Edge-level 301
+      // consolidates link equity without waiting for Next.js server rendering.
+      {
+        source: "/facilities/:category/:slug",
+        destination: "/:slug",
+        permanent: true,
+      },
+    ];
+  },
+
   async headers() {
     return [
       {
