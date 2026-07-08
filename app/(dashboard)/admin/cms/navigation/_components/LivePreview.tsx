@@ -1,7 +1,6 @@
 "use client";
 
 import { Icon } from "@/components/ui/Icon";
-import Image from "next/image";
 import { cn } from "@/lib/utils";
 import type { MenuWithSections, LinkMetadata } from "./types";
 
