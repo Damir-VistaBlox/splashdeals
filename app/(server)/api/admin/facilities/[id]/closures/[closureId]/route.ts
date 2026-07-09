@@ -1,3 +1,4 @@
+/** @consumer external-agent -- called by external tools/agents via API key. Admin UI uses Server Actions instead. */
 import { NextResponse } from "next/server";
 import { prisma } from "@/server/lib/prisma";
 import { authenticateRequest } from "@/server/lib/api-key-auth";
