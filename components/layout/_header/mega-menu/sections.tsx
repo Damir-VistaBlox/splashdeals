@@ -39,7 +39,10 @@ function BadgeChip({ badge }: { badge: LinkMetadata["badge"] }) {
 
   return (
     <span
-      className={`inline-flex items-center rounded-full border px-1.5 py-0.5 text-[10px] font-bold ${cfg.className}`}
+      className={cn(
+        "inline-flex items-center rounded-full border px-1.5 py-0.5 text-[10px] font-bold",
+        cfg.className,
+      )}
     >
       {cfg.label}
     </span>
