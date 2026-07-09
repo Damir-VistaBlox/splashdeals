@@ -1,17 +1,13 @@
 "use server";
 
 import { put } from "@vercel/blob";
-import { validateAction } from "@/server/lib/actions/validator";
-import { z } from "zod";
-
-const uploadImageSchema = z.object({
-  filename: z.string(),
-  contentType: z.string(),
-});
 
 /**
  * Uploads an image to Vercel Blob and returns the public URL.
  * Used by CMS components instead of calling /api/upload directly.
+ *
+ * Note: For facility media uploads (with WebP conversion + thumbnails),
+ * use uploadMediaAction in media-actions.ts instead.
  */
 export async function uploadImageAction(formData: FormData) {
   try {
