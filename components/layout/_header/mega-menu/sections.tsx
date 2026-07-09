@@ -204,12 +204,10 @@ export function SectionRenderer({
   section,
   menu,
   sortedCities,
-  loadingCities,
 }: {
   section: NavigationMenuSectionData;
   menu: NavigationMenuData;
   sortedCities: { id: string; name: string; slug: string }[];
-  loadingCities: boolean;
 }) {
   const config = section.config as Record<string, unknown> | null;
 
@@ -251,21 +249,13 @@ export function SectionRenderer({
 
         {section.style === "DYNAMIC_CITIES" && (
           <>
-            {loadingCities ? (
-              <li>
-                <CitySkeleton count={(config?.maxItems as number) || 6} />
-              </li>
-            ) : (
-              sortedCities
-                .slice(0, (config?.maxItems as number) || 10)
-                .map((city) => (
-                  <MenuDotLink
-                    key={city.id}
-                    href={`${(config?.basePath as string) || "/akva-parkovi"}?city=${city.slug}`}
-                    label={city.name}
-                  />
-                ))
-            )}
+            {sortedCities.slice(0, (config?.maxItems as number) || 10).map((city) => (
+              <MenuDotLink
+                key={city.id}
+                href={`${(config?.basePath as string) || "/akva-parkovi"}?city=${city.slug}`}
+                label={city.name}
+              />
+            ))}
             {sortedCities.length > ((config?.maxItems as number) || 10) && (
               <MenuDotLink
                 href={(config?.basePath as string) || "/akva-parkovi"}
@@ -287,17 +277,5 @@ export function SectionRenderer({
         <FooterBadge heading={section.heading} icon={config?.icon as string | undefined} />
       )}
     </section>
-  );
-}
-
-// ── Skeletons (needed by SectionRenderer) ──────────────────────────────
-
-function CitySkeleton({ count = 6 }: { count?: number }) {
-  return (
-    <div className="grid grid-cols-2 gap-1.5" aria-hidden="true">
-      {[...Array(count)].map((_, i) => (
-        <div key={i} className="bg-muted/50 h-9 animate-pulse rounded-sm" />
-      ))}
-    </div>
   );
 }
