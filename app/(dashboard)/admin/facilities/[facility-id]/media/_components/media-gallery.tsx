@@ -1,6 +1,7 @@
 "use client";
 
 import { Icon } from "@/components/ui/Icon";
+import { useRouter } from "next/navigation";
 import { useState, useTransition, useMemo, useEffect, useRef, useCallback } from "react";
 import { FacilityMedia } from "@prisma/client";
 import {
@@ -130,6 +131,7 @@ export function MediaGallery({
   totalPages = 1,
   totalCount,
 }: MediaGalleryProps) {
+  const router = useRouter();
   const [media, setMedia] = useState(initialMedia);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [isUploading, startUpload] = useTransition();
@@ -944,7 +946,7 @@ export function MediaGallery({
               onClick={() => {
                 const params = new URLSearchParams(window.location.search);
                 params.set("page", String(currentPage - 1));
-                window.location.search = params.toString();
+                router.push(`?${params.toString()}`);
               }}
               className="h-8 px-3 text-[10px] font-black tracking-widest uppercase"
             >
@@ -972,7 +974,7 @@ export function MediaGallery({
                     onClick={() => {
                       const params = new URLSearchParams(window.location.search);
                       params.set("page", String(pageNum));
-                      window.location.search = params.toString();
+                      router.push(`?${params.toString()}`);
                     }}
                     className={cn(
                       "h-8 w-8 p-0 text-[10px] font-black",
@@ -991,7 +993,7 @@ export function MediaGallery({
               onClick={() => {
                 const params = new URLSearchParams(window.location.search);
                 params.set("page", String(currentPage + 1));
-                window.location.search = params.toString();
+                router.push(`?${params.toString()}`);
               }}
               className="h-8 px-3 text-[10px] font-black tracking-widest uppercase"
             >
