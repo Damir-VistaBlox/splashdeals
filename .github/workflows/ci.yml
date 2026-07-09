@@ -1,4 +1,4 @@
-name: CI — Lint, Typecheck, Dead/Duplicate Code, Tests, Build, SEO, Lighthouse & Deploy
+name: CI — Lint, Typecheck, Dead/Duplicate Code, Tests, Build, SEO & Deploy
 
 on:
   push:
