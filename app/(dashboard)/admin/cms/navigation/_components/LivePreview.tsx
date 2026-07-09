@@ -3,6 +3,7 @@
 import { Icon } from "@/components/ui/Icon";
 import { cn } from "@/lib/utils";
 import type { MenuWithSections, LinkMetadata } from "./types";
+import NextImage from "next/image";
 
 /* ─── Internal preview helpers (mirror MegaMenu.tsx) ─── */
 
@@ -97,8 +98,7 @@ function PreviewMenuItem({
       )}
       {md.imageUrl && (
         <div className="mt-0.5 size-10 shrink-0 overflow-hidden rounded-md border">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={md.imageUrl} alt="" className="size-full object-cover" />
+          <NextImage src={md.imageUrl} alt="" fill className="object-cover" sizes="40px" />
         </div>
       )}
     </a>

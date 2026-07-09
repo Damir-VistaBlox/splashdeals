@@ -1,5 +1,6 @@
 "use client";
 
+import NextImage from "next/image"
 import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/Icon";
@@ -410,12 +411,13 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
                 </div>
               </div>
               {prod.imageUrl && (
-                <div className="-mx-1 mb-2">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
+                <div className="relative mb-2 -mx-1 h-24">
+                  <NextImage
                     src={prod.imageUrl}
                     alt={prod.title}
-                    className="border-border/50 h-24 w-full rounded-lg border object-cover"
+                    fill
+                    className="object-cover rounded-lg border border-border/50"
+                    sizes="(max-width: 768px) 100vw, 200px"
                   />
                 </div>
               )}
@@ -643,8 +645,7 @@ function ProductImageSection({
       {imageUrl ? (
         <div>
           <div className="group border-border/50 relative mb-2 overflow-hidden rounded-lg border">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={imageUrl} alt={productTitle} className="h-32 w-full object-cover" />
+                        <NextImage src={imageUrl} alt={productTitle} fill className="object-cover" sizes="(max-width: 768px) 100vw, 200px" />
             <div className="absolute inset-0 flex items-center justify-center gap-2 bg-black/0 opacity-0 transition-all group-hover:bg-black/40 group-hover:opacity-100">
               <button
                 onClick={() => fileRef.current?.click()}
