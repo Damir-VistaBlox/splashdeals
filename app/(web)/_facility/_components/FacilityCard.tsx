@@ -35,7 +35,7 @@ export function FacilityCard({ facility, dict, fromLabel, isPriority = false }: 
   const backgroundPhoto =
     explicitBG ||
     aerialPhoto ||
-    facility.media?.find((m) => m.type === "PHOTO" || !m.url.endsWith(".mp4")) ||
+    facility.media?.find((m) => m.type === "PHOTO" || !m.url?.endsWith(".mp4")) ||
     facility.media?.[0];
 
   return (

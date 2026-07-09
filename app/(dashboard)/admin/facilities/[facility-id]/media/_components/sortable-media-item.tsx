@@ -35,7 +35,13 @@ export function SortableMediaItem(props: SortableMediaItemProps) {
   };
 
   return (
-    <div ref={setNodeRef} style={style}>
+    <div
+      ref={setNodeRef}
+      style={style}
+      role="listitem"
+      aria-roledescription="sortable"
+      aria-label={`Media item ${props.item.order + 1}. Press space to pick up, use arrow keys to reorder.`}
+    >
       <MediaItemCard
         item={props.item}
         isSelected={props.isSelected}

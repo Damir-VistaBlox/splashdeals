@@ -195,7 +195,7 @@ function MediaItemCard({
           <div
             {...listeners}
             {...attributes}
-            className="absolute inset-0 z-20 flex cursor-grab items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100 active:cursor-grabbing"
+            className="focus-visible:ring-primary absolute inset-0 z-20 flex cursor-grab items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100 focus-visible:ring-2 active:cursor-grabbing"
           >
             <Icon name="drag_indicator" className="text-foreground/50 size-8" />
           </div>
