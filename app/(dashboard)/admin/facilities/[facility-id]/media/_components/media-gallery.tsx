@@ -950,7 +950,11 @@ export function MediaGallery({
         onDragCancel={() => setActiveId(null)}
       >
         <SortableContext items={mediaIds} strategy={rectSortingStrategy}>
-          <div className="animate-in fade-in grid grid-cols-1 gap-6 duration-500 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+          <div
+            className="animate-in fade-in grid grid-cols-1 gap-6 duration-500 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5"
+            role="listbox"
+            aria-label="Media gallery items"
+          >
             {filteredMedia.map((item) => (
               <SortableMediaItem
                 key={item.id}
