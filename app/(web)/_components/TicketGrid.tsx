@@ -160,7 +160,7 @@ export async function TicketGrid({ dict }: { dict: Record<string, any> }) {
 
                 <div className="pointer-events-none absolute bottom-4 left-4 z-30">
                   <div className="mb-1 flex items-center gap-2">
-                    <Badge className="bg-primary border-none px-2 py-0.5 text-[10px] font-black tracking-widest text-slate-950 uppercase ring-0">
+                    <Badge className="bg-primary border-none px-2 py-0.5 text-[10px] font-black tracking-widest uppercase ring-0">
                       {badgeLabel}
                     </Badge>
                   </div>
