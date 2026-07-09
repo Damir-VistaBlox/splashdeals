@@ -40,8 +40,47 @@ export function MegaMenu({ side = "left" }: { side?: "left" | "right" }) {
   const [menus, setMenus] = useState<NavigationMenuData[]>([]);
   const [discovery, setDiscovery] = useState<DiscoveryMenuData>({ cities: [], featured: null });
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    let cancelled = false;
+
+    const fetchData = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const [menuResult, discoveryResult] = await Promise.all([
+          getMenusAction(),
+          getDiscoveryAction(),
+        ]);
+        if (cancelled) return;
+        if (menuResult.success && menuResult.data)
+          setMenus((menuResult.data as { menus: NavigationMenuData[] }).menus);
+        if (discoveryResult.success && discoveryResult.data)
+          setDiscovery(discoveryResult.data as unknown as DiscoveryMenuData);
+        if (!menuResult.success || !discoveryResult.success) {
+          setError("Failed to load navigation data");
+        }
+      } catch (err) {
+        if (cancelled) return;
+        console.error("Menu fetch failed:", err);
+        setError(err instanceof Error ? err.message : "Failed to load menu");
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+
+    fetchData();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const handleRetry = () => {
+    setLoading(true);
+    setError(null);
+    // Re-trigger the effect by forcing a re-render with a key change
+    // Use a simpler approach: inline the fetch
     const fetchData = async () => {
       try {
         const [menuResult, discoveryResult] = await Promise.all([
@@ -52,14 +91,18 @@ export function MegaMenu({ side = "left" }: { side?: "left" | "right" }) {
           setMenus((menuResult.data as { menus: NavigationMenuData[] }).menus);
         if (discoveryResult.success && discoveryResult.data)
           setDiscovery(discoveryResult.data as unknown as DiscoveryMenuData);
-      } catch (error) {
-        console.error("Menu fetch failed:", error);
+        if (!menuResult.success || !discoveryResult.success) {
+          setError("Failed to load navigation data");
+        }
+      } catch (err) {
+        console.error("Menu fetch failed:", err);
+        setError(err instanceof Error ? err.message : "Failed to load menu");
       } finally {
         setLoading(false);
       }
     };
     fetchData();
-  }, []);
+  };
 
   const sortedCities = useMemo(() => {
     if (!discovery.cities?.length) return [];
@@ -83,6 +126,28 @@ export function MegaMenu({ side = "left" }: { side?: "left" | "right" }) {
         <NavigationMenu className="hidden md:flex">
           <NavigationMenuList>
             <MenuSkeleton />
+          </NavigationMenuList>
+        </NavigationMenu>
+      </nav>
+    );
+  }
+
+  if (error) {
+    return (
+      <nav aria-label="Glavna navigacija">
+        <NavigationMenu className="hidden md:flex">
+          <NavigationMenuList>
+            <li className="text-muted-foreground flex items-center gap-3 px-3 py-1.5 text-xs">
+              <span>Meni nije dostupan</span>
+              <button
+                onClick={handleRetry}
+                className="bg-muted hover:bg-muted/80 text-foreground inline-flex items-center gap-1 rounded-md px-2 py-1 text-[10px] font-bold transition-colors"
+                aria-label="Pokušaj ponovo"
+              >
+                <Icon name="refresh" className="size-3" />
+                Pokušaj ponovo
+              </button>
+            </li>
           </NavigationMenuList>
         </NavigationMenu>
       </nav>
