@@ -73,7 +73,7 @@ export const adminNavData = {
     },
     {
       title: "Bezbednost i operacije",
-      url: "/admin/support",
+      url: "/admin/users",
       icon: "security",
       items: [
         {
@@ -86,12 +86,6 @@ export const adminNavData = {
           title: "API ključevi",
           url: "/admin/api-keys",
           icon: "key",
-          requiredRole: "SUPER_ADMIN",
-        },
-        {
-          title: "Podrška",
-          url: "/admin/support",
-          icon: "support",
           requiredRole: "SUPER_ADMIN",
         },
       ],
