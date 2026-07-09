@@ -170,7 +170,7 @@ export function MegaMenu({ side = "left" }: { side?: "left" | "right" }) {
                   {menu.label}
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
-                  <div className="w-[900px] p-6">
+                  <div className="max-w-[900px] min-w-[700px] p-6">
                     <div className="grid grid-cols-[2fr_1fr_1fr] gap-6">
                       {[0, 1, 2].map((column) => {
                         const sections = menu.sections.filter((s) => s.column === column);
