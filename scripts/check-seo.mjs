@@ -18,8 +18,12 @@
 const PORT = 5897;
 const BASE = `http://localhost:${PORT}`;
 const STARTUP_TIMEOUT = 30_000; // 30s for next start to be ready
+const SITEMAP_CRAWL_TIMEOUT = 5000;
 const REQUEST_TIMEOUT = 15_000; // 15s per HTTP request
 const CHECK_TIMEOUT = 120_000;  // 120s max for the whole script
+
+// Static routes that have their own page.tsx — never flag as soft-404
+const KNOWN_STATIC_PAGES = ["/", "/how-it-works", "/terms", "/privacy", "/support", "/cookies", "/search", "/success", "/robots.txt"];
 
 const SEVERE = "🔴 SEVERE";
 const WARN   = "🟡 WARN";
@@ -115,19 +119,93 @@ async function checkRobotsTxt() {
 
 // ── Check: sitemap.xml ─────────────────────────────────────────────────────
 async function checkSitemap() {
+  let xml = "";
+  let urls = [];
   try {
     const res = await httpFetch(`${BASE}/sitemap.xml`);
-    const text = await res.text();
+    xml = await res.text();
     if (res.status !== 200) return fail(SEVERE, "Transport", "/sitemap.xml", `HTTP ${res.status}`);
     // Count <loc> entries
-    const locs = [...text.matchAll(/<loc>(.*?)<\/loc>/g)];
+    const locs = [...xml.matchAll(/<loc>(.*?)<\/loc>/g)];
     if (locs.length === 0) return fail(SEVERE, "Transport", "/sitemap.xml", "No <loc> entries found");
-    pass("Transport", "/sitemap.xml", `${locs.length} URLs listed`);
-    return locs.map((m) => m[1]);
+    urls = locs.map((m) => m[1]);
+    pass("Transport", "/sitemap.xml", `${urls.length} URLs listed`);
   } catch (err) {
     fail(SEVERE, "Transport", "/sitemap.xml", `Unreachable: ${err.message}`);
     return [];
   }
+
+  // ── Extended sitemap validation ─────────────────────────────────────
+
+  // XML structure
+  if (!xml.includes('<?xml')) warn("Sitemap", "/sitemap.xml", "Missing <?xml declaration");
+  else pass("Sitemap", "/sitemap.xml", "Has XML declaration");
+
+  const isIndex = xml.includes("<sitemapindex");
+  pass("Sitemap", "/sitemap.xml", `Type: ${isIndex ? "sitemap index" : "urlset"}`);
+
+  // Duplicates
+  const seen = new Set();
+  const dups = [];
+  for (const url of urls) {
+    if (seen.has(url)) dups.push(url);
+    seen.add(url);
+  }
+  if (dups.length > 0) {
+    warn("Sitemap", "", `${dups.length} duplicate URL(s)`);
+    for (const dup of dups.slice(0, 3)) warn("Sitemap", "", `  ${dup}`);
+  } else pass("Sitemap", "", "No duplicate URLs");
+
+  // lastmod coverage
+  const mods = [...xml.matchAll(/<lastmod[^>]*>([\s\S]*?)<\/lastmod>/gi)];
+  const pct = urls.length > 0 ? Math.round((mods.length / urls.length) * 100) : 0;
+  if (pct < 50) warn("Sitemap", "", `Only ${pct}% of URLs have <lastmod> (${mods.length}/${urls.length})`);
+  else if (pct < 100) warn("Sitemap", "", `${pct}% have <lastmod> — consider adding to all`);
+  else pass("Sitemap", "", `All URLs have <lastmod>`);
+
+  // URL format validity
+  let invalidUrls = 0;
+  for (const url of urls) {
+    try { new URL(url); } catch { invalidUrls++; }
+  }
+  if (invalidUrls > 0) return fail(SEVERE, "Sitemap", "", `${invalidUrls} malformed URL(s)`);
+
+  // Protocol consistency
+  const protos = new Set(urls.map(u => u.startsWith("https") ? "https" : "http"));
+  if (protos.size > 1) warn("Sitemap", "", `Mixed protocols: ${[...protos].join(", ")}`);
+  else pass("Sitemap", "", `All URLs use ${[...protos][0]}`);
+
+  // Host consistency
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.splashdeals.rs";
+  const siteHost = new URL(siteUrl).host;
+  const wrongHost = urls.filter(u => { try { return new URL(u).host !== siteHost; } catch { return false; } });
+  if (wrongHost.length > 0) {
+    warn("Sitemap", "", `${wrongHost.length} URL(s) don't match host "${siteHost}"`);
+    for (const w of wrongHost.slice(0, 3)) warn("Sitemap", "", `  ${w}`);
+  } else pass("Sitemap", "", `All URLs match host "${siteHost}"`);
+
+  // Lightweight crawl of first 50 URLs
+  const MAX_CRAWL = 50;
+  const toCrawl = urls.slice(0, MAX_CRAWL);
+  if (urls.length > MAX_CRAWL) warn("Sitemap", "", `Crawling first ${MAX_CRAWL}/${urls.length} URLs`);
+
+  let ok = 0, notFound = 0, errors = 0;
+  for (let i = 0; i < toCrawl.length; i++) {
+    const url = toCrawl[i];
+    let path;
+    try { path = new URL(url).pathname; } catch { path = url; }
+    if (KNOWN_STATIC_PAGES.includes(path) || path.startsWith("/_")) continue;
+    const cr = await httpFetch(url, SITEMAP_CRAWL_TIMEOUT);
+    if (cr.status === 200) {
+      ok++;
+      if (cr.text && cr.text.includes('content="noindex')) warn("Sitemap", path, "200 with noindex (soft-404?)");
+    } else if (cr.status === 404) { notFound++; fail(SEVERE, "Sitemap", path, "404 in sitemap"); }
+    else errors++;
+  }
+
+  pass("Sitemap", "", `Crawl: ${ok} OK, ${notFound} 404, ${errors} errors (${toCrawl.length} checked)`);
+
+  return urls;
 }
 
 // ── Check: single page SEO ─────────────────────────────────────────────────
@@ -148,7 +226,6 @@ async function checkPage(path, label) {
     return fail(SEVERE, "Status", path, `HTTP ${status}`);
   }
   // Static routes that have their own page.tsx — never flag as soft-404
-  const KNOWN_STATIC_PAGES = ["/", "/how-it-works", "/terms", "/privacy", "/support", "/cookies", "/search", "/success", "/robots.txt"];
   if (KNOWN_STATIC_PAGES.includes(path)) return;
   
   // Soft-404 detection: 200 but content suggests 404

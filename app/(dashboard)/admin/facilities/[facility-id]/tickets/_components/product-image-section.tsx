@@ -12,12 +12,7 @@ interface Props {
   onImageChange: (url: string | null) => void;
 }
 
-export function ProductImageSection({
-  productId,
-  imageUrl,
-  productTitle,
-  onImageChange,
-}: Props) {
+export function ProductImageSection({ productId, imageUrl, productTitle, onImageChange }: Props) {
   const [uploading, setUploading] = React.useState(false);
   const [renaming, setRenaming] = React.useState(false);
   const currentFileName = imageUrl

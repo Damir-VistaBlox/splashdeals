@@ -81,10 +81,6 @@ jobs:
         env: *build_env
         run: node scripts/check-structured-data.mjs
 
-      - name: 🗺️ Sitemap Validation
-        env: *build_env
-        run: node scripts/check-sitemap.mjs
-
       # ─── Deploy ────────────────────────────────────────────────────────
 
       - name: 🚀 Deploy to Production (Vercel)
