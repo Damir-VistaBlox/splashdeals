@@ -1,6 +1,6 @@
 "use client";
 
-import NextImage from "next/image"
+import NextImage from "next/image";
 import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/Icon";
@@ -411,12 +411,12 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
                 </div>
               </div>
               {prod.imageUrl && (
-                <div className="relative mb-2 -mx-1 h-24">
+                <div className="relative -mx-1 mb-2 h-24">
                   <NextImage
                     src={prod.imageUrl}
                     alt={prod.title}
                     fill
-                    className="object-cover rounded-lg border border-border/50"
+                    className="border-border/50 rounded-lg border object-cover"
                     sizes="(max-width: 768px) 100vw, 200px"
                   />
                 </div>
@@ -645,7 +645,13 @@ function ProductImageSection({
       {imageUrl ? (
         <div>
           <div className="group border-border/50 relative mb-2 overflow-hidden rounded-lg border">
-                        <NextImage src={imageUrl} alt={productTitle} fill className="object-cover" sizes="(max-width: 768px) 100vw, 200px" />
+            <NextImage
+              src={imageUrl}
+              alt={productTitle}
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, 200px"
+            />
             <div className="absolute inset-0 flex items-center justify-center gap-2 bg-black/0 opacity-0 transition-all group-hover:bg-black/40 group-hover:opacity-100">
               <button
                 onClick={() => fileRef.current?.click()}
