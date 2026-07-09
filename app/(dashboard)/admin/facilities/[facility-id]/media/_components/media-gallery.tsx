@@ -83,31 +83,76 @@ import { MAX_FILE_SIZE } from "@/lib/constants";
  * Captures the first frame of a video file as a WebP blob.
  * Uses HTMLVideoElement + canvas, zero external dependencies.
  */
-async function captureVideoFrame(file: File): Promise<Blob | null> {
+async function captureVideoFrame(file: File, signal?: AbortSignal): Promise<Blob | null> {
   const url = URL.createObjectURL(file);
+  const video = document.createElement("video");
+  video.muted = true;
+  video.playsInline = true;
+  video.crossOrigin = "anonymous";
+  video.src = url;
+
   try {
-    const video = document.createElement("video");
-    video.muted = true;
-    video.playsInline = true;
-    video.crossOrigin = "anonymous";
-    video.src = url;
+    if (signal?.aborted) return null;
 
     // Wait for metadata, seek to 0.5s
     await new Promise<void>((resolve, reject) => {
+      const onAbort = () => {
+        cleanup();
+        reject(new DOMException("Aborted", "AbortError"));
+      };
+      signal?.addEventListener("abort", onAbort, { once: true });
+
+      const metadataTimeout = setTimeout(() => {
+        cleanup();
+        reject(new Error("Video metadata load timeout"));
+      }, 10000);
+
+      const cleanup = () => {
+        clearTimeout(metadataTimeout);
+        signal?.removeEventListener("abort", onAbort);
+        video.onloadedmetadata = null;
+        video.onerror = null;
+      };
+
       video.onloadedmetadata = () => {
         video.currentTime = Math.min(0.5, video.duration || 0.5);
+        cleanup();
         resolve();
       };
-      video.onerror = () => reject(new Error("Video load failed"));
-      // Set a timeout in case the video is corrupt
-      setTimeout(() => reject(new Error("Video load timeout")), 10000);
+      video.onerror = () => {
+        cleanup();
+        reject(new Error("Video load failed"));
+      };
     });
 
+    if (signal?.aborted) return null;
+
     // Wait for seek to complete
-    await new Promise<void>((resolve) => {
-      video.onseeked = () => resolve();
+    await new Promise<void>((resolve, reject) => {
+      const seekTimeout = setTimeout(() => {
+        signal?.removeEventListener("abort", onAbort);
+        video.onseeked = null;
+        reject(new Error("Video seek timeout"));
+      }, 10000);
+
+      const onAbort = () => {
+        clearTimeout(seekTimeout);
+        video.onseeked = null;
+        reject(new DOMException("Aborted", "AbortError"));
+      };
+      signal?.addEventListener("abort", onAbort, { once: true });
+
+      video.onseeked = () => {
+        clearTimeout(seekTimeout);
+        video.onseeked = null;
+        resolve();
+      };
       // If already seeked (0s video), resolve immediately
-      if (video.readyState >= 2) resolve();
+      if (video.readyState >= 2) {
+        clearTimeout(seekTimeout);
+        video.onseeked = null;
+        resolve();
+      }
     });
 
     const canvas = document.createElement("canvas");
@@ -121,6 +166,8 @@ async function captureVideoFrame(file: File): Promise<Blob | null> {
       canvas.toBlob((b) => resolve(b), "image/webp", 0.7);
     });
   } finally {
+    video.src = "";
+    video.load();
     URL.revokeObjectURL(url);
   }
 }
