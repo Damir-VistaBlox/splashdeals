@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/Icon";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 function CropModal({
   media,
@@ -72,30 +73,36 @@ function CropModal({
     ctx.drawImage(img, x, y, drawW, drawH);
   }, [aspectRatio, zoom, offsetX, offsetY]);
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const img = imageRef.current;
     if (!img) return;
 
     setIsSaving(true);
 
-    // Build the high-resolution cropped image on a large canvas
-    let targetW = 1200;
-    let targetH = 675; // Default 16:9 high-res
+    try {
+      // Build the high-resolution cropped image on a large canvas
+      let targetW = 1200;
+      let targetH = 675; // Default 16:9 high-res
 
-    if (aspectRatio === "4:3") {
-      targetW = 1000;
-      targetH = 750;
-    } else if (aspectRatio === "1:1") {
-      targetW = 800;
-      targetH = 800;
-    }
+      if (aspectRatio === "4:3") {
+        targetW = 1000;
+        targetH = 750;
+      } else if (aspectRatio === "1:1") {
+        targetW = 800;
+        targetH = 800;
+      }
 
-    const canvas = document.createElement("canvas");
-    canvas.width = targetW;
-    canvas.height = targetH;
-    const ctx = canvas.getContext("2d");
+      const canvas = document.createElement("canvas");
+      canvas.width = targetW;
+      canvas.height = targetH;
+      const ctx = canvas.getContext("2d");
 
-    if (ctx) {
+      if (!ctx) {
+        toast.error("Canvas nije podržan u ovom pregledaču.");
+        setIsSaving(false);
+        return;
+      }
+
       ctx.fillStyle = "#090d16";
       ctx.fillRect(0, 0, targetW, targetH);
 
@@ -119,17 +126,23 @@ function CropModal({
 
       ctx.drawImage(img, x, y, drawW, drawH);
 
-      canvas.toBlob(
-        async (blob) => {
-          if (blob) {
-            const file = new File([blob], `cropped-${Date.now()}.webp`, { type: "image/webp" });
-            await onSave(file);
-          }
-          setIsSaving(false);
-        },
-        "image/webp",
-        0.85,
-      );
+      const blob = await new Promise<Blob | null>((resolve) => {
+        canvas.toBlob(resolve, "image/webp", 0.85);
+      });
+
+      if (!blob) {
+        toast.error("Greška pri kreiranju slike.");
+        setIsSaving(false);
+        return;
+      }
+
+      const file = new File([blob], `cropped-${Date.now()}.webp`, { type: "image/webp" });
+      await onSave(file);
+    } catch (err) {
+      console.error("[CropModal]", err);
+      toast.error("Došlo je do greške prilikom sečenja slike.");
+    } finally {
+      setIsSaving(false);
     }
   };
 
