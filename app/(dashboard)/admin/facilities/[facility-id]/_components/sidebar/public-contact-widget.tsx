@@ -42,8 +42,8 @@ export function PublicContactWidget({ facilityId, initialContact }: PublicContac
     <Card className="border-border bg-muted/40 p-5 backdrop-blur-sm">
       <div className="mb-5 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="rounded-lg bg-emerald-500/10 p-1.5">
-            <Icon name="phone" className="text-[14px] text-emerald-400" />
+          <div className="bg-primary/10 rounded-lg p-1.5">
+            <Icon name="phone" className="text-primary text-[14px]" />
           </div>
           <h3 className="text-foreground text-[10px] font-black tracking-widest uppercase">
             Public Contact
@@ -63,9 +63,7 @@ export function PublicContactWidget({ facilityId, initialContact }: PublicContac
             <Label className="text-muted-foreground text-[9px] font-black tracking-widest uppercase">
               Phone Number
             </Label>
-            {saveStatus.publicPhone && (
-              <Icon name="check" className="text-[12px] text-emerald-500" />
-            )}
+            {saveStatus.publicPhone && <Icon name="check" className="text-primary text-[12px]" />}
           </div>
           <Input
             value={contact.publicPhone}
@@ -81,9 +79,7 @@ export function PublicContactWidget({ facilityId, initialContact }: PublicContac
             <Label className="text-muted-foreground text-[9px] font-black tracking-widest uppercase">
               Public Email
             </Label>
-            {saveStatus.publicEmail && (
-              <Icon name="check" className="text-[12px] text-emerald-500" />
-            )}
+            {saveStatus.publicEmail && <Icon name="check" className="text-primary text-[12px]" />}
           </div>
           <Input
             value={contact.publicEmail}

@@ -173,7 +173,8 @@ export function CompactAmenitiesTable({
           duration: 1500,
         });
         router.refresh();
-      } catch {
+      } catch (error) {
+        console.error("Failed to save amenities", error);
         toast.error("Auto-sync Failed", {
           description: "Failed to persist changes to the infrastructure grid.",
         });
@@ -246,7 +247,8 @@ export function CompactAmenitiesTable({
         } else {
           throw new Error("Failed to delete custom amenity");
         }
-      } catch {
+      } catch (error) {
+        console.error("Failed to save amenities", error);
         toast.error("Deletion Rejected", {
           description: "This custom asset is still tied to operational dependencies.",
         });
@@ -311,7 +313,8 @@ export function CompactAmenitiesTable({
       } else {
         throw new Error("API rejection");
       }
-    } catch {
+    } catch (error) {
+      console.error("Failed to save amenities", error);
       toast.error("Registration Failed", {
         description: "Verify name uniqueness and schema limits.",
       });
@@ -468,7 +471,7 @@ export function CompactAmenitiesTable({
                                 name="star"
                                 className={`text-[16px] transition-all duration-200 ${
                                   item.isFeatured
-                                    ? "text-primary fill-primary scale-110 drop-shadow-[0_0_8px_rgba(245,158,11,0.5)]"
+                                    ? "text-primary fill-primary drop-shadow-warning/30 scale-110"
                                     : "text-muted-foreground/60 hover:text-muted-foreground"
                                 }`}
                               />

@@ -71,17 +71,17 @@ export function DangerZone({
   };
 
   return (
-    <Card className="space-y-6 border-rose-500/20 bg-rose-950/5 p-6 backdrop-blur-md">
-      <div className="flex items-center justify-between border-b border-rose-500/10 pb-4">
+    <Card className="border-destructive/20 bg-destructive/5 space-y-6 p-6 backdrop-blur-md">
+      <div className="border-destructive/10 flex items-center justify-between border-b pb-4">
         <div className="flex items-center gap-2">
-          <div className="rounded-lg bg-rose-500/10 p-2">
-            <Icon name="warning" className="text-[16px] text-rose-400" />
+          <div className="bg-destructive/10 rounded-lg p-2">
+            <Icon name="warning" className="text-destructive text-[16px]" />
           </div>
           <div>
             <h3 className="text-foreground text-xs font-black tracking-wider uppercase">
               Danger Zone
             </h3>
-            <p className="mt-0.5 text-[9px] font-bold tracking-widest text-rose-400/60 uppercase">
+            <p className="text-destructive/60 mt-0.5 text-[9px] font-bold tracking-widest uppercase">
               Catastrophic Actions & Registry Purges
             </p>
           </div>
@@ -103,10 +103,10 @@ export function DangerZone({
             </div>
           </div>
         ) : hasTransactions ? (
-          <div className="bg-background/40 flex items-start gap-3 rounded-xl border border-rose-500/10 p-4">
-            <Icon name="lock" className="mt-0.5 shrink-0 text-[16px] text-rose-400" />
+          <div className="bg-background/40 border-destructive/10 flex items-start gap-3 rounded-xl border p-4">
+            <Icon name="lock" className="text-destructive mt-0.5 shrink-0 text-[16px]" />
             <div className="space-y-1">
-              <p className="text-xs font-black tracking-wider text-rose-400 uppercase">
+              <p className="text-destructive text-xs font-black tracking-wider uppercase">
                 Deletion Locked
               </p>
               <p className="text-muted-foreground text-[10px] leading-relaxed font-medium">
@@ -120,7 +120,7 @@ export function DangerZone({
             </div>
           </div>
         ) : (
-          <div className="bg-background/40 flex flex-col justify-between gap-4 rounded-xl border border-rose-500/10 p-4 md:flex-row md:items-center">
+          <div className="bg-background/40 border-destructive/10 flex flex-col justify-between gap-4 rounded-xl border p-4 md:flex-row md:items-center">
             <div className="max-w-xl space-y-1">
               <p className="text-foreground text-xs font-black tracking-wider uppercase">
                 Purge Facility Node
@@ -143,7 +143,7 @@ export function DangerZone({
                 <Button
                   variant="outline"
                   type="button"
-                  className="h-10 shrink-0 rounded-xl border-rose-500/20 bg-rose-500/10 px-6 text-[9px] font-black tracking-widest text-rose-400 uppercase transition-all duration-300 hover:bg-rose-500 hover:text-slate-950"
+                  className="border-destructive/20 bg-destructive/10 text-destructive hover:bg-destructive hover:text-destructive-foreground h-10 shrink-0 rounded-xl px-6 text-[9px] font-black tracking-widest uppercase transition-all duration-300"
                 >
                   <Icon name="delete" className="mr-2 size-3.5" />
                   Purge Node
@@ -152,17 +152,17 @@ export function DangerZone({
 
               <DialogContent className="bg-background border-border text-foreground max-w-md rounded-2xl p-6 outline-none">
                 <DialogHeader className="space-y-3">
-                  <div className="flex items-center gap-2 text-rose-400">
+                  <div className="text-destructive flex items-center gap-2">
                     <Icon name="warning" className="size-5 shrink-0" />
                     <DialogTitle className="text-base font-black tracking-wider uppercase">
                       Absolute Purge Registry
                     </DialogTitle>
                   </div>
                   <DialogDescription className="text-muted-foreground text-xs leading-normal">
-                    This action is <strong className="text-rose-400 uppercase">destructive</strong>{" "}
-                    and will completely wipe{" "}
-                    <strong className="text-foreground">{facilityName}</strong> from the database.
-                    It will immediately cascade to delete:
+                    This action is{" "}
+                    <strong className="text-destructive uppercase">destructive</strong> and will
+                    completely wipe <strong className="text-foreground">{facilityName}</strong> from
+                    the database. It will immediately cascade to delete:
                   </DialogDescription>
                 </DialogHeader>
 
@@ -186,7 +186,7 @@ export function DangerZone({
                       value={confirmName}
                       onChange={(e) => setConfirmName(e.target.value)}
                       placeholder={facilityName}
-                      className="bg-muted/30 border-border text-foreground h-10 rounded-lg px-3 text-xs focus:border-rose-500/50"
+                      className="bg-muted/30 border-border text-foreground focus:border-destructive/50 h-10 rounded-lg px-3 text-xs"
                       disabled={isPending}
                     />
                   </div>
@@ -209,7 +209,7 @@ export function DangerZone({
                     type="button"
                     onClick={handleDelete}
                     disabled={isPending || confirmName !== facilityName}
-                    className="text-foreground flex h-10 min-w-[120px] items-center justify-center rounded-xl bg-rose-600 text-[9px] font-black tracking-widest uppercase transition-all hover:bg-rose-500 disabled:bg-rose-950/20 disabled:text-rose-900/50"
+                    className="text-destructive-foreground bg-destructive hover:bg-destructive/90 disabled:bg-destructive/20 disabled:text-destructive/50 flex h-10 min-w-[120px] items-center justify-center rounded-xl text-[9px] font-black tracking-widest uppercase transition-all"
                   >
                     {isPending ? (
                       <Icon name="progress_activity" className="size-3.5 animate-spin" />

@@ -3,19 +3,11 @@
 import NextImage from "next/image";
 import * as React from "react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Icon } from "@/components/ui/Icon";
 import { cn } from "@/lib/utils";
 import type { SerializedCategory } from "../_lib/ticket-admin-actions";
-import {
-  createCategory,
-  createProduct,
-  deleteCategory,
-  updateCategory,
-  updateProduct,
-  deleteProduct,
-  createPrice,
-  getTicketHierarchy,
-} from "../_lib/ticket-admin-actions";
+import { getTicketHierarchy } from "../_lib/ticket-admin-actions";
 import { ProductImageSection } from "./product-image-section";
 import { PriceCard } from "./price-card";
 
@@ -51,7 +43,6 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
   const [editCatTitle, setEditCatTitle] = React.useState("");
   const [editingProductId, setEditingProductId] = React.useState<string | null>(null);
   const [editProductTitle, setEditProductTitle] = React.useState("");
-  const [_draggedProductId, setDraggedProductId] = React.useState<string | null>(null);
 
   const selectedCategory = categories.find((c) => c.id === selectedCategoryId) ?? null;
   const selectedProduct =
@@ -59,6 +50,7 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
 
   const handleAddCategory = async () => {
     if (!newCatTitle.trim()) return;
+    const { createCategory } = await import("../_lib/ticket-admin-actions");
     const cat = await createCategory(facilityId, newCatTitle);
     setCategories((prev) => [
       ...prev,
@@ -224,20 +216,23 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
             <span className="text-muted-foreground text-[10px] font-black tracking-widest uppercase">
               Kategorije
             </span>
-            <button
+            <Button
               onClick={() => setShowNewCat(!showNewCat)}
-              className="bg-primary/10 text-primary hover:bg-primary/20 flex h-6 w-6 items-center justify-center rounded-lg transition-all"
+              variant="ghost"
+              size="icon"
+              className="h-6 w-6 rounded-lg"
+              aria-label={showNewCat ? "Zatvori novu kategoriju" : "Dodaj kategoriju"}
             >
               <Icon name="add" className="text-[14px]" />
-            </button>
+            </Button>
           </div>
           {showNewCat && (
             <div className="flex gap-1">
-              <input
+              <Input
                 value={newCatTitle}
                 onChange={(e) => setNewCatTitle(e.target.value)}
                 placeholder="Naziv kategorije..."
-                className="bg-muted/30 border-border text-foreground focus:border-primary/40 h-8 flex-1 rounded-lg border px-2 text-xs outline-none"
+                className="h-8 flex-1 rounded-lg text-xs"
                 onKeyDown={(e) => e.key === "Enter" && handleAddCategory()}
               />
               <Button size="sm" className="h-8 px-2 text-[10px]" onClick={handleAddCategory}>
@@ -248,7 +243,7 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
         </div>
         <div className="flex-1 space-y-1 overflow-y-auto p-2">
           {categories.map((cat) => (
-            <button
+            <Button
               key={cat.id}
               onClick={() => {
                 setSelectedCategoryId(cat.id);
@@ -269,17 +264,18 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
                   const fromCat = categories.find((c) => c.products.some((p) => p.id === prodId));
                   if (fromCat) handleMoveProduct(prodId, fromCat.id, cat.id);
                 }
-                setDraggedProductId(null);
               }}
+              variant="ghost"
               className={cn(
                 "group flex w-full items-center justify-between rounded-xl px-3 py-2 text-left text-xs font-bold transition-all",
                 selectedCategoryId === cat.id
                   ? "bg-primary/10 text-primary border-primary/20 border"
                   : "text-muted-foreground hover:text-foreground hover:bg-muted/20 border border-transparent",
               )}
+              aria-label={cat.title}
             >
               {editingCatId === cat.id ? (
-                <input
+                <Input
                   value={editCatTitle}
                   onChange={(e) => setEditCatTitle(e.target.value)}
                   onKeyDown={(e) => {
@@ -288,7 +284,7 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
                     if (e.key === "Escape") handleCancelEditCategory();
                   }}
                   onBlur={handleSaveCategory}
-                  className="bg-background border-primary/40 text-foreground h-6 flex-1 rounded border px-1.5 text-xs font-bold outline-none"
+                  className="h-6 flex-1 rounded text-xs font-bold"
                   autoFocus
                   onClick={(e) => e.stopPropagation()}
                 />
@@ -299,26 +295,32 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
                 </span>
               )}
               <div className="flex items-center gap-0.5 opacity-0 transition-all group-hover:opacity-100">
-                <button
+                <Button
                   onClick={(e) => {
                     e.stopPropagation();
                     handleStartEditCategory(cat);
                   }}
-                  className="text-muted-foreground hover:text-primary hover:bg-primary/10 flex h-5 w-5 items-center justify-center rounded transition-all"
+                  variant="ghost"
+                  size="icon"
+                  className="h-5 w-5 rounded"
+                  aria-label={`Izmeni kategoriju ${cat.title}`}
                 >
                   <Icon name="edit" className="text-[10px]" />
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={(e) => {
                     e.stopPropagation();
                     handleDeleteCategory(cat.id);
                   }}
-                  className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 flex h-5 w-5 items-center justify-center rounded transition-all"
+                  variant="ghost"
+                  size="icon"
+                  className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 h-5 w-5 rounded"
+                  aria-label={`Obriši kategoriju ${cat.title}`}
                 >
                   <Icon name="close" className="text-[10px]" />
-                </button>
+                </Button>
               </div>
-            </button>
+            </Button>
           ))}
         </div>
       </div>
@@ -336,21 +338,24 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
               {selectedCategory ? `${selectedCategory.title} → Tipovi` : "Tipovi"}
             </span>
             {selectedCategory && (
-              <button
+              <Button
                 onClick={() => setShowNewProd(!showNewProd)}
-                className="bg-primary/10 text-primary hover:bg-primary/20 flex h-6 w-6 items-center justify-center rounded-lg transition-all"
+                variant="ghost"
+                size="icon"
+                className="h-6 w-6 rounded-lg"
+                aria-label={showNewProd ? "Zatvori novi tip" : "Dodaj tip"}
               >
                 <Icon name="add" className="text-[14px]" />
-              </button>
+              </Button>
             )}
           </div>
           {showNewProd && selectedCategory && (
             <div className="flex gap-1">
-              <input
+              <Input
                 value={newProdTitle}
                 onChange={(e) => setNewProdTitle(e.target.value)}
                 placeholder="Naziv tipa..."
-                className="bg-muted/30 border-border text-foreground focus:border-primary/40 h-8 flex-1 rounded-lg border px-2 text-xs outline-none"
+                className="h-8 flex-1 rounded-lg text-xs"
                 onKeyDown={(e) => e.key === "Enter" && handleAddProduct()}
               />
               <Button size="sm" className="h-8 px-2 text-[10px]" onClick={handleAddProduct}>
@@ -368,11 +373,10 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
               key={prod.id}
               draggable
               onDragStart={(e) => {
-                setDraggedProductId(prod.id);
                 e.dataTransfer.setData("text/product-id", prod.id);
                 e.dataTransfer.effectAllowed = "move";
               }}
-              onDragEnd={() => setDraggedProductId(null)}
+              onDragEnd={() => {}}
               className={cn(
                 "cursor-grab rounded-xl border p-3 transition-all active:cursor-grabbing",
                 selectedProductId === prod.id
@@ -386,7 +390,7 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
             >
               <div className="mb-1 flex items-center justify-between">
                 {editingProductId === prod.id ? (
-                  <input
+                  <Input
                     value={editProductTitle}
                     onChange={(e) => setEditProductTitle(e.target.value)}
                     onKeyDown={(e) => {
@@ -395,7 +399,7 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
                       if (e.key === "Escape") handleCancelEditProduct();
                     }}
                     onBlur={handleSaveProduct}
-                    className="bg-background border-primary/40 text-foreground h-7 flex-1 rounded border px-1.5 text-sm font-bold outline-none"
+                    className="h-7 flex-1 rounded text-sm font-bold"
                     autoFocus
                     onClick={(e) => e.stopPropagation()}
                   />
@@ -403,24 +407,30 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
                   <span className="text-foreground text-sm font-bold">{prod.title}</span>
                 )}
                 <div className="flex shrink-0 items-center gap-0.5">
-                  <button
+                  <Button
                     onClick={(e) => {
                       e.stopPropagation();
                       handleStartEditProduct(prod);
                     }}
-                    className="text-muted-foreground hover:text-primary hover:bg-primary/10 flex h-5 w-5 items-center justify-center rounded transition-all"
+                    variant="ghost"
+                    size="icon"
+                    className="h-5 w-5 rounded"
+                    aria-label={`Izmeni tip ${prod.title}`}
                   >
                     <Icon name="edit" className="text-[10px]" />
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     onClick={(e) => {
                       e.stopPropagation();
                       handleDeleteProduct(prod.id);
                     }}
-                    className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 flex h-5 w-5 items-center justify-center rounded transition-all"
+                    variant="ghost"
+                    size="icon"
+                    className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 h-5 w-5 rounded"
+                    aria-label={`Obriši tip ${prod.title}`}
                   >
                     <Icon name="close" className="text-[10px]" />
-                  </button>
+                  </Button>
                 </div>
               </div>
               {prod.imageUrl && (
@@ -436,12 +446,12 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
               )}
               <div className="flex flex-wrap gap-1">
                 {prod.requiresPhoto && (
-                  <span className="rounded bg-amber-500/10 px-1.5 py-0.5 text-[8px] font-bold text-amber-400">
+                  <span className="text-warning rounded bg-amber-500/10 px-1.5 py-0.5 text-[8px] font-bold">
                     📸
                   </span>
                 )}
                 {prod.requiresIdentity && (
-                  <span className="rounded bg-amber-500/10 px-1.5 py-0.5 text-[8px] font-bold text-amber-400">
+                  <span className="text-warning rounded bg-amber-500/10 px-1.5 py-0.5 text-[8px] font-bold">
                     🆔
                   </span>
                 )}
@@ -479,12 +489,15 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
             {selectedProduct ? `${selectedProduct.title} → Cene` : "Cene"}
           </span>
           {selectedProduct && (
-            <button
+            <Button
               onClick={() => handleAddPrice(selectedProduct.id)}
-              className="bg-primary/10 text-primary hover:bg-primary/20 flex h-7 items-center gap-1 rounded-lg px-3 text-[10px] font-bold transition-all"
+              variant="outline"
+              size="sm"
+              className="h-7 gap-1 rounded-lg px-3 text-[10px] font-bold"
+              aria-label={`Dodaj cenu za ${selectedProduct.title}`}
             >
               <Icon name="add" className="text-[12px]" /> Varijacija
-            </button>
+            </Button>
           )}
         </div>
         {selectedProduct && (
@@ -554,13 +567,16 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
       {/* Mobile nav dots */}
       <div className="bg-background/80 border-border/50 fixed bottom-4 left-1/2 z-50 flex -translate-x-1/2 gap-1.5 rounded-full border px-3 py-2 shadow-lg backdrop-blur-md lg:hidden">
         {(["cats", "prods", "prices"] as const).map((v, _i) => (
-          <button
+          <Button
             key={v}
+            variant="ghost"
+            size="sm"
             onClick={() => setMobileView(v)}
             className={cn(
-              "h-2 w-2 rounded-full transition-all",
+              "h-2 w-2 rounded-full p-0 transition-all",
               mobileView === v ? "bg-primary w-6" : "bg-muted-foreground/30",
             )}
+            aria-label={v === "cats" ? "Kategorije" : v === "prods" ? "Tipovi" : "Cene"}
           />
         ))}
       </div>

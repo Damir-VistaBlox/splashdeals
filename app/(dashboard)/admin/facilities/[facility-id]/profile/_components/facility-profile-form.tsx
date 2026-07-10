@@ -217,8 +217,8 @@ export function FacilityProfileForm({
                 className={cn(
                   "rounded-full border px-2.5 py-0.5 text-[10px] font-black tracking-widest uppercase",
                   facility.status === "ACTIVE"
-                    ? "border-emerald-500/20 bg-emerald-500/10 text-emerald-400"
-                    : "border-amber-500/20 bg-amber-500/10 text-amber-400",
+                    ? "border-primary/20 bg-primary/10 text-primary"
+                    : "border-warning/20 bg-warning/10 text-warning",
                 )}
               >
                 {facility.status}
@@ -278,26 +278,24 @@ export function FacilityProfileForm({
               />
             </section>
           </div>
-
-          <div className="space-y-6 xl:col-span-4"></div>
         </div>
 
         {/* 💾 Global Save Bar (Floating Command Center) */}
-        <footer className="bg-background/40 border-border animate-in fade-in slide-in-from-bottom-6 fixed bottom-8 left-1/2 z-[60] flex -translate-x-1/2 items-center gap-4 rounded-2xl border px-6 py-4 shadow-[0_20px_50px_rgba(0,0,0,0.8)] ring-1 ring-white/5 backdrop-blur-3xl duration-700">
+        <footer className="bg-background/40 border-border animate-in fade-in slide-in-from-bottom-6 ring-border/20 fixed bottom-8 left-1/2 z-[60] flex -translate-x-1/2 items-center gap-4 rounded-2xl border px-6 py-4 shadow-2xl ring-1 backdrop-blur-3xl duration-700">
           <div className="border-border flex items-center gap-5 border-r pr-6">
             <div className="relative">
               <div
                 className={cn(
                   "size-3 rounded-full transition-all duration-500",
                   form.formState.isDirty
-                    ? "animate-pulse bg-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.6)]"
-                    : "bg-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.5)]",
+                    ? "bg-warning shadow-warning/30 animate-pulse"
+                    : "bg-primary shadow-primary/30",
                 )}
               />
               <div
                 className={cn(
                   "absolute -inset-1 animate-ping rounded-full opacity-20",
-                  form.formState.isDirty ? "bg-amber-500" : "bg-emerald-500",
+                  form.formState.isDirty ? "bg-warning" : "bg-primary",
                 )}
               />
             </div>

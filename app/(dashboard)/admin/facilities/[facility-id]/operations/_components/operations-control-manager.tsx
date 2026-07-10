@@ -1,7 +1,7 @@
 "use client";
-import { Icon } from "@/components/ui/Icon";
 
 import * as React from "react";
+import { Icon } from "@/components/ui/Icon";
 import { useFieldArray, useFormContext, useForm, FormProvider } from "react-hook-form";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -109,7 +109,7 @@ function OperationsTableInner({
     <Card className="border-border/50 bg-background/40 space-y-4 p-4">
       <header className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Icon name="schedule" className="size-3.5 text-amber-400" />
+          <Icon name="schedule" className="text-warning size-3.5" />
           <h3 className="text-foreground/70 text-[10px] font-black tracking-widest uppercase">
             Institutional Availability Patterns
           </h3>
@@ -264,7 +264,7 @@ function OperationsTableInner({
                             <Checkbox
                               checked={field.value}
                               onCheckedChange={field.onChange}
-                              className="border-border size-4 data-[state=checked]:border-rose-500 data-[state=checked]:bg-rose-500"
+                              className="border-border data-[state=checked]:border-destructive data-[state=checked]:bg-destructive size-4"
                             />
                           )}
                         />
@@ -294,7 +294,7 @@ function OperationsTableInner({
         className={cn(
           "h-9 w-full gap-2 text-[9px] font-black tracking-[0.2em] uppercase shadow-lg",
           isDirty
-            ? "bg-amber-500 text-slate-950 hover:bg-amber-400"
+            ? "bg-warning text-warning-foreground hover:bg-warning/90"
             : "bg-muted/30 text-muted-foreground",
         )}
       >

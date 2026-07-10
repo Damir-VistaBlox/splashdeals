@@ -167,6 +167,7 @@ export function DataTable<TData, TValue>({
               placeholder="Pretraži registar..."
               value={globalFilter ?? ""}
               onChange={(event) => setGlobalFilter(event.target.value)}
+              aria-label="Search facilities"
               className="bg-background/40 border-border/50 focus-visible:ring-primary/30 placeholder:text-muted-foreground h-9 pl-9 text-xs font-semibold focus-visible:ring-1"
             />
           </div>
@@ -356,7 +357,7 @@ export function DataTable<TData, TValue>({
                       ) : (
                         <Button
                           onClick={() => router.push("/admin/facilities/new")}
-                          className="hover:bg-muted h-10 rounded-xl bg-white px-6 font-bold text-black"
+                          className="hover:bg-muted bg-foreground text-background h-10 rounded-xl px-6 font-bold"
                         >
                           <Icon name="add" className="mr-2 size-4" />
                           Register First Facility

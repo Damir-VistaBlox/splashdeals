@@ -95,7 +95,7 @@ export function IdentitySection({
                     {isSlugLocked ? (
                       <Icon name="lock" className="text-[14px]" />
                     ) : (
-                      <Icon name="lock_open" className="text-[14px] text-amber-500" />
+                      <Icon name="lock_open" className="text-muted-foreground text-[14px]" />
                     )}
                   </Button>
                 </div>

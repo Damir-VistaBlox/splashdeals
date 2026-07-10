@@ -2,7 +2,15 @@
 
 import * as React from "react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Icon } from "@/components/ui/Icon";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import type { SerializedCategory } from "../_lib/ticket-admin-actions";
 import { updatePrice, getTicketHierarchy, deletePrice } from "../_lib/ticket-admin-actions";
 
@@ -66,7 +74,7 @@ export function PriceCard({ price, _product, facilityId, onDeleted }: PriceCardP
               <label className="text-muted-foreground text-[9px] font-bold tracking-wider uppercase">
                 Labela
               </label>
-              <input
+              <Input
                 value={form.label}
                 onChange={(e) => setForm((f) => ({ ...f, label: e.target.value }))}
                 className="bg-muted/20 border-border focus:border-primary/40 h-8 w-full rounded-lg border px-2 text-xs outline-none"
@@ -78,7 +86,7 @@ export function PriceCard({ price, _product, facilityId, onDeleted }: PriceCardP
               <label className="text-muted-foreground text-[9px] font-bold tracking-wider uppercase">
                 Cena (RSD)
               </label>
-              <input
+              <Input
                 value={form.price}
                 onChange={(e) => setForm((f) => ({ ...f, price: e.target.value }))}
                 className="bg-muted/20 border-border focus:border-primary/40 h-8 w-full rounded-lg border px-2 text-xs outline-none"
@@ -90,7 +98,7 @@ export function PriceCard({ price, _product, facilityId, onDeleted }: PriceCardP
               <label className="text-muted-foreground text-[9px] font-bold tracking-wider uppercase">
                 Originalna cena
               </label>
-              <input
+              <Input
                 value={form.originalPrice}
                 onChange={(e) => setForm((f) => ({ ...f, originalPrice: e.target.value }))}
                 className="bg-muted/20 border-border focus:border-primary/40 h-8 w-full rounded-lg border px-2 text-xs outline-none"
@@ -104,29 +112,49 @@ export function PriceCard({ price, _product, facilityId, onDeleted }: PriceCardP
               <label className="text-muted-foreground text-[9px] font-bold tracking-wider uppercase">
                 Tip dana
               </label>
-              <select
+              <Select
                 value={form.dayType}
-                onChange={(e) => setForm((f) => ({ ...f, dayType: e.target.value }))}
-                className="bg-muted/20 border-border focus:border-primary/40 h-8 w-full rounded-lg border px-2 text-xs outline-none"
+                onValueChange={(val) => setForm((f) => ({ ...f, dayType: val }))}
               >
-                <option value="ALL">Svi dani</option>
-                <option value="WEEKDAY">Radni dan</option>
-                <option value="WEEKEND">Vikend</option>
-              </select>
+                <SelectTrigger className="bg-muted/20 border-border focus:border-primary/40 h-8 w-full rounded-lg border px-2 text-xs outline-none">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="bg-background border-border">
+                  <SelectItem value="ALL" className="text-xs">
+                    Svi dani
+                  </SelectItem>
+                  <SelectItem value="WEEKDAY" className="text-xs">
+                    Radni dan
+                  </SelectItem>
+                  <SelectItem value="WEEKEND" className="text-xs">
+                    Vikend
+                  </SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             <div>
               <label className="text-muted-foreground text-[9px] font-bold tracking-wider uppercase">
                 Termin
               </label>
-              <select
+              <Select
                 value={form.timeSlot}
-                onChange={(e) => setForm((f) => ({ ...f, timeSlot: e.target.value }))}
-                className="bg-muted/20 border-border focus:border-primary/40 h-8 w-full rounded-lg border px-2 text-xs outline-none"
+                onValueChange={(val) => setForm((f) => ({ ...f, timeSlot: val }))}
               >
-                <option value="FULL_DAY">Ceo dan</option>
-                <option value="AFTER_16H">Posle 16h</option>
-                <option value="THREE_HOUR">3 sata</option>
-              </select>
+                <SelectTrigger className="bg-muted/20 border-border focus:border-primary/40 h-8 w-full rounded-lg border px-2 text-xs outline-none">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="bg-background border-border">
+                  <SelectItem value="FULL_DAY" className="text-xs">
+                    Ceo dan
+                  </SelectItem>
+                  <SelectItem value="AFTER_16H" className="text-xs">
+                    Posle 16h
+                  </SelectItem>
+                  <SelectItem value="THREE_HOUR" className="text-xs">
+                    3 sata
+                  </SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
           <div className="flex justify-end gap-2 pt-1">
@@ -163,22 +191,28 @@ export function PriceCard({ price, _product, facilityId, onDeleted }: PriceCardP
               )}
             </div>
             <div className="flex items-center gap-1">
-              <button
+              <Button
+                variant="ghost"
+                size="icon"
                 onClick={() => setEditing(true)}
-                className="text-muted-foreground hover:text-foreground hover:bg-muted/20 flex h-7 w-7 items-center justify-center rounded-lg transition-all"
+                className="text-muted-foreground hover:text-foreground hover:bg-muted/20 h-7 w-7 rounded-lg transition-all"
+                aria-label="Edit price"
               >
                 <Icon name="edit" className="text-[12px]" />
-              </button>
-              <button
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
                 onClick={async () => {
                   const { deletePrice } = await import("../_lib/ticket-admin-actions");
                   await deletePrice(price.id, facilityId);
                   onDeleted();
                 }}
-                className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 flex h-7 w-7 items-center justify-center rounded-lg transition-all"
+                className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 h-7 w-7 rounded-lg transition-all"
+                aria-label="Delete price"
               >
                 <Icon name="delete" className="text-[12px]" />
-              </button>
+              </Button>
             </div>
           </div>
           <div className="mt-1 flex items-center gap-2">

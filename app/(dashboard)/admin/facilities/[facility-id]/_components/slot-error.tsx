@@ -1,7 +1,6 @@
 "use client";
 import { Icon } from "@/components/ui/Icon";
 
-import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
@@ -11,16 +10,11 @@ interface SlotErrorProps {
   title?: string;
 }
 
-export function SlotError({ error, reset, title = "Segment nije učitan" }: SlotErrorProps) {
-  useEffect(() => {
-    // Log the error to an error reporting service
-    console.error(`[Slot Error] ${title}:`, error);
-  }, [error, title]);
-
+export function SlotError({ reset, title = "Segment nije učitan" }: SlotErrorProps) {
   return (
-    <div className="flex flex-col items-center justify-center space-y-4 rounded-2xl border border-red-500/10 bg-red-500/5 p-8">
-      <div className="rounded-full bg-red-500/10 p-3">
-        <Icon name="error" className="text-[24px] text-red-500" />
+    <div className="border-destructive/10 bg-destructive/5 flex flex-col items-center justify-center space-y-4 rounded-2xl border p-8">
+      <div className="bg-destructive/10 rounded-full p-3">
+        <Icon name="error" className="text-destructive text-[24px]" />
       </div>
       <div className="space-y-1 text-center">
         <h3 className="text-foreground text-sm font-black tracking-widest uppercase">{title}</h3>
@@ -33,7 +27,7 @@ export function SlotError({ error, reset, title = "Segment nije učitan" }: Slot
           variant="outline"
           size="sm"
           onClick={() => reset()}
-          className="h-8 border-red-500/20 text-[10px] font-black tracking-widest uppercase hover:bg-red-500/10"
+          className="border-destructive/20 hover:bg-destructive/10 h-8 text-[10px] font-black tracking-widest uppercase"
         >
           <Icon name="undo" className="mr-2 text-[12px]" />
           Pokušaj ponovo

@@ -16,6 +16,32 @@ import { LocalizationSection } from "./sections/localization-section";
 import { ConfigurationSection } from "./sections/configuration-section";
 
 /**
+ * Type guard: checks if the server action returned a successful creation result.
+ */
+function isSuccessResponse(result: unknown): result is { success: true; id: string } {
+  return (
+    typeof result === "object" &&
+    result !== null &&
+    "success" in result &&
+    (result as Record<string, unknown>).success === true &&
+    typeof (result as Record<string, unknown>).id === "string"
+  );
+}
+
+/**
+ * Type guard: checks if the server action returned an error result.
+ */
+function hasError(result: unknown): result is { success: false; error: string } {
+  return (
+    typeof result === "object" &&
+    result !== null &&
+    "success" in result &&
+    (result as Record<string, unknown>).success === false &&
+    typeof (result as Record<string, unknown>).error === "string"
+  );
+}
+
+/**
  * 🌊 Aquastream Onboarding System
  * specialized form for institutional-grade facility registration.
  */
@@ -60,14 +86,15 @@ export function OnboardFacilityForm() {
 
     const result = await createFacilityAction(values);
 
-    if (result?.success) {
-      const { id } = result as { success: true; id: string };
+    if (isSuccessResponse(result)) {
+      const { id } = result;
       toast.success("Facility created successfully");
       router.push(`/admin/facilities/${id}`);
+    } else if (hasError(result)) {
+      setServerError(result.error);
+      setIsSubmitting(false);
     } else {
-      const error =
-        result && "error" in result ? (result as { success: false; error: string }).error : null;
-      setServerError(error || "Failed to create facility.");
+      setServerError("Failed to create facility.");
       setIsSubmitting(false);
     }
   }
@@ -102,7 +129,7 @@ export function OnboardFacilityForm() {
             <Button
               type="submit"
               size="lg"
-              className="hover:bg-muted h-14 w-full rounded-xl bg-white text-base font-bold text-black shadow-xl shadow-white/5 transition-all hover:scale-[1.01] active:scale-[0.99]"
+              className="hover:bg-muted bg-foreground text-background shadow-foreground/5 h-14 w-full rounded-xl text-base font-bold shadow-xl transition-all hover:scale-[1.01] active:scale-[0.99]"
               disabled={isSubmitting}
             >
               {isSubmitting ? (
