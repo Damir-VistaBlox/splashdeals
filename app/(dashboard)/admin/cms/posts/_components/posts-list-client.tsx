@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { toast } from "sonner";
 import {
   flexRender,
@@ -18,6 +19,13 @@ import { Icon } from "@/components/ui/Icon";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -79,14 +87,13 @@ export function PostsListClient({ posts }: { posts: Array<Record<string, unknown
       header: "Naslov",
       cell: ({ row }) => (
         <div className="flex items-center gap-2">
-          <button
-            onClick={() => router.push(`/admin/cms/posts/${row.original.id}`)}
-            className="hover:text-primary text-left text-sm font-medium transition-colors"
-          >
-            {row.original.title}
-          </button>
+          <Button variant="ghost" asChild className="text-left text-sm font-medium">
+            <Link href={`/admin/cms/posts/${row.original.id}`}>
+              {row.original.title}
+            </Link>
+          </Button>
           {row.original.isFeatured && (
-            <Icon name="star" className="size-3.5 shrink-0 fill-amber-400 text-amber-400" />
+            <Icon name="star" className="size-3.5 shrink-0 fill-warning text-warning" />
           )}
         </div>
       ),
@@ -113,14 +120,9 @@ export function PostsListClient({ posts }: { posts: Array<Record<string, unknown
       accessorKey: "status",
       header: "Status",
       cell: ({ row }) => (
-        <span
-          className={cn(
-            "inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium",
-            statusColors[row.original.status] || "",
-          )}
-        >
+        <Badge variant="outline" className={cn(statusColors[row.original.status] || "")}>
           {statusLabels[row.original.status] || row.original.status}
-        </span>
+        </Badge>
       ),
     },
     {
@@ -150,6 +152,7 @@ export function PostsListClient({ posts }: { posts: Array<Record<string, unknown
             size="sm"
             className="h-8 w-8 p-0"
             onClick={() => router.push(`/admin/cms/posts/${row.original.id}`)}
+            aria-label="Uredi objavu"
           >
             <Icon name="edit" className="size-4" />
           </Button>
@@ -158,6 +161,7 @@ export function PostsListClient({ posts }: { posts: Array<Record<string, unknown
             size="sm"
             className="text-destructive hover:text-destructive h-8 w-8 p-0"
             onClick={() => handleDelete(row.original.id)}
+            aria-label="Obriši objavu"
           >
             <Icon name="delete" className="size-4" />
           </Button>
@@ -195,17 +199,26 @@ export function PostsListClient({ posts }: { posts: Array<Record<string, unknown
             className="h-9 pl-8"
           />
         </div>
-        <select
-          value={(table.getColumn("status")?.getFilterValue() as string) ?? ""}
-          onChange={(e) => table.getColumn("status")?.setFilterValue(e.target.value || undefined)}
-          className="border-input h-9 rounded-md border bg-transparent px-3 text-sm"
-          aria-label="Filter by status"
+        <Select
+          value={(table.getColumn("status")?.getFilterValue() as string) ?? "all"}
+          onValueChange={(value) => {
+            if (value === "all") {
+              table.getColumn("status")?.setFilterValue(undefined);
+            } else {
+              table.getColumn("status")?.setFilterValue(value);
+            }
+          }}
         >
-          <option value="">Svi statusi</option>
-          <option value="DRAFT">Nacrt</option>
-          <option value="PUBLISHED">Objavljeno</option>
-          <option value="ARCHIVED">Arhivirano</option>
-        </select>
+          <SelectTrigger aria-label="Filter by status" className="w-[160px]">
+            <SelectValue placeholder="Svi statusi" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Svi statusi</SelectItem>
+            <SelectItem value="DRAFT">Nacrt</SelectItem>
+            <SelectItem value="PUBLISHED">Objavljeno</SelectItem>
+            <SelectItem value="ARCHIVED">Arhivirano</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
       {/* Table */}
@@ -268,6 +281,7 @@ export function PostsListClient({ posts }: { posts: Array<Record<string, unknown
             size="sm"
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
+            aria-label="Prethodna strana"
           >
             <Icon name="chevron_left" className="size-4" />
           </Button>
@@ -279,6 +293,7 @@ export function PostsListClient({ posts }: { posts: Array<Record<string, unknown
             size="sm"
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
+            aria-label="Sledeća strana"
           >
             <Icon name="chevron_right" className="size-4" />
           </Button>

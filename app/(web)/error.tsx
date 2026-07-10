@@ -1,5 +1,6 @@
 "use client";
 import { Icon } from "@/components/ui/Icon";
+import { Button } from "@/components/ui/button";
 
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -44,22 +45,22 @@ export default function GlobalWebError({
   }
 
   return (
-    <div className="bg-background selection:bg-primary/20 relative flex min-h-screen items-center justify-center overflow-hidden p-6 text-white md:p-12">
+    <div className="bg-background selection:bg-primary/20 relative flex min-h-screen items-center justify-center overflow-hidden p-6 text-foreground md:p-12">
       {/* 🌊 Atmospheric Background Particles */}
       <div className="pointer-events-none absolute inset-0 z-0 opacity-20">
         <div className="bg-primary/10 absolute top-1/2 left-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full blur-[120px]" />
         <div className="absolute inset-0 flex items-center justify-center">
-          <Icon name="waves" className="h-[80vw] w-[80vw] stroke-[0.1] text-slate-900" />
+          <Icon name="waves" className="h-[80vw] w-[80vw] stroke-[0.1] text-foreground/5" />
         </div>
       </div>
 
-      <Card className="bg-muted/50 relative z-10 w-full max-w-xl border-cyan-500/10">
+      <Card className="bg-muted/50 relative z-10 w-full max-w-xl border-primary/10">
         <CardHeader className="items-center gap-6 p-8 pb-0 text-center md:p-16 md:pb-0">
-          <div className="bg-primary/10 text-primary relative inline-flex h-24 w-24 items-center justify-center rounded-full border border-cyan-500/20">
+          <div className="bg-primary/10 text-primary relative inline-flex h-24 w-24 items-center justify-center rounded-full border border-primary/20">
             <Icon name="error" className="stroke-[1.5] text-[48px]" />
           </div>
           <div className="space-y-4">
-            <CardTitle className="text-4xl leading-none font-black tracking-tighter text-slate-100 uppercase italic md:text-5xl">
+            <CardTitle className="text-4xl leading-none font-black tracking-tighter text-foreground uppercase italic md:text-5xl">
               {(dict as Record<string, unknown>)?.errors ? (
                 <>
                   {t("errors", "title")} <br />
@@ -77,13 +78,14 @@ export default function GlobalWebError({
 
         <CardContent className="p-8 pt-4 text-center md:p-16 md:pt-4">
           <div className="grid grid-cols-1 gap-4 pt-4 md:grid-cols-2">
-            <button
+            <Button
               onClick={reset}
-              className="border-border group flex items-center justify-center gap-2 rounded-2xl border bg-white/10 px-8 py-4 text-[10px] font-black tracking-widest uppercase transition-all hover:bg-white/15"
+              variant="outline"
+              className="group flex items-center justify-center gap-2 rounded-2xl px-8 py-4 text-[10px] font-black tracking-widest uppercase"
             >
               <Icon name="refresh" className="text-[16px]" />
               {t("errors", "try_again")}
-            </button>
+            </Button>
             <Link
               href="/"
               className="bg-primary hover:bg-primary/90 text-background shadow-primary/10 flex items-center justify-center gap-2 rounded-2xl px-8 py-4 text-[10px] font-black tracking-widest uppercase shadow-2xl transition-all"

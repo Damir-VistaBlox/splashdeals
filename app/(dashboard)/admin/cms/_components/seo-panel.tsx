@@ -4,6 +4,13 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useFormContext } from "react-hook-form";
 
 interface SEOPanelProps {
@@ -27,10 +34,10 @@ export function SEOPanel({ previewUrl }: SEOPanelProps) {
           Google SERP Preview
         </h4>
         <div className="bg-card space-y-1 rounded-lg border p-3">
-          <p className="truncate text-xs text-green-700 dark:text-green-400">
+          <p className="truncate text-xs text-primary">
             {previewUrl || "splashdeals.rs/blog/..."}
           </p>
-          <p className="truncate text-sm leading-tight font-medium text-blue-600 dark:text-blue-400">
+          <p className="truncate text-sm leading-tight font-medium text-primary">
             {serpTitle.length > 60 ? serpTitle.slice(0, 57) + "..." : serpTitle}
           </p>
           <p className="text-muted-foreground line-clamp-2 text-xs leading-tight">
@@ -126,16 +133,23 @@ export function SEOPanel({ previewUrl }: SEOPanelProps) {
 
         <div className="space-y-2">
           <Label htmlFor="robotsDirective">Robots direktiva</Label>
-          <select
-            id="robotsDirective"
-            {...register("robotsDirective")}
-            className="border-input placeholder:text-muted-foreground focus-visible:ring-ring flex h-9 w-full rounded-md border bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:ring-1 focus-visible:outline-none"
+          <Select
+            value={watch("robotsDirective") || ""}
+            onValueChange={(value) => {
+              const event = { target: { name: "robotsDirective", value } };
+              register("robotsDirective").onChange(event);
+            }}
           >
-            <option value="">Podrazumevano (index, follow)</option>
-            <option value="noindex,nofollow">noindex, nofollow</option>
-            <option value="noindex,follow">noindex, follow</option>
-            <option value="index,nofollow">index, nofollow</option>
-          </select>
+            <SelectTrigger id="robotsDirective" className="w-full">
+              <SelectValue placeholder="Podrazumevano (index, follow)" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">Podrazumevano (index, follow)</SelectItem>
+              <SelectItem value="noindex,nofollow">noindex, nofollow</SelectItem>
+              <SelectItem value="noindex,follow">noindex, follow</SelectItem>
+              <SelectItem value="index,nofollow">index, nofollow</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
     </div>

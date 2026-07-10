@@ -1,5 +1,6 @@
 "use client";
 import { Icon } from "@/components/ui/Icon";
+import { Button } from "@/components/ui/button";
 
 import { cn } from "@/lib/utils";
 import { useState } from "react";
@@ -52,11 +53,13 @@ export function ShareButton({ title, url, className }: ShareButtonProps) {
   };
 
   return (
-    <button
+    <Button
       onClick={handleShare}
+      variant="outline"
+      size="icon"
       className={cn(
-        "bg-muted/50 border-border hover:bg-muted group relative flex min-h-[36px] min-w-[36px] items-center justify-center overflow-hidden rounded-full border p-2.5 backdrop-blur-xl transition-all hover:scale-105 active:scale-95",
-        copied ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-400" : "",
+        "bg-muted/50 border-border hover:bg-muted group relative overflow-hidden rounded-full p-2.5 backdrop-blur-xl transition-all hover:scale-105 active:scale-95",
+        copied ? "border-primary/30 bg-primary/10 text-primary" : "",
         className,
       )}
       title={copied ? "Kopirano!" : "Podeli"}
@@ -64,16 +67,16 @@ export function ShareButton({ title, url, className }: ShareButtonProps) {
     >
       {copied ? (
         <div key="check" className="animate-scale-in">
-          <Icon name="check" className="h-[14px] w-[14px] text-emerald-400" />
+          <Icon name="check" className="h-[14px] w-[14px] text-primary" />
         </div>
       ) : (
         <div key="share" className="animate-scale-in">
           <Icon
             name="share"
-            className="h-[14px] w-[14px] text-slate-300 transition-colors group-hover:text-cyan-400"
+            className="h-[14px] w-[14px] text-muted-foreground transition-colors group-hover:text-primary"
           />
         </div>
       )}
-    </button>
+    </Button>
   );
 }

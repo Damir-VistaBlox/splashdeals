@@ -21,7 +21,7 @@ export default function WebLoading() {
         <div className="bg-primary/5 absolute right-[-10%] bottom-[-10%] h-[50%] w-[50%] animate-pulse rounded-full blur-[120px] [animation-delay:2s]" />
 
         {/* Branded Grid Pattern */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff03_1px,transparent_1px),linear-gradient(to_bottom,#ffffff03_1px,transparent_1px)] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] bg-[size:64px_64px]" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,hsl(var(--foreground)/0.03)_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--foreground)/0.03)_1px,transparent_1px)] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,hsl(var(--foreground))_70%,transparent_100%)] bg-[size:64px_64px]" />
       </div>
 
       {/* 🌊 CENTRAL LOADER: Pulsing Branded Icon */}

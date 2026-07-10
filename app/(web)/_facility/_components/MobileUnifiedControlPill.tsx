@@ -1,5 +1,6 @@
 "use client";
 import { Icon } from "@/components/ui/Icon";
+import { Button } from "@/components/ui/button";
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { formatTime24h } from "@/lib/utils/date-time";
@@ -117,13 +118,13 @@ export function MobileUnifiedControlPill({
           <div className="relative shrink-0">
             <Icon name="schedule" className="text-muted-foreground text-[22px]" />
             {isOpen === true && (
-              <span className="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.6)]" />
+              <span className="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full bg-primary shadow-[0_0_6px_hsl(var(--primary)/0.6)]" />
             )}
           </div>
           <div className="flex flex-col items-start -space-y-0.5 leading-tight">
             {todayHours ? (
               todayHours.isClosed ? (
-                <span className="text-sm font-black tracking-tight text-red-400">Zatvoreno</span>
+                <span className="text-sm font-black tracking-tight text-destructive">Zatvoreno</span>
               ) : (
                 <>
                   <span className="text-foreground text-sm font-black tracking-tight">
@@ -144,9 +145,10 @@ export function MobileUnifiedControlPill({
         <div className="bg-border/30 h-6 w-px shrink-0 self-center" />
 
         {/* 🧭 Segment 2: Navigation */}
-        <button
+        <Button
+          variant="ghost"
           onClick={handleNavigation}
-          className="text-foreground hover:text-primary group flex h-full flex-1 origin-center cursor-pointer items-center justify-center gap-1.5 px-2 transition-colors active:scale-90"
+          className="text-foreground hover:text-primary group flex h-full flex-1 origin-center items-center justify-center gap-1.5 px-2 transition-colors active:scale-90"
           aria-label={
             distance !== null
               ? `Udaljenost ${distance.toFixed(0)} km. Dodirni za otvaranje mape.`
@@ -166,7 +168,7 @@ export function MobileUnifiedControlPill({
               {geoError ? "? km" : "Ruta"}
             </span>
           )}
-        </button>
+        </Button>
       </div>
     </div>
   );

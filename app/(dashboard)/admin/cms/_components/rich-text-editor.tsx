@@ -145,6 +145,7 @@ function Toolbar({ editor }: { editor: Editor }) {
           size="sm"
           pressed={editor.isActive("bold")}
           onPressedChange={() => editor.chain().focus().toggleBold().run()}
+          aria-label="Podebljano"
         >
           <Icon name="bold" className="size-4" />
         </Toggle>
@@ -152,6 +153,7 @@ function Toolbar({ editor }: { editor: Editor }) {
           size="sm"
           pressed={editor.isActive("italic")}
           onPressedChange={() => editor.chain().focus().toggleItalic().run()}
+          aria-label="Kurziv"
         >
           <Icon name="italic" className="size-4" />
         </Toggle>
@@ -159,6 +161,7 @@ function Toolbar({ editor }: { editor: Editor }) {
           size="sm"
           pressed={editor.isActive("strike")}
           onPressedChange={() => editor.chain().focus().toggleStrike().run()}
+          aria-label="Precrtano"
         >
           <Icon name="strikethrough" className="size-4" />
         </Toggle>
@@ -170,6 +173,7 @@ function Toolbar({ editor }: { editor: Editor }) {
           size="sm"
           pressed={editor.isActive("heading", { level: 1 })}
           onPressedChange={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+          aria-label="Naslov 1"
         >
           <span className="text-xs font-bold">H1</span>
         </Toggle>
@@ -177,6 +181,7 @@ function Toolbar({ editor }: { editor: Editor }) {
           size="sm"
           pressed={editor.isActive("heading", { level: 2 })}
           onPressedChange={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+          aria-label="Naslov 2"
         >
           <span className="text-xs font-bold">H2</span>
         </Toggle>
@@ -184,6 +189,7 @@ function Toolbar({ editor }: { editor: Editor }) {
           size="sm"
           pressed={editor.isActive("heading", { level: 3 })}
           onPressedChange={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+          aria-label="Naslov 3"
         >
           <span className="text-xs font-bold">H3</span>
         </Toggle>
@@ -195,6 +201,7 @@ function Toolbar({ editor }: { editor: Editor }) {
           size="sm"
           pressed={editor.isActive("bulletList")}
           onPressedChange={() => editor.chain().focus().toggleBulletList().run()}
+          aria-label="Nenumerisana lista"
         >
           <Icon name="list" className="size-4" />
         </Toggle>
@@ -202,6 +209,7 @@ function Toolbar({ editor }: { editor: Editor }) {
           size="sm"
           pressed={editor.isActive("orderedList")}
           onPressedChange={() => editor.chain().focus().toggleOrderedList().run()}
+          aria-label="Numerisana lista"
         >
           <Icon name="list_ordered" className="size-4" />
         </Toggle>
@@ -213,6 +221,7 @@ function Toolbar({ editor }: { editor: Editor }) {
           size="sm"
           pressed={editor.isActive("blockquote")}
           onPressedChange={() => editor.chain().focus().toggleBlockquote().run()}
+          aria-label="Citat"
         >
           <Icon name="format_quote" className="size-4" />
         </Toggle>
@@ -220,6 +229,7 @@ function Toolbar({ editor }: { editor: Editor }) {
           size="sm"
           pressed={editor.isActive("codeBlock")}
           onPressedChange={() => editor.chain().focus().toggleCodeBlock().run()}
+          aria-label="Kod"
         >
           <Icon name="code" className="size-4" />
         </Toggle>
@@ -229,7 +239,7 @@ function Toolbar({ editor }: { editor: Editor }) {
         {/* Link */}
         <Popover>
           <PopoverTrigger asChild>
-            <Toggle size="sm" pressed={editor.isActive("link")}>
+            <Toggle size="sm" pressed={editor.isActive("link")} aria-label="Link">
               <Icon name="link" className="size-4" />
             </Toggle>
           </PopoverTrigger>

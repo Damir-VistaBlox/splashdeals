@@ -84,7 +84,7 @@ export default async function CookiesPage({}: PageProps) {
 
         {/* 📜 CONTENT GRID */}
         <div className="space-y-12">
-          <div className="text-lg leading-relaxed font-medium text-slate-300 transition-opacity duration-500">
+          <div className="text-muted-foreground text-lg leading-relaxed font-medium transition-opacity duration-500">
             {dict.cookies.intro}
           </div>
 

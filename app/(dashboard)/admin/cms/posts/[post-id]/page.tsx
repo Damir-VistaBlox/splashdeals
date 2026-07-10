@@ -46,6 +46,7 @@ export default async function EditPostPage({ params }: { params: Promise<{ "post
       <div className="flex items-center gap-4">
         <Link
           href="/admin/cms/posts"
+          aria-label="Nazad na listu objava"
           className="hover:bg-accent inline-flex items-center justify-center rounded-md border p-2 transition-colors"
         >
           <Icon name="arrow_back" className="size-4" />

@@ -60,25 +60,31 @@ function SortableMenuTab({
       )}
       onClick={onSelect}
     >
-      <button
+      <Button
+        variant="ghost"
+        size="sm"
         {...attributes}
         {...listeners}
-        className="text-muted-foreground/40 hover:text-foreground shrink-0 cursor-grab"
+        className="text-muted-foreground/40 hover:text-foreground shrink-0 h-auto w-auto cursor-grab p-0"
         onClick={(e) => e.stopPropagation()}
+        aria-label="Prevuci meni"
       >
         <Icon name="drag_indicator" className="size-3" />
-      </button>
+      </Button>
       <Icon name={menu.icon} className="size-3.5 shrink-0" />
       <span>{menu.label}</span>
-      <button
+      <Button
+        variant="ghost"
+        size="sm"
         onClick={(e) => {
           e.stopPropagation();
           onEdit();
         }}
-        className="text-muted-foreground hover:text-foreground hover:bg-accent ml-0.5 rounded-full p-0.5 opacity-0 transition-opacity group-hover:opacity-100"
+        className="text-muted-foreground hover:text-foreground hover:bg-accent ml-0.5 h-auto w-auto rounded-full p-0.5 opacity-0 transition-opacity group-hover:opacity-100"
+        aria-label="Izmeni meni"
       >
         <Icon name="settings" className="size-3" />
-      </button>
+      </Button>
     </div>
   );
 }
@@ -105,13 +111,16 @@ function SortableSection({
       )}
     >
       <div className="flex min-w-0 items-center gap-1.5 text-sm">
-        <button
+        <Button
+          variant="ghost"
+          size="sm"
           {...attributes}
           {...listeners}
-          className="text-muted-foreground/30 hover:text-foreground shrink-0 cursor-grab"
+          className="text-muted-foreground/30 hover:text-foreground shrink-0 h-auto w-auto cursor-grab p-0"
+          aria-label="Prevuci sekciju"
         >
           <Icon name="drag_indicator" className="size-3.5" />
-        </button>
+        </Button>
         {section.heading ? (
           <span className="text-foreground min-w-0 truncate font-medium">{section.heading}</span>
         ) : (
@@ -157,13 +166,16 @@ function SortableItem({
         isDragging && "opacity-50",
       )}
     >
-      <button
+      <Button
+        variant="ghost"
+        size="sm"
         {...attributes}
         {...listeners}
-        className="text-muted-foreground/20 group-hover:text-muted-foreground shrink-0 cursor-grab"
+        className="text-muted-foreground/20 group-hover:text-muted-foreground shrink-0 h-auto w-auto cursor-grab p-0"
+        aria-label="Prevuci stavku"
       >
         <Icon name="drag_indicator" className="size-3" />
-      </button>
+      </Button>
       {item.icon ? (
         <Icon name={item.icon} className="text-muted-foreground size-4 shrink-0" />
       ) : (
@@ -179,23 +191,29 @@ function SortableItem({
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <button
+              <Button
+                variant="ghost"
+                size="sm"
                 onClick={onEdit}
-                className="text-muted-foreground/50 hover:text-foreground hover:bg-accent rounded p-1"
+                className="text-muted-foreground/50 hover:text-foreground hover:bg-accent h-auto w-auto rounded p-1"
+                aria-label="Izmeni stavku"
               >
                 <Icon name="edit" className="size-3" />
-              </button>
+              </Button>
             </TooltipTrigger>
             <TooltipContent side="top">Izmeni stavku</TooltipContent>
           </Tooltip>
           <Tooltip>
             <TooltipTrigger asChild>
-              <button
+              <Button
+                variant="ghost"
+                size="sm"
                 onClick={onDelete}
-                className="text-muted-foreground/50 hover:text-destructive hover:bg-destructive/10 rounded p-1"
+                className="text-muted-foreground/50 hover:text-destructive hover:bg-destructive/10 h-auto w-auto rounded p-1"
+                aria-label="Obriši stavku"
               >
                 <Icon name="delete" className="size-3" />
-              </button>
+              </Button>
             </TooltipTrigger>
             <TooltipContent side="top">Obriši stavku</TooltipContent>
           </Tooltip>
@@ -453,16 +471,19 @@ export function NavigationManager({ initialMenus }: NavigationManagerProps) {
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <button
+                  <Button
+                    variant="ghost"
+                    size="sm"
                     onClick={() => {
                       setEditingMenu(null);
                       setMenuDrawerOpen(true);
                     }}
-                    className="text-muted-foreground hover:text-foreground hover:bg-accent/50 flex items-center gap-1 rounded-full px-2.5 py-1.5 text-xs font-semibold tracking-wider uppercase transition-all"
+                    className="text-muted-foreground hover:text-foreground hover:bg-accent/50 gap-1 rounded-full px-2.5 py-1.5 text-xs font-semibold tracking-wider uppercase"
+                    aria-label="Dodaj novi meni"
                   >
                     <Icon name="add" className="size-3.5" />
                     Novi meni
-                  </button>
+                  </Button>
                 </TooltipTrigger>
                 <TooltipContent side="bottom">Dodaj novi navigacioni meni</TooltipContent>
               </Tooltip>
@@ -487,9 +508,9 @@ export function NavigationManager({ initialMenus }: NavigationManagerProps) {
                     key={column}
                     className={cn(
                       "overflow-hidden rounded-lg border",
-                      column === 0 && "bg-cyan-500/[0.02]",
-                      column === 1 && "bg-blue-500/[0.02]",
-                      column === 2 && "bg-violet-500/[0.02]",
+                      column === 0 && "bg-muted/10",
+                      column === 1 && "bg-muted/10",
+                      column === 2 && "bg-muted/10",
                     )}
                   >
                     {/* Column header */}
@@ -497,11 +518,11 @@ export function NavigationManager({ initialMenus }: NavigationManagerProps) {
                       className={cn(
                         "flex items-center justify-between border-b px-3 py-2 text-xs font-semibold tracking-wider uppercase",
                         column === 0 &&
-                          "border-cyan-500/10 bg-cyan-500/10 text-cyan-600 dark:text-cyan-400",
+                          "border-primary/10 bg-primary/10 text-primary",
                         column === 1 &&
-                          "border-blue-500/10 bg-blue-500/10 text-blue-600 dark:text-blue-400",
+                          "border-primary/10 bg-primary/10 text-primary",
                         column === 2 &&
-                          "border-violet-500/10 bg-violet-500/10 text-violet-600 dark:text-violet-400",
+                          "border-primary/10 bg-primary/10 text-primary",
                       )}
                     >
                       <span>Kolona {column + 1}</span>
@@ -547,13 +568,16 @@ export function NavigationManager({ initialMenus }: NavigationManagerProps) {
                               <TooltipProvider>
                                 <Tooltip>
                                   <TooltipTrigger asChild>
-                                    <button
-                                      onClick={() => openEditSection(section)}
-                                      className="text-muted-foreground bg-accent/30 hover:bg-accent hover:text-foreground flex items-center gap-1 rounded px-2 py-1 text-[11px] font-medium transition-colors"
-                                    >
-                                      <Icon name="settings" className="size-3.5" />
-                                      Opcije
-                                    </button>
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => openEditSection(section)}
+                                        className="text-muted-foreground bg-accent/30 hover:bg-accent hover:text-foreground h-auto gap-1 rounded px-2 py-1 text-[11px] font-medium"
+                                        aria-label="Opcije sekcije"
+                                      >
+                                        <Icon name="settings" className="size-3.5" />
+                                        Opcije
+                                      </Button>
                                   </TooltipTrigger>
                                   <TooltipContent side="bottom">
                                     Izmeni sekciju (naziv, kolonu, stil)
@@ -562,13 +586,16 @@ export function NavigationManager({ initialMenus }: NavigationManagerProps) {
                                 {(section.style === "LINKS" || section.style === "DOT_LINKS") && (
                                   <Tooltip>
                                     <TooltipTrigger asChild>
-                                      <button
+                                      <Button
+                                        variant="ghost"
+                                        size="sm"
                                         onClick={() => openAddItem(section.id)}
-                                        className="text-muted-foreground bg-accent/30 hover:bg-accent hover:text-foreground flex items-center gap-1 rounded px-2 py-1 text-[11px] font-medium transition-colors"
+                                        className="text-muted-foreground bg-accent/30 hover:bg-accent hover:text-foreground h-auto gap-1 rounded px-2 py-1 text-[11px] font-medium"
+                                        aria-label="Dodaj stavku"
                                       >
                                         <Icon name="add" className="size-3.5" />
                                         Stavka
-                                      </button>
+                                      </Button>
                                     </TooltipTrigger>
                                     <TooltipContent side="bottom">
                                       Dodaj novu stavku u ovu sekciju
@@ -578,12 +605,15 @@ export function NavigationManager({ initialMenus }: NavigationManagerProps) {
                                 <div className="ml-auto">
                                   <Tooltip>
                                     <TooltipTrigger asChild>
-                                      <button
+                                      <Button
+                                        variant="ghost"
+                                        size="sm"
                                         onClick={() => handleDeleteSection(section)}
-                                        className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 flex items-center gap-1 rounded px-2 py-1 text-[11px] transition-colors"
+                                        className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 h-auto gap-1 rounded px-2 py-1 text-[11px]"
+                                        aria-label="Obriši sekciju"
                                       >
                                         <Icon name="delete" className="size-3.5" />
-                                      </button>
+                                      </Button>
                                     </TooltipTrigger>
                                     <TooltipContent side="bottom">
                                       Obriši sekciju i sve stavke u njoj
@@ -600,17 +630,20 @@ export function NavigationManager({ initialMenus }: NavigationManagerProps) {
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <button
+                            <Button
+                              variant="ghost"
+                              size="sm"
                               onClick={() => {
                                 setEditingSection(null);
                                 setSectionDrawerMenuId(selectedMenu.id);
                                 setSectionDrawerOpen(true);
                               }}
-                              className="border-muted-foreground/20 text-muted-foreground hover:text-foreground hover:border-muted-foreground/40 hover:bg-accent/30 flex w-full items-center justify-center gap-1.5 rounded-lg border border-dashed py-2 text-xs transition-all"
+                              className="border-muted-foreground/20 text-muted-foreground hover:text-foreground hover:border-muted-foreground/40 hover:bg-accent/30 w-full gap-1.5 rounded-lg border border-dashed py-2 text-xs"
+                              aria-label="Dodaj sekciju"
                             >
                               <Icon name="add" className="size-3.5" />
                               Dodaj sekciju
-                            </button>
+                            </Button>
                           </TooltipTrigger>
                           <TooltipContent side="bottom">
                             Dodaj novu sekciju (grupu linkova) u ovu kolonu

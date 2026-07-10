@@ -112,23 +112,23 @@ export function SuccessClient({
     return (
       <div className="flex min-h-[60vh] flex-col items-center justify-center space-y-8 pt-20 text-center">
         <div className="relative">
-          <div className="text-primary-500 animate-spin">
+          <div className="text-primary animate-spin">
             <Icon name="progress_activity" className="text-[80px]" />
           </div>
           <div className="absolute inset-0 flex items-center justify-center">
-            <Icon name="confirmation_number" className="text-primary-400 text-[24px] opacity-50" />
+            <Icon name="confirmation_number" className="text-primary/50 text-[24px]" />
           </div>
         </div>
         <div className="space-y-3">
           <h2 className="text-foreground text-3xl leading-none font-black tracking-tighter uppercase italic">
             {dict.processing.title}
           </h2>
-          <p className="text-muted-400 font-medium">{dict.processing.description}</p>
+          <p className="text-muted-foreground font-medium">{dict.processing.description}</p>
           <div className="flex justify-center gap-1">
             {[0, 1, 2].map((i) => (
               <div
                 key={i}
-                className="bg-primary-500 animate-pulse-dot h-1.5 w-1.5 rounded-full"
+                className="bg-primary animate-pulse-dot h-1.5 w-1.5 rounded-full"
                 style={{ animationDelay: `${i * 0.2}s` }}
               />
             ))}
@@ -143,21 +143,21 @@ export function SuccessClient({
       {/* 🌟 Header Section */}
       <div className="animate-fade-in-up space-y-6 text-center">
         <div className="relative inline-block">
-          <div className="animate-scale-in relative z-10 inline-flex h-24 w-24 items-center justify-center rounded-full border border-emerald-500/20 bg-emerald-500/10 text-emerald-400">
+          <div className="animate-scale-in relative z-10 inline-flex h-24 w-24 items-center justify-center rounded-full border border-primary/20 bg-primary/10 text-primary">
             <Icon name="check_circle" className="text-[56px]" />
           </div>
-          <div className="bg-primary-500/20 absolute -top-4 -right-4 h-12 w-12 animate-pulse rounded-full blur-2xl" />
-          <div className="absolute -bottom-4 -left-4 h-12 w-12 animate-pulse rounded-full bg-blue-500/20 blur-2xl delay-700" />
+          <div className="bg-primary/20 absolute -top-4 -right-4 h-12 w-12 animate-pulse rounded-full blur-2xl" />
+          <div className="absolute -bottom-4 -left-4 h-12 w-12 animate-pulse rounded-full bg-primary/20 blur-2xl delay-700" />
         </div>
 
         <div className="space-y-3">
           <h1 className="text-foreground text-4xl leading-tight font-black tracking-tighter uppercase italic md:text-6xl">
             {dict.header.title}{" "}
-            <span className="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-primary to-primary-dark bg-clip-text text-transparent">
               {dict.header.status}
             </span>
           </h1>
-          <p className="text-muted-400 mx-auto max-w-xl text-lg">{dict.header.description}</p>
+          <p className="text-muted-foreground mx-auto max-w-xl text-lg">{dict.header.description}</p>
         </div>
       </div>
 
@@ -170,10 +170,10 @@ export function SuccessClient({
               className="animate-fade-in-up"
               style={{ animationDelay: `${0.2 + index * 0.1}s` }}
             >
-              <Card className="group border-border/5 bg-card/40 flex flex-col overflow-hidden p-0 transition-colors duration-500 hover:border-cyan-500/30 md:flex-row">
+              <Card className="group border-border/5 bg-card/40 flex flex-col overflow-hidden p-0 transition-colors duration-500 hover:border-primary/30 md:flex-row">
                 {/* QR Code Wing */}
-                <div className="relative flex min-w-[240px] items-center justify-center bg-white p-10">
-                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-cyan-50/50 to-transparent" />
+                <div className="relative flex min-w-[240px] items-center justify-center bg-background p-10">
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent" />
                   <div className="relative">
                     <QRCodeSVG
                       value={issuedTicket.qrHash}
@@ -183,8 +183,8 @@ export function SuccessClient({
                       className="drop-shadow-2xl grayscale transition-all duration-700 group-hover:grayscale-0"
                     />
                     {/* Corner Accents */}
-                    <div className="absolute -top-2 -left-2 h-4 w-4 border-t-2 border-l-2 border-slate-900/10" />
-                    <div className="absolute -right-2 -bottom-2 h-4 w-4 border-r-2 border-b-2 border-slate-900/10" />
+                    <div className="absolute -top-2 -left-2 h-4 w-4 border-t-2 border-l-2 border-muted-foreground/10" />
+                    <div className="absolute -right-2 -bottom-2 h-4 w-4 border-r-2 border-b-2 border-muted-foreground/10" />
                   </div>
                 </div>
 
@@ -197,8 +197,8 @@ export function SuccessClient({
 
                   <div className="relative z-10 space-y-2">
                     <div className="flex items-center gap-2">
-                      <span className="bg-primary-500 h-1.5 w-1.5 rounded-full shadow-[0_0_8px_rgba(6,182,212,0.6)]" />
-                      <span className="text-primary-400 text-[10px] font-bold tracking-[0.3em] uppercase">
+                      <span className="bg-primary h-1.5 w-1.5 rounded-full shadow-[0_0_8px_hsl(var(--primary)/0.6)]" />
+                      <span className="text-primary text-[10px] font-bold tracking-[0.3em] uppercase">
                         {dict.ticket.valid}
                       </span>
                     </div>
@@ -209,11 +209,11 @@ export function SuccessClient({
 
                   <div className="border-border/5 relative z-10 space-y-4 border-t pt-4">
                     <div className="group/item flex items-start gap-3">
-                      <div className="bg-muted/5 text-muted-400 group-hover/item:text-primary-400 rounded-lg p-2 transition-colors">
+                      <div className="bg-muted/5 text-muted-foreground group-hover/item:text-primary rounded-lg p-2 transition-colors">
                         <Icon name="location_on" className="text-[16px]" />
                       </div>
                       <div className="space-y-0.5">
-                        <p className="text-muted-500 text-[10px] font-bold tracking-wider uppercase">
+                        <p className="text-muted-foreground/60 text-[10px] font-bold tracking-wider uppercase">
                           {dict.ticket.location}
                         </p>
                         <p className="text-foreground text-sm font-medium">
@@ -223,11 +223,11 @@ export function SuccessClient({
                     </div>
 
                     <div className="group/item flex items-start gap-3">
-                      <div className="bg-muted/5 text-muted-400 group-hover/item:text-primary-400 rounded-lg p-2 transition-colors">
+                      <div className="bg-muted/5 text-muted-foreground group-hover/item:text-primary rounded-lg p-2 transition-colors">
                         <Icon name="calendar_month" className="text-[16px]" />
                       </div>
                       <div className="space-y-0.5">
-                        <p className="text-muted-500 text-[10px] font-bold tracking-wider uppercase">
+                        <p className="text-muted-foreground/60 text-[10px] font-bold tracking-wider uppercase">
                           {dict.ticket.issue_date}
                         </p>
                         <p className="text-foreground text-sm font-medium">
@@ -242,10 +242,10 @@ export function SuccessClient({
                   </div>
 
                   <div className="flex items-center justify-between pt-4">
-                    <div className="text-muted-600 font-mono text-[10px] tracking-wider">
+                    <div className="text-muted-foreground/50 font-mono text-[10px] tracking-wider">
                       {dict.ticket.ref}: {issuedTicket.id.slice(-12).toUpperCase()}
                     </div>
-                    <div className="bg-muted/5 text-foreground/20 group-hover:text-primary-400 group-hover:bg-primary-400/10 flex h-8 w-8 items-center justify-center rounded-full transition-all">
+                    <div className="bg-muted/5 text-foreground/20 group-hover:text-primary group-hover:bg-primary/10 flex h-8 w-8 items-center justify-center rounded-full transition-all">
                       <SuccessSparkles size={14} />
                     </div>
                   </div>
@@ -274,16 +274,16 @@ export function SuccessClient({
           <Button
             onClick={() => window.print()}
             size="lg"
-            className="bg-primary hover:bg-primary/90 h-16 w-full rounded-full px-10 text-black shadow-[0_0_30px_rgba(6,182,212,0.3)] sm:w-auto"
+            className="bg-primary hover:bg-primary/90 h-16 w-full rounded-full px-10 text-primary-foreground shadow-[0_0_30px_hsl(var(--primary)/0.3)] sm:w-auto"
           >
-            <Icon name="download" className="mr-3 text-[20px] text-black" />
+            <Icon name="download" className="mr-3 text-[20px] text-primary-foreground" />
             {dict.actions.download}
           </Button>
         </div>
 
         <div className="pt-8 text-center">
-          <p className="text-muted-500 text-xs font-medium">{dict.footer.email_notice}</p>
-          <p className="text-muted-600 mt-2 text-[10px] font-bold tracking-widest uppercase">
+          <p className="text-muted-foreground text-xs font-medium">{dict.footer.email_notice}</p>
+          <p className="text-muted-foreground/60 mt-2 text-[10px] font-bold tracking-widest uppercase">
             {dict.footer.protocol}
           </p>
         </div>

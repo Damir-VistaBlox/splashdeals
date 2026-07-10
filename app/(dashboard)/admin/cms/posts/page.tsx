@@ -2,6 +2,7 @@ import { requireAdmin } from "@/server/lib/auth-guards";
 import { prisma } from "@/server/lib/prisma";
 import { PostsListClient } from "./_components/posts-list-client";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/Icon";
 import type { Metadata } from "next";
 import { connection } from "next/server";
@@ -39,13 +40,12 @@ export default async function PostsPage() {
             Upravljaj blog postovima, SEO meta podacima i kategorijama.
           </p>
         </div>
-        <Link
-          href="/admin/cms/posts/new"
-          className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium"
-        >
-          <Icon name="add" className="size-4" />
-          Nova objava
-        </Link>
+        <Button asChild>
+          <Link href="/admin/cms/posts/new">
+            <Icon name="add" className="size-4" />
+            Nova objava
+          </Link>
+        </Button>
       </div>
 
       <PostsListClient posts={serialized as unknown as Array<Record<string, unknown>>} />

@@ -1,5 +1,6 @@
 "use client";
 import { Icon } from "@/components/ui/Icon";
+import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
@@ -82,14 +83,14 @@ export function DistanceCalculator({ destLat, destLng }: DistanceCalculatorProps
   if (error) return null;
 
   return (
-    <button
+    <Button
       onClick={handleCalculate}
       disabled={loading}
       className={cn(
         "group flex cursor-pointer items-center gap-2 rounded-2xl border px-5 py-2.5 text-xs font-black tracking-widest uppercase backdrop-blur-md transition-all duration-500",
         distance !== null
           ? "bg-primary/10 border-primary/20 text-primary hover:bg-primary/20 shadow-[0_0_20px_hsl(var(--primary)/0.1)] hover:scale-105"
-          : "border-border hover:text-foreground bg-white/5 text-slate-300 hover:bg-white/10 active:scale-95",
+          : "border-border hover:text-foreground bg-muted/20 hover:bg-muted/30 active:scale-95",
       )}
     >
       {loading ? (
@@ -114,11 +115,11 @@ export function DistanceCalculator({ destLat, destLng }: DistanceCalculatorProps
         <>
           <Icon
             name="navigation"
-            className="group-hover:text-primary text-[16px] text-slate-400 transition-colors"
+            className="group-hover:text-primary text-[16px] text-muted-foreground transition-colors"
           />
           <span className="hidden md:inline">Prikaži Udaljenost</span>
         </>
       )}
-    </button>
+    </Button>
   );
 }
