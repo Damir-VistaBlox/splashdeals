@@ -122,20 +122,25 @@ export async function createCategory(facilityId: string, title: string) {
 
 // ─── Image Upload ─────────────────────────────────────
 
-export async function updateCategory(id: string, data: { title?: string; isActive?: boolean }) {
+export async function updateCategory(
+  id: string,
+  facilityId: string,
+  data: { title?: string; isActive?: boolean },
+) {
   await prisma.ticketCategory.update({ where: { id }, data });
-  revalidatePath(`/admin/facilities/*/tickets`);
+  revalidatePath(`/admin/facilities/${facilityId}/tickets`);
 }
 
-export async function deleteCategory(id: string) {
+export async function deleteCategory(id: string, facilityId: string) {
   await prisma.ticketCategory.delete({ where: { id } });
-  revalidatePath(`/admin/facilities/*/tickets`);
+  revalidatePath(`/admin/facilities/${facilityId}/tickets`);
 }
 
 // ─── CRUD: Product ───────────────────────────────────
 
 export async function createProduct(
   categoryId: string,
+  facilityId: string,
   data: {
     title: string;
     label?: string;
@@ -165,12 +170,13 @@ export async function createProduct(
       displayOrder: (maxOrder._max.displayOrder ?? -1) + 1,
     },
   });
-  revalidatePath(`/admin/facilities/*/tickets`);
+  revalidatePath(`/admin/facilities/${facilityId}/tickets`);
   return product;
 }
 
 export async function updateProduct(
   id: string,
+  facilityId: string,
   data: {
     title?: string;
     label?: string | null;
@@ -184,18 +190,19 @@ export async function updateProduct(
   },
 ) {
   await prisma.ticketProduct.update({ where: { id }, data });
-  revalidatePath(`/admin/facilities/*/tickets`);
+  revalidatePath(`/admin/facilities/${facilityId}/tickets`);
 }
 
-export async function deleteProduct(id: string) {
+export async function deleteProduct(id: string, facilityId: string) {
   await prisma.ticketProduct.delete({ where: { id } });
-  revalidatePath(`/admin/facilities/*/tickets`);
+  revalidatePath(`/admin/facilities/${facilityId}/tickets`);
 }
 
 // ─── CRUD: Price ─────────────────────────────────────
 
 export async function createPrice(
   ticketTypeId: string,
+  facilityId: string,
   data: {
     price: number;
     originalPrice?: number | null;
@@ -223,12 +230,13 @@ export async function createPrice(
       displayOrder: (maxOrder._max.displayOrder ?? -1) + 1,
     },
   });
-  revalidatePath(`/admin/facilities/*/tickets`);
+  revalidatePath(`/admin/facilities/${facilityId}/tickets`);
   return price;
 }
 
 export async function updatePrice(
   id: string,
+  facilityId: string,
   data: {
     price?: number;
     originalPrice?: number | null;
@@ -249,10 +257,10 @@ export async function updatePrice(
       ...(data.isActive !== undefined ? { isActive: data.isActive } : {}),
     },
   });
-  revalidatePath(`/admin/facilities/*/tickets`);
+  revalidatePath(`/admin/facilities/${facilityId}/tickets`);
 }
 
-export async function deletePrice(id: string) {
+export async function deletePrice(id: string, facilityId: string) {
   await prisma.ticketPrice.delete({ where: { id } });
-  revalidatePath(`/admin/facilities/*/tickets`);
+  revalidatePath(`/admin/facilities/${facilityId}/tickets`);
 }
