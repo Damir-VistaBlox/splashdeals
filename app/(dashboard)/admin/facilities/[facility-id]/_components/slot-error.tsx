@@ -10,7 +10,7 @@ interface SlotErrorProps {
   title?: string;
 }
 
-export function SlotError({ reset, title = "Segment nije učitan" }: SlotErrorProps) {
+export function SlotError({ error: _error, reset, title = "Segment nije učitan" }: SlotErrorProps) {
   return (
     <div className="border-destructive/10 bg-destructive/5 flex flex-col items-center justify-center space-y-4 rounded-2xl border p-8">
       <div className="bg-destructive/10 rounded-full p-3">
