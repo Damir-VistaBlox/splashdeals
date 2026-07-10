@@ -32,7 +32,7 @@ const pageFormSchema = z.object({
   template: z.string().optional(),
   showHeader: z.boolean().optional(),
   showFooter: z.boolean().optional(),
-  status: z.string().optional(),
+  status: z.enum(["DRAFT", "PUBLISHED", "ARCHIVED"]).optional(),
   metaTitle: z.string().optional(),
   metaDescription: z.string().optional(),
   ogTitle: z.string().optional(),
@@ -169,6 +169,7 @@ export function PageEditor({ page }: PageEditorProps) {
                 <Label htmlFor="status">Status</Label>
                 <select
                   id="status"
+                  aria-label="Status"
                   {...register("status")}
                   className="border-input flex h-9 w-full rounded-md border bg-transparent px-3 py-1 text-sm shadow-sm"
                 >
@@ -181,6 +182,7 @@ export function PageEditor({ page }: PageEditorProps) {
                 <Label htmlFor="template">Šablon</Label>
                 <select
                   id="template"
+                  aria-label="Šablon"
                   {...register("template")}
                   className="border-input flex h-9 w-full rounded-md border bg-transparent px-3 py-1 text-sm shadow-sm"
                 >
