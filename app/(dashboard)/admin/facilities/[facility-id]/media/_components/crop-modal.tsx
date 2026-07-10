@@ -114,7 +114,7 @@ export function CropModal({
         return;
       }
 
-      ctx.fillStyle = "#090d16";
+      ctx.fillStyle = "hsl(var(--background))";
       ctx.fillRect(0, 0, targetW, targetH);
 
       const imgRatio = img.naturalWidth / img.naturalHeight;
@@ -220,7 +220,7 @@ export function CropModal({
                   className={cn(
                     "rounded-lg py-1.5 text-[9px] font-black tracking-widest uppercase transition-all",
                     aspectRatio === ratio.id
-                      ? "border border-cyan-500 bg-cyan-500/20 text-cyan-400"
+                      ? "border-primary bg-primary/20 text-primary border"
                       : "bg-muted/10 border-border/50 text-muted-foreground hover:text-foreground border",
                   )}
                 >
@@ -236,7 +236,7 @@ export function CropModal({
             <div className="flex flex-col gap-1.5">
               <div className="text-muted-foreground flex items-center justify-between text-[9px] font-black tracking-widest uppercase">
                 <span>Uvećanje (Zoom)</span>
-                <span className="font-mono text-cyan-400">{zoom.toFixed(1)}x</span>
+                <span className="text-primary font-mono">{zoom.toFixed(1)}x</span>
               </div>
               <input
                 type="range"
@@ -245,7 +245,7 @@ export function CropModal({
                 step="0.1"
                 value={zoom}
                 onChange={(e) => setZoom(parseFloat(e.target.value))}
-                className="bg-background h-1 w-full cursor-pointer appearance-none rounded-lg accent-cyan-500"
+                className="bg-background accent-primary h-1 w-full cursor-pointer appearance-none rounded-lg"
                 aria-label="Uvećanje (Zoom)"
               />
             </div>
@@ -254,7 +254,7 @@ export function CropModal({
             <div className="flex flex-col gap-1.5">
               <div className="text-muted-foreground flex items-center justify-between text-[9px] font-black tracking-widest uppercase">
                 <span>Vodoravno pomeranje (X osa)</span>
-                <span className="font-mono text-cyan-400">{offsetX}%</span>
+                <span className="text-primary font-mono">{offsetX}%</span>
               </div>
               <input
                 type="range"
@@ -263,7 +263,7 @@ export function CropModal({
                 step="1"
                 value={offsetX}
                 onChange={(e) => setOffsetX(parseInt(e.target.value))}
-                className="bg-background h-1 w-full cursor-pointer appearance-none rounded-lg accent-cyan-500"
+                className="bg-background accent-primary h-1 w-full cursor-pointer appearance-none rounded-lg"
                 aria-label="Vodoravno pomeranje (X osa)"
               />
             </div>
@@ -272,7 +272,7 @@ export function CropModal({
             <div className="flex flex-col gap-1.5">
               <div className="text-muted-foreground flex items-center justify-between text-[9px] font-black tracking-widest uppercase">
                 <span>Uspravno pomeranje (Y osa)</span>
-                <span className="font-mono text-cyan-400">{offsetY}%</span>
+                <span className="text-primary font-mono">{offsetY}%</span>
               </div>
               <input
                 type="range"
@@ -281,7 +281,7 @@ export function CropModal({
                 step="1"
                 value={offsetY}
                 onChange={(e) => setOffsetY(parseInt(e.target.value))}
-                className="bg-background h-1 w-full cursor-pointer appearance-none rounded-lg accent-cyan-500"
+                className="bg-background accent-primary h-1 w-full cursor-pointer appearance-none rounded-lg"
                 aria-label="Uspravno pomeranje (Y osa)"
               />
             </div>
@@ -301,7 +301,7 @@ export function CropModal({
           <Button
             onClick={handleSave}
             disabled={isSaving}
-            className="h-9 gap-2 bg-cyan-500 px-5 text-[10px] font-black tracking-widest text-slate-950 uppercase shadow-[0_0_20px_rgba(6,182,212,0.3)] hover:bg-cyan-400"
+            className="bg-primary text-primary-foreground hover:bg-primary/90 h-9 gap-2 px-5 text-[10px] font-black tracking-widest uppercase shadow-[0_0_20px_hsl(var(--primary)/0.3)]"
           >
             {isSaving ? (
               <>

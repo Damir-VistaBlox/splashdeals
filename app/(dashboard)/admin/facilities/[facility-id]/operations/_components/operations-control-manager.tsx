@@ -1,7 +1,7 @@
 "use client";
-import { Icon } from "@/components/ui/Icon";
 
 import * as React from "react";
+import { Icon } from "@/components/ui/Icon";
 import { useFieldArray, useFormContext, useForm, FormProvider } from "react-hook-form";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -264,7 +264,7 @@ function OperationsTableInner({
                             <Checkbox
                               checked={field.value}
                               onCheckedChange={field.onChange}
-                              className="border-border size-4 data-[state=checked]:border-rose-500 data-[state=checked]:bg-rose-500"
+                              className="border-border data-[state=checked]:border-destructive data-[state=checked]:bg-destructive size-4"
                             />
                           )}
                         />
@@ -294,7 +294,7 @@ function OperationsTableInner({
         className={cn(
           "h-9 w-full gap-2 text-[9px] font-black tracking-[0.2em] uppercase shadow-lg",
           isDirty
-            ? "bg-amber-500 text-slate-950 hover:bg-amber-400"
+            ? "bg-warning text-warning-foreground hover:bg-warning/90"
             : "bg-muted/30 text-muted-foreground",
         )}
       >

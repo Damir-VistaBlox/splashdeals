@@ -5,6 +5,8 @@ import { createFaq, updateFaq, deleteFaq, reorderFaqs } from "../actions";
 import { Icon } from "@/components/ui/Icon";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
 
 interface SerializedFAQ {
   id: string;
@@ -144,13 +146,13 @@ export function FAQSectionList({ facilityId, initialFaqs }: Props) {
             onDragStart={(e) => handleDragStart(e, faq.id)}
             onDragOver={(e) => handleDragOver(e, faq.id)}
             onDragEnd={handleDragEnd}
-            className={`bg-card rounded-xl border transition-all ${
-              dragId === faq.id ? "ring-primary opacity-50 ring-2" : ""
-            } ${
+            className={cn(
+              "bg-card rounded-xl border transition-all",
+              dragId === faq.id && "ring-primary opacity-50 ring-2",
               isExpanded
                 ? "border-primary/30 shadow-sm"
-                : "border-border hover:border-muted-foreground/30"
-            }`}
+                : "border-border hover:border-muted-foreground/30",
+            )}
           >
             {/* Header row — question + controls */}
             <div
@@ -200,30 +202,32 @@ export function FAQSectionList({ facilityId, initialFaqs }: Props) {
               />
 
               {/* Delete */}
-              <button
+              <Button
+                variant="ghost"
+                size="icon"
                 onClick={(e) => {
                   e.stopPropagation();
                   handleDelete(faq.id);
                 }}
-                className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 flex size-7 shrink-0 items-center justify-center rounded-lg transition-all"
-                title="Obriši"
+                className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 h-7 w-7 shrink-0 rounded-lg transition-all"
+                aria-label="Obriši"
               >
                 <Icon name="delete" className="size-3.5" />
-              </button>
+              </Button>
             </div>
 
             {/* Answer section — shown when expanded */}
             {isExpanded && (
               <div className="border-border border-t px-4 py-3">
                 {isEditingAnswer ? (
-                  <textarea
+                  <Textarea
                     value={editValue}
                     onChange={(e) => setEditValue(e.target.value)}
                     onBlur={saveEdit}
                     onKeyDown={handleKeyDown}
                     autoFocus
                     placeholder="Unesite odgovor..."
-                    className="border-input placeholder:text-muted-foreground focus-visible:ring-ring flex min-h-[80px] w-full rounded-md border bg-transparent px-3 py-2 text-sm shadow-xs focus-visible:ring-2 focus-visible:outline-hidden disabled:cursor-not-allowed disabled:opacity-50"
+                    className="min-h-[80px]"
                     onClick={(e) => e.stopPropagation()}
                   />
                 ) : (

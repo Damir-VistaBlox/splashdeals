@@ -84,14 +84,17 @@ export function ProductImageSection({ productId, imageUrl, productTitle, onImage
           Slika
         </span>
         {!imageUrl && (
-          <button
+          <Button
+            variant="outline"
+            size="sm"
             onClick={() => fileRef.current?.click()}
             disabled={uploading}
-            className="bg-primary/10 text-primary hover:bg-primary/20 flex h-7 items-center gap-1 rounded-lg px-3 text-[10px] font-bold transition-all disabled:opacity-50"
+            className="bg-primary/10 text-primary hover:bg-primary/20 h-7 gap-1 rounded-lg px-3 text-[10px] font-bold transition-all disabled:opacity-50"
+            aria-label="Add image"
           >
             <Icon name="add_photo" className="text-[12px]" />
             {uploading ? "Otpremanje..." : "Dodaj sliku"}
-          </button>
+          </Button>
         )}
       </div>
       {imageUrl ? (
@@ -105,19 +108,25 @@ export function ProductImageSection({ productId, imageUrl, productTitle, onImage
               sizes="(max-width: 768px) 100vw, 200px"
             />
             <div className="absolute inset-0 flex items-center justify-center gap-2 bg-black/0 opacity-0 transition-all group-hover:bg-black/40 group-hover:opacity-100">
-              <button
+              <Button
+                variant="ghost"
+                size="icon"
                 onClick={() => fileRef.current?.click()}
                 disabled={uploading}
-                className="text-foreground flex h-8 w-8 items-center justify-center rounded-full bg-white/90 transition-all hover:bg-white"
+                className="text-foreground h-8 w-8 rounded-full bg-white/90 transition-all hover:bg-white"
+                aria-label="Replace image"
               >
                 <Icon name="refresh" className="text-[14px]" />
-              </button>
-              <button
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
                 onClick={handleDelete}
-                className="text-destructive flex h-8 w-8 items-center justify-center rounded-full bg-white/90 transition-all hover:bg-white"
+                className="text-destructive h-8 w-8 rounded-full bg-white/90 transition-all hover:bg-white"
+                aria-label="Delete image"
               >
                 <Icon name="delete" className="text-[14px]" />
-              </button>
+              </Button>
             </div>
           </div>
           <div className="flex items-center gap-2">
