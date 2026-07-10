@@ -64,7 +64,7 @@ export function MediaGallery({ media, dict }: MediaGalleryProps) {
           <div
             key={m.id}
             onClick={() => setSelectedIdx(i)}
-            className="group border-border animate-fade-in-up relative cursor-pointer overflow-hidden rounded-[2.5rem] border bg-white/[0.02]"
+            className="group border-border animate-fade-in-up bg-muted/5 relative cursor-pointer overflow-hidden rounded-[2.5rem] border"
             style={{ animationDelay: `${i * 0.05}s`, animationFillMode: "both" }}
           >
             {m.type === "VIDEO" ? (
