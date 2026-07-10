@@ -9,6 +9,7 @@ import {
   updateMediaFocalPointAction,
 } from "@/server/actions/media-actions";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import type { DraggableAttributes, DraggableSyntheticListeners } from "@dnd-kit/core";
@@ -62,7 +63,7 @@ function MediaItemCard({
       className={cn(
         "group bg-muted/40 border-border/50 flex flex-col overflow-hidden rounded-2xl border transition-all duration-300",
         isSelected &&
-          "ring-primary shadow-[0_0_30px_rgba(6,182,212,0.3)] ring-2 ring-offset-2 ring-offset-slate-950",
+          "ring-primary ring-offset-background shadow-[0_0_30px_rgba(6,182,212,0.3)] ring-2 ring-offset-2",
         isOverlay && "scale-105 opacity-90 shadow-2xl",
       )}
     >
@@ -77,13 +78,13 @@ function MediaItemCard({
         {/* Render focal target dot */}
         {item.focalPoint && item.type === "PHOTO" && (
           <div
-            className="pointer-events-none absolute z-30 flex size-5 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 border-cyan-400 bg-cyan-950/70 shadow-[0_0_10px_rgba(6,182,212,0.5)]"
+            className="border-primary bg-muted/70 pointer-events-none absolute z-30 flex size-5 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 shadow-[0_0_10px_rgba(6,182,212,0.5)]"
             style={{
               left: `${item.focalPoint.split(",")[0]}%`,
               top: `${item.focalPoint.split(",")[1]}%`,
             }}
           >
-            <div className="size-1.5 rounded-full bg-cyan-400" />
+            <div className="bg-primary size-1.5 rounded-full" />
           </div>
         )}
 
@@ -153,7 +154,7 @@ function MediaItemCard({
               }}
             />
             {isPortrait && (
-              <div className="absolute bottom-3 left-3 z-30 flex items-center gap-0.5 rounded-md bg-amber-500 px-2 py-0.5 text-[8px] font-black text-slate-950 uppercase opacity-100 shadow-lg transition-opacity group-hover:opacity-0">
+              <div className="bg-warning text-warning-foreground absolute bottom-3 left-3 z-30 flex items-center gap-0.5 rounded-md px-2 py-0.5 text-[8px] font-black uppercase opacity-100 shadow-lg transition-opacity group-hover:opacity-0">
                 ⚠️ Portrait
               </div>
             )}
@@ -179,7 +180,7 @@ function MediaItemCard({
               }}
             />
             <div className="border-border absolute top-3 left-3 z-30 rounded-lg border bg-black/60 p-1.5">
-              <Icon name="movie" className="size-3.5 animate-pulse text-cyan-400" />
+              <Icon name="movie" className="text-primary size-3.5 animate-pulse" />
             </div>
           </div>
         )}
@@ -217,13 +218,13 @@ function MediaItemCard({
         {/* Status Badges */}
         <div className="absolute top-3 right-3 z-30 flex flex-col gap-2">
           {item.isHero && (
-            <div className="flex animate-pulse items-center gap-1 rounded-md bg-amber-500 px-2 py-1 text-[8px] font-black text-slate-950 uppercase shadow-lg">
+            <div className="bg-warning text-warning-foreground flex animate-pulse items-center gap-1 rounded-md px-2 py-1 text-[8px] font-black uppercase shadow-lg">
               <Icon name="star" className="size-3 fill-current" />
               Hero
             </div>
           )}
           {item.isCardBackground && (
-            <div className="flex items-center gap-1 rounded-md bg-cyan-500 px-2 py-1 text-[8px] font-black text-slate-950 uppercase shadow-lg">
+            <div className="bg-primary text-primary-foreground flex items-center gap-1 rounded-md px-2 py-1 text-[8px] font-black uppercase shadow-lg">
               <Icon name="dashboard" className="size-3 fill-current" />
               Card BG
             </div>
@@ -255,8 +256,8 @@ function MediaItemCard({
             size="sm"
             onClick={onToggleHero}
             className={cn(
-              "flex h-auto flex-col gap-1 py-2 text-[9px] font-black tracking-tighter uppercase hover:bg-amber-500/10",
-              item.isHero ? "text-amber-500" : "text-muted-foreground",
+              "hover:bg-warning/10 flex h-auto flex-col gap-1 py-2 text-[9px] font-black tracking-tighter uppercase",
+              item.isHero ? "text-warning" : "text-muted-foreground",
             )}
           >
             <Icon name="monitor" className={cn("size-4", item.isHero && "fill-current")} />
@@ -268,8 +269,8 @@ function MediaItemCard({
             size="sm"
             onClick={onToggleCardBG}
             className={cn(
-              "flex h-auto flex-col gap-1 py-2 text-[9px] font-black tracking-tighter uppercase hover:bg-cyan-500/10",
-              item.isCardBackground ? "text-cyan-500" : "text-muted-foreground",
+              "hover:bg-primary/10 flex h-auto flex-col gap-1 py-2 text-[9px] font-black tracking-tighter uppercase",
+              item.isCardBackground ? "text-primary" : "text-muted-foreground",
             )}
           >
             <Icon
@@ -324,7 +325,7 @@ function MediaItemCard({
       {/* ✍️ Inline Caption Editor */}
       {!isOverlay && !isSelectionMode && (
         <div className="flex items-center gap-2 bg-white/[0.01] px-3 pt-1 pb-3">
-          <input
+          <Input
             type="text"
             placeholder="Add descriptive SEO ALT tag..."
             aria-label="Image caption"
@@ -359,9 +360,9 @@ function MediaItemCard({
                 size="icon"
                 onClick={() => onToggleFocalPoint?.()}
                 className={cn(
-                  "border-border/50 size-7 rounded-lg border transition-colors hover:bg-cyan-500/10 hover:text-cyan-400",
+                  "border-border/50 hover:bg-primary/10 hover:text-primary size-7 rounded-lg border transition-colors",
                   item.originalUrl
-                    ? "border-cyan-500/20 bg-cyan-500/5 text-cyan-400"
+                    ? "border-primary/20 bg-primary/5 text-primary"
                     : "text-muted-foreground",
                 )}
                 title="Set focal point"
@@ -373,7 +374,7 @@ function MediaItemCard({
                 variant="ghost"
                 size="icon"
                 onClick={() => onCrop?.()}
-                className="text-muted-foreground border-border/50 size-7 rounded-lg border transition-colors hover:bg-cyan-500/10 hover:text-cyan-400"
+                className="text-muted-foreground border-border/50 hover:bg-primary/10 hover:text-primary size-7 rounded-lg border transition-colors"
                 title="Crop image"
                 aria-label="Crop image"
               >

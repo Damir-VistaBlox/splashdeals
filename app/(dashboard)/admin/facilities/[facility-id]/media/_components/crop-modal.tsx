@@ -60,7 +60,7 @@ export function CropModal({
     canvas.height = targetH;
 
     // Centering calculations
-    ctx.fillStyle = "#090d16";
+    ctx.fillStyle = "hsl(var(--background))";
     ctx.fillRect(0, 0, targetW, targetH);
 
     const imgRatio = img.naturalWidth / img.naturalHeight;
