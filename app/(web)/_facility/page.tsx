@@ -192,7 +192,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
               weather={weather}
             />
 
-            <h1 className="py-2 text-4xl leading-[0.8] font-black tracking-tighter text-white italic md:text-7xl">
+            <h1 className="text-primary-foreground py-2 text-4xl leading-[0.8] font-black tracking-tighter italic md:text-7xl">
               {(() => {
                 const words = facility.name.split(" ");
                 if (words.length === 1) {
@@ -265,7 +265,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
                 <div className="mb-4 flex items-center gap-3 text-xs font-black tracking-widest text-cyan-400 uppercase">
                   <Icon name="location_on" className="text-[16px]" /> Kako stići
                 </div>
-                <p className="text-sm leading-relaxed font-medium whitespace-pre-line text-slate-300">
+                <p className="text-muted-foreground text-sm leading-relaxed font-medium whitespace-pre-line">
                   {facility.transitGuide}
                 </p>
               </Card>
@@ -325,7 +325,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
         <MediaGallery media={facility.media} dict={dict} />
 
         {facility.seoArticle && (
-          <article className="text-muted-foreground border-border mx-auto mt-24 max-w-5xl border-t px-6 py-12 text-center text-xs">
+          <article className="text-muted-foreground border-border mx-auto mt-24 max-w-5xl border-t px-6 py-12 text-center text-xs md:text-sm">
             <div className="leading-relaxed whitespace-pre-line">{facility.seoArticle}</div>
           </article>
         )}
@@ -350,25 +350,10 @@ export default async function FacilityShowcasePage({ params }: FacilityPageProps
           <meta charSet="utf-8" />
           <meta name="viewport" content="width=device-width, initial-scale=1" />
         </head>
-        <body
-          style={{
-            background: "#020617",
-            color: "#94a3b8",
-            fontFamily: "sans-serif",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            minHeight: "100vh",
-            margin: 0,
-          }}
-        >
-          <div style={{ textAlign: "center" }}>
-            <div style={{ fontSize: "6rem", fontWeight: 900, color: "#06b6d4", margin: 0 }}>
-              410
-            </div>
-            <p style={{ fontSize: "1.25rem", marginTop: "0.5rem" }}>
-              This page has been permanently deleted.
-            </p>
+        <body className="bg-background text-muted-foreground m-0 flex min-h-screen items-center justify-center font-sans">
+          <div className="text-center">
+            <div className="text-primary m-0 text-[6rem] font-black">410</div>
+            <p className="mt-2 text-lg">This page has been permanently deleted.</p>
           </div>
         </body>
       </html>
