@@ -279,13 +279,13 @@ export function ShowcaseTicketGroups({
                 </span>
               </div>
             </div>
-            <button
+            <Button
               onClick={() => (window.location.href = "/cart")}
               className="bg-primary hover:bg-primary/90 text-primary-foreground flex h-12 shrink-0 cursor-pointer items-center gap-2 rounded-2xl px-6 text-xs font-black tracking-widest uppercase shadow-[0_0_20px_rgba(6,182,212,0.3)] transition-all active:scale-95"
             >
               <span>Kupi</span>
               <Icon name="arrow_forward" className="text-[16px]" />
-            </button>
+            </Button>
           </div>
         </div>
       )}
@@ -536,29 +536,35 @@ function MobileTicketAccordion({
                   Količina
                 </span>
                 <div className="bg-muted/60 border-border flex items-center rounded-2xl border p-1 shadow-inner">
-                  <button
+                  <Button
+                    variant="ghost"
+                    size="icon"
                     onClick={() => setQty(Math.max(activeProduct.minPeople || 1, qty - 1))}
-                    className="hover:bg-muted/40 active:bg-muted/60 text-muted-foreground hover:text-foreground flex h-8 w-8 items-center justify-center rounded-xl transition-all active:scale-90"
                     disabled={isAdding || isAdded || qty <= (activeProduct.minPeople || 1)}
+                    className="hover:bg-muted/40 active:bg-muted/60 text-muted-foreground hover:text-foreground h-8 w-8 rounded-xl active:scale-90"
+                    aria-label="Smanji količinu"
                   >
                     <Icon name="remove" className="text-[12px]" />
-                  </button>
+                  </Button>
                   <span className="text-foreground w-8 text-center text-sm font-black select-none">
                     {qty}
                   </span>
-                  <button
+                  <Button
+                    variant="ghost"
+                    size="icon"
                     onClick={() =>
                       setQty(Math.min(activeProduct.maxPeople ?? MAX_QUANTITY_PER_ITEM, qty + 1))
                     }
-                    className="hover:bg-muted/40 active:bg-muted/60 text-muted-foreground hover:text-foreground flex h-8 w-8 items-center justify-center rounded-xl transition-all active:scale-90"
                     disabled={
                       isAdding ||
                       isAdded ||
                       qty >= (activeProduct.maxPeople ?? MAX_QUANTITY_PER_ITEM)
                     }
+                    className="hover:bg-muted/40 active:bg-muted/60 text-muted-foreground hover:text-foreground h-8 w-8 rounded-xl active:scale-90"
+                    aria-label="Povećaj količinu"
                   >
                     <Icon name="add" className="text-[12px]" />
-                  </button>
+                  </Button>
                 </div>
               </div>
 
@@ -573,7 +579,7 @@ function MobileTicketAccordion({
                 </div>
               )}
 
-              <button
+              <Button
                 onClick={handleAdd}
                 disabled={isAdding || isAdded || !activePrice}
                 className={`flex h-12 w-full items-center justify-center gap-2 rounded-2xl border text-[10px] font-black tracking-widest uppercase transition-all duration-300 ${
@@ -600,7 +606,7 @@ function MobileTicketAccordion({
                     <span>Dodaj u korpu</span>
                   </>
                 )}
-              </button>
+              </Button>
             </div>
           )}
         </div>
@@ -639,7 +645,7 @@ function SingleTierCard({
             {tier.isSeasonPass ? "Sezonska karta" : "Ulaznica"}
           </Badge>
           {tier.maxPeople && tier.maxPeople > 1 && (
-            <Badge className="border-emerald-500/20 bg-emerald-500/10 text-[10px] font-black tracking-widest text-emerald-400 uppercase">
+            <Badge className="border-primary/20 bg-primary/10 text-primary text-[10px] font-black tracking-widest uppercase">
               Porodični paket
             </Badge>
           )}
@@ -682,13 +688,13 @@ function SingleTierCard({
         <div className="flex items-center justify-between gap-4 md:hidden">
           {tier.originalPrice && Number(tier.originalPrice) > Number(tier.price) ? (
             <div className="flex w-full items-center justify-between gap-2">
-              <div className="flex min-w-[100px] flex-1 flex-col items-center justify-center rounded-xl border border-rose-500/20 bg-rose-950/20 px-3 py-1.5">
-                <span className="mb-1 text-[8px] leading-none font-black tracking-widest text-rose-400 uppercase">
+              <div className="flex min-w-[100px] flex-1 flex-col items-center justify-center rounded-xl border border-destructive/20 bg-destructive/20 px-3 py-1.5">
+                <span className="mb-1 text-[8px] leading-none font-black tracking-widest text-destructive uppercase">
                   {main} cene
                 </span>
                 <span className="text-muted-foreground relative text-sm leading-none font-bold">
                   {tier.originalPrice} <span className="text-muted-foreground text-[9px]">RSD</span>
-                  <span className="pointer-events-none absolute top-1/2 right-[-2px] left-[-2px] h-[1.5px] -rotate-12 bg-rose-500" />
+                  <span className="pointer-events-none absolute top-1/2 right-[-2px] left-[-2px] h-[1.5px] -rotate-12 bg-destructive" />
                 </span>
               </div>
               <div className="bg-primary/10 border-primary/30 flex min-w-[110px] flex-1 flex-col items-center justify-center rounded-xl border px-3 py-1.5 shadow-[0_0_15px_rgba(6,182,212,0.1)]">
@@ -731,7 +737,7 @@ function SingleTierCard({
                     RSD
                   </span>
                   <span
-                    className="pointer-events-none absolute top-1/2 right-[-4px] left-[-4px] h-[3px] origin-center -rotate-12 bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.6)]"
+                    className="pointer-events-none absolute top-1/2 right-[-4px] left-[-4px] h-[3px] origin-center -rotate-12 bg-destructive shadow-[0_0_8px_hsl(var(--destructive)/0.6)]"
                     aria-hidden="true"
                   />
                 </div>
@@ -763,26 +769,32 @@ function SingleTierCard({
           )}
         </div>
 
-        <div className="border-border flex items-center justify-between rounded-2xl border bg-black/20 p-2">
-          <button
+        <div className="border-border flex items-center justify-between rounded-2xl border bg-muted/40 p-2">
+          <Button
+            variant="ghost"
+            size="icon"
             onClick={() => setQuantity(Math.max(1, quantity - 1))}
-            className="hover:bg-muted/50 text-muted-foreground flex h-12 w-12 items-center justify-center rounded-xl transition-colors"
+            className="hover:bg-muted/50 text-muted-foreground h-12 w-12 rounded-xl"
+            aria-label="Smanji količinu"
           >
             <Icon name="remove" className="text-[20px]" />
-          </button>
+          </Button>
           <span className="text-foreground text-2xl font-black">{quantity}</span>
-          <button
+          <Button
+            variant="ghost"
+            size="icon"
             onClick={() => setQuantity(Math.min(MAX_QUANTITY_PER_ITEM, quantity + 1))}
-            className="hover:bg-muted/50 text-muted-foreground flex h-12 w-12 items-center justify-center rounded-xl transition-colors"
+            className="hover:bg-muted/50 text-muted-foreground h-12 w-12 rounded-xl"
+            aria-label="Povećaj količinu"
           >
             <Icon name="add" className="text-[20px]" />
-          </button>
+          </Button>
         </div>
 
         <Button
           onClick={onAdd}
           size="lg"
-          className="bg-primary hover:bg-primary/90 w-full rounded-full text-xs font-black tracking-[0.2em] text-black uppercase"
+          className="bg-primary hover:bg-primary/90 w-full rounded-full text-xs font-black tracking-[0.2em] text-primary-foreground uppercase"
         >
           Dodaj u korpu
         </Button>
@@ -832,12 +844,12 @@ function TierList({
                   {tier.label}
                 </h4>
                 {tier.dayType && tier.dayType !== "ALL" && (
-                  <Badge className="text-muted-foreground border-slate-500/20 bg-slate-500/10 text-[9px] font-black tracking-tighter uppercase">
+                  <Badge className="text-muted-foreground border-muted/30 bg-muted/20 text-[9px] font-black tracking-tighter uppercase">
                     {tier.dayType === "WEEKDAY" ? "Radni dan" : "Vikend"}
                   </Badge>
                 )}
                 {tier.timeSlot && tier.timeSlot !== "FULL_DAY" && (
-                  <Badge className="text-muted-foreground border-slate-500/20 bg-slate-500/10 text-[9px] font-black tracking-tighter uppercase">
+                  <Badge className="text-muted-foreground border-muted/30 bg-muted/20 text-[9px] font-black tracking-tighter uppercase">
                     {tier.timeSlot === "AFTER_16H"
                       ? "Posle 16h"
                       : tier.timeSlot === "THREE_HOUR"
@@ -846,7 +858,7 @@ function TierList({
                   </Badge>
                 )}
                 {tier.isSeasonPass && (
-                  <Badge className="border-amber-500/20 bg-amber-500/10 text-[9px] font-black tracking-tighter text-amber-400 uppercase">
+                  <Badge className="border-primary/20 bg-primary/10 text-primary text-[9px] font-black tracking-tighter uppercase">
                     Sezonska
                   </Badge>
                 )}
@@ -871,33 +883,39 @@ function TierList({
               </div>
             </div>
 
-            <div className="border-border flex items-center gap-1 rounded-lg border bg-black/20 p-1">
-              <button
+            <div className="border-border flex items-center gap-1 rounded-lg border bg-muted/40 p-1">
+              <Button
+                variant="ghost"
+                size="icon"
                 onClick={() => setQuantity(tier.id, (quantities[tier.id] || 0) - 1)}
-                className="hover:bg-muted/50 text-muted-foreground flex h-8 w-8 items-center justify-center rounded-md transition-colors active:scale-90"
+                className="hover:bg-muted/50 text-muted-foreground h-8 w-8 rounded-md active:scale-90"
+                aria-label="Smanji količinu"
               >
                 <Icon name="remove" className="text-[14px]" />
-              </button>
+              </Button>
               <span className="text-foreground w-8 text-center text-sm font-black select-none">
                 {quantities[tier.id] || 0}
               </span>
-              <button
+              <Button
+                variant="ghost"
+                size="icon"
                 onClick={() =>
                   setQuantity(
                     tier.id,
                     Math.min(MAX_QUANTITY_PER_ITEM, (quantities[tier.id] || 0) + 1),
                   )
                 }
-                className="hover:bg-muted/50 text-muted-foreground flex h-8 w-8 items-center justify-center rounded-md transition-colors active:scale-90"
+                className="hover:bg-muted/50 text-muted-foreground h-8 w-8 rounded-md active:scale-90"
+                aria-label="Povećaj količinu"
               >
                 <Icon name="add" className="text-[14px]" />
-              </button>
+              </Button>
             </div>
 
             <Button
               onClick={() => onAdd(tier)}
               size="lg"
-              className="bg-primary hover:bg-primary/90 shrink-0 rounded-lg px-4 text-[9px] font-black tracking-widest text-black uppercase"
+              className="bg-primary hover:bg-primary/90 shrink-0 rounded-lg px-4 text-[9px] font-black tracking-widest text-primary-foreground uppercase"
             >
               Dodaj
             </Button>
@@ -955,31 +973,37 @@ function TierGrid({
               </span>
               <span className="text-primary text-[10px] font-bold uppercase">RSD</span>
             </div>
-            <div className="border-border flex items-center gap-1 rounded-lg border bg-black/20 p-1">
-              <button
+            <div className="border-border flex items-center gap-1 rounded-lg border bg-muted/40 p-1">
+              <Button
+                variant="ghost"
+                size="icon"
                 onClick={() => setQuantity(tier.id, (quantities[tier.id] || 0) - 1)}
-                className="hover:bg-muted/50 text-muted-foreground flex h-8 w-8 items-center justify-center rounded-md transition-colors"
+                className="hover:bg-muted/50 text-muted-foreground h-8 w-8 rounded-md"
+                aria-label="Smanji količinu"
               >
                 <Icon name="remove" className="text-[14px]" />
-              </button>
+              </Button>
               <span className="text-foreground w-8 text-center text-sm font-black select-none">
                 {quantities[tier.id] || 0}
               </span>
-              <button
+              <Button
+                variant="ghost"
+                size="icon"
                 onClick={() =>
                   setQuantity(
                     tier.id,
                     Math.min(MAX_QUANTITY_PER_ITEM, (quantities[tier.id] || 0) + 1),
                   )
                 }
-                className="hover:bg-muted/50 text-muted-foreground flex h-8 w-8 items-center justify-center rounded-md transition-colors"
+                className="hover:bg-muted/50 text-muted-foreground h-8 w-8 rounded-md"
+                aria-label="Povećaj količinu"
               >
                 <Icon name="add" className="text-[14px]" />
-              </button>
+              </Button>
             </div>
             <Button
               onClick={() => onAdd(tier)}
-              className="bg-primary hover:bg-primary/90 w-full rounded-lg text-[9px] font-black tracking-widest text-black uppercase"
+              className="bg-primary hover:bg-primary/90 w-full rounded-lg text-[9px] font-black tracking-widest text-primary-foreground uppercase"
             >
               Dodaj
             </Button>

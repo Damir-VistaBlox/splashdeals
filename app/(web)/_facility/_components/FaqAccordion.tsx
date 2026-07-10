@@ -8,6 +8,7 @@ import {
   AccordionTrigger,
   AccordionContent,
 } from "@/components/ui/accordion";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 interface FAQItem {
@@ -84,12 +85,13 @@ export function FaqAccordion({ faqs }: Props) {
 
       {!showAllMobile && remaining > 0 && (
         <div className="pt-2 text-center md:hidden">
-          <button
+          <Button
+            variant="link"
             onClick={() => setShowAllMobile(true)}
-            className="text-primary cursor-pointer text-sm font-bold underline underline-offset-2 transition-colors hover:text-cyan-300"
+            className="text-primary text-sm font-bold"
           >
             Prikaži još {remaining} pitanja
-          </button>
+          </Button>
         </div>
       )}
 
@@ -97,7 +99,7 @@ export function FaqAccordion({ faqs }: Props) {
         Niste pronašli odgovor?{" "}
         <Link
           href="/podrska"
-          className="text-primary font-bold underline underline-offset-2 transition-colors hover:text-cyan-300"
+          className="text-primary font-bold underline underline-offset-2 transition-colors hover:text-primary/80"
         >
           Kontaktirajte nas
         </Link>

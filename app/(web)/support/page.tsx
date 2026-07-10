@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { Metadata } from "next";
 import { getDictionary } from "@/lib/dictionaries";
 import { connection } from "next/server";
@@ -90,7 +91,7 @@ export default async function SupportPage({ params: _params }: PageProps) {
           <div className="text-muted-foreground flex items-center gap-4 text-xs font-bold tracking-widest uppercase">
             <Icon name="schedule" className="text-[12px]" />
             <span>{dict.support.updated}</span>
-            <div className="h-1 w-1 rounded-full bg-slate-800" />
+            <div className="bg-muted-foreground/30 h-1 w-1 rounded-full" />
             <span>{dict.support.squad || "SplashDeals Tim"}</span>
           </div>
         </div>
@@ -143,9 +144,13 @@ export default async function SupportPage({ params: _params }: PageProps) {
                 />
               </div>
 
-              <div className="bg-primary/10 border-primary/20 text-primary hover:bg-primary/20 flex cursor-pointer items-center gap-2 rounded-xl border px-6 py-3 text-xs font-black tracking-widest uppercase transition-colors">
+              <Button
+                variant="outline"
+                className="bg-primary/10 border-primary/20 text-primary hover:bg-primary/20 flex items-center gap-2 rounded-xl border px-6 py-3 text-xs font-black tracking-widest uppercase transition-colors"
+                aria-label={dict.support.contact_btn || "Kontaktirajte Nas"}
+              >
                 {dict.support.contact_btn || "Kontaktirajte Nas"}
-              </div>
+              </Button>
             </div>
           </Card>
         </div>

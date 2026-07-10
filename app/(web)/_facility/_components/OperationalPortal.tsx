@@ -47,7 +47,7 @@ export function OperationalPortal({ hours = [] }: OperationalPortalProps) {
               <span className="text-[10px] tracking-widest uppercase">{DAYS_SR[h.dayOfWeek]}</span>
               <span className="font-mono text-sm tracking-tight">
                 {h.isClosed ? (
-                  <span className="text-red-400">Zatvoreno</span>
+                  <span className="text-destructive">Zatvoreno</span>
                 ) : (
                   <>
                     <time dateTime={h.openTime}>{formatTime24h(h.openTime)}</time> –{" "}
@@ -101,8 +101,8 @@ export function CurrentOperationalStatus({ hours = [] }: CurrentOperationalStatu
       className={cn(
         "flex items-center gap-2 rounded-2xl border px-5 py-2.5 backdrop-blur-md transition-all",
         status.isClosed
-          ? "border-red-500/20 bg-red-500/10 text-red-400"
-          : "border-emerald-500/20 bg-emerald-500/10 text-emerald-400",
+          ? "border-destructive/20 bg-destructive/10 text-destructive"
+          : "border-primary/20 bg-primary/10 text-primary",
       )}
     >
       <Icon name="schedule" className="text-[16px]" />

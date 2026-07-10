@@ -79,9 +79,9 @@ export default async function PrivacyPage({ params: _params }: PageProps) {
               {dict.privacy.title}
             </h1>
 
-            <div className="flex items-center gap-4 text-xs font-bold tracking-widest text-slate-500 uppercase">
+            <div className="text-muted-foreground flex items-center gap-4 text-xs font-bold tracking-widest uppercase">
               <span>{dict.privacy.updated}</span>
-              <div className="h-1 w-1 rounded-full bg-slate-800" />
+              <div className="bg-muted-foreground/30 h-1 w-1 rounded-full" />
               <span>SplashDeals.rs</span>
             </div>
           </div>
@@ -89,7 +89,7 @@ export default async function PrivacyPage({ params: _params }: PageProps) {
 
         {/* 📜 CONTENT GRID */}
         <div className="space-y-12">
-          <div className="text-lg leading-relaxed font-medium text-slate-300 transition-opacity duration-500">
+          <div className="text-muted-foreground text-lg leading-relaxed font-medium transition-opacity duration-500">
             {dict.privacy.intro}
           </div>
 

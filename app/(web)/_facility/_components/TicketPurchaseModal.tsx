@@ -306,12 +306,15 @@ export function TicketPurchaseModal({
       {/* Back + title */}
       <div className="flex items-center gap-2">
         {categories.length > 1 && (
-          <button
+          <Button
+            variant="ghost"
+            size="icon"
             onClick={() => setSelectedProduct(null)}
-            className="text-muted-foreground hover:text-foreground hover:bg-muted/20 flex h-7 w-7 items-center justify-center rounded-lg transition-all"
+            className="text-muted-foreground hover:text-foreground hover:bg-muted/20 h-7 w-7 rounded-lg"
+            aria-label="Nazad"
           >
             <Icon name="arrow_back" className="text-[14px]" />
-          </button>
+          </Button>
         )}
         <div>
           <h3 className="text-foreground text-sm font-black tracking-tight uppercase italic">
@@ -398,27 +401,33 @@ export function TicketPurchaseModal({
           Količina
         </span>
         <div className="bg-muted/60 border-border flex items-center rounded-2xl border p-1 shadow-inner">
-          <button
+          <Button
+            variant="ghost"
+            size="icon"
             onClick={() => setQuantity(Math.max(activeProduct!.minPeople, quantity - 1))}
-            className="hover:bg-muted/40 active:bg-muted/60 text-muted-foreground hover:text-foreground flex h-9 w-9 items-center justify-center rounded-xl transition-all active:scale-90"
             disabled={isAdding || isAdded || quantity <= activeProduct!.minPeople}
+            className="hover:bg-muted/40 active:bg-muted/60 text-muted-foreground hover:text-foreground h-9 w-9 rounded-xl active:scale-90"
+            aria-label="Smanji količinu"
           >
             <Icon name="remove" className="text-[14px]" />
-          </button>
+          </Button>
           <span className="text-foreground w-10 text-center text-base font-black select-none">
             {quantity}
           </span>
-          <button
+          <Button
+            variant="ghost"
+            size="icon"
             onClick={() =>
               setQuantity(Math.min(activeProduct!.maxPeople ?? MAX_QUANTITY_PER_ITEM, quantity + 1))
             }
-            className="hover:bg-muted/40 active:bg-muted/60 text-muted-foreground hover:text-foreground flex h-9 w-9 items-center justify-center rounded-xl transition-all active:scale-90"
             disabled={
               isAdding || isAdded || quantity >= (activeProduct!.maxPeople ?? MAX_QUANTITY_PER_ITEM)
             }
+            className="hover:bg-muted/40 active:bg-muted/60 text-muted-foreground hover:text-foreground h-9 w-9 rounded-xl active:scale-90"
+            aria-label="Povećaj količinu"
           >
             <Icon name="add" className="text-[14px]" />
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -436,7 +445,7 @@ export function TicketPurchaseModal({
 
       {/* CTA Buttons */}
       <div className="flex w-full flex-col gap-3.5">
-        <button
+        <Button
           onClick={handleAddToCart}
           disabled={isAdding || isAdded || !activePrice}
           className={`flex h-12 w-full items-center justify-center gap-2 rounded-2xl border text-[10px] font-black tracking-widest uppercase transition-all duration-300 ${
@@ -463,7 +472,7 @@ export function TicketPurchaseModal({
               <span>Dodaj u korpu</span>
             </>
           )}
-        </button>
+        </Button>
       </div>
     </>
   );
@@ -497,13 +506,15 @@ export function TicketPurchaseModal({
             <h2 className="text-foreground text-base leading-tight font-black tracking-tight uppercase">
               {facility?.name || "Izaberite kartu"}
             </h2>
-            <button
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={onClose}
-              className="bg-muted/20 border-border text-muted-foreground hover:text-foreground flex h-8 w-8 shrink-0 items-center justify-center rounded-full border transition-all active:scale-90"
+              className="bg-muted/20 border-border text-muted-foreground hover:text-foreground h-8 w-8 rounded-full border"
               aria-label="Zatvori"
             >
               <Icon name="close" className="text-[16px]" />
-            </button>
+            </Button>
           </div>
           <div className="flex-1 space-y-4 overflow-y-auto px-5 py-4">{renderContent()}</div>
         </div>
@@ -524,13 +535,15 @@ export function TicketPurchaseModal({
         >
           <Card className="border-border bg-card relative z-10 flex flex-col gap-6 overflow-visible rounded-3xl p-8 shadow-2xl md:p-10">
             <div className="bg-primary/10 pointer-events-none absolute -top-12 right-1/4 left-1/4 z-0 h-24 rounded-full blur-[50px]" />
-            <button
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={onClose}
-              className="bg-muted/10 border-border text-muted-foreground hover:text-foreground hover:bg-muted/20 absolute top-6 right-6 z-30 flex h-9 w-9 items-center justify-center rounded-full border shadow-sm transition-all active:scale-90"
+              className="bg-muted/10 border-border text-muted-foreground hover:text-foreground hover:bg-muted/20 absolute top-6 right-6 z-30 h-9 w-9 rounded-full border shadow-sm active:scale-90"
               aria-label="Zatvori"
             >
               <Icon name="close" className="text-[18px]" />
-            </button>
+            </Button>
             {renderContent()}
           </Card>
         </div>

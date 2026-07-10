@@ -120,7 +120,7 @@ export function CartClient({ dict }: { dict: Record<string, any> }) {
             </Button>
           </Link>
 
-          <p className="mt-12 max-w-xs text-[10px] leading-relaxed font-bold text-slate-600">
+          <p className="mt-12 max-w-xs text-[10px] leading-relaxed font-bold text-muted-foreground">
             ℹ️ Korpa Gosta: Vaši izbori se čuvaju lokalno u ovom pretraživaču. Brisanje podataka
             pretraživača će resetovati vašu korpu.
           </p>
@@ -155,7 +155,7 @@ export function CartClient({ dict }: { dict: Record<string, any> }) {
           <div className="space-y-4">
             {items.map((item) => (
               <div key={item.id}>
-                <Card className="border-border hover:border-border group bg-gradient-to-r from-white/5 to-transparent p-4 transition-all sm:p-6">
+                <Card className="border-border hover:border-border group bg-gradient-to-r from-background/5 to-transparent p-4 transition-all sm:p-6">
                   <div className="flex flex-col items-center gap-4 sm:gap-8 md:flex-row">
                     {/* Icon/Image Placeholder */}
                     <div className="bg-primary/10 border-primary/20 relative flex h-20 w-20 flex-shrink-0 items-center justify-center overflow-hidden rounded-2xl border transition-transform group-hover:scale-110">
@@ -179,7 +179,7 @@ export function CartClient({ dict }: { dict: Record<string, any> }) {
                           {item.facilityName || "Splash Deal"}
                         </span>
                         {item.validityType === "SUMMER_SEASON" && (
-                          <span className="rounded-full bg-amber-500/20 px-2 py-0.5 text-[8px] font-black tracking-tighter text-amber-400 uppercase">
+                          <span className="rounded-full bg-secondary/20 px-2 py-0.5 text-[8px] font-black tracking-tighter text-secondary uppercase">
                             Sezonska karta
                           </span>
                         )}
@@ -194,21 +194,24 @@ export function CartClient({ dict }: { dict: Record<string, any> }) {
 
                     {/* Quantity Controls */}
                     <div className="bg-muted/50 border-border flex items-center gap-6 rounded-2xl border p-2">
-                      <button
+                      <Button
                         disabled={isCheckingOut || item.quantity <= (item.minPeople || 1)}
                         onClick={() => {
                           if (typeof navigator !== "undefined" && "vibrate" in navigator)
                             navigator.vibrate(10);
                           updateQuantity(item.id, item.quantity - 1);
                         }}
-                        className="text-muted-foreground flex h-10 w-10 items-center justify-center rounded-xl transition-colors hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-30"
+                        variant="ghost"
+                        size="icon"
+                        className="h-10 w-10 rounded-xl"
+                        aria-label="Smanji količinu"
                       >
                         <Icon name="remove" className="text-[16px]" />
-                      </button>
+                      </Button>
                       <span className="text-foreground w-6 text-center text-xl font-black">
                         {item.quantity}
                       </span>
-                      <button
+                      <Button
                         disabled={
                           isCheckingOut ||
                           item.quantity >=
@@ -219,10 +222,13 @@ export function CartClient({ dict }: { dict: Record<string, any> }) {
                             navigator.vibrate(10);
                           updateQuantity(item.id, item.quantity + 1);
                         }}
-                        className="text-muted-foreground flex h-10 w-10 items-center justify-center rounded-xl transition-colors hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-30"
+                        variant="ghost"
+                        size="icon"
+                        className="h-10 w-10 rounded-xl"
+                        aria-label="Povećaj količinu"
                       >
                         <Icon name="add" className="text-[16px]" />
-                      </button>
+                      </Button>
                     </div>
 
                     {/* Price & Remove */}
@@ -231,18 +237,21 @@ export function CartClient({ dict }: { dict: Record<string, any> }) {
                         {formatPrice(item.price * item.quantity)}{" "}
                         <span className="ml-1 text-xs opacity-40">{item.currency}</span>
                       </div>
-                      <button
+                      <Button
                         disabled={isCheckingOut}
                         onClick={() => {
                           if (typeof navigator !== "undefined" && "vibrate" in navigator)
                             navigator.vibrate([20, 50, 20]);
                           removeItem(item.id);
                         }}
-                        className="flex items-center gap-1 text-[10px] font-bold tracking-widest text-red-500/60 uppercase transition-colors hover:text-red-500 disabled:cursor-not-allowed disabled:opacity-30"
+                        variant="ghost"
+                        size="sm"
+                        className="text-destructive/60 hover:text-destructive flex items-center gap-1 text-[10px] font-bold tracking-widest uppercase"
+                        aria-label="Ukloni stavku"
                       >
                         <Icon name="delete" className="text-[14px]" />
                         Ukloni
-                      </button>
+                      </Button>
                     </div>
                   </div>
                 </Card>
@@ -265,7 +274,7 @@ export function CartClient({ dict }: { dict: Record<string, any> }) {
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground font-bold">Naknada za obradu</span>
-                  <span className="font-black text-emerald-400">0 %</span>
+                  <span className="font-black text-primary">0 %</span>
                 </div>
                 <div className="border-border flex justify-between border-t pt-4 text-2xl">
                   <span className="text-foreground font-black tracking-tighter uppercase italic">
@@ -307,11 +316,11 @@ export function CartClient({ dict }: { dict: Record<string, any> }) {
 
               <div className="flex flex-col gap-3">
                 <div className="text-muted-foreground flex items-center gap-2 text-[10px] font-bold tracking-widest uppercase">
-                  <Icon name="security" className="text-[16px] text-emerald-400" />
+                  <Icon name="security" className="text-[16px] text-primary" />
                   Šifrovana i Bezbedna Transakcija
                 </div>
                 <div className="text-muted-foreground flex items-center gap-2 text-[10px] font-bold tracking-widest uppercase">
-                  <Icon name="bolt" className="text-[16px] text-amber-400" />
+                  <Icon name="bolt" className="text-[16px] text-secondary" />
                   Instant Isporuka Karata
                 </div>
               </div>
@@ -345,7 +354,7 @@ export function CartClient({ dict }: { dict: Record<string, any> }) {
             </div>
           </Card>
 
-          <p className="px-8 text-center text-[10px] leading-relaxed font-bold text-slate-600">
+          <p className="px-8 text-center text-[10px] leading-relaxed font-bold text-muted-foreground">
             Klikom na &quot;Nastavi na Plaćanje&quot;, prihvatate naše Uslove Korišćenja i Politiku
             Privatnosti. Sve prodaje digitalnih karata su konačne.
           </p>

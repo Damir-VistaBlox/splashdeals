@@ -18,10 +18,10 @@ export function PartnerBranding({ logoUrl, name }: PartnerBrandingProps) {
         <Image src={logoUrl} alt={`${name} Logo`} fill className="object-contain p-3" />
       </div>
       <div>
-        <div className="mb-1 flex items-center gap-1.5 text-[9px] font-black tracking-[0.2em] text-cyan-400 uppercase">
-          <Icon name="verified" className="fill-cyan-500/20 text-[14px]" /> Zvanični Partner
+        <div className="mb-1 flex items-center gap-1.5 text-[9px] font-black tracking-[0.2em] text-primary uppercase">
+          <Icon name="verified" className="fill-primary/20 text-[14px]" /> Zvanični Partner
         </div>
-        <h4 className="max-w-[160px] text-base leading-tight font-black tracking-tight text-white uppercase">
+        <h4 className="max-w-[160px] text-base leading-tight font-black tracking-tight text-foreground uppercase">
           {name}
         </h4>
       </div>

@@ -57,7 +57,7 @@ export function HeroActionPill({
       <div className="hidden flex-wrap items-center gap-2 md:flex">
         <Link
           href={`/${categorySlug}`}
-          className="border-border text-muted-foreground flex items-center gap-2 rounded-full border bg-white/5 px-4 py-2 text-xs font-black tracking-widest uppercase backdrop-blur-xl transition-all hover:bg-white/10"
+          className="border-border text-muted-foreground bg-muted/20 hover:bg-muted/30 flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-black tracking-widest uppercase backdrop-blur-xl transition-all"
         >
           <Icon name="arrow_back" className="text-[12px]" /> Nazad
         </Link>
@@ -69,9 +69,9 @@ export function HeroActionPill({
       </div>
 
       {/* 🏙️ HERO INFO ROW */}
-      <div className="flex w-full flex-wrap items-center gap-6 pb-4 font-bold text-slate-300">
+      <div className="flex w-full flex-wrap items-center gap-6 pb-4 font-bold text-muted-foreground">
         <div className="bg-muted/50 border-border hidden items-center gap-2 rounded-2xl border px-5 py-2.5 backdrop-blur-md md:flex">
-          <Icon name="location_on" className="text-[16px] text-cyan-400" />
+          <Icon name="location_on" className="text-[16px] text-primary" />
           <span className="text-sm font-medium tracking-tight opacity-80">
             {facility.streetName} {facility.streetNumber}, {facility.postalCode} {facility.city}
           </span>

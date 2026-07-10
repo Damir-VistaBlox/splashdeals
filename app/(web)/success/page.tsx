@@ -61,7 +61,7 @@ export default async function SuccessPage(props: {
     <div className="container mx-auto min-h-screen max-w-6xl overflow-hidden px-4 py-12">
       {!session_id ? (
         <div className="flex min-h-[60vh] flex-col items-center justify-center space-y-6 pt-20 text-center">
-          <div className="flex h-20 w-20 items-center justify-center rounded-full border border-red-500/20 bg-red-500/10 text-red-500 shadow-[0_0_20px_rgba(239,68,68,0.2)]">
+          <div className="flex h-20 w-20 items-center justify-center rounded-full border border-destructive/20 bg-destructive/10 text-destructive shadow-[0_0_20px_hsl(var(--destructive)/0.2)]">
             <svg
               width="40"
               height="40"
