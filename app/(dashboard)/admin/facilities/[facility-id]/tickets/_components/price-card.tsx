@@ -4,6 +4,7 @@ import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/Icon";
 import type { SerializedCategory } from "../_lib/ticket-admin-actions";
+import { updatePrice, getTicketHierarchy, deletePrice } from "../_lib/ticket-admin-actions";
 
 const DAY_LABELS: Record<string, string> = {
   ALL: "Svi dani",
@@ -35,7 +36,6 @@ export function PriceCard({ price, _product, facilityId, onDeleted }: PriceCardP
   });
 
   const handleSave = async () => {
-    const { updatePrice } = await import("../_lib/ticket-admin-actions");
     await updatePrice(price.id, {
       label: form.label || null,
       price: parseFloat(form.price) || 0,
@@ -44,7 +44,6 @@ export function PriceCard({ price, _product, facilityId, onDeleted }: PriceCardP
       timeSlot: form.timeSlot,
     });
     // Reload
-    const { getTicketHierarchy } = await import("../_lib/ticket-admin-actions");
     await getTicketHierarchy(facilityId);
     // Find and update
     setEditing(false);
@@ -165,7 +164,6 @@ export function PriceCard({ price, _product, facilityId, onDeleted }: PriceCardP
               </button>
               <button
                 onClick={async () => {
-                  const { deletePrice } = await import("../_lib/ticket-admin-actions");
                   await deletePrice(price.id);
                   onDeleted();
                 }}
