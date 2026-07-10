@@ -52,7 +52,28 @@ export default function FacilityLoading() {
             </div>
           </div>
           <aside className="lg:col-span-4">
-            <Skeleton className="bg-muted h-[400px] w-full rounded-[2rem]" />
+            <div className="space-y-6">
+              {/* PartnerBranding skeleton */}
+              <div className="border-border glass-frost flex items-center gap-5 rounded-[2rem] border p-6">
+                <Skeleton className="bg-muted h-24 w-24 shrink-0 rounded-3xl" />
+                <div className="flex-1 space-y-2">
+                  <Skeleton className="bg-muted h-3 w-24 rounded" />
+                  <Skeleton className="bg-muted h-5 w-32 rounded" />
+                </div>
+              </div>
+              {/* OperationalPortal skeleton */}
+              <div className="border-border bg-muted/20 rounded-[3rem] border p-10">
+                <Skeleton className="bg-muted mb-6 h-8 w-48 rounded-lg" />
+                <div className="space-y-1">
+                  {[0, 1, 2, 3, 4, 5, 6].map((i) => (
+                    <div key={i} className="flex items-center justify-between rounded-2xl p-2.5">
+                      <Skeleton className="bg-muted h-4 w-16 rounded" />
+                      <Skeleton className="bg-muted h-4 w-24 rounded" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
           </aside>
         </div>
       </main>
