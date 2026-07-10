@@ -31,7 +31,7 @@ const postFormSchema = z.object({
   coverImage: z.string().optional(),
   featuredImage: z.string().optional(),
   author: z.string().optional(),
-  status: z.string().optional(),
+  status: z.enum(["DRAFT", "PUBLISHED", "ARCHIVED"]).optional(),
   categoryId: z.string().optional(),
   isFeatured: z.boolean().optional(),
   metaTitle: z.string().optional(),
@@ -66,7 +66,7 @@ export function PostEditor({ post, initialTagIds, categories, tags }: PostEditor
       coverImage: (post?.coverImage as string) || "",
       featuredImage: (post?.featuredImage as string) || "",
       author: (post?.author as string) || "",
-      status: (post?.status as string) || "DRAFT",
+      status: (post?.status as "DRAFT" | "PUBLISHED" | "ARCHIVED") || "DRAFT",
       categoryId: (post?.categoryId as string) || "",
       isFeatured: (post?.isFeatured as boolean) || false,
       metaTitle: (post?.metaTitle as string) || "",
@@ -207,6 +207,7 @@ export function PostEditor({ post, initialTagIds, categories, tags }: PostEditor
                 <Label htmlFor="status">Status</Label>
                 <select
                   id="status"
+                  aria-label="Status"
                   {...register("status")}
                   className="border-input flex h-9 w-full rounded-md border bg-transparent px-3 py-1 text-sm shadow-sm"
                 >
@@ -232,7 +233,7 @@ export function PostEditor({ post, initialTagIds, categories, tags }: PostEditor
                   ) : (
                     <Icon name="save" className="size-4" />
                   )}
-                  {isEditing ? "Sačuvaj izmene" : "Objavi"}
+                  {isEditing ? "Sačuvaj izmene" : "Kreiraj"}
                 </Button>
                 <Button
                   type="button"
@@ -247,6 +248,7 @@ export function PostEditor({ post, initialTagIds, categories, tags }: PostEditor
             <div className="space-y-3 rounded-lg border p-4">
               <h3 className="text-sm font-semibold">Kategorija</h3>
               <select
+                aria-label="Kategorija"
                 {...register("categoryId")}
                 className="border-input flex h-9 w-full rounded-md border bg-transparent px-3 py-1 text-sm shadow-sm"
               >
