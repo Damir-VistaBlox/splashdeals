@@ -6,6 +6,16 @@ import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/Icon";
 import { cn } from "@/lib/utils";
 import type { SerializedCategory } from "../_lib/ticket-admin-actions";
+import {
+  createCategory,
+  createProduct,
+  deleteCategory,
+  updateCategory,
+  updateProduct,
+  deleteProduct,
+  createPrice,
+  getTicketHierarchy,
+} from "../_lib/ticket-admin-actions";
 import { ProductImageSection } from "./product-image-section";
 import { PriceCard } from "./price-card";
 
@@ -49,7 +59,6 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
 
   const handleAddCategory = async () => {
     if (!newCatTitle.trim()) return;
-    const { createCategory } = await import("../_lib/ticket-admin-actions");
     const cat = await createCategory(facilityId, newCatTitle);
     setCategories((prev) => [
       ...prev,
@@ -69,7 +78,6 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
 
   const handleAddProduct = async () => {
     if (!selectedCategoryId || !newProdTitle.trim()) return;
-    const { createProduct } = await import("../_lib/ticket-admin-actions");
     const prod = await createProduct(selectedCategoryId, { title: newProdTitle });
     setCategories((prev) =>
       prev.map((c) =>
@@ -105,7 +113,6 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
   };
 
   const handleDeleteCategory = async (id: string) => {
-    const { deleteCategory } = await import("../_lib/ticket-admin-actions");
     await deleteCategory(id);
     setCategories((prev) => prev.filter((c) => c.id !== id));
     if (selectedCategoryId === id) {
@@ -121,7 +128,6 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
 
   const handleSaveCategory = async () => {
     if (!editingCatId || !editCatTitle.trim()) return;
-    const { updateCategory } = await import("../_lib/ticket-admin-actions");
     await updateCategory(editingCatId, { title: editCatTitle.trim() });
     setCategories((prev) =>
       prev.map((c) => (c.id === editingCatId ? { ...c, title: editCatTitle.trim() } : c)),
@@ -142,7 +148,6 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
 
   const handleSaveProduct = async () => {
     if (!editingProductId || !editProductTitle.trim()) return;
-    const { updateProduct } = await import("../_lib/ticket-admin-actions");
     await updateProduct(editingProductId, { title: editProductTitle.trim() });
     setCategories((prev) =>
       prev.map((c) => ({
@@ -163,7 +168,6 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
 
   const handleMoveProduct = async (productId: string, fromCatId: string, toCatId: string) => {
     if (fromCatId === toCatId) return;
-    const { updateProduct } = await import("../_lib/ticket-admin-actions");
     await updateProduct(productId, { categoryId: toCatId });
     setCategories((prev) =>
       prev.map((c) => {
@@ -182,7 +186,6 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
   };
 
   const handleDeleteProduct = async (id: string) => {
-    const { deleteProduct } = await import("../_lib/ticket-admin-actions");
     await deleteProduct(id);
     setCategories((prev) =>
       prev.map((c) => ({
@@ -194,10 +197,8 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
   };
 
   const handleAddPrice = async (productId: string) => {
-    const { createPrice } = await import("../_lib/ticket-admin-actions");
     await createPrice(productId, { price: 0 });
     // Refresh categories to get the new price
-    const { getTicketHierarchy } = await import("../_lib/ticket-admin-actions");
     const fresh = await getTicketHierarchy(facilityId);
     setCategories(fresh);
   };
