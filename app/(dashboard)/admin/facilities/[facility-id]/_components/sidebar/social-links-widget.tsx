@@ -69,7 +69,7 @@ export function SocialLinksWidget({ facilityId, initialSocialLinks }: SocialLink
             <Label className="text-muted-foreground text-[9px] font-black tracking-widest uppercase">
               Instagram URL
             </Label>
-            {saveStatus.instagram && <Icon name="check" className="text-[12px] text-emerald-500" />}
+            {saveStatus.instagram && <Icon name="check" className="text-primary text-[12px]" />}
           </div>
           <Input
             value={links.instagram}
@@ -85,7 +85,7 @@ export function SocialLinksWidget({ facilityId, initialSocialLinks }: SocialLink
             <Label className="text-muted-foreground text-[9px] font-black tracking-widest uppercase">
               Facebook URL
             </Label>
-            {saveStatus.facebook && <Icon name="check" className="text-[12px] text-emerald-500" />}
+            {saveStatus.facebook && <Icon name="check" className="text-primary text-[12px]" />}
           </div>
           <Input
             value={links.facebook}
@@ -101,7 +101,7 @@ export function SocialLinksWidget({ facilityId, initialSocialLinks }: SocialLink
             <Label className="text-muted-foreground text-[9px] font-black tracking-widest uppercase">
               Official Website
             </Label>
-            {saveStatus.website && <Icon name="check" className="text-[12px] text-emerald-500" />}
+            {saveStatus.website && <Icon name="check" className="text-primary text-[12px]" />}
           </div>
           <Input
             value={links.website}

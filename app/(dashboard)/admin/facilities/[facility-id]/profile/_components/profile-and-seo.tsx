@@ -72,7 +72,7 @@ export function ProfileAndSEO({ facilityId }: ProfileAndSEOProps) {
                 </FormLabel>
                 <FormControl>
                   <Input
-                    className="bg-background/40 border-border/50 h-10 text-sm font-black uppercase focus-visible:ring-cyan-500/50"
+                    className="bg-background/40 border-border/50 focus-visible:ring-primary/50 h-10 text-sm font-black uppercase"
                     {...field}
                     value={field.value || ""}
                   />
@@ -97,9 +97,9 @@ export function ProfileAndSEO({ facilityId }: ProfileAndSEOProps) {
                       slugAvailability === "loading" &&
                         "bg-muted/10 border-muted/20 text-muted-foreground",
                       slugAvailability === "available" &&
-                        "border-emerald-500/20 bg-emerald-500/10 text-emerald-400",
+                        "border-primary/20 bg-primary/10 text-primary",
                       slugAvailability === "collision" &&
-                        "border-rose-500/20 bg-rose-500/10 text-rose-400",
+                        "border-destructive/20 bg-destructive/10 text-destructive",
                       slugAvailability === "idle" && "opacity-0",
                     )}
                   >
@@ -136,7 +136,7 @@ export function ProfileAndSEO({ facilityId }: ProfileAndSEOProps) {
               <FormControl>
                 <Textarea
                   placeholder="Tell your story..."
-                  className="bg-background/40 border-border/50 text-foreground/80 min-h-[80px] text-sm leading-relaxed font-medium focus-visible:ring-cyan-500/50"
+                  className="bg-background/40 border-border/50 text-foreground/80 focus-visible:ring-primary/50 min-h-[80px] text-sm leading-relaxed font-medium"
                   {...field}
                   value={field.value || ""}
                 />
@@ -185,7 +185,7 @@ export function ProfileAndSEO({ facilityId }: ProfileAndSEOProps) {
                   <span
                     className={cn(
                       "font-mono text-[8px] font-black",
-                      metaTitle.length > 60 ? "text-rose-500" : "text-emerald-500",
+                      metaTitle.length > 60 ? "text-destructive" : "text-primary",
                     )}
                   >
                     {metaTitle.length}/60
@@ -193,7 +193,7 @@ export function ProfileAndSEO({ facilityId }: ProfileAndSEOProps) {
                 </div>
                 <FormControl>
                   <Input
-                    className="bg-background/40 border-border/50 h-9 text-[11px] font-bold focus-visible:ring-cyan-500/50"
+                    className="bg-background/40 border-border/50 focus-visible:ring-primary/50 h-9 text-[11px] font-bold"
                     {...field}
                     value={field.value || ""}
                     maxLength={60}
@@ -216,7 +216,7 @@ export function ProfileAndSEO({ facilityId }: ProfileAndSEOProps) {
                   <span
                     className={cn(
                       "font-mono text-[8px] font-black",
-                      metaDescription.length > 160 ? "text-rose-500" : "text-emerald-500",
+                      metaDescription.length > 160 ? "text-destructive" : "text-primary",
                     )}
                   >
                     {metaDescription.length}/160
@@ -224,7 +224,7 @@ export function ProfileAndSEO({ facilityId }: ProfileAndSEOProps) {
                 </div>
                 <FormControl>
                   <Input
-                    className="bg-background/40 border-border/50 h-9 text-[11px] font-bold focus-visible:ring-cyan-500/50"
+                    className="bg-background/40 border-border/50 focus-visible:ring-primary/50 h-9 text-[11px] font-bold"
                     {...field}
                     value={field.value || ""}
                     maxLength={160}
@@ -254,7 +254,7 @@ export function ProfileAndSEO({ facilityId }: ProfileAndSEOProps) {
               <FormControl>
                 <Textarea
                   placeholder="Comprehensive overview for AI agents..."
-                  className="bg-background/40 border-border/50 text-foreground/80 min-h-[120px] font-mono text-sm leading-relaxed focus-visible:ring-cyan-500/50"
+                  className="bg-background/40 border-border/50 text-foreground/80 focus-visible:ring-primary/50 min-h-[120px] font-mono text-sm leading-relaxed"
                   {...field}
                   value={field.value || ""}
                 />

@@ -133,13 +133,15 @@ export function CityLabels({ facilityId }: Props) {
             )}
           >
             {/* Star toggle */}
-            <button
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={() => handleSetPrimary(label.id)}
-              className="transition-transform hover:scale-110"
-              title={label.isPrimary ? "Primarni grad" : "Postavi kao primarni"}
+              className="size-5 transition-transform hover:scale-110"
+              aria-label={label.isPrimary ? "Primarni grad" : "Postavi kao primarni"}
             >
               <Icon name={label.isPrimary ? "star" : "star_border"} className="size-3.5" />
-            </button>
+            </Button>
 
             {/* Label text — inline editable */}
             {editingId === label.id ? (
@@ -173,12 +175,15 @@ export function CityLabels({ facilityId }: Props) {
             )}
 
             {/* Delete */}
-            <button
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={() => handleRemove(label.id)}
-              className="text-muted-foreground/50 hover:text-destructive hover:bg-destructive/10 ml-0.5 flex size-4 items-center justify-center rounded-full transition-all"
+              className="text-muted-foreground/50 hover:text-destructive hover:bg-destructive/10 size-5 rounded-full transition-all"
+              aria-label={`Ukloni ${label.label || label.place.name}`}
             >
               <Icon name="close" className="size-3" />
-            </button>
+            </Button>
           </div>
         ))}
       </div>
@@ -210,20 +215,23 @@ export function CityLabels({ facilityId }: Props) {
           {suggestions.length > 0 && (
             <div className="border-border bg-popover absolute z-50 mt-1 max-h-48 w-full overflow-y-auto rounded-lg border shadow-lg">
               {suggestions.map((place) => (
-                <button
+                <Button
                   key={place.id}
+                  variant="ghost"
+                  className="w-full justify-start rounded-none px-3 py-2 text-sm"
+                  role="option"
                   onMouseDown={(e) => {
                     e.preventDefault();
                     handleSelect(place);
                   }}
-                  className="hover:bg-accent flex w-full items-center gap-2 px-3 py-2 text-left text-sm transition-colors"
+                  aria-label={`Izaberi ${place.name}`}
                 >
                   <Icon name="location_on" className="text-muted-foreground size-3.5 shrink-0" />
                   <span className="font-medium">{place.name}</span>
                   <span className="text-muted-foreground text-[10px]">
                     {place.type} · {place.district || ""} {place.region || ""}
                   </span>
-                </button>
+                </Button>
               ))}
             </div>
           )}

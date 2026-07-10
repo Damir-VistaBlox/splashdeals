@@ -106,10 +106,10 @@ export function FacilityNav({ facility, counts }: FacilityNavProps) {
           <div
             className={cn(
               "size-1.5 shrink-0 rounded-full",
-              facility.status === "ACTIVE" && "bg-emerald-500",
-              facility.status === "DRAFT" && "bg-yellow-500",
+              facility.status === "ACTIVE" && "bg-success",
+              facility.status === "DRAFT" && "bg-warning",
               (facility.status === "CLOSED" || facility.status === "EMERGENCY_SHUTDOWN") &&
-                "bg-red-500",
+                "bg-destructive",
             )}
             role="status"
             aria-label={`Facility ${facility.status.toLowerCase().replace("_", " ")}`}
@@ -132,7 +132,7 @@ export function FacilityNav({ facility, counts }: FacilityNavProps) {
                   : "text-muted-foreground hover:text-foreground",
               )}
             >
-              <Link href={tab.href}>
+              <Link href={tab.href} aria-current={tab.active ? "page" : undefined}>
                 <Icon name={tab.icon} className="mr-1.5 size-3.5 shrink-0" />
                 {tab.title}
                 {tab.count !== undefined && (

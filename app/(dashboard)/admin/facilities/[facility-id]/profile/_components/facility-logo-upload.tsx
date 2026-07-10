@@ -202,7 +202,7 @@ export function FacilityLogoUpload({
                     e.stopPropagation();
                     removeImage();
                   }}
-                  className="text-foreground absolute top-2 right-2 scale-90 rounded-lg border border-rose-500/30 bg-rose-500/20 p-1.5 transition-all hover:scale-100 hover:bg-rose-500"
+                  className="text-foreground border-destructive/30 bg-destructive/20 hover:bg-destructive absolute top-2 right-2 scale-90 rounded-lg border p-1.5 transition-all hover:scale-100"
                   title="Remove asset"
                 >
                   <Icon name="close" className="text-[12px]" />
@@ -224,7 +224,7 @@ export function FacilityLogoUpload({
               "absolute bottom-2 left-2 z-20 rounded-md border p-1 shadow-sm backdrop-blur-md transition-all",
               previewBg === "dark"
                 ? "bg-muted/60 border-border text-muted-foreground hover:text-foreground"
-                : "border-muted/50 text-muted-foreground/80 hover:text-foreground bg-white/80",
+                : "border-muted/50 text-muted-foreground/80 hover:text-foreground bg-background/80",
             )}
             title="Toggle Contrast Background"
           >
