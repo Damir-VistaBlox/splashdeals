@@ -49,15 +49,6 @@ interface ProductOption {
   prices: PriceOption[];
 }
 
-interface ProductOption {
-  id: string;
-  title: string;
-  label: string | null;
-  minPeople: number;
-  maxPeople: number | null;
-  prices: PriceOption[];
-}
-
 const parseFacilityName = (name: string) => {
   const commonPrefixes = ["Akva Park", "Akva park", "Aquapark", "Banja", "Terme"];
   for (const prefix of commonPrefixes) {
