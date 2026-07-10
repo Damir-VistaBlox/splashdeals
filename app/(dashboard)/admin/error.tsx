@@ -2,7 +2,7 @@
 import { Icon } from "@/components/ui/Icon";
 
 import { useEffect } from "react";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 /**
  * 🛡️ Aquastream Admin Control Error Boundary
@@ -27,37 +27,41 @@ export default function AdminError({
         <div className="bg-muted/10 absolute top-1/2 left-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full blur-[120px]" />
       </div>
 
-      <Card className="border-border/50 bg-background/50 relative z-10 w-full max-w-xl space-y-8 p-8 text-center md:p-12">
-        <div className="bg-muted/50 border-border text-muted-foreground relative inline-flex h-20 w-20 items-center justify-center rounded-full border">
-          <Icon name="gpp_maybe" className="stroke-[1.5] text-[40px]" />
-        </div>
+      <Card className="border-border/50 bg-background/50 relative z-10 w-full max-w-xl">
+        <CardHeader className="items-center gap-6 p-8 pb-0 text-center md:p-12 md:pb-0">
+          <div className="bg-muted/50 border-border text-muted-foreground relative inline-flex h-20 w-20 items-center justify-center rounded-full border">
+            <Icon name="gpp_maybe" className="stroke-[1.5] text-[40px]" />
+          </div>
 
-        <div className="space-y-3">
-          <h1 className="text-foreground text-3xl leading-none font-black tracking-tighter uppercase italic">
-            Admin <br />
-            <span className="text-muted-foreground">Greška</span>
-          </h1>
-          <p className="text-muted-foreground mx-auto max-w-sm text-sm leading-relaxed">
-            Došlo je do greške. Molimo pokušajte ponovo ili kontaktirajte podršku.
-          </p>
-        </div>
+          <div className="space-y-3">
+            <CardTitle className="text-foreground text-3xl leading-none font-black tracking-tighter uppercase italic">
+              Admin <br />
+              <span className="text-muted-foreground">Greška</span>
+            </CardTitle>
+            <p className="text-muted-foreground mx-auto max-w-sm text-sm leading-relaxed">
+              Došlo je do greške. Molimo pokušajte ponovo ili kontaktirajte podršku.
+            </p>
+          </div>
+        </CardHeader>
 
-        <div className="flex flex-col gap-3 pt-4">
-          <button
-            onClick={reset}
-            className="bg-muted/30 hover:bg-muted/50 border-border/50 flex w-full items-center justify-center gap-2 rounded-xl border px-8 py-4 text-[10px] font-black tracking-widest uppercase transition-all"
-          >
-            <Icon name="refresh" className="text-[16px]" />
-            Pokušaj ponovo
-          </button>
-          <Link
-            href="/admin"
-            className="bg-muted/80 hover:bg-foreground/10 text-foreground flex w-full items-center justify-center gap-2 rounded-xl px-8 py-4 text-[10px] font-black tracking-widest uppercase transition-all"
-          >
-            <Icon name="home" className="text-[16px]" />
-            Kontrolna tabla
-          </Link>
-        </div>
+        <CardContent className="p-8 pt-4 text-center md:p-12 md:pt-4">
+          <div className="flex flex-col gap-3 pt-4">
+            <button
+              onClick={reset}
+              className="bg-muted/30 hover:bg-muted/50 border-border/50 flex w-full items-center justify-center gap-2 rounded-xl border px-8 py-4 text-[10px] font-black tracking-widest uppercase transition-all"
+            >
+              <Icon name="refresh" className="text-[16px]" />
+              Pokušaj ponovo
+            </button>
+            <Link
+              href="/admin"
+              className="bg-muted/80 hover:bg-foreground/10 text-foreground flex w-full items-center justify-center gap-2 rounded-xl px-8 py-4 text-[10px] font-black tracking-widest uppercase transition-all"
+            >
+              <Icon name="home" className="text-[16px]" />
+              Kontrolna tabla
+            </Link>
+          </div>
+        </CardContent>
       </Card>
     </div>
   );
