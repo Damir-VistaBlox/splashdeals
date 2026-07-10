@@ -161,33 +161,6 @@ export function ShowcaseTicketGroups({
   const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
   const totalPrice = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
-  const _handleBuySelection = () => {
-    if (!facility) return;
-    for (const tier of activeGroup.tiers) {
-      const qty = getQuantity(tier.id);
-      if (qty > 0) {
-        addItem({
-          ticketId: tier.id,
-          facilityId: facility.id,
-          facilityName: facility.name,
-          category: facility.category,
-          quantity: qty,
-          title: `${facility.name} - ${tier.label || tier.title}`,
-          price: Number(tier.price),
-          currency: "RSD",
-          requiresIdentity: false,
-          requiresPhoto: false,
-          validityType: tier.isSeasonPass ? "SUMMER_SEASON" : "FLEXIBLE_30_DAY",
-          minPeople: tier.minPeople || 1,
-          maxPeople: tier.maxPeople || null,
-          imageUrl: tier.imageUrl || null,
-        });
-      }
-    }
-    if (typeof navigator !== "undefined" && "vibrate" in navigator) navigator.vibrate([15, 80, 15]);
-    window.location.href = "/cart";
-  };
-
   return (
     <div className="mx-auto w-full max-w-6xl space-y-8 pb-24 md:pb-0">
       {/* Scrollable glass pill tabs container */}
