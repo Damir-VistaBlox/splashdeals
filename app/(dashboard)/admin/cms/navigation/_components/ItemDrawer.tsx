@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Icon } from "@/components/ui/Icon";
@@ -70,7 +70,7 @@ export function ItemDrawer({ sectionId, item, open, onClose, onSaved }: ItemDraw
   const [saving, setSaving] = useState(false);
 
   // Initialise from item metadata when opening
-  useState(() => {
+  useEffect(() => {
     if (open && item) {
       setLabel(item.label);
       setHref(item.href || "");
@@ -100,7 +100,7 @@ export function ItemDrawer({ sectionId, item, open, onClose, onSaved }: ItemDraw
       setAccentColor("");
       setExternal(false);
     }
-  });
+  }, [open, item]);
 
   const buildMetadata = useCallback((): LinkMetadata | null => {
     const hasRich =
