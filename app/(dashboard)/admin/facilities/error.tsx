@@ -18,7 +18,7 @@ export default function FacilitiesError({
   return (
     <div className="relative flex min-h-[60vh] items-center justify-center p-6">
       <div className="pointer-events-none absolute inset-0 z-0 opacity-10">
-        <div className="absolute top-1/2 left-1/2 h-[400px] w-[400px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-500/10 blur-[100px]" />
+        <div className="bg-primary/10 absolute top-1/2 left-1/2 h-[400px] w-[400px] -translate-x-1/2 -translate-y-1/2 rounded-full blur-[100px]" />
       </div>
 
       <div className="relative z-10 w-full max-w-md space-y-6 p-8 text-center">

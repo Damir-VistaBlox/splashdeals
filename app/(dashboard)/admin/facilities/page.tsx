@@ -37,8 +37,8 @@ export default async function FacilitiesDirectoryPage({
     {
       label: "Nacrti",
       value: counts.draft,
-      color: "text-amber-400",
-      glow: "border-amber-500/10 bg-amber-500/[0.02]",
+      color: "text-warning",
+      glow: "border-warning/10 bg-warning/5",
     },
     {
       label: "Zatvoreni",
