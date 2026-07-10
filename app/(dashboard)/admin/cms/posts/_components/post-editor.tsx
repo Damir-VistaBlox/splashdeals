@@ -15,6 +15,13 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { RichTextEditor } from "../../_components/rich-text-editor";
 import { SEOPanel } from "../../_components/seo-panel";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
@@ -205,16 +212,19 @@ export function PostEditor({ post, initialTagIds, categories, tags }: PostEditor
               <h3 className="text-sm font-semibold">Status</h3>
               <div className="space-y-2">
                 <Label htmlFor="status">Status</Label>
-                <select
-                  id="status"
-                  aria-label="Status"
-                  {...register("status")}
-                  className="border-input flex h-9 w-full rounded-md border bg-transparent px-3 py-1 text-sm shadow-sm"
+                <Select
+                  value={watch("status") || "DRAFT"}
+                  onValueChange={(value) => setValue("status", value as "DRAFT" | "PUBLISHED" | "ARCHIVED")}
                 >
-                  <option value="DRAFT">Nacrt</option>
-                  <option value="PUBLISHED">Objavljeno</option>
-                  <option value="ARCHIVED">Arhivirano</option>
-                </select>
+                  <SelectTrigger id="status" aria-label="Status" className="w-full">
+                    <SelectValue placeholder="Izaberi status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="DRAFT">Nacrt</SelectItem>
+                    <SelectItem value="PUBLISHED">Objavljeno</SelectItem>
+                    <SelectItem value="ARCHIVED">Arhivirano</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <div className="flex items-center justify-between">
                 <Label htmlFor="isFeatured" className="cursor-pointer">
@@ -247,18 +257,21 @@ export function PostEditor({ post, initialTagIds, categories, tags }: PostEditor
 
             <div className="space-y-3 rounded-lg border p-4">
               <h3 className="text-sm font-semibold">Kategorija</h3>
-              <select
-                aria-label="Kategorija"
-                {...register("categoryId")}
-                className="border-input flex h-9 w-full rounded-md border bg-transparent px-3 py-1 text-sm shadow-sm"
+              <Select
+                value={watch("categoryId") || ""}
+                onValueChange={(value) => setValue("categoryId", value)}
               >
-                <option value="">Bez kategorije</option>
-                {categories.map((cat) => (
-                  <option key={cat.id as string} value={cat.id as string}>
-                    {cat.name as string}
-                  </option>
-                ))}
-              </select>
+                <SelectTrigger id="categoryId" aria-label="Kategorija" className="w-full">
+                  <SelectValue placeholder="Bez kategorije" />
+                </SelectTrigger>
+                <SelectContent>
+                  {categories.map((cat) => (
+                    <SelectItem key={cat.id as string} value={cat.id as string}>
+                      {cat.name as string}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             <div className="space-y-3 rounded-lg border p-4">
@@ -273,14 +286,16 @@ export function PostEditor({ post, initialTagIds, categories, tags }: PostEditor
                   const tagId = tag.id as string;
                   const isSelected = selectedTagIds.includes(tagId);
                   return (
-                    <button
+                    <Button
                       key={tagId}
                       type="button"
+                      variant={isSelected ? "default" : "outline"}
+                      size="sm"
                       onClick={() => toggleTag(tagId)}
-                      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium transition-colors ${isSelected ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground hover:bg-secondary/80"}`}
+                      className="rounded-full"
                     >
                       {tag.name as string}
-                    </button>
+                    </Button>
                   );
                 })}
               </div>

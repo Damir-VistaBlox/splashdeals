@@ -15,6 +15,7 @@ import {
   type ColumnFiltersState,
 } from "@tanstack/react-table";
 import { Icon } from "@/components/ui/Icon";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -25,14 +26,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { cn } from "@/lib/utils";
 import { deletePageAction } from "@/app/(server)/actions/cms";
-
-const statusColors: Record<string, string> = {
-  DRAFT: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400",
-  PUBLISHED: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400",
-  ARCHIVED: "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400",
-};
 
 const statusLabels: Record<string, string> = {
   DRAFT: "Nacrt",
@@ -55,6 +49,19 @@ export function PagesListClient({ pages }: { pages: Array<Record<string, unknown
   const [sorting, setSorting] = useState<SortingState>([{ id: "createdAt", desc: true }]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
+  const statusBadgeVariant = (status: string): "default" | "secondary" | "outline" => {
+    switch (status) {
+      case "PUBLISHED":
+        return "default";
+      case "DRAFT":
+        return "secondary";
+      case "ARCHIVED":
+        return "outline";
+      default:
+        return "secondary";
+    }
+  };
+
   const handleDelete = useCallback(
     async (id: string) => {
       if (!confirm("Da li ste sigurni da želite da obrišete ovu stranu?")) return;
@@ -74,12 +81,13 @@ export function PagesListClient({ pages }: { pages: Array<Record<string, unknown
       accessorKey: "title",
       header: "Naslov",
       cell: ({ row }) => (
-        <button
+        <Button
+          variant="link"
+          className="text-left text-sm font-medium h-auto p-0"
           onClick={() => router.push(`/admin/cms/pages/${row.original.id}`)}
-          className="hover:text-primary text-left text-sm font-medium transition-colors"
         >
           {row.original.title}
-        </button>
+        </Button>
       ),
     },
     {
@@ -102,14 +110,9 @@ export function PagesListClient({ pages }: { pages: Array<Record<string, unknown
       accessorKey: "status",
       header: "Status",
       cell: ({ row }) => (
-        <span
-          className={cn(
-            "inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium",
-            statusColors[row.original.status] || "",
-          )}
-        >
+        <Badge variant={statusBadgeVariant(row.original.status)} className="text-xs">
           {statusLabels[row.original.status] || row.original.status}
-        </span>
+        </Badge>
       ),
     },
     {
@@ -128,6 +131,7 @@ export function PagesListClient({ pages }: { pages: Array<Record<string, unknown
             variant="ghost"
             size="sm"
             className="h-8 w-8 p-0"
+            aria-label={`Izmeni stranu ${row.original.title}`}
             onClick={() => router.push(`/admin/cms/pages/${row.original.id}`)}
           >
             <Icon name="edit" className="size-4" />
@@ -136,6 +140,7 @@ export function PagesListClient({ pages }: { pages: Array<Record<string, unknown
             variant="ghost"
             size="sm"
             className="text-destructive hover:text-destructive h-8 w-8 p-0"
+            aria-label={`Obriši stranu ${row.original.title}`}
             onClick={() => handleDelete(row.original.id)}
           >
             <Icon name="delete" className="size-4" />
@@ -231,6 +236,7 @@ export function PagesListClient({ pages }: { pages: Array<Record<string, unknown
           <Button
             variant="outline"
             size="sm"
+            aria-label="Prethodna strana"
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
@@ -242,6 +248,7 @@ export function PagesListClient({ pages }: { pages: Array<Record<string, unknown
           <Button
             variant="outline"
             size="sm"
+            aria-label="Sledeća strana"
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
           >

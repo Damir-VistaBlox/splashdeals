@@ -3,6 +3,7 @@ import { prisma } from "@/server/lib/prisma";
 import { PagesListClient } from "./_components/pages-list-client";
 import Link from "next/link";
 import { Icon } from "@/components/ui/Icon";
+import { Button } from "@/components/ui/button";
 import type { Metadata } from "next";
 import { connection } from "next/server";
 
@@ -34,13 +35,12 @@ export default async function PagesPage() {
             Upravljaj statičkim stranama, landing page-ovima i SEO meta podacima.
           </p>
         </div>
-        <Link
-          href="/admin/cms/pages/new"
-          className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors"
-        >
-          <Icon name="add" className="size-4" />
-          Nova strana
-        </Link>
+        <Button asChild>
+          <Link href="/admin/cms/pages/new">
+            <Icon name="add" className="size-4" />
+            Nova strana
+          </Link>
+        </Button>
       </div>
 
       <PagesListClient pages={serialized as unknown as Array<Record<string, unknown>>} />

@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { PageEditor } from "../_components/page-editor";
 import { Icon } from "@/components/ui/Icon";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import type { Metadata } from "next";
 import { connection } from "next/server";
 
@@ -29,12 +30,11 @@ export default async function EditPagePage({ params }: { params: Promise<{ "page
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
-        <Link
-          href="/admin/cms/pages"
-          className="hover:bg-accent inline-flex items-center justify-center rounded-md border p-2 transition-colors"
-        >
-          <Icon name="arrow_back" className="size-4" />
-        </Link>
+        <Button variant="outline" size="icon" asChild aria-label="Nazad na listu strana">
+          <Link href="/admin/cms/pages">
+            <Icon name="arrow_back" className="size-4" />
+          </Link>
+        </Button>
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Izmeni stranu</h1>
           <p className="text-muted-foreground mt-1 text-sm">Uredi {pageData.title}</p>

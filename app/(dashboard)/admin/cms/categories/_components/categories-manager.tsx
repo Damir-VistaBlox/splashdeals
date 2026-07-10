@@ -131,11 +131,12 @@ export function CategoriesManager({ categories }: { categories: Array<Record<str
           </div>
           <div className="space-y-1.5">
             <label className="text-muted-foreground text-xs">Boja</label>
-            <input
+            <Input
               type="color"
               value={newColor}
               onChange={(e) => setNewColor(e.target.value)}
-              className="border-input h-9 w-12 cursor-pointer rounded-md border bg-transparent p-1"
+              aria-label="Boja kategorije"
+              className="h-9 w-12 cursor-pointer rounded-md border bg-transparent p-1"
             />
           </div>
           <Button onClick={handleCreate} disabled={isPending || !newName.trim()} className="h-9">
@@ -175,11 +176,12 @@ export function CategoriesManager({ categories }: { categories: Array<Record<str
                           className="h-8 w-48"
                           onKeyDown={(e) => e.key === "Enter" && handleUpdate(cat.id)}
                         />
-                        <input
+                        <Input
                           type="color"
                           value={editColor}
                           onChange={(e) => setEditColor(e.target.value)}
-                          className="h-8 w-10 cursor-pointer rounded border p-0.5"
+                          aria-label="Izmeni boju kategorije"
+                          className="h-8 w-10 cursor-pointer rounded border bg-transparent p-0.5"
                         />
                       </div>
                     ) : (
@@ -228,6 +230,7 @@ export function CategoriesManager({ categories }: { categories: Array<Record<str
                             variant="ghost"
                             size="sm"
                             className="h-7 w-7 p-0"
+                            aria-label={`Izmeni kategoriju ${cat.name}`}
                             onClick={() => startEditing(cat)}
                           >
                             <Icon name="edit" className="size-3.5" />
@@ -236,6 +239,7 @@ export function CategoriesManager({ categories }: { categories: Array<Record<str
                             variant="ghost"
                             size="sm"
                             className="text-destructive hover:text-destructive h-7 w-7 p-0"
+                            aria-label={`Obriši kategoriju ${cat.name}`}
                             onClick={() => handleDelete(cat.id, cat.name)}
                           >
                             <Icon name="delete" className="size-3.5" />

@@ -333,6 +333,7 @@ export function ItemDrawer({ sectionId, item, open, onClose, onSaved }: ItemDraw
                     value={accentColor || "#06b6d4"}
                     onChange={(e) => setAccentColor(e.target.value)}
                     className="h-9 w-12 cursor-pointer rounded-md border bg-transparent p-1"
+                    aria-label="Akcent boja"
                   />
                   <Input
                     value={accentColor}

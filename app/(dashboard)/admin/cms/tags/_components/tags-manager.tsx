@@ -180,6 +180,7 @@ export function TagsManager({ tags }: { tags: Array<Record<string, unknown>> }) 
                             variant="ghost"
                             size="sm"
                             className="h-7 w-7 p-0"
+                            aria-label={`Izmeni tag ${tag.name}`}
                             onClick={() => {
                               setEditingId(tag.id);
                               setEditName(tag.name);
@@ -191,6 +192,7 @@ export function TagsManager({ tags }: { tags: Array<Record<string, unknown>> }) 
                             variant="ghost"
                             size="sm"
                             className="text-destructive hover:text-destructive h-7 w-7 p-0"
+                            aria-label={`Obriši tag ${tag.name}`}
                             onClick={() => handleDelete(tag.id, tag.name)}
                           >
                             <Icon name="delete" className="size-3.5" />

@@ -14,6 +14,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { RichTextEditor } from "../../_components/rich-text-editor";
 import { SEOPanel } from "../../_components/seo-panel";
@@ -167,29 +168,35 @@ export function PageEditor({ page }: PageEditorProps) {
               <h3 className="text-sm font-semibold">Status</h3>
               <div className="space-y-2">
                 <Label htmlFor="status">Status</Label>
-                <select
-                  id="status"
-                  aria-label="Status"
-                  {...register("status")}
-                  className="border-input flex h-9 w-full rounded-md border bg-transparent px-3 py-1 text-sm shadow-sm"
+                <Select
+                  value={watch("status") || "DRAFT"}
+                  onValueChange={(value) => setValue("status", value as "DRAFT" | "PUBLISHED" | "ARCHIVED")}
                 >
-                  <option value="DRAFT">Nacrt</option>
-                  <option value="PUBLISHED">Objavljeno</option>
-                  <option value="ARCHIVED">Arhivirano</option>
-                </select>
+                  <SelectTrigger id="status" aria-label="Status" className="w-full">
+                    <SelectValue placeholder="Izaberi status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="DRAFT">Nacrt</SelectItem>
+                    <SelectItem value="PUBLISHED">Objavljeno</SelectItem>
+                    <SelectItem value="ARCHIVED">Arhivirano</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="template">Šablon</Label>
-                <select
-                  id="template"
-                  aria-label="Šablon"
-                  {...register("template")}
-                  className="border-input flex h-9 w-full rounded-md border bg-transparent px-3 py-1 text-sm shadow-sm"
+                <Select
+                  value={watch("template") || "default"}
+                  onValueChange={(value) => setValue("template", value)}
                 >
-                  <option value="default">Podrazumevani</option>
-                  <option value="full-width">Puna širina</option>
-                  <option value="landing">Landing page</option>
-                </select>
+                  <SelectTrigger id="template" aria-label="Šablon" className="w-full">
+                    <SelectValue placeholder="Izaberi šablon" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="default">Podrazumevani</SelectItem>
+                    <SelectItem value="full-width">Puna širina</SelectItem>
+                    <SelectItem value="landing">Landing page</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <div className="flex items-center justify-between">
                 <Label htmlFor="showHeader" className="cursor-pointer">
