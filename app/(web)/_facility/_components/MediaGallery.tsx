@@ -92,7 +92,7 @@ export function MediaGallery({ media, dict }: MediaGalleryProps) {
                 alt={m.caption || "Facility media"}
               />
             )}
-            <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-[#020617]/90 via-transparent to-transparent p-8 opacity-0 transition-all duration-500 group-hover:opacity-100">
+            <div className="from-background/90 absolute inset-0 flex flex-col justify-end bg-gradient-to-t via-transparent to-transparent p-8 opacity-0 transition-all duration-500 group-hover:opacity-100">
               <div className="translate-y-4 space-y-2 transition-transform duration-500 group-hover:translate-y-0">
                 <p className="text-lg font-bold text-white">
                   {m.caption || dict?.media_gallery?.fallback_caption || "Letnji Užitak"}
