@@ -1,7 +1,7 @@
 "use client";
 import { Icon } from "@/components/ui/Icon";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import type { FacilityMedia } from "@prisma/client";
 
@@ -20,6 +20,15 @@ export function MediaGallery({ media, dict }: MediaGalleryProps) {
   const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
 
   const galleryMedia = media.filter((m) => m.isGalleryVisible !== false);
+
+  // Keyboard: Escape closes the lightbox
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setSelectedIdx(null);
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   if (!galleryMedia.length) return null;
 
