@@ -286,7 +286,10 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
                   onClick={(e) => e.stopPropagation()}
                 />
               ) : (
-                <span className="flex-1 text-left">📁 {cat.title}</span>
+                <span className="flex-1 text-left">
+                  <Icon name="folder" className="mr-1" />
+                  {cat.title}
+                </span>
               )}
               <div className="flex items-center gap-0.5 opacity-0 transition-all group-hover:opacity-100">
                 <button
