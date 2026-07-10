@@ -446,12 +446,12 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
               )}
               <div className="flex flex-wrap gap-1">
                 {prod.requiresPhoto && (
-                  <span className="text-warning rounded bg-amber-500/10 px-1.5 py-0.5 text-[8px] font-bold">
+                  <span className="text-warning bg-warning/10 rounded px-1.5 py-0.5 text-[8px] font-bold">
                     📸
                   </span>
                 )}
                 {prod.requiresIdentity && (
-                  <span className="text-warning rounded bg-amber-500/10 px-1.5 py-0.5 text-[8px] font-bold">
+                  <span className="text-warning bg-warning/10 rounded px-1.5 py-0.5 text-[8px] font-bold">
                     🆔
                   </span>
                 )}

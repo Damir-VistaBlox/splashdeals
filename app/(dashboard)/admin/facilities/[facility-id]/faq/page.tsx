@@ -22,7 +22,7 @@ export default async function FAQPage({ params }: Props) {
     where: { id: facilityId },
     select: { id: true },
   });
-  if (!facility) notFound();
+  if (!facility) return notFound();
 
   const faqs = await prisma.facilityFAQ.findMany({
     where: { facilityId },
