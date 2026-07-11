@@ -2,6 +2,7 @@ import { requireAdmin } from "@/server/lib/auth-guards";
 import { prisma } from "@/server/lib/prisma";
 import { notFound } from "next/navigation";
 import { PostEditor } from "../_components/post-editor";
+import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/Icon";
 import Link from "next/link";
 import type { Metadata } from "next";

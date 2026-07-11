@@ -34,19 +34,23 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { cn } from "@/lib/utils";
 import { deleteBlogPostAction } from "@/app/(server)/actions/cms";
-
-const statusColors: Record<string, string> = {
-  DRAFT: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400",
-  PUBLISHED: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400",
-  ARCHIVED: "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400",
-};
 
 const statusLabels: Record<string, string> = {
   DRAFT: "Nacrt",
   PUBLISHED: "Objavljeno",
   ARCHIVED: "Arhivirano",
+};
+
+const statusBadgeVariant = (status: string): "default" | "secondary" | "outline" => {
+  switch (status) {
+    case "PUBLISHED":
+      return "default";
+    case "DRAFT":
+      return "secondary";
+    default:
+      return "outline";
+  }
 };
 
 interface PostRow {
@@ -118,7 +122,7 @@ export function PostsListClient({ posts }: { posts: Array<Record<string, unknown
       accessorKey: "status",
       header: "Status",
       cell: ({ row }) => (
-        <Badge variant="outline" className={cn(statusColors[row.original.status] || "")}>
+        <Badge variant={statusBadgeVariant(row.original.status)}>
           {statusLabels[row.original.status] || row.original.status}
         </Badge>
       ),
