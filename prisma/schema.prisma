@@ -592,14 +592,17 @@ model Page {
 
 /// 📁 CMS media library — uploaded images for blog posts and pages
 model CmsMedia {
-  id        String    @id @default(uuid())
-  url       String    @unique
-  filename  String
-  size      Int
-  mimeType  String
-  fileHash  String?
-  altText   String?
-  deletedAt DateTime?
+  id         String    @id @default(uuid())
+  url        String    @unique
+  filename   String
+  size       Int
+  mimeType   String
+  fileHash   String?
+  altText    String?
+  width      Int?
+  height     Int?
+  collection String?
+  deletedAt  DateTime?
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt

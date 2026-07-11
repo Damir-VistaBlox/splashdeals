@@ -27,6 +27,9 @@ interface MediaToolbarProps {
   onTypeFilterChange: (value: TypeKey) => void;
   dateRange: DateRangeKey;
   onDateRangeChange: (value: DateRangeKey) => void;
+  collectionFilter: string;
+  onCollectionFilterChange: (value: string) => void;
+  collections: string[];
   viewMode: ViewMode;
   onViewModeChange: (value: ViewMode) => void;
   sizeMode: SizeMode;
@@ -43,6 +46,9 @@ export function MediaToolbar({
   onTypeFilterChange,
   dateRange,
   onDateRangeChange,
+  collectionFilter,
+  onCollectionFilterChange,
+  collections,
   viewMode,
   onViewModeChange,
   sizeMode,
@@ -104,6 +110,25 @@ export function MediaToolbar({
           {ml.last_30_days as string}
         </ToggleGroupItem>
       </ToggleGroup>
+
+      {/* Collection filter */}
+      {collections.length > 0 && (
+        <Select value={collectionFilter} onValueChange={onCollectionFilterChange}>
+          <SelectTrigger className="h-9 w-[160px] text-xs">
+            <SelectValue placeholder={(ml.all as string) || "Sve"} />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="" className="text-xs">
+              {(ml.all as string) || "Sve"}
+            </SelectItem>
+            {collections.map((c) => (
+              <SelectItem key={c} value={c} className="text-xs">
+                {c}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      )}
 
       <Separator orientation="vertical" className="h-8" />
 
