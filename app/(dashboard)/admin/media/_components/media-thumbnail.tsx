@@ -92,9 +92,7 @@ export function MediaThumbnail({
           <span
             className={cn(
               "inline-flex size-5 items-center justify-center rounded-full text-[10px] leading-none font-semibold",
-              usageCount > 0
-                ? "bg-primary text-primary-foreground"
-                : "bg-muted text-muted-foreground",
+              "bg-primary text-primary-foreground",
             )}
             aria-label={`Koristi se u ${usageCount} ${usageCount === 1 ? "mesta" : "mesta"}`}
           >
