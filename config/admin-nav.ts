@@ -69,6 +69,11 @@ export const adminNavData = {
           icon: "tags",
           requiredRole: "SUPER_ADMIN",
         },
+        {
+          title: "Media biblioteka",
+          url: "/admin/media",
+          icon: "photo_library",
+        },
       ],
     },
     {
