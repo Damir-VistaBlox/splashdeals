@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useState, useCallback } from "react";
 import { toast } from "sonner";
 import { MediaGrid } from "./media-grid";
 import { MediaSearch } from "./media-search";
