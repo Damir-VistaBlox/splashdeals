@@ -19,13 +19,13 @@ export function Breadcrumb({ breadcrumbItems, backHref, hasBreadcrumbs }: Breadc
   return (
     <>
       {hasBreadcrumbs && (
-        <div className="w-full overflow-hidden border-t border-border/10 transition-all duration-200 md:hidden">
+        <div className="border-border/10 w-full overflow-hidden border-t transition-all duration-200 md:hidden">
           <div className="mx-auto flex h-9 w-full max-w-7xl items-center gap-0 px-0 py-0">
             {/* Back button */}
             {backHref && (
               <Link
                 href={backHref}
-                className="flex h-full shrink-0 items-center justify-center border-r border-border/10 px-4 text-muted-foreground transition-colors hover:text-foreground active:bg-muted/10"
+                className="border-border/10 text-muted-foreground hover:text-foreground active:bg-muted/10 flex h-full shrink-0 items-center justify-center border-r px-4 transition-colors"
                 aria-label="Nazad"
               >
                 <Icon name="arrow_back" className="text-[14px]" />
@@ -41,14 +41,14 @@ export function Breadcrumb({ breadcrumbItems, backHref, hasBreadcrumbs }: Breadc
                     {idx > 0 && (
                       <Icon
                         name="keyboard_arrow_right"
-                        className="mx-1 shrink-0 text-[12px] text-muted-foreground"
+                        className="text-muted-foreground mx-1 shrink-0 text-[12px]"
                       />
                     )}
                     {item.href && idx < breadcrumbItems.length - 1 ? (
                       item.href === "/" ? (
                         <Link
                           href={item.href}
-                          className="inline-flex min-w-[36px] items-center justify-center px-2 py-1.5 text-[14px] text-muted-foreground transition-colors hover:text-primary"
+                          className="text-muted-foreground hover:text-primary inline-flex min-w-[36px] items-center justify-center px-2 py-1.5 text-[14px] transition-colors"
                           aria-label={item.label}
                         >
                           <Icon name="home" />
@@ -57,18 +57,18 @@ export function Breadcrumb({ breadcrumbItems, backHref, hasBreadcrumbs }: Breadc
                       ) : (
                         <Link
                           href={item.href}
-                          className="px-0.5 text-[10px] font-bold tracking-wider text-muted-foreground uppercase transition-colors hover:text-primary"
+                          className="text-muted-foreground hover:text-primary px-0.5 text-[10px] font-bold tracking-wider uppercase transition-colors"
                         >
                           {item.label}
                         </Link>
                       )
                     ) : item.href === "/" ? (
-                      <span className="inline-flex min-w-[36px] items-center justify-center px-2 py-1.5 text-[14px] text-primary">
+                      <span className="text-primary inline-flex min-w-[36px] items-center justify-center px-2 py-1.5 text-[14px]">
                         <Icon name="home" />
                         <span className="sr-only">{item.label}</span>
                       </span>
                     ) : (
-                      <span className="px-0.5 text-[10px] font-black tracking-wider text-primary uppercase">
+                      <span className="text-primary px-0.5 text-[10px] font-black tracking-wider uppercase">
                         {item.label}
                       </span>
                     )}

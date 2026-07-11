@@ -246,7 +246,7 @@ export function CartClient({ dict }: { dict: Record<string, any> }) {
                         }}
                         variant="ghost"
                         size="default"
-                        className="text-destructive/60 hover:text-destructive flex items-center gap-1 text-[10px] font-bold tracking-widest uppercase h-11"
+                        className="text-destructive/60 hover:text-destructive flex h-11 items-center gap-1 text-[10px] font-bold tracking-widest uppercase"
                         aria-label="Ukloni stavku"
                       >
                         <Icon name="delete" className="text-[14px]" />

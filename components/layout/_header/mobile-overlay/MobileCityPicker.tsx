@@ -30,8 +30,8 @@ export function MobileCityPicker({ cities, dict, onCitySelect }: MobileCityPicke
 
   return (
     <div className="space-y-3">
-      <div className="flex items-center gap-3 text-[10px] font-black tracking-[0.2em] text-muted-foreground uppercase">
-        <Icon name="location_on" className="text-[14px] text-muted-foreground" />
+      <div className="text-muted-foreground flex items-center gap-3 text-[10px] font-black tracking-[0.2em] uppercase">
+        <Icon name="location_on" className="text-muted-foreground text-[14px]" />
         {dict.nav.cities}
       </div>
 
@@ -65,7 +65,7 @@ export function MobileCityPicker({ cities, dict, onCitySelect }: MobileCityPicke
           <Link
             href={`/`}
             onClick={onCitySelect}
-            className="text-primary/80 hover:text-primary hover:border-primary/30 flex h-11 shrink-0 items-center justify-center rounded-full border border-dashed border-border/20 bg-white/5 px-5 text-[10px] font-black tracking-widest uppercase transition-all active:scale-95"
+            className="text-primary/80 hover:text-primary hover:border-primary/30 border-border/20 flex h-11 shrink-0 items-center justify-center rounded-full border border-dashed bg-white/5 px-5 text-[10px] font-black tracking-widest uppercase transition-all active:scale-95"
           >
             {dict.nav.all_regions || "Sve Regije"}
           </Link>
