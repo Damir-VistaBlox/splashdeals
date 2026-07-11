@@ -50,7 +50,7 @@ export function MediaToolbar({
   selectedCount,
   onBatchDelete,
 }: MediaToolbarProps) {
-  const ml = dict.media_library as Record<string, unknown>;
+  const ml = dict as Record<string, unknown>;
   const sortLabels = ml.sort as Record<string, string>;
   const typeLabels = ml.filter_types as Record<string, string>;
 
