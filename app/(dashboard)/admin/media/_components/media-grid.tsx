@@ -15,6 +15,9 @@ interface MediaItem {
   size: number;
   mimeType: string;
   altText: string | null;
+  width: number | null;
+  height: number | null;
+  collection: string | null;
   createdAt: string;
 }
 
@@ -28,6 +31,7 @@ interface MediaGridProps {
   sort: string;
   typeFilter: string;
   dateRange: string;
+  collectionFilter: string;
   actionLabel: string;
   usageMap?: Record<string, { count: number; posts: string[]; pages: string[] }>;
 }
@@ -44,6 +48,7 @@ export function MediaGrid({
   dateRange,
   actionLabel,
   usageMap,
+  collectionFilter,
 }: MediaGridProps) {
   const [items, setItems] = useState<MediaItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -73,6 +78,7 @@ export function MediaGrid({
           sort: sort as "newest" | "oldest" | "name_asc" | "name_desc" | "largest" | "smallest",
           type: typeFilter as "all" | "jpg" | "png" | "webp" | "gif" | "svg",
           dateRange: dateRange as "all" | "7d" | "30d",
+          collection: collectionFilter || undefined,
           limit: 50,
         });
         if (result.success && result.data) {
@@ -90,7 +96,7 @@ export function MediaGrid({
     };
 
     fetchFirst();
-  }, [search, sort, typeFilter, dateRange]);
+  }, [search, sort, typeFilter, dateRange, collectionFilter]);
 
   // Infinite scroll
   useEffect(() => {
@@ -171,6 +177,8 @@ export function MediaGrid({
             mimeType={item.mimeType}
             altText={item.altText}
             createdAt={item.createdAt}
+            width={item.width ?? null}
+            height={item.height ?? null}
             usageCount={usageMap?.[item.id]?.count ?? 0}
             isSelected={selectedIds.has(item.id)}
             onSelect={() => onSelect(item.id)}

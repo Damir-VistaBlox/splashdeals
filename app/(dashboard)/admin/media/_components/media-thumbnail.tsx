@@ -12,6 +12,8 @@ interface MediaThumbnailProps {
   mimeType: string;
   altText: string | null;
   createdAt: string;
+  width: number | null;
+  height: number | null;
   usageCount: number;
   isSelected: boolean;
   onSelect: (id: string) => void;
@@ -55,8 +57,12 @@ export function MediaThumbnail({
   isSelected,
   onSelect,
   onPreview,
+  width,
+  height,
 }: MediaThumbnailProps) {
-  const [imgDimensions, setImgDimensions] = useState<{ w: number; h: number } | null>(null);
+  const [imgDimensions, setImgDimensions] = useState<{ w: number; h: number } | null>(
+    width && height ? { w: width, h: height } : null,
+  );
 
   const handleClick = () => {
     if (isSelected) {

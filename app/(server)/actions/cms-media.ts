@@ -19,6 +19,7 @@ const listMediaSchema = z.object({
     .default("newest"),
   type: z.enum(["all", "jpg", "png", "webp", "gif", "svg"]).default("all"),
   dateRange: z.enum(["all", "7d", "30d"]).default("all"),
+  collection: z.string().optional(),
 });
 
 const updateMediaSchema = z.object({
@@ -43,6 +44,9 @@ export async function listMediaAction(input: z.infer<typeof listMediaSchema>): P
       size: number;
       mimeType: string;
       altText: string | null;
+      width: number | null;
+      height: number | null;
+      collection: string | null;
       createdAt: string;
     }>;
     nextCursor: string | null;
@@ -63,6 +67,11 @@ export async function listMediaAction(input: z.infer<typeof listMediaSchema>): P
     if (params.type !== "all") {
       const mimePrefix = params.type === "jpg" ? "image/jpeg" : `image/${params.type}`;
       where.mimeType = { startsWith: mimePrefix };
+    }
+
+    // Collection filter
+    if (params.collection) {
+      where.collection = params.collection;
     }
 
     // Date range
@@ -107,6 +116,9 @@ export async function listMediaAction(input: z.infer<typeof listMediaSchema>): P
             size: number;
             mimeType: string;
             altText: string | null;
+            width: number | null;
+            height: number | null;
+            collection: string | null;
             createdAt: Date;
           }) => ({
             id: m.id,
@@ -115,6 +127,9 @@ export async function listMediaAction(input: z.infer<typeof listMediaSchema>): P
             size: m.size,
             mimeType: m.mimeType,
             altText: m.altText,
+            width: m.width,
+            height: m.height,
+            collection: m.collection,
             createdAt: m.createdAt.toISOString(),
           }),
         ),
@@ -123,6 +138,29 @@ export async function listMediaAction(input: z.infer<typeof listMediaSchema>): P
     };
   } catch (error) {
     return handleServerActionError(error, "cms/listMedia");
+  }
+}
+
+// ─── 1b. List Collections ────────────────────────────────────
+
+export async function listCollectionsAction(): Promise<ActionResult<string[]>> {
+  try {
+    await requireAdmin();
+
+    const result = await (prisma as any).cmsMedia.findMany({
+      where: { deletedAt: null, collection: { not: null } },
+      select: { collection: true },
+      distinct: ["collection"],
+    });
+
+    const collections = result
+      .map((r: { collection: string }) => r.collection)
+      .filter(Boolean)
+      .sort();
+
+    return { success: true, data: collections };
+  } catch (error) {
+    return handleServerActionError(error, "cms/listCollections");
   }
 }
 
@@ -154,9 +192,11 @@ export async function uploadMediaAction(
       select: { id: true, filename: true, url: true },
     });
 
-    // Convert to WebP (client-side via canvas is preferred, but we do server-side as fallback)
+    // Convert to WebP (server-side resize + format)
     let webpBuffer: Buffer;
     let useOriginal = false;
+    let imgWidth: number | null = null;
+    let imgHeight: number | null = null;
 
     if (file.type === "image/svg+xml" || file.type === "image/gif") {
       // SVG and GIF: keep original format
@@ -164,20 +204,37 @@ export async function uploadMediaAction(
       useOriginal = true;
     } else {
       try {
-        webpBuffer = await sharp(buffer).webp({ quality: 85 }).toBuffer();
+        const img = sharp(buffer);
+        const metadata = await img.metadata();
+        imgWidth = metadata.width || null;
+        imgHeight = metadata.height || null;
+
+        // Resize longest edge to 1920px, maintaining aspect ratio
+        img.resize({ width: 1920, height: 1920, fit: "inside", withoutEnlargement: true });
+        webpBuffer = await img.webp({ quality: 85 }).toBuffer();
       } catch {
         webpBuffer = buffer;
         useOriginal = true;
       }
     }
 
-    const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
-    const pathname = `cms/${Date.now()}-${safeName}`;
+    // UUID-based date-hierarchical path
+    const uuid = crypto.randomUUID();
+    const now = new Date();
+    const y = now.getFullYear();
+    const m = String(now.getMonth() + 1).padStart(2, "0");
+    const d = String(now.getDate()).padStart(2, "0");
+    const ext = useOriginal
+      ? file.type === "image/jpeg"
+        ? ".jpg"
+        : file.type.split("/").pop()
+      : ".webp";
+    const pathname = `media/${y}/${m}/${d}/${uuid}${ext}`;
 
     const blob = await put(pathname, webpBuffer, {
       access: "public",
       contentType: useOriginal ? file.type : "image/webp",
-      addRandomSuffix: true,
+      cacheControlMaxAge: 31536000,
     });
 
     const media = await (prisma as any).cmsMedia.create({
@@ -187,6 +244,9 @@ export async function uploadMediaAction(
         size: webpBuffer.length,
         mimeType: useOriginal ? file.type : "image/webp",
         fileHash,
+        width: imgWidth,
+        height: imgHeight,
+        collection: (formData.get("collection") as string) || null,
       },
     });
 
@@ -243,6 +303,9 @@ export async function getMediaAction(id: string): Promise<
     size: number;
     mimeType: string;
     altText: string | null;
+    width: number | null;
+    height: number | null;
+    collection: string | null;
     createdAt: string;
     usageCount: number;
     usedIn: Array<{ type: "post" | "page"; id: string; title: string }>;
@@ -292,6 +355,9 @@ export async function getMediaAction(id: string): Promise<
         size: media.size,
         mimeType: media.mimeType,
         altText: media.altText,
+        width: media.width ?? null,
+        height: media.height ?? null,
+        collection: media.collection ?? null,
         createdAt: media.createdAt.toISOString(),
         usageCount: usedIn.length,
         usedIn,

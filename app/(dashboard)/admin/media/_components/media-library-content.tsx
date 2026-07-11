@@ -46,9 +46,20 @@ export function MediaLibraryContent({
   const [sort, setSort] = useState("newest");
   const [typeFilter, setTypeFilter] = useState("all");
   const [dateRange, setDateRange] = useState("all");
+  const [collectionFilter, setCollectionFilter] = useState("");
+  const [collections, setCollections] = useState<string[]>([]);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [sizeMode, setSizeMode] = useState<"small" | "medium" | "large">("medium");
   const [refreshKey, setRefreshKey] = useState(0);
+
+  // Load available collections for filter
+  useEffect(() => {
+    import("@/app/(server)/actions/cms-media").then((mod) => {
+      mod.listCollectionsAction().then((r) => {
+        if (r.success && r.data) setCollections(r.data);
+      });
+    });
+  }, []);
 
   // Shared upload handler
   const handleFilesSelected = useCallback(async (files: File[]) => {
@@ -73,10 +84,18 @@ export function MediaLibraryContent({
           try {
             const canvas = document.createElement("canvas");
             const bitmap = await createImageBitmap(file);
-            canvas.width = bitmap.width;
-            canvas.height = bitmap.height;
+            // Resize: max 1920px on the longest edge
+            const MAX = 1920;
+            let { width: w, height: h } = bitmap;
+            if (w > MAX || h > MAX) {
+              const ratio = Math.min(MAX / w, MAX / h);
+              w = Math.round(w * ratio);
+              h = Math.round(h * ratio);
+            }
+            canvas.width = w;
+            canvas.height = h;
             const ctx = canvas.getContext("2d");
-            ctx?.drawImage(bitmap, 0, 0);
+            ctx?.drawImage(bitmap, 0, 0, w, h);
             const webpBlob = await new Promise<Blob | null>((resolve) =>
               canvas.toBlob(resolve, "image/webp", 0.85),
             );
@@ -171,6 +190,9 @@ export function MediaLibraryContent({
     onTypeFilterChange: setTypeFilter,
     dateRange,
     onDateRangeChange: setDateRange,
+    collectionFilter,
+    onCollectionFilterChange: setCollectionFilter,
+    collections,
     viewMode,
     onViewModeChange: setViewMode,
     sizeMode,
@@ -230,6 +252,7 @@ export function MediaLibraryContent({
             sort={sort}
             typeFilter={typeFilter}
             dateRange={dateRange}
+            collectionFilter={collectionFilter}
             actionLabel={actionLabel || (ml.actions as Record<string, string>)?.select || "Izaberi"}
           />
         </div>
