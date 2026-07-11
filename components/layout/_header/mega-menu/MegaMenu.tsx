@@ -140,12 +140,7 @@ export function MegaMenu({ side = "left" }: { side?: "left" | "right" }) {
           <NavigationMenuList>
             <li className="text-muted-foreground flex items-center gap-3 px-3 py-1.5 text-xs">
               <span>Meni nije dostupan</span>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleRetry}
-                aria-label="Pokušaj ponovo"
-              >
+              <Button variant="outline" size="sm" onClick={handleRetry} aria-label="Pokušaj ponovo">
                 <Icon name="refresh" className="size-3" />
                 Pokušaj ponovo
               </Button>
