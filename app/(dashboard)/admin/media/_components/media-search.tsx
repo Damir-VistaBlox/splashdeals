@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Input } from "@/components/ui/input";
 import { Icon } from "@/components/ui/Icon";
-import { cn } from "@/lib/utils";
 
 interface MediaSearchProps {
   value: string;
