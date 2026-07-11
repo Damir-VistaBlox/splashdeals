@@ -82,7 +82,7 @@ export function MediaLibraryContent({ dict, onSelect, actionLabel }: MediaLibrar
         const formData = new FormData();
         formData.append("file", uploadFile);
 
-        const result: any = await uploadMediaAction(formData);
+        const result = await uploadMediaAction(formData);
 
         setUploads((prev) =>
           prev.map((u) =>

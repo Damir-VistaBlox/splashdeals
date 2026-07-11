@@ -47,8 +47,6 @@ export function MediaUploadProgress({ uploads }: MediaUploadProgressProps) {
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
     };
-    // dismissedIds in deps ensures newly dismissed items don't re-trigger old timers
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [uploads, dismissedIds]);
 
   const filtered = uploads.filter((u) => !dismissedIds.has(u.id));

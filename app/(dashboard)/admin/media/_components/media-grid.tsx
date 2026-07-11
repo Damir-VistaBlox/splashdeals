@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, startTransition } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/Icon";
@@ -58,11 +58,13 @@ export function MediaGrid({
 
   // Reset and refetch when filters change
   useEffect(() => {
-    setItems([]);
-    setNextCursor(null);
-    cursorRef.current = null;
-    setLoading(true);
-    setError(null);
+    startTransition(() => {
+      setItems([]);
+      setNextCursor(null);
+      cursorRef.current = null;
+      setLoading(true);
+      setError(null);
+    });
 
     const fetchFirst = async () => {
       try {
