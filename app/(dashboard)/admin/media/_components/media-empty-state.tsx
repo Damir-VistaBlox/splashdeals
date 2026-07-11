@@ -9,7 +9,7 @@ interface MediaEmptyStateProps {
 }
 
 export function MediaEmptyState({ dict, onUpload }: MediaEmptyStateProps) {
-  const ml = dict.media_library as Record<string, unknown>;
+  const ml = dict as Record<string, unknown>;
   const empty = ml.empty as Record<string, string>;
 
   return (
