@@ -14,6 +14,7 @@ import {
 import { toast } from "sonner";
 import type { SerializedCategory } from "../_lib/ticket-admin-actions";
 import { updatePrice, getTicketHierarchy, deletePrice } from "../_lib/ticket-admin-actions";
+import { DAY_LABELS, TIME_LABELS } from "../_lib/constants";
 import {
   Dialog,
   DialogContent,
@@ -23,26 +24,14 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 
-const DAY_LABELS: Record<string, string> = {
-  ALL: "Svi dani",
-  WEEKDAY: "Radni dan",
-  WEEKEND: "Vikend",
-};
-
-const TIME_LABELS: Record<string, string> = {
-  FULL_DAY: "Ceo dan",
-  AFTER_16H: "Posle 16h",
-  THREE_HOUR: "3 sata",
-};
-
 interface PriceCardProps {
   price: SerializedCategory["products"][number]["prices"][number];
-  _product: SerializedCategory["products"][number];
+  product: SerializedCategory["products"][number];
   facilityId: string;
   onDeleted: () => void;
 }
 
-export function PriceCard({ price, _product, facilityId, onDeleted }: PriceCardProps) {
+export function PriceCard({ price, product, facilityId, onDeleted }: PriceCardProps) {
   const [editing, setEditing] = React.useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = React.useState(false);
   const [form, setForm] = React.useState({
@@ -58,7 +47,6 @@ export function PriceCard({ price, _product, facilityId, onDeleted }: PriceCardP
     const parsedOriginal = form.originalPrice ? parseFloat(form.originalPrice) : null;
     if (isNaN(parsedPrice) || parsedPrice < 0) return;
     if (parsedOriginal !== null && (isNaN(parsedOriginal) || parsedOriginal < 0)) return;
-    const { updatePrice } = await import("../_lib/ticket-admin-actions");
     await updatePrice(price.id, facilityId, {
       label: form.label || null,
       price: parsedPrice,
@@ -252,7 +240,6 @@ export function PriceCard({ price, _product, facilityId, onDeleted }: PriceCardP
             <Button
               variant="destructive"
               onClick={async () => {
-                const { deletePrice } = await import("../_lib/ticket-admin-actions");
                 await deletePrice(price.id, facilityId);
                 setShowDeleteConfirm(false);
                 toast.success("Cena obrisana", {
