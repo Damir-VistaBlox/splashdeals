@@ -22,8 +22,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { RichTextEditor } from "../../_components/rich-text-editor";
-import { SEOPanel } from "../../_components/seo-panel";
+import { RichTextEditor } from "../../../_components/rich-text-editor";
+import { SEOPanel } from "../../../_components/seo-panel";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { MediaLibrarySheet } from "@/app/(dashboard)/admin/media/_components/media-library-sheet";
 import {
@@ -32,7 +32,7 @@ import {
   submitForReviewAction,
   approvePostAction,
   rejectPostAction,
-} from "@/app/(server)/actions/cms";
+} from "@/app/(server)/actions/cms/content";
 import { useCmsAutosave, AutosaveData } from "@/hooks/use-cms-autosave";
 
 function countImagesWithoutAlt(html: string): number {

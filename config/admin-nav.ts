@@ -116,6 +116,12 @@ export const adminNavData = {
           icon: "people",
           requiredRole: "SUPER_ADMIN",
         },
+        {
+          title: "Korisnici",
+          url: "/admin/customers",
+          icon: "group",
+          requiredRole: "SUPER_ADMIN",
+        },
       ],
     },
   ] as NavItem[],

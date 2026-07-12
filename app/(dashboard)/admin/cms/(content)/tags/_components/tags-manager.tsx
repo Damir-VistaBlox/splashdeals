@@ -16,7 +16,11 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { createTagAction, updateTagAction, deleteTagAction } from "@/app/(server)/actions/cms";
+import {
+  createTagAction,
+  updateTagAction,
+  deleteTagAction,
+} from "@/app/(server)/actions/cms/content";
 
 interface TagRow {
   id: string;

@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo, useCallback } from "react";
 import { useFormContext } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/Icon";
-import { getFacilityNamesAction } from "@/app/(server)/actions/cms";
+import { getFacilityNamesAction } from "@/app/(server)/actions/cms/content";
 
 interface Facility {
   name: string;

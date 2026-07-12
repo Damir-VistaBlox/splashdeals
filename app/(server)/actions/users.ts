@@ -127,6 +127,70 @@ export async function createAdminUserAction(data: {
 }
 
 /**
+ * 🛒 Fetch buyer customers with transaction & ticket counts
+ */
+export async function getCustomersAction(params?: {
+  page?: number;
+  limit?: number;
+  search?: string;
+}) {
+  try {
+    await requireSuperAdmin();
+
+    const page = params?.page || 1;
+    const limit = params?.limit || 15;
+    const skip = (page - 1) * limit;
+    const search = params?.search?.trim();
+
+    const where = search
+      ? {
+          role: "CUSTOMER" as UserRole,
+          OR: [
+            { name: { contains: search, mode: "insensitive" as const } },
+            { email: { contains: search, mode: "insensitive" as const } },
+          ],
+        }
+      : { role: "CUSTOMER" as UserRole };
+
+    const [customers, totalCount] = await Promise.all([
+      prisma.user.findMany({
+        where,
+        orderBy: { createdAt: "desc" },
+        take: limit,
+        skip: skip,
+        include: {
+          _count: {
+            select: {
+              transactions: true,
+              issuedTickets: { where: { status: "ACTIVE" } },
+            },
+          },
+        },
+      }),
+      prisma.user.count({ where }),
+    ]);
+
+    return {
+      success: true,
+      data: customers.map((c) => ({
+        id: c.id,
+        name: c.name,
+        email: c.email,
+        image: c.image,
+        createdAt: c.createdAt,
+        transactionCount: c._count.transactions,
+        activeTicketsCount: c._count.issuedTickets,
+      })),
+      totalCount,
+      page,
+      limit,
+    };
+  } catch (error) {
+    return handleServerActionError(error, "users");
+  }
+}
+
+/**
  * 🔗 Assign a FACILITY_OWNER role to a user and link them to a facility
  */
 export async function assignFacilityOwnerAction(email: string, facilityId: string) {

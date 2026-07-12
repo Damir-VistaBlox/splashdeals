@@ -20,7 +20,7 @@ import {
   createCategoryAction,
   updateCategoryAction,
   deleteCategoryAction,
-} from "@/app/(server)/actions/cms";
+} from "@/app/(server)/actions/cms/content";
 
 interface CategoryRow {
   id: string;
