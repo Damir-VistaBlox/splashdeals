@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "API dokumentacija | CMS | Splashdeals",
@@ -9,14 +10,14 @@ export default function CmsApiDocsPage() {
     <div className="mx-auto max-w-4xl px-6 py-8">
       <h1 className="mb-2 text-2xl font-bold">API dokumentacija</h1>
       <p className="text-muted-foreground mb-8">
-        Javni API endpointi za CMS sadržaj. Svi zahtevi zahtevaju API ključ u
-        Authorization header-u.
+        Javni API endpointi za CMS sadržaj. Svi zahtevi zahtevaju API ključ u Authorization
+        header-u.
       </p>
 
       {/* Autentifikacija */}
       <section className="mb-10">
         <h2 className="mb-3 text-lg font-semibold">Autentifikacija</h2>
-        <div className="rounded-lg border bg-muted/30 p-4">
+        <div className="bg-muted/30 rounded-lg border p-4">
           <pre className="text-sm">
             <code>
               Authorization: Bearer {"{your_api_key}"}
@@ -27,9 +28,9 @@ export default function CmsApiDocsPage() {
         </div>
         <p className="text-muted-foreground mt-2 text-sm">
           API ključeve možete kreirati u{" "}
-          <a href="/admin/api-keys" className="text-primary underline">
+          <Link href="/admin/api-keys" className="text-primary underline">
             podešavanjima API ključeva
-          </a>
+          </Link>
           .
         </p>
       </section>
@@ -44,16 +45,16 @@ export default function CmsApiDocsPage() {
             </span>
             <code className="text-sm">/api/cms/posts</code>
           </div>
-          <div className="rounded-lg border bg-muted/30 p-4">
+          <div className="bg-muted/30 rounded-lg border p-4">
             <pre className="text-sm">
               <code>
-{`curl -H "Authorization: Bearer YOUR_API_KEY" \\
+                {`curl -H "Authorization: Bearer YOUR_API_KEY" \\
   https://www.splashdeals.rs/api/cms/posts`}
               </code>
             </pre>
           </div>
           <div className="text-muted-foreground text-sm">
-            <p className="mb-2 font-medium text-foreground">Parametri (query string):</p>
+            <p className="text-foreground mb-2 font-medium">Parametri (query string):</p>
             <ul className="list-disc space-y-1 pl-5">
               <li>
                 <code className="text-xs">status</code> — filter po statusu (DRAFT, REVIEW,
@@ -71,7 +72,7 @@ export default function CmsApiDocsPage() {
             </ul>
           </div>
           <div className="rounded-lg border p-4">
-            <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            <p className="text-muted-foreground mb-2 text-xs font-semibold tracking-wider uppercase">
               Odgovor
             </p>
             <pre className="text-xs">
@@ -115,16 +116,16 @@ export default function CmsApiDocsPage() {
             </span>
             <code className="text-sm">/api/cms/posts/{"{slug}"}</code>
           </div>
-          <div className="rounded-lg border bg-muted/30 p-4">
+          <div className="bg-muted/30 rounded-lg border p-4">
             <pre className="text-sm">
               <code>
-{`curl -H "Authorization: Bearer YOUR_API_KEY" \\
+                {`curl -H "Authorization: Bearer YOUR_API_KEY" \\
   https://www.splashdeals.rs/api/cms/posts/kako-odabrati-bazen`}
               </code>
             </pre>
           </div>
           <div className="rounded-lg border p-4">
-            <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            <p className="text-muted-foreground mb-2 text-xs font-semibold tracking-wider uppercase">
               Odgovor
             </p>
             <pre className="text-xs">
@@ -163,10 +164,10 @@ export default function CmsApiDocsPage() {
             </span>
             <code className="text-sm">/api/cms/pages</code>
           </div>
-          <div className="rounded-lg border bg-muted/30 p-4">
+          <div className="bg-muted/30 rounded-lg border p-4">
             <pre className="text-sm">
               <code>
-{`curl -H "Authorization: Bearer YOUR_API_KEY" \\
+                {`curl -H "Authorization: Bearer YOUR_API_KEY" \\
   https://www.splashdeals.rs/api/cms/pages`}
               </code>
             </pre>
@@ -184,10 +185,10 @@ export default function CmsApiDocsPage() {
             </span>
             <code className="text-sm">/api/cms/pages/{"{slug}"}</code>
           </div>
-          <div className="rounded-lg border bg-muted/30 p-4">
+          <div className="bg-muted/30 rounded-lg border p-4">
             <pre className="text-sm">
               <code>
-{`curl -H "Authorization: Bearer YOUR_API_KEY" \\
+                {`curl -H "Authorization: Bearer YOUR_API_KEY" \\
   https://www.splashdeals.rs/api/cms/pages/o-nama`}
               </code>
             </pre>
@@ -205,10 +206,10 @@ export default function CmsApiDocsPage() {
             </span>
             <code className="text-sm">/api/cms/categories</code>
           </div>
-          <div className="rounded-lg border bg-muted/30 p-4">
+          <div className="bg-muted/30 rounded-lg border p-4">
             <pre className="text-sm">
               <code>
-{`curl -H "Authorization: Bearer YOUR_API_KEY" \\
+                {`curl -H "Authorization: Bearer YOUR_API_KEY" \\
   https://www.splashdeals.rs/api/cms/categories`}
               </code>
             </pre>
@@ -221,12 +222,12 @@ export default function CmsApiDocsPage() {
         <h2 className="mb-3 text-lg font-semibold">Primeri upotrebe</h2>
         <div className="space-y-4">
           <div className="rounded-lg border p-4">
-            <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            <p className="text-muted-foreground mb-2 text-xs font-semibold tracking-wider uppercase">
               Primer 1 — Dohvati poslednjih 5 objavljenih objava
             </p>
             <pre className="text-sm">
               <code>
-{`fetch("https://www.splashdeals.rs/api/cms/posts?status=PUBLISHED&limit=5", {
+                {`fetch("https://www.splashdeals.rs/api/cms/posts?status=PUBLISHED&limit=5", {
   headers: { Authorization: "Bearer YOUR_API_KEY" },
 })
   .then((r) => r.json())
@@ -235,12 +236,12 @@ export default function CmsApiDocsPage() {
             </pre>
           </div>
           <div className="rounded-lg border p-4">
-            <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Primer 2 — Dohvati objave iz kategorije "Saveti"
+            <p className="text-muted-foreground mb-2 text-xs font-semibold tracking-wider uppercase">
+              Primer 2 — Dohvati objave iz kategorije &ldquo;Saveti&rdquo;
             </p>
             <pre className="text-sm">
               <code>
-{`const res = await fetch(
+                {`const res = await fetch(
   "https://www.splashdeals.rs/api/cms/posts?category=saveti&limit=10",
   { headers: { Authorization: "Bearer YOUR_API_KEY" } }
 );

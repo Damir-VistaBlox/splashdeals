@@ -3,7 +3,7 @@
 
 import { useCallback, useTransition, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useForm, FormProvider } from "react-hook-form";
+import { useForm, FormProvider, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import slugify from "slugify";
@@ -161,6 +161,7 @@ export function PostEditor({ post, initialTagIds, categories, tags, dict }: Post
     register,
     handleSubmit,
     setValue,
+    getValues,
     watch,
     formState: { errors, isDirty },
   } = form;
@@ -289,9 +290,9 @@ export function PostEditor({ post, initialTagIds, categories, tags, dict }: Post
 
   return (
     <FormProvider {...form}>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit as SubmitHandler<any>)}>
         {/* Editor Presence */}
-        {isEditing && post?.id && (
+        {isEditing && !!post?.id && (
           <EditorPresence
             postId={post.id as string}
             currentUserId=""
@@ -434,7 +435,7 @@ export function PostEditor({ post, initialTagIds, categories, tags, dict }: Post
                 size="sm"
                 className="gap-1.5 border-purple-300 text-purple-700 hover:bg-purple-50"
                 onClick={async () => {
-                  const topic = watch("title");
+                  const topic = getValues("title");
                   if (!topic || topic.trim().length < 2) {
                     toast.error("Prvo unesi naslov (temu) za generisanje sadržaja.");
                     return;
