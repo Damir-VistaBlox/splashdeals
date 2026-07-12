@@ -1,7 +1,7 @@
 "use client";
 
 import { Icon } from "@/components/ui/Icon";
-import { useState, useEffect, useCallback } from "react";
+import { startTransition, useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -45,27 +45,41 @@ export function CustomersTable({ page, limit, search: initialSearch }: Customers
   const pageSize = Number(limit) || 15;
   const totalPages = Math.ceil(totalCount / pageSize);
 
-  const fetchCustomers = useCallback(async (p: number, s: string) => {
-    setLoading(true);
-    try {
-      const result = await getCustomersAction({ page: p, limit: pageSize, search: s || undefined });
-      if (result.success) {
-        const successResult = result as {
-          success: true;
-          data: Customer[];
-          totalCount: number;
-        };
-        setCustomers(successResult.data);
-        setTotalCount(successResult.totalCount);
-      } else {
+  const fetchCustomers = useCallback(
+    async (p: number, s: string) => {
+      startTransition(() => {
+        setLoading(true);
+      });
+
+      try {
+        const result = await getCustomersAction({
+          page: p,
+          limit: pageSize,
+          search: s || undefined,
+        });
+        if (result.success) {
+          const successResult = result as {
+            success: true;
+            data: Customer[];
+            totalCount: number;
+          };
+          startTransition(() => {
+            setCustomers(successResult.data);
+            setTotalCount(successResult.totalCount);
+          });
+        } else {
+          toast.error("Failed to load customers");
+        }
+      } catch {
         toast.error("Failed to load customers");
+      } finally {
+        startTransition(() => {
+          setLoading(false);
+        });
       }
-    } catch {
-      toast.error("Failed to load customers");
-    } finally {
-      setLoading(false);
-    }
-  }, [pageSize]);
+    },
+    [pageSize],
+  );
 
   useEffect(() => {
     fetchCustomers(currentPage, initialSearch || "");
@@ -208,13 +222,13 @@ export function CustomersTable({ page, limit, search: initialSearch }: Customers
                     </span>
                   </TableCell>
                   <TableCell>
-                    <span className="text-foreground font-bold text-xs">
+                    <span className="text-foreground text-xs font-bold">
                       {customer.transactionCount}
                     </span>
                   </TableCell>
                   <TableCell>
                     <span
-                      className={`font-bold text-xs ${
+                      className={`text-xs font-bold ${
                         customer.activeTicketsCount > 0
                           ? "text-emerald-400"
                           : "text-muted-foreground"
