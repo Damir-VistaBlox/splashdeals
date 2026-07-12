@@ -263,7 +263,7 @@ export function ShowcaseTicketGroups({
         </div>
       )}
 
-      {/* Sticky Drawer */}
+      {/* Mobile Sticky Drawer */}
       {totalItems > 0 && (
         <div className="animate-in slide-in-from-bottom fixed right-4 bottom-20 left-4 z-[999] duration-300 md:hidden">
           <div className="mobile-glass flex items-center justify-between gap-4 rounded-3xl p-4 shadow-[0_0_25px_hsl(var(--primary)/0.1)]">
@@ -283,6 +283,33 @@ export function ShowcaseTicketGroups({
             <Button
               onClick={() => (window.location.href = "/cart")}
               className="bg-primary hover:bg-primary/90 text-primary-foreground flex h-12 shrink-0 cursor-pointer items-center gap-2 rounded-2xl px-6 text-xs font-black tracking-widest uppercase shadow-[0_0_20px_rgba(6,182,212,0.3)] transition-colors active:scale-95"
+            >
+              <span>Kupi</span>
+              <Icon name="arrow_forward" className="text-[16px]" />
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {/* Desktop Sticky Summary Bar */}
+      {totalItems > 0 && (
+        <div className="animate-in slide-in-from-bottom fixed right-0 bottom-0 left-0 z-[999] hidden border-t duration-300 md:flex">
+          <div className="bg-background/80 border-border mx-auto flex w-full max-w-6xl items-center justify-between gap-6 border-x px-8 py-4 shadow-[0_-4px_30px_hsl(var(--primary)/0.08)] backdrop-blur-xl">
+            <div className="flex items-baseline gap-3">
+              <span className="text-muted-foreground text-[9px] font-black tracking-widest uppercase">
+                U korpi
+              </span>
+              <span className="text-foreground text-sm font-black">
+                {totalItems} {totalItems === 1 ? "ulaznica" : "ulaznice"}
+              </span>
+              <span className="bg-border mx-2 h-4 w-px" />
+              <span className="text-primary text-base font-bold">
+                {totalPrice.toLocaleString("sr-Latn")} RSD
+              </span>
+            </div>
+            <Button
+              onClick={() => (window.location.href = "/cart")}
+              className="bg-primary hover:bg-primary/90 text-primary-foreground flex h-12 shrink-0 cursor-pointer items-center gap-2 rounded-2xl px-8 text-xs font-black tracking-widest uppercase shadow-[0_0_20px_rgba(6,182,212,0.3)] transition-colors active:scale-95"
             >
               <span>Kupi</span>
               <Icon name="arrow_forward" className="text-[16px]" />
@@ -413,7 +440,7 @@ function MobileTicketAccordion({
       >
         <div className="flex min-w-0 flex-1 items-center gap-2 text-left">
           {tier.imageUrl && (
-            <div className="border-border/50 relative h-10 w-10 shrink-0 overflow-hidden rounded-xl border">
+            <div className="ring-border/50 relative aspect-[4/3] w-10 shrink-0 overflow-hidden rounded-xl ring-1">
               <Image
                 src={tier.imageUrl}
                 alt={tier.label || tier.title}
@@ -421,6 +448,7 @@ function MobileTicketAccordion({
                 className="object-cover"
                 sizes="40px"
               />
+              <div className="from-background/80 via-background/20 pointer-events-none absolute inset-0 bg-gradient-to-t to-transparent" />
             </div>
           )}
           <span className="text-foreground truncate text-sm font-bold tracking-tight">
@@ -660,7 +688,7 @@ function SingleTierCard({
         </div>
         {tier.imageUrl && (
           <div className="flex items-start gap-4">
-            <div className="border-border/50 relative h-24 w-24 shrink-0 overflow-hidden rounded-xl border">
+            <div className="ring-border/50 relative aspect-[4/3] w-24 shrink-0 overflow-hidden rounded-xl ring-1">
               <Image
                 src={tier.imageUrl}
                 alt={tier.title || tier.label}
@@ -668,6 +696,7 @@ function SingleTierCard({
                 className="object-cover"
                 sizes="96px"
               />
+              <div className="from-background/80 via-background/20 pointer-events-none absolute inset-0 bg-gradient-to-t to-transparent" />
             </div>
             <div className="space-y-2">
               <h3 className="text-foreground group-hover:text-primary text-xl leading-none font-black tracking-tighter uppercase italic transition-colors md:text-3xl">
@@ -836,7 +865,7 @@ function TierList({
         >
           <div className="flex w-full flex-1 items-start gap-2">
             {tier.imageUrl && (
-              <div className="border-border/50 relative h-14 w-14 shrink-0 overflow-hidden rounded-xl border">
+              <div className="ring-border/50 relative aspect-[4/3] w-14 shrink-0 overflow-hidden rounded-xl ring-1">
                 <Image
                   src={tier.imageUrl}
                   alt={tier.label || tier.title}
@@ -844,6 +873,7 @@ function TierList({
                   className="object-cover"
                   sizes="56px"
                 />
+                <div className="from-background/80 via-background/20 pointer-events-none absolute inset-0 bg-gradient-to-t to-transparent" />
               </div>
             )}
             <div className="w-full flex-1 space-y-1 text-center md:text-left">
@@ -967,7 +997,7 @@ function TierGrid({
           className="bg-muted/20 border-border hover:bg-muted/50 group flex flex-col gap-6 rounded-2xl border p-6 transition-colors"
         >
           {tier.imageUrl && (
-            <div className="border-border/50 relative h-20 w-20 self-start overflow-hidden rounded-xl border">
+            <div className="ring-border/50 relative aspect-[4/3] w-20 shrink-0 self-start overflow-hidden rounded-xl ring-1">
               <Image
                 src={tier.imageUrl}
                 alt={tier.label || tier.title}
@@ -975,6 +1005,7 @@ function TierGrid({
                 className="object-cover"
                 sizes="80px"
               />
+              <div className="from-background/80 via-background/20 pointer-events-none absolute inset-0 bg-gradient-to-t to-transparent" />
             </div>
           )}
           <div className="space-y-1">
