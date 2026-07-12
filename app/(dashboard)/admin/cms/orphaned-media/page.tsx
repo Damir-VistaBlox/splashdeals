@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useCallback, useEffect, useState, startTransition } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
@@ -40,9 +40,7 @@ export default function OrphanedMediaPage() {
     setLoading(true);
     setError(null);
     try {
-      const { listOrphanedMediaAction } = await import(
-        "@/app/(server)/actions/cms-media"
-      );
+      const { listOrphanedMediaAction } = await import("@/app/(server)/actions/cms-media");
       const result = await listOrphanedMediaAction();
       if (result.success && result.data) {
         setItems(result.data as OrphanedMediaItem[]);
@@ -57,7 +55,9 @@ export default function OrphanedMediaPage() {
   }, []);
 
   useEffect(() => {
-    fetchOrphans();
+    startTransition(() => {
+      fetchOrphans();
+    });
   }, [fetchOrphans]);
 
   const handleDeleteAll = useCallback(async () => {
@@ -65,17 +65,13 @@ export default function OrphanedMediaPage() {
 
     setDeleting(true);
     try {
-      const { batchDeleteMediaAction } = await import(
-        "@/app/(server)/actions/cms-media"
-      );
+      const { batchDeleteMediaAction } = await import("@/app/(server)/actions/cms-media");
       const result = await batchDeleteMediaAction({
         ids: items.map((i) => i.id),
         force: true,
       });
       if (result.success) {
-        toast.success(
-          `Obrisano ${result.data?.deleted || 0} medija.`,
-        );
+        toast.success(`Obrisano ${result.data?.deleted || 0} medija.`);
         setItems([]);
       } else {
         toast.error(result.error || "Greška pri brisanju.");
