@@ -17,17 +17,18 @@ export default function TicketingError({
   }, [error]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-6">
-      <div className="max-w-md space-y-6 text-center">
-        <Icon name="confirmation_number" className="text-warning mx-auto h-16 w-16" />
-        <h1 className="text-foreground text-3xl font-black uppercase italic">Greška u prodaji</h1>
-        <p className="text-muted-foreground">
+    <div className="flex min-h-[60vh] items-center justify-center px-4">
+      <div className="max-w-lg space-y-5 text-center">
+        <div className="bg-warning/10 mx-auto flex h-20 w-20 items-center justify-center rounded-full">
+          <Icon name="confirmation_number" className="text-warning h-10 w-10" />
+        </div>
+        <h1 className="text-foreground text-4xl font-black tracking-tight">Greška u prodaji</h1>
+        <p className="text-muted-foreground leading-relaxed">
           Došlo je do neočekivane greške prilikom učitavanja ulaznica. Pokušajte ponovo ili nas
-          kontaktirajte.
+          kontaktirajte ako problem potraje.
         </p>
-        <p className="text-muted-foreground/60 text-xs">
-          Ako problem potraje, proverite da li je izabrani objekat još uvek aktivan ili nam pišite
-          na podrška@splashdeals.rs
+        <p className="text-muted-foreground/50 text-xs">
+          Greška: {error.message || "Nepoznata greška"}
         </p>
         <div className="flex justify-center gap-4">
           <Button onClick={reset} variant="default">
