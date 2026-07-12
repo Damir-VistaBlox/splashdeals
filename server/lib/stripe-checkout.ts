@@ -5,7 +5,6 @@ import { prisma } from "@/server/lib/prisma";
 import { generateIdempotencyKey, withStripeRetry } from "@/server/lib/stripe-utils";
 import {
   validatePromoCodeAction,
-  incrementCampaignUsageAction,
 } from "@/app/(server)/actions/campaigns";
 
 // ──────────────────────────────────────────────
