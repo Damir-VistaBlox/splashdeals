@@ -22,6 +22,8 @@ model User {
   transactions     Transaction[]
   amenityAuditLogs AmenityAuditLog[]
   staffAssignments FacilityStaffAssignment[]
+  facilityOwners   FacilityOwner[]
+  reviews          Review[]
 
   @@schema("admin")
 }
@@ -128,8 +130,10 @@ model Facility {
   faqs              FacilityFAQ[]
   labels            FacilityLabel[]
   staffAssignments  FacilityStaffAssignment[]
+  owners            FacilityOwner[]
   products          Product[]
   campaignLinks     CampaignFacility[]
+  reviews           Review[]
 
   @@schema("partners")
 }
@@ -149,6 +153,19 @@ model FacilityStaffAssignment {
   @@index([facilityId])
   @@index([userId])
   @@map("facility_staff_assignments")
+  @@schema("partners")
+}
+
+/// 🏪 Links FACILITY_OWNER users to the specific facilities they own
+model FacilityOwner {
+  userId     String
+  facilityId String
+  createdAt  DateTime @default(now())
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  facility Facility @relation(fields: [facilityId], references: [id], onDelete: Cascade)
+
+  @@id([userId, facilityId])
   @@schema("partners")
 }
 
@@ -705,6 +722,7 @@ model NavigationMenuItem {
 enum UserRole {
   CUSTOMER
   FACILITY_STAFF
+  FACILITY_OWNER
   SUPER_ADMIN
 
   @@schema("admin")
@@ -820,6 +838,26 @@ model FacilityFAQ {
   @@index([facilityId, displayOrder])
   @@schema("partners")
   @@map("facility_faqs")
+}
+
+/// ⭐ Reviews — user reviews for facilities
+model Review {
+  id         String   @id @default(uuid())
+  facilityId String
+  userId     String
+  rating     Int      // 1-5
+  title      String?
+  content    String?
+  isApproved Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  facility Facility @relation(fields: [facilityId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([facilityId, userId]) // one review per user per facility
+  @@map("reviews")
+  @@schema("partners")
 }
 
 enum AmenityValueType {
