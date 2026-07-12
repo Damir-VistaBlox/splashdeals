@@ -8,7 +8,17 @@ import { Icon } from "@/components/ui/Icon";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import type { SerializedCategory } from "../_lib/ticket-admin-actions";
-import { getTicketHierarchy } from "../_lib/ticket-admin-actions";
+import {
+  createCategory,
+  createProduct,
+  createPrice,
+  updateCategory,
+  updateProduct,
+  deleteCategory,
+  deleteProduct,
+  getTicketHierarchy,
+} from "../_lib/ticket-admin-actions";
+import { DAY_LABELS, TIME_LABELS } from "../_lib/constants";
 import { ProductImageSection } from "./product-image-section";
 import { PriceCard } from "./price-card";
 import {
@@ -24,18 +34,6 @@ interface Props {
   facilityId: string;
   initialCategories: SerializedCategory[];
 }
-
-const DAY_LABELS: Record<string, string> = {
-  ALL: "Svi dani",
-  WEEKDAY: "Radni dan",
-  WEEKEND: "Vikend",
-};
-
-const TIME_LABELS: Record<string, string> = {
-  FULL_DAY: "Ceo dan",
-  AFTER_16H: "Posle 16h",
-  THREE_HOUR: "3 sata",
-};
 
 export function TicketManagementV2({ facilityId, initialCategories }: Props) {
   const [categories, setCategories] = React.useState(initialCategories);
@@ -67,7 +65,6 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
 
   const handleAddCategory = async () => {
     if (!newCatTitle.trim()) return;
-    const { createCategory } = await import("../_lib/ticket-admin-actions");
     const cat = await createCategory(facilityId, newCatTitle);
     setCategories((prev) => [
       ...prev,
@@ -91,7 +88,6 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
 
   const handleAddProduct = async () => {
     if (!selectedCategoryId || !newProdTitle.trim()) return;
-    const { createProduct } = await import("../_lib/ticket-admin-actions");
     const prod = await createProduct(selectedCategoryId, facilityId, { title: newProdTitle });
     setCategories((prev) =>
       prev.map((c) =>
@@ -138,7 +134,6 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
     if (!deleteCategoryTarget) return;
     const { id, title } = deleteCategoryTarget;
     setDeleteCategoryTarget(null);
-    const { deleteCategory } = await import("../_lib/ticket-admin-actions");
     await deleteCategory(id, facilityId);
     setCategories((prev) => prev.filter((c) => c.id !== id));
     if (selectedCategoryId === id) {
@@ -158,7 +153,6 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
 
   const handleSaveCategory = async () => {
     if (!editingCatId || !editCatTitle.trim()) return;
-    const { updateCategory } = await import("../_lib/ticket-admin-actions");
     await updateCategory(editingCatId, facilityId, { title: editCatTitle.trim() });
     setCategories((prev) =>
       prev.map((c) => (c.id === editingCatId ? { ...c, title: editCatTitle.trim() } : c)),
@@ -179,7 +173,6 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
 
   const handleSaveProduct = async () => {
     if (!editingProductId || !editProductTitle.trim()) return;
-    const { updateProduct } = await import("../_lib/ticket-admin-actions");
     await updateProduct(editingProductId, facilityId, { title: editProductTitle.trim() });
     setCategories((prev) =>
       prev.map((c) => ({
@@ -200,7 +193,6 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
 
   const handleMoveProduct = async (productId: string, fromCatId: string, toCatId: string) => {
     if (fromCatId === toCatId) return;
-    const { updateProduct } = await import("../_lib/ticket-admin-actions");
     await updateProduct(productId, facilityId, { categoryId: toCatId });
     setCategories((prev) =>
       prev.map((c) => {
@@ -226,7 +218,6 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
     if (!deleteProductTarget) return;
     const { id, title } = deleteProductTarget;
     setDeleteProductTarget(null);
-    const { deleteProduct } = await import("../_lib/ticket-admin-actions");
     await deleteProduct(id, facilityId);
     setCategories((prev) =>
       prev.map((c) => ({
@@ -242,11 +233,35 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
   };
 
   const handleAddPrice = async (productId: string) => {
-    const { createPrice } = await import("../_lib/ticket-admin-actions");
-    await createPrice(productId, facilityId, { price: 0 });
-    // Refresh categories to get the new price
-    const fresh = await getTicketHierarchy(facilityId);
-    setCategories(fresh);
+    const newPrice = await createPrice(productId, facilityId, { price: 0 });
+    setCategories((prev) =>
+      prev.map((c) => ({
+        ...c,
+        products: c.products.map((p) =>
+          p.id === productId
+            ? {
+                ...p,
+                prices: [
+                  ...p.prices,
+                  {
+                    id: newPrice.id,
+                    ticketProductId: productId,
+                    label: null,
+                    price: 0,
+                    originalPrice: null,
+                    dayType: null,
+                    timeSlot: null,
+                    validFrom: null,
+                    validTo: null,
+                    displayOrder: newPrice.displayOrder,
+                    isActive: true,
+                  },
+                ],
+              }
+            : p,
+        ),
+      })),
+    );
   };
 
   return (
@@ -590,7 +605,7 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
                 <PriceCard
                   key={price.id}
                   price={price}
-                  _product={selectedProduct}
+                  product={selectedProduct}
                   facilityId={facilityId}
                   onDeleted={() => {
                     setCategories((prev) =>

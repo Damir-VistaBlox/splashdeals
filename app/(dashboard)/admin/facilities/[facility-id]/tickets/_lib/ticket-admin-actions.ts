@@ -1,7 +1,61 @@
 "use server";
 import { prisma } from "@/server/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { z } from "zod";
 import type { ValidityType, DayType, TimeSlot } from "@prisma/client";
+
+// ─── Zod Schemas ────────────────────────────────────
+
+const createCategorySchema = z.object({
+  title: z.string().min(1, "Naziv kategorije je obavezan"),
+});
+
+const updateCategorySchema = z.object({
+  title: z.string().min(1).optional(),
+  isActive: z.boolean().optional(),
+});
+
+const createProductSchema = z.object({
+  title: z.string().min(1, "Naziv tipa je obavezan"),
+  label: z.string().optional(),
+  requiresIdentity: z.boolean().optional(),
+  requiresPhoto: z.boolean().optional(),
+  minPeople: z.number().int().min(1).optional(),
+  maxPeople: z.number().int().min(1).nullable().optional(),
+  isSeasonPass: z.boolean().optional(),
+  validityType: z.string().optional(),
+});
+
+const updateProductSchema = z.object({
+  title: z.string().min(1).optional(),
+  label: z.string().nullable().optional(),
+  requiresIdentity: z.boolean().optional(),
+  requiresPhoto: z.boolean().optional(),
+  minPeople: z.number().int().min(1).optional(),
+  maxPeople: z.number().int().min(1).nullable().optional(),
+  isActive: z.boolean().optional(),
+  categoryId: z.string().optional(),
+  imageUrl: z.string().nullable().optional(),
+});
+
+const createPriceSchema = z.object({
+  price: z.number().min(0, "Cena ne može biti negativna"),
+  originalPrice: z.number().min(0).nullable().optional(),
+  label: z.string().optional(),
+  dayType: z.string().optional(),
+  timeSlot: z.string().optional(),
+  validFrom: z.date().nullable().optional(),
+  validTo: z.date().nullable().optional(),
+});
+
+const updatePriceSchema = z.object({
+  price: z.number().min(0).optional(),
+  originalPrice: z.number().min(0).nullable().optional(),
+  label: z.string().nullable().optional(),
+  dayType: z.string().nullable().optional(),
+  timeSlot: z.string().nullable().optional(),
+  isActive: z.boolean().optional(),
+});
 
 // ─── Types ──────────────────────────────────────────
 
@@ -45,7 +99,7 @@ export interface SerializedPrice {
   isActive: boolean;
 }
 
-// ─── Fetch ───────────────────────────────────────────
+// ─── Fetch ──────────────────────────────────────────
 
 export async function getTicketHierarchy(facilityId: string): Promise<SerializedCategory[]> {
   const categories = await prisma.ticketCategory.findMany({
@@ -98,9 +152,14 @@ export async function getTicketHierarchy(facilityId: string): Promise<Serialized
   }));
 }
 
-// ─── CRUD: Category ──────────────────────────────────
+function revalidate(facilityId: string) {
+  revalidatePath(`/admin/facilities/${facilityId}/tickets`);
+}
+
+// ─── CRUD: Category ────────────────────────────
 
 export async function createCategory(facilityId: string, title: string) {
+  createCategorySchema.parse({ title });
   const maxOrder = await prisma.ticketCategory.aggregate({
     where: { facilityId },
     _max: { displayOrder: true },
@@ -116,27 +175,26 @@ export async function createCategory(facilityId: string, title: string) {
       displayOrder: (maxOrder._max.displayOrder ?? -1) + 1,
     },
   });
-  revalidatePath(`/admin/facilities/${facilityId}/tickets`);
+  revalidate(facilityId);
   return category;
 }
-
-// ─── Image Upload ─────────────────────────────────────
 
 export async function updateCategory(
   id: string,
   facilityId: string,
   data: { title?: string; isActive?: boolean },
 ) {
+  updateCategorySchema.parse(data);
   await prisma.ticketCategory.update({ where: { id }, data });
-  revalidatePath(`/admin/facilities/${facilityId}/tickets`);
+  revalidate(facilityId);
 }
 
 export async function deleteCategory(id: string, facilityId: string) {
   await prisma.ticketCategory.delete({ where: { id } });
-  revalidatePath(`/admin/facilities/${facilityId}/tickets`);
+  revalidate(facilityId);
 }
 
-// ─── CRUD: Product ───────────────────────────────────
+// ─── CRUD: Product ─────────────────────────────
 
 export async function createProduct(
   categoryId: string,
@@ -152,6 +210,7 @@ export async function createProduct(
     validityType?: string;
   },
 ) {
+  createProductSchema.parse(data);
   const maxOrder = await prisma.ticketProduct.aggregate({
     where: { categoryId },
     _max: { displayOrder: true },
@@ -170,7 +229,7 @@ export async function createProduct(
       displayOrder: (maxOrder._max.displayOrder ?? -1) + 1,
     },
   });
-  revalidatePath(`/admin/facilities/${facilityId}/tickets`);
+  revalidate(facilityId);
   return product;
 }
 
@@ -189,16 +248,17 @@ export async function updateProduct(
     imageUrl?: string | null;
   },
 ) {
+  updateProductSchema.parse(data);
   await prisma.ticketProduct.update({ where: { id }, data });
-  revalidatePath(`/admin/facilities/${facilityId}/tickets`);
+  revalidate(facilityId);
 }
 
 export async function deleteProduct(id: string, facilityId: string) {
   await prisma.ticketProduct.delete({ where: { id } });
-  revalidatePath(`/admin/facilities/${facilityId}/tickets`);
+  revalidate(facilityId);
 }
 
-// ─── CRUD: Price ─────────────────────────────────────
+// ─── CRUD: Price ───────────────────────────────
 
 export async function createPrice(
   ticketTypeId: string,
@@ -213,6 +273,7 @@ export async function createPrice(
     validTo?: Date | null;
   },
 ) {
+  createPriceSchema.parse(data);
   const maxOrder = await prisma.ticketPrice.aggregate({
     where: { ticketTypeId },
     _max: { displayOrder: true },
@@ -230,7 +291,7 @@ export async function createPrice(
       displayOrder: (maxOrder._max.displayOrder ?? -1) + 1,
     },
   });
-  revalidatePath(`/admin/facilities/${facilityId}/tickets`);
+  revalidate(facilityId);
   return price;
 }
 
@@ -246,6 +307,7 @@ export async function updatePrice(
     isActive?: boolean;
   },
 ) {
+  updatePriceSchema.parse(data);
   await prisma.ticketPrice.update({
     where: { id },
     data: {
@@ -257,10 +319,10 @@ export async function updatePrice(
       ...(data.isActive !== undefined ? { isActive: data.isActive } : {}),
     },
   });
-  revalidatePath(`/admin/facilities/${facilityId}/tickets`);
+  revalidate(facilityId);
 }
 
 export async function deletePrice(id: string, facilityId: string) {
   await prisma.ticketPrice.delete({ where: { id } });
-  revalidatePath(`/admin/facilities/${facilityId}/tickets`);
+  revalidate(facilityId);
 }
