@@ -157,6 +157,7 @@ label {
   background-clip: text;
   -webkit-text-fill-color: transparent;
   position: relative;
+  filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.4));
 }
 
 /* Scrollbar Utilities */

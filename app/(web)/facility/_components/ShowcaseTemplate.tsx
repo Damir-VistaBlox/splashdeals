@@ -19,7 +19,7 @@ function isDeletedFacility(slug: string): boolean {
 
 // 🏝️ Islands: Client Components for interactive portions
 import { ShowcaseHero } from "./ShowcaseHero";
-import { FaqAccordion } from "./FaqAccordion";
+import { FaqAccordion, type FAQCategory } from "./FaqAccordion";
 import { OperationalPortal } from "./OperationalPortal";
 import { TicketGridSkeleton } from "./ShowcaseSkeletons";
 import { HeroActionPill } from "./HeroActionPill";
@@ -68,6 +68,45 @@ import { validateDiscoverySlug } from "@/server/lib/data/discovery";
 import { getCategoryLabel, buildFacilitySchema, TierEntry } from "../_data";
 import { getFacility, buildTicketGroups, flattenActivePrices } from "../_data";
 import { getWeather } from "@/server/lib/weather";
+
+/**
+ * Infer the FAQ category from question text when the data source doesn't
+ * provide one. Uses keyword matching against the four known categories.
+ */
+function inferFaqCategory(question: string): FAQCategory {
+  const q = question.toLowerCase();
+
+  if (
+    /ulaznic|karta|kartu|karte|kartom|cen[ae]|cijena?|cijen[ae]|pla[ćc]anj|payment|ticket|price|popust|rezervacij|booking|detalji poset|detalji ulaz/.test(
+      q,
+    )
+  ) {
+    return "ulaznice";
+  }
+  if (
+    /boravak|radno vreme|radno vrijeme|otvoren[ao]|trajanj[ae]|sme[šs]taj|smjestaj|smje[šs]taj|working hours|opening|duration|stay|dolazak|odlazak/.test(
+      q,
+    )
+  ) {
+    return "boravak";
+  }
+  if (
+    /pravil[ao]|uzrast|starost|dozvoljen[oae]|zabranjen[oae]|pravilo|uslov[ii]|rule|age.?restrict|prohibited|allowed|minimum|maksimum/.test(
+      q,
+    )
+  ) {
+    return "pravila";
+  }
+  if (
+    /lokacij[ae]|parking|parkirali[šs]t|adresa|prevoz|kako sti[ćc]i|kako do[ćc]i|transport|address|location|parking|direction|nalazi se/.test(
+      q,
+    )
+  ) {
+    return "lokacija";
+  }
+
+  return "ulaznice";
+}
 
 interface FacilityPageProps {
   params: Promise<{
@@ -205,7 +244,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
               weather={weather}
             />
 
-            <h1 className="text-primary-foreground py-2 text-4xl leading-[0.9] font-black tracking-tighter italic md:text-7xl">
+            <h1 className="text-primary-foreground py-2 text-4xl leading-[0.9] font-black tracking-tighter italic drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)] md:text-7xl">
               {(() => {
                 const words = facility.name.split(" ");
                 if (words.length === 1) {
@@ -338,6 +377,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
                 id: f.id,
                 question: f.question,
                 answer: f.answer,
+                category: inferFaqCategory(f.question),
               }))}
             />
           </div>
