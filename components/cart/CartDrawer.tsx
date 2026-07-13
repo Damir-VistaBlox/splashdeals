@@ -74,6 +74,14 @@ export const CartDrawer = () => {
       setItems((prev) => prev.map((i) => (i.id === itemId ? { ...i, quantity: newQuantity } : i)));
       await updateCartQuantityAction({ itemId, quantity: newQuantity }).catch(console.error);
     }
+    // Broadcast cart change to other tabs
+    try {
+      const channel = new BroadcastChannel("splash-cart-sync");
+      channel.postMessage({ type: "CART_UPDATED" });
+      channel.close();
+    } catch {
+      /* ignore */
+    }
     // Recalculate total
     const result = await getCartAction();
     if (result.success && result.data) {

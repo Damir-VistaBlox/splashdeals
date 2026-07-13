@@ -2,6 +2,7 @@
 
 import { Icon } from "@/components/ui/Icon";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { LiquidButton } from "@/components/ui/LiquidButton";
 import { toast } from "sonner";
@@ -184,6 +185,16 @@ export function OrderDetail({ transaction }: { transaction: TransactionData }) {
           <Icon name="print" className="text-[16px]" />
           Štampaj
         </Button>
+        {transaction.issuedTickets.map((t) => (
+          <Link
+            key={t.id}
+            href={`/api/wallet/apple?qrHash=${t.qrHash}`}
+            className="inline-flex items-center gap-2 rounded-full border border-white/10 px-6 py-3 text-sm font-bold text-white/80 transition-colors hover:bg-white/5 hover:text-white"
+          >
+            <Icon name="download" className="text-[16px]" />
+            Dodaj u Wallet
+          </Link>
+        ))}
       </div>
     </div>
   );
