@@ -40,6 +40,33 @@ export function trackAddToCart(params: {
 }
 
 // ──────────────────────────────────────────────
+// E-commerce: Remove from Cart
+// ──────────────────────────────────────────────
+
+export function trackRemoveFromCart(params: {
+  ticketId: string;
+  facilityName: string;
+  ticketTitle: string;
+  price: number;
+  quantity: number;
+  currency?: string;
+}) {
+  if (typeof window === "undefined") return;
+  sendGAEvent("event", "remove_from_cart", {
+    currency: params.currency || "RSD",
+    value: params.price * params.quantity,
+    items: [
+      {
+        item_id: params.ticketId,
+        item_name: `${params.facilityName} - ${params.ticketTitle}`,
+        price: params.price,
+        quantity: params.quantity,
+      },
+    ],
+  });
+}
+
+// ──────────────────────────────────────────────
 // E-commerce: Begin Checkout
 // ──────────────────────────────────────────────
 
