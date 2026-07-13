@@ -61,6 +61,16 @@ export function AddToCartButton({ ticket, className }: AddToCartButtonProps) {
       price: Number(ticket.price),
       quantity: 1,
     });
+
+    // 🔄 Broadcast cart update to other tabs
+    try {
+      const bc = new BroadcastChannel("splash-cart-sync");
+      bc.postMessage({ type: "CART_UPDATED" });
+      bc.close();
+    } catch {
+      /* ignore */
+    }
+
     setAdded(true);
     openCart();
 
