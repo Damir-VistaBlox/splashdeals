@@ -21,13 +21,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   Table,
   TableBody,
   TableCell,
@@ -36,11 +29,11 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
-  deleteBlogPostAction,
+  deletePageAction,
   markAsReviewedAction,
   approvePostAction,
   rejectPostAction,
-} from "@/app/(server)/actions/cms";
+} from "@/app/(server)/actions/cms/content";
 
 const statusLabels: Record<string, string> = {
   DRAFT: "Nacrt",
@@ -49,41 +42,25 @@ const statusLabels: Record<string, string> = {
   REVIEW: "Na pregledu",
 };
 
-const statusBadgeVariant = (status: string): "default" | "secondary" | "outline" => {
-  switch (status) {
-    case "PUBLISHED":
-      return "default";
-    case "DRAFT":
-      return "secondary";
-    case "REVIEW":
-      return "secondary";
-    default:
-      return "outline";
-  }
-};
-
-interface PostRow {
+interface PageRow {
   id: string;
   title: string;
   slug: string;
   status: string;
-  category?: { id: string; name: string; slug: string; color: string | null } | null;
+  template: string;
   createdAt: string;
   updatedAt: string;
   reviewedAt: string | null;
   publishedAt: string | null;
-  isFeatured: boolean;
-  readingTime: number | null;
   isStale: boolean;
-  _count?: { tags: number };
 }
 
-export function PostsListClient({
-  posts,
+export function PagesListClient({
+  pages,
   isStaleFilter,
   isReviewFilter = false,
 }: {
-  posts: Array<Record<string, unknown>>;
+  pages: Array<Record<string, unknown>>;
   isStaleFilter: boolean;
   isReviewFilter: boolean;
 }) {
@@ -92,12 +69,27 @@ export function PostsListClient({
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
+  const statusBadgeVariant = (status: string): "default" | "secondary" | "outline" => {
+    switch (status) {
+      case "PUBLISHED":
+        return "default";
+      case "DRAFT":
+        return "secondary";
+      case "REVIEW":
+        return "secondary";
+      case "ARCHIVED":
+        return "outline";
+      default:
+        return "secondary";
+    }
+  };
+
   const handleDelete = useCallback(
     async (id: string) => {
-      if (!confirm("Da li ste sigurni da želite da obrišete ovu objavu?")) return;
-      const result = await deleteBlogPostAction(id);
+      if (!confirm("Da li ste sigurni da želite da obrišete ovu stranu?")) return;
+      const result = await deletePageAction(id);
       if (result.success) {
-        toast.success("Objava obrisana");
+        toast.success("Strana obrisana");
         router.refresh();
       } else {
         toast.error(result.error || "Greška prilikom brisanja");
@@ -108,9 +100,9 @@ export function PostsListClient({
 
   const handleMarkReviewed = useCallback(
     async (ids: string[]) => {
-      const result = await markAsReviewedAction(ids, "post");
+      const result = await markAsReviewedAction(ids, "page");
       if (result.success) {
-        toast.success(`Označeno ${result.data?.updated ?? 0} objava kao aktuelno`);
+        toast.success(`Označeno ${result.data?.updated ?? 0} strana kao aktuelno`);
         setSelectedIds(new Set());
         router.refresh();
       } else {
@@ -123,9 +115,9 @@ export function PostsListClient({
   const handleApprove = useCallback(
     (id: string) => {
       startTransition(async () => {
-        const result = await approvePostAction(id, "post");
+        const result = await approvePostAction(id, "page");
         if (result.success) {
-          toast.success("Objava odobrena i objavljena");
+          toast.success("Strana odobrena i objavljena");
           router.refresh();
         } else {
           toast.error(result.error || "Greška pri odobravanju");
@@ -138,9 +130,9 @@ export function PostsListClient({
   const handleReject = useCallback(
     (id: string) => {
       startTransition(async () => {
-        const result = await rejectPostAction(id, "post");
+        const result = await rejectPostAction(id, "page");
         if (result.success) {
-          toast.success("Objava vraćena na doradu");
+          toast.success("Strana vraćena na doradu");
           router.refresh();
         } else {
           toast.error(result.error || "Greška pri vraćanju na doradu");
@@ -168,7 +160,7 @@ export function PostsListClient({
     });
   }, []);
 
-  const columns: ColumnDef<PostRow>[] = [
+  const columns: ColumnDef<PageRow>[] = [
     {
       id: "select",
       header: ({ table }) => {
@@ -195,12 +187,13 @@ export function PostsListClient({
       header: "Naslov",
       cell: ({ row }) => (
         <div className="flex items-center gap-2">
-          <Button variant="ghost" asChild className="text-left text-sm font-medium">
-            <Link href={`/admin/cms/posts/${row.original.id}`}>{row.original.title}</Link>
+          <Button
+            variant="link"
+            className="h-auto p-0 text-left text-sm font-medium"
+            onClick={() => router.push(`/admin/cms/pages/${row.original.id}`)}
+          >
+            {row.original.title}
           </Button>
-          {row.original.isFeatured && (
-            <Icon name="star" className="fill-warning text-warning size-3.5 shrink-0" />
-          )}
           {row.original.isStale && (
             <Badge variant="secondary" className="bg-warning/10 text-warning text-xs">
               Starija od 12 meseci
@@ -215,41 +208,29 @@ export function PostsListClient({
       ),
     },
     {
-      accessorKey: "category",
-      header: "Kategorija",
-      cell: ({ row }) => {
-        const cat = row.original.category;
-        return cat ? (
-          <Badge
-            variant="outline"
-            className="text-xs"
-            style={cat.color ? { borderColor: cat.color, color: cat.color } : undefined}
-          >
-            {cat.name}
-          </Badge>
-        ) : (
-          <span className="text-muted-foreground text-xs">—</span>
-        );
-      },
+      accessorKey: "slug",
+      header: "Slug",
+      cell: ({ row }) => (
+        <code className="text-muted-foreground text-xs">/{row.original.slug}</code>
+      ),
+    },
+    {
+      accessorKey: "template",
+      header: "Šablon",
+      cell: ({ row }) => (
+        <span className="text-muted-foreground text-xs capitalize">
+          {row.original.template === "default" ? "Podrazumevani" : row.original.template}
+        </span>
+      ),
     },
     {
       accessorKey: "status",
       header: "Status",
       cell: ({ row }) => (
-        <Badge variant={statusBadgeVariant(row.original.status)}>
+        <Badge variant={statusBadgeVariant(row.original.status)} className="text-xs">
           {statusLabels[row.original.status] || row.original.status}
         </Badge>
       ),
-    },
-    {
-      accessorKey: "readingTime",
-      header: "Čitanje",
-      cell: ({ row }) =>
-        row.original.readingTime ? (
-          <span className="text-muted-foreground text-xs">{row.original.readingTime} min</span>
-        ) : (
-          <span className="text-muted-foreground text-xs">—</span>
-        ),
     },
     {
       accessorKey: "publishedAt",
@@ -298,8 +279,8 @@ export function PostsListClient({
                 variant="ghost"
                 size="sm"
                 className="h-8 w-8 p-0"
-                onClick={() => router.push(`/admin/cms/posts/${row.original.id}`)}
-                aria-label="Uredi objavu"
+                aria-label={`Izmeni stranu ${row.original.title}`}
+                onClick={() => router.push(`/admin/cms/pages/${row.original.id}`)}
               >
                 <Icon name="edit" className="size-4" />
               </Button>
@@ -307,8 +288,8 @@ export function PostsListClient({
                 variant="ghost"
                 size="sm"
                 className="text-destructive hover:text-destructive h-8 w-8 p-0"
+                aria-label={`Obriši stranu ${row.original.title}`}
                 onClick={() => handleDelete(row.original.id)}
-                aria-label="Obriši objavu"
               >
                 <Icon name="delete" className="size-4" />
               </Button>
@@ -320,7 +301,7 @@ export function PostsListClient({
   ];
 
   const table = useReactTable({
-    data: posts as unknown as PostRow[],
+    data: pages as unknown as PageRow[],
     columns,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -333,7 +314,6 @@ export function PostsListClient({
 
   return (
     <div className="space-y-4">
-      {/* Filter */}
       <div className="flex items-center gap-2">
         <div className="relative max-w-sm flex-1">
           <Icon
@@ -341,41 +321,20 @@ export function PostsListClient({
             className="text-muted-foreground absolute top-1/2 left-2.5 size-4 -translate-y-1/2"
           />
           <Input
-            placeholder="Pretraži objave..."
+            placeholder="Pretraži strane..."
             value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
             onChange={(e) => table.getColumn("title")?.setFilterValue(e.target.value)}
             className="h-9 pl-8"
           />
         </div>
-        <Select
-          value={(table.getColumn("status")?.getFilterValue() as string) ?? "all"}
-          onValueChange={(value) => {
-            if (value === "all") {
-              table.getColumn("status")?.setFilterValue(undefined);
-            } else {
-              table.getColumn("status")?.setFilterValue(value);
-            }
-          }}
-        >
-          <SelectTrigger aria-label="Filter by status" className="w-[160px]">
-            <SelectValue placeholder="Svi statusi" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Svi statusi</SelectItem>
-            <SelectItem value="DRAFT">Nacrt</SelectItem>
-            <SelectItem value="REVIEW">Na pregledu</SelectItem>
-            <SelectItem value="PUBLISHED">Objavljeno</SelectItem>
-            <SelectItem value="ARCHIVED">Arhivirano</SelectItem>
-          </SelectContent>
-        </Select>
         <Button variant={isStaleFilter ? "default" : "outline"} size="sm" asChild>
-          <Link href={isStaleFilter ? "/admin/cms/posts" : "/admin/cms/posts?stale=true"}>
+          <Link href={isStaleFilter ? "/admin/cms/pages" : "/admin/cms/pages?stale=true"}>
             <Icon name="clock" className="size-3.5" />
-            {isStaleFilter ? "Sve objave" : "Stare objave"}
+            {isStaleFilter ? "Sve strane" : "Stare strane"}
           </Link>
         </Button>
         <Button variant={isReviewFilter ? "default" : "outline"} size="sm" asChild>
-          <Link href={isReviewFilter ? "/admin/cms/posts" : "/admin/cms/posts?status=review"}>
+          <Link href={isReviewFilter ? "/admin/cms/pages" : "/admin/cms/pages?status=review"}>
             <Icon name="eye" className="size-3.5" />
             Na pregledu
           </Link>
@@ -385,7 +344,7 @@ export function PostsListClient({
       {/* Bulk action bar */}
       {selectedIds.size > 0 && (
         <div className="flex items-center gap-2">
-          <span className="text-muted-foreground text-xs">Izabrano: {selectedIds.size} objava</span>
+          <span className="text-muted-foreground text-xs">Izabrano: {selectedIds.size} strana</span>
           <Button
             variant="secondary"
             size="sm"
@@ -397,7 +356,6 @@ export function PostsListClient({
         </div>
       )}
 
-      {/* Table */}
       <div className="rounded-lg border">
         <Table>
           <TableHeader>
@@ -428,15 +386,15 @@ export function PostsListClient({
               <TableRow>
                 <TableCell colSpan={columns.length} className="h-32 text-center">
                   <div className="text-muted-foreground flex flex-col items-center justify-center gap-2">
-                    <Icon name="article" className="size-8" />
-                    <p className="text-sm">Nema blog objava</p>
+                    <Icon name="file_text" className="size-8" />
+                    <p className="text-sm">Nema strana</p>
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => router.push("/admin/cms/posts/new")}
+                      onClick={() => router.push("/admin/cms/pages/new")}
                     >
                       <Icon name="add" className="mr-1 size-4" />
-                      Kreiraj prvu objavu
+                      Kreiraj prvu stranu
                     </Button>
                   </div>
                 </TableCell>
@@ -446,18 +404,17 @@ export function PostsListClient({
         </Table>
       </div>
 
-      {/* Pagination */}
       <div className="flex items-center justify-between">
         <p className="text-muted-foreground text-xs">
-          {table.getFilteredRowModel().rows.length} objava
+          {table.getFilteredRowModel().rows.length} strana
         </p>
         <div className="flex items-center gap-2">
           <Button
             variant="outline"
             size="sm"
+            aria-label="Prethodna strana"
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
-            aria-label="Prethodna strana"
           >
             <Icon name="chevron_left" className="size-4" />
           </Button>
@@ -467,9 +424,9 @@ export function PostsListClient({
           <Button
             variant="outline"
             size="sm"
+            aria-label="Sledeća strana"
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
-            aria-label="Sledeća strana"
           >
             <Icon name="chevron_right" className="size-4" />
           </Button>

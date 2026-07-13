@@ -22,15 +22,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { RichTextEditor } from "../../_components/rich-text-editor";
-import { SEOPanel } from "../../_components/seo-panel";
-import { SEOScoringPanel } from "../../_components/seo-scoring-panel";
-import { ReadabilityPanel } from "../../_components/readability-panel";
-import { InternalLinksPanel } from "../../_components/internal-links-panel";
-import { EditorPresence } from "../../_components/editor-presence";
-import { ContentBlocksPanel } from "../../_components/content-blocks-panel";
-import { SocialSharePreview } from "../../_components/social-share-preview";
-import { RollbackDropdown } from "../../_components/rollback-dropdown";
+import { RichTextEditor } from "../../../_components/rich-text-editor";
+import { SEOPanel } from "../../../_components/seo-panel";
+import { SEOScoringPanel } from "../../../_components/seo-scoring-panel";
+import { ReadabilityPanel } from "../../../_components/readability-panel";
+import { InternalLinksPanel } from "../../../_components/internal-links-panel";
+import { EditorPresence } from "../../../_components/editor-presence";
+import { ContentBlocksPanel } from "../../../_components/content-blocks-panel";
+import { SocialSharePreview } from "../../../_components/social-share-preview";
+import { RollbackDropdown } from "../../../_components/rollback-dropdown";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { MediaLibrarySheet } from "@/app/(dashboard)/admin/media/_components/media-library-sheet";
 import {
@@ -39,7 +39,7 @@ import {
   submitForReviewAction,
   approvePostAction,
   rejectPostAction,
-} from "@/app/(server)/actions/cms";
+} from "@/app/(server)/actions/cms/content";
 import { useCmsAutosave, AutosaveData } from "@/hooks/use-cms-autosave";
 
 function countImagesWithoutAlt(html: string): number {

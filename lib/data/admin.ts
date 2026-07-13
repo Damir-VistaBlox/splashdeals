@@ -67,6 +67,26 @@ export async function getUserCounts() {
   return { total, superAdmins, staff };
 }
 
+export async function getCustomerCounts() {
+  const [total, withActiveTickets, withTransactions] = await Promise.all([
+    prisma.user.count({ where: { role: "CUSTOMER" } }),
+    prisma.user.count({
+      where: {
+        role: "CUSTOMER",
+        issuedTickets: { some: { status: "ACTIVE" } },
+      },
+    }),
+    prisma.user.count({
+      where: {
+        role: "CUSTOMER",
+        transactions: { some: {} },
+      },
+    }),
+  ]);
+
+  return { total, withActiveTickets, withTransactions };
+}
+
 export async function getFacilityName(id: string) {
   const facility = await prisma.facility.findUnique({
     where: { id },

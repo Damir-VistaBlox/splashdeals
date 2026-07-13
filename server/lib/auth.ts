@@ -11,9 +11,11 @@ export const auth = betterAuth({
 
   trustedOrigins: ["https://www.splashdeals.rs", "https://splashdeals.rs", "http://localhost:3000"],
 
-  // Social-only for buyer accounts
+  // Email/password enabled for admin logins
+  // Buyer users use social-only auth
   emailAndPassword: {
-    enabled: false,
+    enabled: true,
+    autoSignIn: true,
   },
 
   socialProviders: {
@@ -28,6 +30,10 @@ export const auth = betterAuth({
     apple: {
       clientId: process.env.APPLE_CLIENT_ID || "",
       clientSecret: process.env.APPLE_CLIENT_SECRET || "",
+    },
+    twitter: {
+      clientId: process.env.X_CLIENT_ID || "",
+      clientSecret: process.env.X_CLIENT_SECRET || "",
     },
   },
 
