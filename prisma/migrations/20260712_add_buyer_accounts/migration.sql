@@ -17,7 +17,14 @@ ALTER TABLE identity."User" ADD CONSTRAINT "User_stripeCustomerId_key" UNIQUE ("
 
 -- Add orderRef to sales."Transaction"
 ALTER TABLE sales."Transaction" ADD COLUMN IF NOT EXISTS "orderRef" TEXT;
-UPDATE sales."Transaction" SET "orderRef" = 'SD-' || TO_CHAR("createdAt", 'YYMMDD') || '-' || LPAD(CAST(ROW_NUMBER() OVER (ORDER BY "createdAt") AS TEXT), 4, '0') WHERE "orderRef" IS NULL;
+WITH numbered AS (
+  SELECT ctid, 'SD-' || TO_CHAR("createdAt", 'YYMMDD') || '-' || LPAD(CAST(ROW_NUMBER() OVER (ORDER BY "createdAt") AS TEXT), 4, '0') AS new_ref
+  FROM sales."Transaction"
+  WHERE "orderRef" IS NULL
+)
+UPDATE sales."Transaction" SET "orderRef" = numbered.new_ref
+FROM numbered
+WHERE sales."Transaction".ctid = numbered.ctid;
 ALTER TABLE sales."Transaction" ALTER COLUMN "orderRef" SET NOT NULL;
 CREATE UNIQUE INDEX IF NOT EXISTS "Transaction_orderRef_key" ON sales."Transaction"("orderRef");
 CREATE INDEX IF NOT EXISTS "Transaction_userId_createdAt_idx" ON sales."Transaction"("userId", "createdAt");
