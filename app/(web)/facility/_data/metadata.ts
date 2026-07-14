@@ -1,47 +1,9 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { Prisma } from "@prisma/client";
-import { cache } from "react";
-import { prisma } from "@/app/(server)/lib/prisma";
-import { serialize } from "@/lib/serialize";
 import { calculateMaxDiscount } from "@/lib/utils/pricing";
 import { getCategoryLabel, SITE_URL } from "./schemas";
-
-// ── Types ────────────────────────────────────────────────────────
-
-type FacilityWithIncludes = Prisma.FacilityGetPayload<{
-  include: {
-    media: { orderBy: { order: "asc" } };
-    ticketCategories: {
-      where: { isActive: true };
-      include: {
-        types: {
-          where: { isActive: true };
-          include: {
-            prices: {
-              where: { isActive: true };
-              orderBy: { displayOrder: "asc" };
-            };
-          };
-          orderBy: { displayOrder: "asc" };
-        };
-      };
-      orderBy: { displayOrder: "asc" };
-    };
-    policy: true;
-    hours: { orderBy: { dayOfWeek: "asc" } };
-    amenities: { include: { amenity: true }; orderBy: { displayOrder: "asc" } };
-    marketplaceCities: { include: { city: true } };
-    faqs: { orderBy: { displayOrder: "asc" } };
-    reviews: {
-      where: { isApproved: true };
-      include: { user: { select: { name: true } } };
-      orderBy: { createdAt: "desc" };
-      take: 20;
-    };
-  };
-}>;
-
+import type { FacilityWithIncludes } from "./getFacilityQuery";
+import { getFacilityBySlug as getFacility } from "./getFacilityQuery";
 export type { FacilityWithIncludes };
 
 // ── Typed helpers for ticket data ─────────────────────────────────
@@ -183,46 +145,9 @@ export function buildTicketGroups(facility: FacilityWithIncludes): TicketGroup[]
   return [];
 }
 
-// ── Fetcher (shared with the page component) ─────────────────────
+// ── Fetcher (re-exported from getFacilityQuery.ts) ───────────────
 
-export const getFacility = cache(async (slug: string): Promise<FacilityWithIncludes | null> => {
-  const result = await prisma.facility.findUnique({
-    where: { slug },
-    include: {
-      media: { orderBy: { order: "asc" } },
-      ticketCategories: {
-        where: { isActive: true },
-        include: {
-          types: {
-            where: { isActive: true },
-            include: {
-              prices: {
-                where: { isActive: true },
-                orderBy: { displayOrder: "asc" },
-              },
-            },
-            orderBy: { displayOrder: "asc" },
-          },
-        },
-        orderBy: { displayOrder: "asc" },
-      },
-      policy: true,
-      hours: { orderBy: { dayOfWeek: "asc" } },
-      amenities: { include: { amenity: true }, orderBy: { displayOrder: "asc" } },
-      marketplaceCities: { include: { city: true } },
-      faqs: { orderBy: { displayOrder: "asc" } },
-      reviews: {
-        where: { isApproved: true },
-        include: { user: { select: { name: true } } },
-        orderBy: { createdAt: "desc" },
-        take: 20,
-      },
-    },
-  });
-
-  if (result) return serialize(result);
-  return null;
-});
+export { getFacility };
 
 // ── Metadata builder ─────────────────────────────────────────────
 

@@ -1,5 +1,5 @@
 "use client";
-// @ts-nocheck - react-hook-form + zod v4 resolver type chain mismatch, runtime is correct
+// react-hook-form + zod v4 resolver type chain mismatch — runtime is correct
 
 import { useCallback, useTransition, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
