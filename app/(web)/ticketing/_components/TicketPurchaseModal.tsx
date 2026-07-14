@@ -9,6 +9,7 @@ import { MAX_QUANTITY_PER_ITEM } from "@/lib/types/cart";
 import { useUIState } from "@/hooks/use-ui-state";
 import { getDayTypeForDate, filterPricesByDate } from "@/app/(server)/lib/ticket-utils";
 import { addToCartAction } from "@/app/(server)/actions/cart";
+import { toast } from "sonner";
 
 interface TicketPurchaseModalProps {
   isOpen: boolean;
@@ -210,35 +211,48 @@ export function TicketPurchaseModal({
   const handleAddToCart = async () => {
     if (!activePrice || !activeProduct || !facility) return;
 
-    addToCartAction({
-      ticketPriceId: activePrice.id,
-      facilityId: facility.id,
-      quantity,
-      title: `${facility.name} - ${activeProduct.title}${activePrice.label ? ` (${activePrice.label})` : ""}`,
-      price: activePrice.price,
-      currency: "RSD",
-      facilityName: facility.name,
-      category: facility.category,
-      validityType: activeProduct.isSeasonPass ? "SUMMER_SEASON" : "FLEXIBLE_30_DAY",
-      requiresIdentity: activeProduct.requiresIdentity,
-      requiresPhoto: activeProduct.requiresPhoto,
-      minPeople: activeProduct.minPeople,
-      maxPeople: activeProduct.maxPeople,
-      imageUrl: activeProduct.imageUrl || null,
-    }).catch(console.error);
-
     setIsAdding(true);
-    if (typeof navigator !== "undefined" && "vibrate" in navigator) navigator.vibrate([15, 80, 15]);
-    await new Promise((r) => setTimeout(r, 700));
-    setIsAdding(false);
-    setIsAdded(true);
-    await new Promise((r) => setTimeout(r, 800));
-    setIsAdded(false);
-    setClosing(true);
-    await new Promise((r) => setTimeout(r, 300));
-    setClosing(false);
-    onClose();
-    openCart();
+
+    try {
+      const result = await addToCartAction({
+        ticketPriceId: activePrice.id,
+        facilityId: facility.id,
+        quantity,
+        title: `${facility.name} - ${activeProduct.title}${activePrice.label ? ` (${activePrice.label})` : ""}`,
+        price: activePrice.price,
+        currency: "RSD",
+        facilityName: facility.name,
+        category: facility.category,
+        validityType: activeProduct.isSeasonPass ? "SUMMER_SEASON" : "FLEXIBLE_30_DAY",
+        requiresIdentity: activeProduct.requiresIdentity,
+        requiresPhoto: activeProduct.requiresPhoto,
+        minPeople: activeProduct.minPeople,
+        maxPeople: activeProduct.maxPeople,
+        imageUrl: activeProduct.imageUrl || null,
+      });
+
+      if (!result.success) {
+        toast.error(result.error || "Greška pri dodavanju u korpu.");
+        setIsAdding(false);
+        return;
+      }
+
+      if (typeof navigator !== "undefined" && "vibrate" in navigator) navigator.vibrate([15, 80, 15]);
+      await new Promise((r) => setTimeout(r, 700));
+      setIsAdding(false);
+      setIsAdded(true);
+      await new Promise((r) => setTimeout(r, 800));
+      setIsAdded(false);
+      setClosing(true);
+      await new Promise((r) => setTimeout(r, 300));
+      setClosing(false);
+      onClose();
+      openCart();
+    } catch (error) {
+      const msg = error instanceof Error ? error.message : "Neočekivana greška.";
+      toast.error(msg);
+      setIsAdding(false);
+    }
   };
 
   const renderLoading = () => (
