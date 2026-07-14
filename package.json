@@ -10,6 +10,7 @@
     "seed:enhanced": "tsx prisma/seed-enhanced.ts",
     "postinstall": "prisma generate",
     "dev": "next dev",
+    "prebuild": "node scripts/prebuild-cart-migration.cjs",
     "build": "node -e \"try{require('child_process').execSync('prisma migrate deploy',{stdio:'inherit'})}catch(e){console.log('Skipping prisma migrate deploy:',e.message)}\" && next build",
     "start": "next start",
     "lint": "eslint",
