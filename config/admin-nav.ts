@@ -80,6 +80,11 @@ export const adminNavData = {
           icon: "photo_library",
         },
         {
+          title: "Widget embed kodovi",
+          url: "/admin/cms/embed",
+          icon: "code",
+        },
+        {
           title: "API dokumentacija",
           url: "/admin/cms/api-docs",
           icon: "api",
