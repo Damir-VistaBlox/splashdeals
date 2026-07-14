@@ -32,9 +32,17 @@ export default async function AdminCartViewPage({
       const cart = await prisma.cartSession.findFirst({
         where: { userId: user.id },
         orderBy: { updatedAt: "desc" },
+        include: { cartItems: true },
       });
       if (cart) {
-        cartData = JSON.parse(JSON.stringify(cart));
+        // Serialize Dates to ISO strings for the client component
+        cartData = JSON.parse(
+          JSON.stringify({
+            ...cart,
+            // Include cart items from the relational model
+            items: cart.cartItems,
+          }),
+        );
       }
     }
   }

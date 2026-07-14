@@ -238,17 +238,9 @@ export async function createCheckoutSession(params: {
   });
 
   if (userId) {
-    const cartItems = ticketDetails.map((td) => ({
-      title: td.ticketTypeTitle,
-      quantity: td.quantity,
-      price: td.unitPrice,
-    }));
-    await prisma.cartSession.create({
-      data: {
-        userId: userId,
-        items: cartItems,
-      },
-    });
+    // Cart is intentionally NOT cleared here — it gets cleared in fulfillOrder
+    // (webhook handler) after the user completes payment, so if they cancel
+    // the Stripe checkout, their cart items are preserved.
   }
 
   return { url: session.url };

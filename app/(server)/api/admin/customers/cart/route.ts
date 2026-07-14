@@ -28,10 +28,18 @@ export async function GET(req: Request) {
   const cart = await prisma.cartSession.findFirst({
     where: { userId: user.id },
     orderBy: { updatedAt: "desc" },
+    include: { cartItems: true },
   });
 
   return NextResponse.json({
     user: JSON.parse(JSON.stringify(user)),
-    cart: cart ? JSON.parse(JSON.stringify(cart)) : null,
+    cart: cart
+      ? JSON.parse(
+          JSON.stringify({
+            ...cart,
+            items: cart.cartItems,
+          }),
+        )
+      : null,
   });
 }

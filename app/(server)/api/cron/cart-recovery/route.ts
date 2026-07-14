@@ -12,14 +12,17 @@ export async function GET() {
     const oneHourAgo = new Date(Date.now() - 3600000);
     const cartSessions = await prisma.cartSession.findMany({
       where: { updatedAt: { lte: oneHourAgo }, notified: false },
-      include: { user: { select: { email: true } } },
+      include: {
+        user: { select: { email: true } },
+        cartItems: true,
+      },
     });
 
     let sentCount = 0;
     for (const session of cartSessions) {
       if (!session.user.email) continue;
       try {
-        await sendRecoveryEmail(session.user.email, session.items as any[]);
+        await sendRecoveryEmail(session.user.email, session.cartItems as any[]);
         await prisma.cartSession.update({
           where: { id: session.id },
           data: { notified: true },
