@@ -17,9 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  listRedirectsAction,
   createRedirectAction,
-  updateRedirectAction,
   deleteRedirectAction,
   toggleRedirectAction,
   type RedirectRow,
@@ -33,7 +31,7 @@ export function RedirectManager({ initialRedirects }: RedirectManagerProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [redirects, setRedirects] = useState<RedirectRow[]>(initialRedirects);
-  const [editingId, setEditingId] = useState<string | null>(null);
+  const [_editingId, _setEditingId] = useState<string | null>(null);
 
   // New redirect form
   const [newSource, setNewSource] = useState("");

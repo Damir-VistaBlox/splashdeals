@@ -4,19 +4,6 @@ import { notFound, permanentRedirect } from "next/navigation";
 import { Suspense } from "react";
 import { getDictionary } from "@/lib/dictionaries";
 
-/**
- * 🗑️ Permanently deleted legacy facility paths — return 410 Gone
- * NOTE: These are handled at the proxy layer (proxy.ts) BEFORE reaching Next.js.
- * This set is intentionally empty — do NOT add active canonical facility slugs here.
- * The proxy returns 410 for /facilities/waterpark/[slug], /waterpark/[slug], etc.
- * Adding a real slug here would cause the 410 branch to fire on the canonical URL.
- */
-const DELETED_FACILITY_SLUGS = new Set<string>([]); // proxy handles all 410s
-
-function isDeletedFacility(slug: string): boolean {
-  return DELETED_FACILITY_SLUGS.has(slug);
-}
-
 // 🏝️ Islands: Client Components for interactive portions
 import { ShowcaseHero } from "./ShowcaseHero";
 import { FaqAccordion, type FAQCategory } from "./FaqAccordion";
@@ -59,6 +46,8 @@ const ShowcaseAmenities = dynamic(
   },
 );
 
+import { FacilityReviews } from "./FacilityReviews";
+import { BackToTop } from "./BackToTop";
 import { PartnerBranding } from "./PartnerBranding";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -116,18 +105,11 @@ interface FacilityPageProps {
 }
 
 /**
- * 🕵️ Metadata Engine (For the legacy long-segment redirect)
+ * 🕵️ Metadata Engine — For the legacy long-segment redirect
+ * 301 redirects /{category}/{facility} to /{facility} for SEO link equity
  */
 export async function generateMetadata({ params }: FacilityPageProps): Promise<Metadata> {
   const { facilitySlug } = await params;
-
-  // Permanently deleted legacy paths — 410 Gone
-  if (isDeletedFacility(facilitySlug)) {
-    return {
-      title: "Page Deleted",
-      robots: { index: false, follow: false },
-    };
-  }
 
   permanentRedirect(`/${facilitySlug}`);
 }
@@ -222,7 +204,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
     <div className="text-foreground selection:bg-primary/30 relative min-h-screen font-sans">
       {/* ✅ Structured Data */}
       <JsonLd data={facilitySchema} id={`facility-${facilitySlug}-schema`} />
-      <section className="relative flex h-[60vh] w-full flex-col justify-end overflow-hidden p-6 md:min-h-[calc(100dvh-104px)] md:p-12">
+      <section className="relative flex h-[40vh] w-full flex-col justify-end overflow-hidden p-6 md:min-h-[calc(100dvh-120px)] md:p-12">
         <ShowcaseHero heroMedia={heroMedia} facility={facility} />
 
         <div className="relative z-10 mx-auto mb-12 grid w-full max-w-7xl grid-cols-1 items-end gap-8 md:grid-cols-12">
@@ -244,7 +226,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
               weather={weather}
             />
 
-            <h1 className="text-primary-foreground py-2 text-4xl leading-[0.9] font-black tracking-tighter italic drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)] md:text-7xl">
+            <h1 className="text-primary-foreground py-2 text-4xl leading-tight font-black tracking-tighter italic drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)] md:text-7xl md:leading-[0.9]">
               {(() => {
                 const words = facility.name.split(" ");
                 if (words.length === 1) {
@@ -262,7 +244,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
         </div>
       </section>
 
-      <main className="relative z-20 mx-auto -mt-16 max-w-7xl space-y-12 px-6 pb-24 sm:space-y-32 sm:pb-48 md:-mt-24 md:px-12">
+      <main className="relative z-20 mx-auto -mt-16 max-w-7xl [scroll-padding-top:8rem] space-y-12 px-6 pb-24 sm:space-y-32 sm:pb-48 md:-mt-24 md:px-12">
         <div id="deals" className="scroll-mt-32 space-y-8 sm:space-y-12 md:pt-12">
           <div className="mb-8 flex flex-col items-center space-y-4 text-center sm:mb-16">
             <div className="brand-divider mb-2 w-16" />
@@ -298,22 +280,37 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
                   Zabava <span className="text-splash">Otključana.</span>
                 </CardTitle>
               </CardHeader>
-              <CardContent className="p-6 sm:p-12 md:p-16">
-                <p className="text-muted-foreground max-w-2xl space-y-4 text-sm leading-relaxed font-medium italic opacity-90 md:text-xl">
+              <CardContent className="space-y-6 p-6 sm:p-12 md:p-16">
+                <p className="text-muted-foreground max-w-2xl text-sm leading-relaxed font-medium italic opacity-90 md:text-xl">
                   <span>
                     {facility.description ||
                       "Otkrijte premium iskustvo koje prevazilazi običan odlazak na bazen."}
                   </span>
-                  {facility.amenities && facility.amenities.length > 0 && (
-                    <span className="border-border/30 text-muted-foreground mt-4 block border-t pt-4 text-base font-medium not-italic md:hidden">
-                      Sadržaji:{" "}
-                      {facility.amenities
-                        .map((fa: { amenity: { name: string } }) => fa.amenity.name)
-                        .join(", ")}
-                      .
-                    </span>
-                  )}
                 </p>
+
+                {facility.amenities && facility.amenities.length > 0 && (
+                  <div className="flex flex-wrap items-center gap-3 pt-2">
+                    <span className="text-foreground text-xs font-black tracking-widest uppercase">
+                      {facility.amenities.length} sadržaja
+                    </span>
+                    <a
+                      href="#amenities"
+                      className="text-primary hover:text-primary/80 text-[10px] font-black tracking-wider uppercase underline underline-offset-4 transition-colors"
+                    >
+                      Pregledaj sve
+                    </a>
+                  </div>
+                )}
+
+                <div className="flex flex-wrap gap-3 pt-2">
+                  <a
+                    href="#deals"
+                    className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex min-h-[44px] items-center gap-2 rounded-full px-6 py-3 text-xs font-black tracking-wider uppercase shadow-lg transition-all"
+                  >
+                    <Icon name="confirmation_number" className="text-[14px]" />
+                    Pogledaj cene
+                  </a>
+                </div>
               </CardContent>
             </Card>
 
@@ -333,7 +330,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
             )}
 
             {/* 🍱 Facility amenities card grid — hidden on mobile, already in description text */}
-            <div className="hidden md:block">
+            <div id="amenities" className="hidden md:block">
               <ShowcaseAmenities
                 amenities={
                   serialize(facility.amenities) as unknown as Array<{
@@ -384,14 +381,26 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
           </div>
         )}
 
+        {facility.id && (
+          <div className="mx-auto w-full max-w-3xl space-y-8 px-6 py-8 md:px-12">
+            <FacilityReviews
+              facilityId={facility.id}
+              initialReviews={facility.reviews || []}
+              dict={dict}
+            />
+          </div>
+        )}
+
         <MediaGallery media={facility.media} dict={dict} />
 
         {facility.seoArticle && (
-          <article className="text-muted-foreground border-border mx-auto mt-24 max-w-5xl border-t px-6 py-12 text-center text-xs md:text-sm">
+          <article className="text-muted-foreground border-border mx-auto mt-24 max-w-5xl border-t px-6 py-12 text-center text-xs md:text-left md:text-sm">
             <div className="leading-relaxed whitespace-pre-line">{facility.seoArticle}</div>
           </article>
         )}
       </main>
+
+      <BackToTop />
     </div>
   );
 }

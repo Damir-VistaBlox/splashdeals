@@ -36,6 +36,12 @@ export const adminNavData = {
           icon: "add_business",
           requiredRole: "SUPER_ADMIN",
         },
+        {
+          title: "Gradovi",
+          url: "/admin/facilities/cities",
+          icon: "city",
+          requiredRole: "SUPER_ADMIN",
+        },
       ],
     },
     {
@@ -59,9 +65,38 @@ export const adminNavData = {
           icon: "folder",
         },
         {
+          title: "Aktivnosti",
+          url: "/admin/cms/activity",
+          icon: "history",
+          requiredRole: "SUPER_ADMIN",
+        },
+        {
+          title: "Kampanje",
+          url: "/admin/cms/campaigns",
+          icon: "campaign",
+          requiredRole: "SUPER_ADMIN",
+        },
+        {
           title: "Navigacija",
           url: "/admin/cms/navigation",
           icon: "menu_book",
+        },
+        {
+          title: "Preusmerenja",
+          url: "/admin/cms/redirects",
+          icon: "alt_route",
+        },
+        {
+          title: "Provera linkova",
+          url: "/admin/cms/broken-links",
+          icon: "link_off",
+          requiredRole: "SUPER_ADMIN",
+        },
+        {
+          title: "Recenzije",
+          url: "/admin/cms/reviews",
+          icon: "star",
+          requiredRole: "SUPER_ADMIN",
         },
         {
           title: "Tagovi",
@@ -75,14 +110,30 @@ export const adminNavData = {
           icon: "webhook",
         },
         {
+          title: "Zakazane objave",
+          url: "/admin/cms/posts/scheduled",
+          icon: "schedule",
+        },
+        {
           title: "Media biblioteka",
           url: "/admin/media",
           icon: "photo_library",
         },
         {
+          title: "Widget embed kodovi",
+          url: "/admin/cms/embed",
+          icon: "code",
+        },
+        {
           title: "API dokumentacija",
           url: "/admin/cms/api-docs",
           icon: "api",
+          requiredRole: "SUPER_ADMIN",
+        },
+        {
+          title: "404 greške",
+          url: "/admin/cms/not-found-logs",
+          icon: "error_outline",
           requiredRole: "SUPER_ADMIN",
         },
         {

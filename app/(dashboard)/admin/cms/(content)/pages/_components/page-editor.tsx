@@ -170,7 +170,7 @@ export function PageEditor({ page, dict }: PageEditorProps) {
     status: autosaveStatus,
     restore,
     clearDraft,
-    migrateDraft,
+    migrateDraft: _migrateDraft,
   } = useCmsAutosave(
     autosaveKey,
     {

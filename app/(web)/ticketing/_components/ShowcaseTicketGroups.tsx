@@ -98,7 +98,7 @@ interface ShowcaseTicketGroupsProps {
   facilitySlug: string;
   facilityName: string;
   category: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   dict: Record<string, any>;
   facility?: {
     id: string;
@@ -168,7 +168,7 @@ export function ShowcaseTicketGroups({
       {/* Scrollable glass pill tabs container */}
       <div className="relative mb-8 w-full">
         <div className="from-background via-background/60 pointer-events-none absolute top-0 right-[-24px] bottom-0 z-10 w-16 bg-gradient-to-l to-transparent lg:hidden" />
-        <div className="no-scrollbar lg:bg-muted/50 lg:border-border -mx-6 flex gap-2 overflow-x-auto scroll-smooth rounded-none border-none bg-transparent px-6 pt-1 pb-2 lg:mx-0 lg:rounded-full lg:border lg:px-1 lg:py-1 lg:backdrop-blur-md">
+        <div className="no-scrollbar lg:bg-muted/50 lg:border-border -mx-6 flex gap-2 overflow-x-auto scroll-smooth rounded-none border-none bg-transparent px-6 pt-1 pb-2 lg:mx-0 lg:flex-wrap lg:justify-center lg:overflow-visible lg:rounded-full lg:border lg:px-1 lg:py-1 lg:backdrop-blur-md">
           {groups.map((group) => {
             const isActive = group.id === activeGroupId;
             return (
@@ -608,7 +608,7 @@ function MobileTicketAccordion({
 
               {activePrice && (
                 <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground text-[10px] font-bold tracking-widest uppercase">
+                  <span className="text-muted-foreground text-xs font-bold tracking-widest uppercase">
                     Ukupno
                   </span>
                   <span className="text-foreground text-lg font-black">
@@ -621,7 +621,7 @@ function MobileTicketAccordion({
                 onClick={handleAdd}
                 disabled={isAdding || isAdded || !activePrice}
                 className={cn(
-                  "flex h-12 w-full items-center justify-center gap-2 rounded-2xl border text-[10px] font-black tracking-widest uppercase transition-colors duration-300",
+                  "flex h-12 w-full items-center justify-center gap-2 rounded-2xl border text-xs font-black tracking-widest uppercase transition-colors duration-300",
                   isAdded && "border-primary/30 bg-primary/10 text-primary",
                   isAdding && "border-primary/10 bg-primary/5 text-primary cursor-not-allowed",
                   !isAdded &&

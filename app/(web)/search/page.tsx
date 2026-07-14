@@ -129,7 +129,7 @@ export default async function SearchPage({
               </h2>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {facilities.map((f) => (
-                  <Link key={f.id} href={`/facility/${f.slug}`} className="block">
+                  <Link key={f.id} href={`/${f.slug}`} className="block">
                     <Card className="hover:border-primary/30 transition-all hover:-translate-y-0.5 hover:shadow-md">
                       <CardHeader>
                         <CardTitle className="text-base">{f.name}</CardTitle>

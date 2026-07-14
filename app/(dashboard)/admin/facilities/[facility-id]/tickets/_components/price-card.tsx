@@ -31,7 +31,7 @@ interface PriceCardProps {
   onDeleted: () => void;
 }
 
-export function PriceCard({ price, product, facilityId, onDeleted }: PriceCardProps) {
+export function PriceCard({ price, facilityId, onDeleted }: PriceCardProps) {
   const [editing, setEditing] = React.useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = React.useState(false);
   const [form, setForm] = React.useState({

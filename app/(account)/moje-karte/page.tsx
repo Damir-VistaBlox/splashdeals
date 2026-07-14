@@ -34,7 +34,7 @@ export default async function MojeKartePage() {
   const dict = await getDictionary();
   const t = dict.account;
 
-  if (!session) return null; // proxy.ts handles redirect
+  if (!session) return null; // middleware.ts handles redirect
 
   const tickets = await getUserTickets(session.user.id);
   const activeTickets = tickets.filter((t) => t.status === "ACTIVE" && t.usageCount < t.usageLimit);

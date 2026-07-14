@@ -12,7 +12,7 @@ interface MediaSearchProps {
   dict: Record<string, unknown>;
 }
 
-export function MediaSearch({ value, onChange, placeholder, dict }: MediaSearchProps) {
+export function MediaSearch({ value, onChange, placeholder, dict: _dict }: MediaSearchProps) {
   const [localValue, setLocalValue] = useState(value);
   const inputRef = useRef<HTMLInputElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);

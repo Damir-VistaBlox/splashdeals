@@ -12,7 +12,6 @@ import {
   getAllEnglishSlugs,
   resolveCategoryKey,
 } from "@/lib/routing/categories";
-import { slugToName } from "@/lib/routing/categories";
 import type { Locale } from "@/lib/locale";
 
 // ── ISR: Revalidate every hour for SEO freshness ────────────────────

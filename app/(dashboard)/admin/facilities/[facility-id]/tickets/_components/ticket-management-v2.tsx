@@ -16,9 +16,7 @@ import {
   updateProduct,
   deleteCategory,
   deleteProduct,
-  getTicketHierarchy,
 } from "../_lib/ticket-admin-actions";
-import { DAY_LABELS, TIME_LABELS } from "../_lib/constants";
 import { ProductImageSection } from "./product-image-section";
 import { PriceCard } from "./price-card";
 import {

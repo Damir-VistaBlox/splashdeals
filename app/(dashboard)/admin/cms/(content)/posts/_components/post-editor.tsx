@@ -1,5 +1,5 @@
 "use client";
-// @ts-nocheck - react-hook-form + zod v4 resolver type chain mismatch, runtime is correct
+// react-hook-form + zod v4 resolver type chain mismatch — runtime is correct
 
 import { useCallback, useTransition, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -15,6 +15,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import {
   Select,
   SelectContent,
@@ -28,9 +29,6 @@ import { SEOScoringPanel } from "../../../_components/seo-scoring-panel";
 import { ReadabilityPanel } from "../../../_components/readability-panel";
 import { InternalLinksPanel } from "../../../_components/internal-links-panel";
 import { EditorPresence } from "../../../_components/editor-presence";
-import { ContentBlocksPanel } from "../../../_components/content-blocks-panel";
-import { SocialSharePreview } from "../../../_components/social-share-preview";
-import { RollbackDropdown } from "../../../_components/rollback-dropdown";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { MediaLibrarySheet } from "@/app/(dashboard)/admin/media/_components/media-library-sheet";
 import {
@@ -40,6 +38,7 @@ import {
   approvePostAction,
   rejectPostAction,
 } from "@/app/(server)/actions/cms/content";
+import { generateContentAction } from "@/app/(server)/actions/ai-content";
 import { useCmsAutosave, AutosaveData } from "@/hooks/use-cms-autosave";
 
 function countImagesWithoutAlt(html: string): number {
@@ -153,6 +152,8 @@ export function PostEditor({ post, initialTagIds, categories, tags, dict }: Post
   });
 
   const [selectedTagIds, setSelectedTagIds] = useState<string[]>(initialTagIds || []);
+  const [aiTopic, setAiTopic] = useState("");
+  const [isGenerating, setIsGenerating] = useState(false);
 
   // Sync tag selection when initialTagIds changes (e.g., navigating between posts to edit)
   useEffect(() => {
@@ -248,7 +249,7 @@ export function PostEditor({ post, initialTagIds, categories, tags, dict }: Post
     status: autosaveStatus,
     restore,
     clearDraft,
-    migrateDraft,
+    migrateDraft: _migrateDraft,
   } = useCmsAutosave(
     autosaveKey,
     {
@@ -514,13 +515,72 @@ export function PostEditor({ post, initialTagIds, categories, tags, dict }: Post
             </div>
             <Separator />
             <div className="space-y-2">
-              <Label>Sadržaj</Label>
-              {}
+              <div className="flex items-center justify-between">
+                <Label>Sadržaj</Label>
+                <Collapsible className="w-auto">
+                  <CollapsibleTrigger asChild>
+                    <Button type="button" variant="outline" size="sm" className="gap-1.5">
+                      <Icon name="auto_awesome" className="size-4" />
+                      AI Generiši
+                    </Button>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent className="mt-2">
+                    <div className="flex items-center gap-2 rounded-lg border p-3">
+                      <Input
+                        id="ai-topic"
+                        value={aiTopic}
+                        onChange={(e) => setAiTopic(e.target.value)}
+                        placeholder="Npr. 'Prednosti termalnih bazena zimi'"
+                        className="h-9 text-sm"
+                        disabled={isGenerating}
+                      />
+                      <Button
+                        type="button"
+                        size="sm"
+                        className="h-9 shrink-0 gap-1.5"
+                        disabled={isGenerating || !aiTopic.trim()}
+                        onClick={async () => {
+                          if (!aiTopic.trim()) {
+                            toast.error("Unesite temu za generisanje.");
+                            return;
+                          }
+                          const topic = aiTopic.trim();
+                          setAiTopic("");
+                          setIsGenerating(true);
+                          toast.loading("Generišem sadržaj...", { id: "ai-generate" });
+                          try {
+                            const result = await generateContentAction(topic);
+                            if (result.success && result.data) {
+                              setValue("title", result.data.title);
+                              setValue("content", result.data.content);
+                              setValue("excerpt", result.data.excerpt);
+                              toast.success("Sadržaj generisan!", { id: "ai-generate" });
+                            } else {
+                              toast.error(result.error || "Greška pri generisanju.", {
+                                id: "ai-generate",
+                              });
+                            }
+                          } catch {
+                            toast.error("Greška pri generisanju sadržaja.", {
+                              id: "ai-generate",
+                            });
+                          } finally {
+                            setIsGenerating(false);
+                          }
+                        }}
+                      >
+                        <Icon name="sparkles" className="size-4" />
+                        {isGenerating ? "Generišem..." : "Generiši"}
+                      </Button>
+                    </div>
+                  </CollapsibleContent>
+                </Collapsible>
+              </div>
               <RichTextEditor
                 source="blog"
                 content={watch("content") || ""}
                 onChange={(html) => setValue("content", html)}
-                placeholder="Počni da pišeš blog objavu..."
+                placeholder="Počni da pišeš blog objavu... ili klikni 'AI Generiši' iznad za automatski generisan sadržaj"
               />
             </div>
           </div>

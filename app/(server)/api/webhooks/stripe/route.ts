@@ -239,7 +239,6 @@ export async function fulfillOrder(session: Stripe.Checkout.Session) {
           // CartSession may not exist; that's fine
         });
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       await sendTicketConfirmationEmail(targetEmail, transaction as any, session.id).catch(
         (err) => {
           console.error(
@@ -357,7 +356,7 @@ async function sendTicketConfirmationEmail(
     dict,
   );
 
-  const text = buildTicketDeliveryText(
+  const _text = buildTicketDeliveryText(
     {
       facilityName,
       facilityAddress,

@@ -5,6 +5,7 @@ import { prisma } from "@/app/(server)/lib/prisma";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { OperationsTable } from "./_components/operations-control-manager";
+import { FacilityClosuresSection } from "./_components/facility-closures";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
@@ -40,6 +41,7 @@ export default async function FacilityOperationsPage({ params }: OperationsPageP
       id: true,
       name: true,
       hours: { orderBy: { dayOfWeek: "asc" } },
+      closures: { orderBy: { startDate: "asc" } },
     },
   });
 
@@ -77,6 +79,10 @@ export default async function FacilityOperationsPage({ params }: OperationsPageP
 
       <div className="border-border/50 bg-muted/20 rounded-2xl border p-1">
         <OperationsTable facilityId={facilityId} initialHours={facility.hours} />
+      </div>
+
+      <div className="border-border/50 bg-muted/20 rounded-2xl border p-1">
+        <FacilityClosuresSection facilityId={facilityId} initialClosures={facility.closures} />
       </div>
     </div>
   );

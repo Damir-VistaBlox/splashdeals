@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { Icon } from "@/components/ui/Icon";
 
 interface SocialSharePreviewProps {
@@ -29,8 +30,8 @@ export function SocialSharePreview({ title, coverImage, excerpt }: SocialSharePr
           <span className="text-[10px] font-medium text-blue-600">Facebook</span>
         </div>
         {coverImage && (
-          <div className="bg-muted aspect-[1.91/1] w-full overflow-hidden">
-            <img src={coverImage} alt="" className="h-full w-full object-cover" />
+          <div className="bg-muted relative aspect-[1.91/1] w-full overflow-hidden">
+            <Image src={coverImage} alt="" fill className="object-cover" unoptimized />
           </div>
         )}
         <div className="bg-card p-3">
@@ -51,8 +52,8 @@ export function SocialSharePreview({ title, coverImage, excerpt }: SocialSharePr
         </div>
         <div className="bg-card p-3">
           {coverImage && (
-            <div className="bg-muted mb-2 aspect-[2/1] w-full overflow-hidden rounded-lg">
-              <img src={coverImage} alt="" className="h-full w-full object-cover" />
+            <div className="bg-muted relative mb-2 aspect-[2/1] w-full overflow-hidden rounded-lg">
+              <Image src={coverImage} alt="" fill className="object-cover" unoptimized />
             </div>
           )}
           <p className="text-sm leading-tight font-semibold">{truncatedTitle}</p>
@@ -70,8 +71,8 @@ export function SocialSharePreview({ title, coverImage, excerpt }: SocialSharePr
         </div>
         <div className="bg-card flex gap-3 p-3">
           {coverImage && (
-            <div className="bg-muted size-16 shrink-0 overflow-hidden rounded-lg">
-              <img src={coverImage} alt="" className="h-full w-full object-cover" />
+            <div className="bg-muted relative size-16 shrink-0 overflow-hidden rounded-lg">
+              <Image src={coverImage} alt="" fill className="object-cover" unoptimized />
             </div>
           )}
           <div className="min-w-0 flex-1">

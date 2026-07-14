@@ -34,7 +34,6 @@ export interface CampaignFormData {
   facilityIds?: string[];
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function serializeCampaign(c: any): CampaignData {
   return {
     id: c.id,

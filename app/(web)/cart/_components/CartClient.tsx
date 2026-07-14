@@ -19,7 +19,6 @@ import { trackBeginCheckout } from "@/lib/analytics/events";
 import { CartItemList } from "./CartItemList";
 import { CartSummary } from "./CartSummary";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function CartClient({ dict }: { dict: Record<string, any> }) {
   const [items, setItems] = React.useState<CartItem[]>([]);
   const [isMounted, setIsMounted] = React.useState(false);

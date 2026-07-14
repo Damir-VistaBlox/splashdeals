@@ -15,6 +15,7 @@ import {
   bulkUpdateMediaCaptionAction,
   renameMediaAction,
 } from "@/app/(server)/actions/media-actions";
+import { bulkDeleteMediaAction } from "@/app/(server)/actions/media-bulk-delete";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -271,15 +272,34 @@ export function MediaGallery({
   const confirmBulkDelete = async () => {
     setShowBulkDeleteDialog(false);
     const idsToDelete = Array.from(selectedIds);
+
+    // Snapshot items for rollback in case of failure
+    const deletedItems = media.filter((m) => selectedIds.has(m.id));
+
+    // Optimistic removal
     setMedia((prev) => prev.filter((m) => !selectedIds.has(m.id)));
     setSelectedIds(new Set());
     setIsSelectionMode(false);
 
     startUpload(async () => {
-      for (const id of idsToDelete) {
-        await deleteMediaAction(id, facilityId);
+      const result = await bulkDeleteMediaAction(facilityId, idsToDelete);
+      if (result.success) {
+        toast.success(
+          `Obrisano ${result.deletedCount} medijskih stavki` +
+            (result.failedCount && result.failedCount > 0
+              ? ` (${result.failedCount} fajlova nije obrisano iz skladišta)`
+              : ""),
+        );
+      } else {
+        // Rollback on failure
+        setMedia((prev) => {
+          const existingIds = new Set(prev.map((m) => m.id));
+          const toRestore = deletedItems.filter((m) => !existingIds.has(m.id));
+          if (toRestore.length === 0) return prev;
+          return [...prev, ...toRestore].sort((a, b) => (a.order || 0) - (b.order || 0));
+        });
+        toast.error(result.error || "Greška pri grupnom brisanju medija");
       }
-      toast.success(`Purged ${idsToDelete.length} assets from node`);
     });
   };
 
@@ -441,7 +461,7 @@ export function MediaGallery({
         }
       });
     },
-    [facilityId, startUpload],
+    [facilityId, startUpload, markDone, markFailed],
   );
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -1195,18 +1215,18 @@ export function MediaGallery({
       <Dialog open={showBulkDeleteDialog} onOpenChange={setShowBulkDeleteDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Delete Assets</DialogTitle>
+            <DialogTitle>Brisanje medija</DialogTitle>
             <DialogDescription>
-              Are you sure you want to delete {selectedIds.size} assets? This action cannot be
-              undone.
+              Da li ste sigurni da želite da obrišete {selectedIds.size} medijskih stavki? Ova
+              radnja se ne može poništiti.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowBulkDeleteDialog(false)}>
-              Cancel
+              Otkaži
             </Button>
             <Button variant="destructive" onClick={confirmBulkDelete}>
-              Delete
+              Obriši
             </Button>
           </DialogFooter>
         </DialogContent>

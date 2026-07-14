@@ -143,13 +143,13 @@ export function PagesListClient({
   );
 
   const toggleSelectAll = useCallback(() => {
-    const allIds = (table.getFilteredRowModel().rows ?? []).map((r) => r.original.id);
+    const allIds = (pages as Array<Record<string, unknown>>).map((p) => p.id as string);
     if (selectedIds.size === allIds.length && allIds.length > 0) {
       setSelectedIds(new Set());
     } else {
       setSelectedIds(new Set(allIds));
     }
-  }, [selectedIds]);
+  }, [selectedIds, pages]);
 
   const toggleSelect = useCallback((id: string) => {
     setSelectedIds((prev) => {
