@@ -1,5 +1,11 @@
 -- Normalize CartSession: add cart_session_item table, rate limiter, locked_at
 -- and data-migrate existing JSON items to the new relational table.
+--
+-- This migration is idempotent — all DDL uses IF NOT EXISTS / IF EXISTS.
+
+-- Self-heal: remove any failed migration marker from a prior partial run
+DELETE FROM "sales"."_prisma_migrations"
+WHERE "migration_name" = '20260714000001_normalize_cart_items';
 
 BEGIN;
 
@@ -84,22 +90,5 @@ FROM "sales"."cart_session" cs,
          END
      ) AS item
 ON CONFLICT DO NOTHING;
-
--- 5. Migration tracking for Prisma
-INSERT INTO "sales"."_prisma_migrations" (
-  "id", "checksum", "finished_at", "migration_name", "logs",
-  "rolled_back_at", "started_at", "applied_steps_count"
-)
-VALUES (
-  'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
-  'manual',
-  CURRENT_TIMESTAMP,
-  '20260714000001_normalize_cart_items',
-  'Manual migration: cart_session_item table + data migration',
-  NULL,
-  CURRENT_TIMESTAMP,
-  1
-)
-ON CONFLICT ("id") DO NOTHING;
 
 COMMIT;
