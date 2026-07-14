@@ -203,7 +203,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
     <div className="text-foreground selection:bg-primary/30 relative min-h-screen font-sans">
       {/* ✅ Structured Data */}
       <JsonLd data={facilitySchema} id={`facility-${facilitySlug}-schema`} />
-      <section className="relative flex h-[60vh] w-full flex-col justify-end overflow-hidden p-6 md:min-h-[calc(100dvh-104px)] md:p-12">
+      <section className="relative flex h-[50vh] w-full flex-col justify-end overflow-hidden p-6 md:min-h-[calc(100dvh-120px)] md:p-12">
         <ShowcaseHero heroMedia={heroMedia} facility={facility} />
 
         <div className="relative z-10 mx-auto mb-12 grid w-full max-w-7xl grid-cols-1 items-end gap-8 md:grid-cols-12">

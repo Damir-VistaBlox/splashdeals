@@ -150,24 +150,32 @@ export interface CurrentWeather {
  * 🌤️ WeatherBadge Island (Client)
  * Minimal interactive component for real-time status visibility.
  */
+const WEATHER_MESSAGES: Record<string, { icon: string; label: string }> = {
+  clear: { icon: "light_mode", label: "Sunčano" },
+  cloudy: { icon: "cloud", label: "Oblačno" },
+  rainy: { icon: "rainy", label: "Kiša" },
+};
+
+function getWeatherDescriptor(code: number): { icon: string; label: string } {
+  if (code === 0) return WEATHER_MESSAGES.clear;
+  if (code < 4) return WEATHER_MESSAGES.cloudy;
+  return WEATHER_MESSAGES.rainy;
+}
+
 export function WeatherBadge({ weather }: { weather: CurrentWeather | null }) {
   if (!weather) return null;
 
-  const getWeatherIcon = (code: number) => {
-    if (code === 0) return <Icon name="light_mode" className="text-primary text-[20px]" />;
-    if (code < 4) return <Icon name="cloud" className="text-muted-foreground text-[20px]" />;
-    return <Icon name="rainy" className="text-primary text-[20px]" />;
-  };
+  const desc = getWeatherDescriptor(weather.weathercode);
 
   return (
     <div className="glass-frost border-border flex items-center gap-3 rounded-full px-4 py-2 shadow-xl">
-      {getWeatherIcon(weather.weathercode)}
+      <Icon name={desc.icon} className="text-primary text-[20px]" />
       <span className="text-primary-foreground text-sm font-black whitespace-nowrap">
         {Math.round(weather.temperature)}°C
       </span>
       <div className="bg-border hidden h-4 w-px md:block" />
       <span className="text-muted-foreground hidden text-xs font-bold tracking-widest uppercase md:inline">
-        Idealno za kupanje
+        {desc.label}
       </span>
     </div>
   );
