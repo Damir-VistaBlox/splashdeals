@@ -51,7 +51,7 @@ export function MediaThumbnail({
   url,
   filename,
   size,
-  mimeType,
+  mimeType: _mimeType,
   createdAt,
   usageCount,
   isSelected,

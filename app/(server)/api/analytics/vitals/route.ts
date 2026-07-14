@@ -8,7 +8,7 @@ import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
+    const _body = await request.json();
 
     // Log to server console for visibility (use a structured logging service in production)
 

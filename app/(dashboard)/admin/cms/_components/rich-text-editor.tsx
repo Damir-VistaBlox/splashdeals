@@ -112,6 +112,9 @@ function Toolbar({
   source?: "blog" | "stranica";
 }) {
   const t = (dict as Record<string, any>) || {};
+  const editorUploadError = t.editor_upload_error;
+  const editorUploadSuccess = t.editor_upload_success;
+  const editorUploading = t.editor_uploading;
   const linkUrlRef = useRef<HTMLInputElement>(null);
   const [pendingImageUrl, setPendingImageUrl] = useState<string | null>(null);
   const [pendingAltText, setPendingAltText] = useState("");
@@ -139,28 +142,28 @@ function Toolbar({
       formData.append("file", file);
       if (source) formData.append("collection", source === "blog" ? "Blog" : "Stranica");
 
-      const toastId = toast.loading(t.editor_uploading || "Otpremanje slike...");
+      const toastId = toast.loading(editorUploading || "Otpremanje slike...");
       try {
         const { uploadMediaAction } = await import("@/app/(server)/actions/cms-media");
         const res = await uploadMediaAction(formData);
         if (res.success && res.data?.url) {
           toast.dismiss(toastId);
-          toast.success(t.editor_upload_success || "Slika je otpremljena.");
+          toast.success(editorUploadSuccess || "Slika je otpremljena.");
           setPendingImageUrl(res.data.url);
           setPendingAltText("");
           setTimeout(() => altInputRef.current?.focus(), 150);
         } else {
           toast.dismiss(toastId);
-          toast.error(res.error || t.editor_upload_error || "Greška pri otpremanju slike.");
+          toast.error(res.error || editorUploadError || "Greška pri otpremanju slike.");
         }
       } catch (err) {
         toast.dismiss(toastId);
-        toast.error(t.editor_upload_error || "Greška pri otpremanju slike.");
+        toast.error(editorUploadError || "Greška pri otpremanju slike.");
         console.error("[CMS Image Upload]", err);
       }
     };
     input.click();
-  }, [editor, source]);
+  }, [source, editorUploadError, editorUploadSuccess, editorUploading]);
 
   const handleAltDialogConfirm = useCallback(() => {
     if (pendingImageUrl) {

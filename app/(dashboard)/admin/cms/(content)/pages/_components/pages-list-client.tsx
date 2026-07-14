@@ -149,7 +149,7 @@ export function PagesListClient({
     } else {
       setSelectedIds(new Set(allIds));
     }
-  }, [selectedIds]);
+  }, [selectedIds, table]);
 
   const toggleSelect = useCallback((id: string) => {
     setSelectedIds((prev) => {

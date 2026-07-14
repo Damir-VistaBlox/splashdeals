@@ -140,7 +140,7 @@ export function MediaLibraryContent({
         } else {
           toast.error(result.error || "Greška pri uploadu");
         }
-      } catch (err) {
+      } catch {
         setUploads((prev) =>
           prev.map((u) =>
             u.id === uploadId ? { ...u, status: "error", error: "Neočekivana greška" } : u,

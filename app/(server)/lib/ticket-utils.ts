@@ -1,5 +1,3 @@
-import { DayType } from "@prisma/client";
-
 export interface PriceWithDayType {
   dayType: string | null;
 }

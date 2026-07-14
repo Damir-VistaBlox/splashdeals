@@ -29,9 +29,6 @@ import { SEOScoringPanel } from "../../../_components/seo-scoring-panel";
 import { ReadabilityPanel } from "../../../_components/readability-panel";
 import { InternalLinksPanel } from "../../../_components/internal-links-panel";
 import { EditorPresence } from "../../../_components/editor-presence";
-import { ContentBlocksPanel } from "../../../_components/content-blocks-panel";
-import { SocialSharePreview } from "../../../_components/social-share-preview";
-import { RollbackDropdown } from "../../../_components/rollback-dropdown";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { MediaLibrarySheet } from "@/app/(dashboard)/admin/media/_components/media-library-sheet";
 import {
@@ -235,7 +232,7 @@ export function PostEditor({ post, initialTagIds, categories, tags, dict }: Post
         }
       });
     },
-    [isEditing, post, selectedTagIds, router, startTransition],
+    [isEditing, post, selectedTagIds, router, startTransition, clearDraft],
   );
 
   const toggleTag = useCallback((tagId: string) => {
@@ -252,7 +249,7 @@ export function PostEditor({ post, initialTagIds, categories, tags, dict }: Post
     status: autosaveStatus,
     restore,
     clearDraft,
-    migrateDraft,
+    _migrateDraft,
   } = useCmsAutosave(
     autosaveKey,
     {

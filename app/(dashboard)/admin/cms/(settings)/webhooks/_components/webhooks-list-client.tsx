@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { toast } from "sonner";
 import { Icon } from "@/components/ui/Icon";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -31,7 +30,6 @@ import {
   testWebhookAction,
   deleteWebhookAction,
   reactivateWebhookAction,
-  WEBHOOK_EVENTS,
 } from "@/app/(server)/actions/webhooks";
 
 interface WebhookRow {

@@ -29,17 +29,12 @@ export function EmbedCodesClient({ facilities }: { facilities: Array<Record<stri
   const baseUrl = typeof window !== "undefined" ? window.location.origin : "https://splashdeals.rs";
 
   const getEmbedCode = (slug: string) => {
-    const widgetUrl = `${baseUrl}/api/embed/facility/${slug}`;
     return `<div id="splashdeals-widget" data-facility="${slug}">
   <script src="${baseUrl}/embed.js" defer></script>
   <a href="${baseUrl}/${slug}" target="_blank" rel="noopener noreferrer" style="display:inline-block;padding:10px 24px;background:#06b6d4;color:#fff;font-size:14px;font-weight:700;border-radius:8px;text-decoration:none;">
     Kupi kartu za ${slug.replace(/-/g, " ")}
   </a>
 </div>`;
-  };
-
-  const getIframeCode = (slug: string) => {
-    return `<iframe src="${baseUrl}/api/embed/facility/${slug}" width="100%" height="180" frameborder="0" style="border:none;overflow:hidden;" title="Splashdeals Widget"></iframe>`;
   };
 
   const handleCopy = async (slug: string) => {

@@ -357,7 +357,7 @@ async function sendTicketConfirmationEmail(
     dict,
   );
 
-  const text = buildTicketDeliveryText(
+  const _text = buildTicketDeliveryText(
     {
       facilityName,
       facilityAddress,

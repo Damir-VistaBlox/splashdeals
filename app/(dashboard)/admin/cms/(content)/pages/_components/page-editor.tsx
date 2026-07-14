@@ -159,7 +159,7 @@ export function PageEditor({ page, dict }: PageEditorProps) {
         }
       });
     },
-    [isEditing, page, router, startTransition],
+    [isEditing, page, router, startTransition, clearDraft],
   );
 
   // --- Autosave ---
@@ -170,7 +170,7 @@ export function PageEditor({ page, dict }: PageEditorProps) {
     status: autosaveStatus,
     restore,
     clearDraft,
-    migrateDraft,
+    _migrateDraft,
   } = useCmsAutosave(
     autosaveKey,
     {

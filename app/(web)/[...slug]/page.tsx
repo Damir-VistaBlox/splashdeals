@@ -5,7 +5,6 @@ import { FacilityShowcaseTemplate } from "@/app/(web)/facility/_components/Showc
 import { buildFacilityMetadata } from "@/app/(web)/facility/_data/metadata";
 import { DiscoveryTemplate, getDiscoveryMetadata } from "@/app/(server)/lib/routing/discovery";
 import { resolveSlug, resolveLegacyTarget } from "@/app/(server)/lib/routing/resolve-slug";
-import { resolveCategoryKey } from "@/lib/routing/categories";
 import { parseLocaleSegments } from "@/lib/locale";
 
 export async function generateMetadata({

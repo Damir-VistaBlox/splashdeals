@@ -4,10 +4,7 @@ import Stripe from "stripe";
 import { prisma } from "@/app/(server)/lib/prisma";
 import { generateIdempotencyKey, withStripeRetry } from "@/app/(server)/lib/stripe-utils";
 import { getDictionary } from "@/lib/dictionaries";
-import {
-  validatePromoCodeAction,
-  incrementCampaignUsageAction,
-} from "@/app/(server)/actions/campaigns";
+import { validatePromoCodeAction } from "@/app/(server)/actions/campaigns";
 
 // ──────────────────────────────────────────────
 // Validation
@@ -69,7 +66,7 @@ export async function createCheckoutSession(params: {
   promoCode?: string | null;
   campaignId?: string | null;
 }): Promise<CreateCheckoutSessionResult> {
-  const { items, userId, email, holderName, holderPhotoUrl, promoCode, campaignId } = params;
+  const { items, userId, email, holderName, holderPhotoUrl, promoCode, campaignId: _campaignId } = params;
 
   // 1. Validate input at runtime (defence-in-depth beyond TypeScript)
   checkoutSchema.parse(params);

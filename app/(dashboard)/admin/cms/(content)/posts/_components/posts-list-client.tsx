@@ -157,7 +157,7 @@ export function PostsListClient({
     } else {
       setSelectedIds(new Set(allIds));
     }
-  }, [selectedIds]);
+  }, [selectedIds, table]);
 
   const toggleSelect = useCallback((id: string) => {
     setSelectedIds((prev) => {

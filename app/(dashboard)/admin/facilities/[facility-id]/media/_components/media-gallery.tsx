@@ -461,7 +461,7 @@ export function MediaGallery({
         }
       });
     },
-    [facilityId, startUpload],
+    [facilityId, startUpload, markDone, markFailed],
   );
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {

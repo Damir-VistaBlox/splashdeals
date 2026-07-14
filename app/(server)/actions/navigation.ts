@@ -5,7 +5,7 @@ import { requireAdmin, requireSuperAdmin } from "@/app/(server)/lib/auth-guards"
 import { handleServerActionError, type ActionResult } from "@/app/(server)/lib/server-action-error";
 import { revalidatePath } from "next/cache";
 import { z } from "zod/v4";
-import type { City, DiscoveryMenuData } from "@/components/layout/_header/mega-menu/types";
+import type { DiscoveryMenuData } from "@/components/layout/_header/mega-menu/types";
 
 // ─── Schemas ───────────────────────────────────────────
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { Icon } from "@/components/ui/Icon";
 
 interface EditorInfo {
@@ -86,10 +87,13 @@ export function EditorPresence({ postId, pageId, currentUserId }: EditorPresence
               <span className="relative inline-flex size-3 rounded-full bg-green-500" />
             </span>
             {editor.image ? (
-              <img
+              <Image
                 src={editor.image}
                 alt={editor.name}
+                width={16}
+                height={16}
                 className="size-4 rounded-full object-cover"
+                unoptimized
               />
             ) : (
               <Icon name="person" className="size-3.5" />
