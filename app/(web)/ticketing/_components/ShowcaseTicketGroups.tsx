@@ -608,7 +608,7 @@ function MobileTicketAccordion({
 
               {activePrice && (
                 <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground text-[10px] font-bold tracking-widest uppercase">
+                  <span className="text-muted-foreground text-xs font-bold tracking-widest uppercase">
                     Ukupno
                   </span>
                   <span className="text-foreground text-lg font-black">
@@ -621,7 +621,7 @@ function MobileTicketAccordion({
                 onClick={handleAdd}
                 disabled={isAdding || isAdded || !activePrice}
                 className={cn(
-                  "flex h-12 w-full items-center justify-center gap-2 rounded-2xl border text-[10px] font-black tracking-widest uppercase transition-colors duration-300",
+                  "flex h-12 w-full items-center justify-center gap-2 rounded-2xl border text-xs font-black tracking-widest uppercase transition-colors duration-300",
                   isAdded && "border-primary/30 bg-primary/10 text-primary",
                   isAdding && "border-primary/10 bg-primary/5 text-primary cursor-not-allowed",
                   !isAdded &&

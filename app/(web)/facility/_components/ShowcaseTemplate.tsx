@@ -225,7 +225,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
               weather={weather}
             />
 
-            <h1 className="text-primary-foreground py-2 text-4xl leading-[0.9] font-black tracking-tighter italic drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)] md:text-7xl">
+            <h1 className="text-primary-foreground py-2 text-4xl leading-tight font-black tracking-tighter italic drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)] md:text-7xl md:leading-[0.9]">
               {(() => {
                 const words = facility.name.split(" ");
                 if (words.length === 1) {
