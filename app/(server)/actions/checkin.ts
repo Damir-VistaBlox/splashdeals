@@ -1,6 +1,7 @@
 "use server";
 
 import { prisma } from "@/app/(server)/lib/prisma";
+import { requireAdmin, validateFacilityAccess } from "@/app/(server)/lib/auth-guards";
 import { handleServerActionError, type ActionResult } from "@/app/(server)/lib/server-action-error";
 
 type TicketInfo = {
@@ -40,6 +41,8 @@ type TicketInfo = {
  */
 export async function verifyTicketAction(hash: string): Promise<ActionResult<TicketInfo>> {
   try {
+    const user = await requireAdmin();
+
     const ticket = await prisma.issuedTicket.findUnique({
       where: { qrHash: hash },
       include: {
@@ -77,6 +80,10 @@ export async function verifyTicketAction(hash: string): Promise<ActionResult<Tic
     if (!ticket) {
       return { success: false, error: "Ticket not found." };
     }
+
+    // Validate the admin has access to this ticket's facility
+    const facilityId = ticket.ticketPrice.ticketType.category.facility.id;
+    await validateFacilityAccess(facilityId, user);
 
     return {
       success: true,
@@ -119,13 +126,36 @@ export async function useTicketAction(
   hash: string,
 ): Promise<ActionResult<{ id: string; usageCount: number; usageLimit: number; status: string }>> {
   try {
+    const user = await requireAdmin();
+
     const ticket = await prisma.issuedTicket.findUnique({
       where: { qrHash: hash },
+      include: {
+        ticketPrice: {
+          include: {
+            ticketType: {
+              include: {
+                category: {
+                  include: {
+                    facility: {
+                      select: { id: true },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
     });
 
     if (!ticket) {
       return { success: false, error: "Ticket not found." };
     }
+
+    // Validate the admin has access to this ticket's facility
+    const facilityId = ticket.ticketPrice.ticketType.category.facility.id;
+    await validateFacilityAccess(facilityId, user);
 
     if (ticket.status === "EXPIRED") {
       return { success: false, error: "Ticket has expired." };
