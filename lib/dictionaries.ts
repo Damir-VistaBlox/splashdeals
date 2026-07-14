@@ -3,6 +3,7 @@ import "server-only";
 // Dictionary loader registry — register new locales here
 const loaders = {
   rs: () => import("../dictionaries/rs.json").then((m) => m.default),
+  en: () => import("../dictionaries/en.json").then((m) => m.default),
 } as const;
 
 type Locale = keyof typeof loaders;

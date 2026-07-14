@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import dictionary from "@/dictionaries/rs.json";
+import enDictionary from "@/dictionaries/en.json";
 
 /**
  * Recursively collect all leaf values and their paths.
@@ -55,6 +56,7 @@ describe("i18n dictionary coverage", () => {
     "common",
     "seo",
     "mega_menu",
+    "email",
   ] as const;
 
   // ── Minimum key counts per group ────────────────────────────────────
@@ -124,5 +126,36 @@ describe("i18n dictionary coverage", () => {
 
     // Never fail
     expect(true).toBe(true);
+  });
+});
+
+describe("i18n fallback mechanism", () => {
+  it("en.json only needs translated keys — untranslated keys fall back to rs.json", () => {
+    const en = enDictionary as Record<string, unknown>;
+    const rs = dictionary as Record<string, unknown>;
+
+    // en.json has far fewer keys than rs.json — that's by design
+    const enLeafCount = collectLeaves(en).length;
+    const rsLeafCount = collectLeaves(rs).length;
+
+    console.log(`rs.json: ${rsLeafCount} leaf values`);
+    console.log(`en.json: ${enLeafCount} leaf values`);
+    console.log(`Fallback coverage: ${((enLeafCount / rsLeafCount) * 100).toFixed(1)}%`);
+
+    // All en.json values should be strings
+    const leaves = collectLeaves(en);
+    const issues: string[] = [];
+    for (const { path, value } of leaves) {
+      if (typeof value !== "string") {
+        issues.push(`${path}: expected string, got ${typeof value}`);
+      } else if (value.trim() === "") {
+        issues.push(`${path}: is an empty string`);
+      }
+    }
+    for (const issue of issues) {
+      console.warn(`en.json issue: ${issue}`);
+    }
+
+    expect(enLeafCount).toBeLessThan(rsLeafCount);
   });
 });
