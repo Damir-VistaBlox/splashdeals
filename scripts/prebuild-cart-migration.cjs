@@ -1,15 +1,31 @@
 /**
  * Prebuild script — runs before `next build` on Vercel.
  * Applies the cart normalization migration directly (bypassing prisma migrate
- * which times out on Neon pooler advisory locks), then marks it as applied
- * so future `prisma migrate deploy` calls don't fail with P3009.
+ * which times out on Neon pooler advisory locks).
  */
 const { PrismaClient } = require("@prisma/client");
+const { PrismaNeon } = require("@prisma/adapter-neon");
+const { neon } = require("@neondatabase/serverless");
+
+async function createPrisma() {
+  const connectionString = process.env.DATABASE_URL;
+  if (!connectionString) {
+    console.log("[prebuild] No DATABASE_URL, skipping");
+    return null;
+  }
+  const sql = neon(connectionString);
+  const adapter = new PrismaNeon({ sql });
+  return new PrismaClient({ adapter });
+}
 
 async function main() {
-  const prisma = new PrismaClient();
+  const prisma = await createPrisma();
+  if (!prisma) {
+    console.log("[prebuild] Skipped — no DB connection");
+    return;
+  }
 
-  // 1. Remove failed migration marker (if any)
+  // 1. Remove failed migration marker
   try {
     await prisma.$executeRawUnsafe(
       `DELETE FROM "sales"."_prisma_migrations" WHERE "migration_name" = '20260714000001_normalize_cart_items'`
@@ -68,7 +84,7 @@ async function main() {
     }
   }
 
-  // 3. Mark migration as applied in prisma_migrations tracking
+  // 3. Mark migration as applied
   try {
     await prisma.$executeRawUnsafe(
       `INSERT INTO "sales"."_prisma_migrations" (
