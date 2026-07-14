@@ -157,7 +157,8 @@ export function PostsListClient({
     } else {
       setSelectedIds(new Set(allIds));
     }
-  }, [selectedIds, table]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedIds]);
 
   const toggleSelect = useCallback((id: string) => {
     setSelectedIds((prev) => {

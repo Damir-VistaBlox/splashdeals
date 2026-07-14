@@ -232,7 +232,7 @@ export function PostEditor({ post, initialTagIds, categories, tags, dict }: Post
         }
       });
     },
-    [isEditing, post, selectedTagIds, router, startTransition, clearDraft],
+    [isEditing, post, selectedTagIds, router, startTransition],
   );
 
   const toggleTag = useCallback((tagId: string) => {
@@ -249,7 +249,7 @@ export function PostEditor({ post, initialTagIds, categories, tags, dict }: Post
     status: autosaveStatus,
     restore,
     clearDraft,
-    _migrateDraft,
+    migrateDraft: _migrateDraft,
   } = useCmsAutosave(
     autosaveKey,
     {
