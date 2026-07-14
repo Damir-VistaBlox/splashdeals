@@ -8,7 +8,7 @@ import { MAX_QUANTITY_PER_ITEM } from "@/lib/types/cart";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { TicketPurchaseModal } from "./TicketPurchaseModal";
-import { addToCartAction } from "@/app/(server)/actions/cart";
+import { persistCartItem } from "@/lib/cart/persist-cart-item";
 
 interface TicketTier {
   id: string;
@@ -405,30 +405,19 @@ function MobileTicketAccordion({
     activeProduct?.prices.find((p) => p.id === selectedPrice) ?? activeProduct?.prices[0] ?? null;
   const bestDealId = activeProduct ? findBestDeal(activeProduct.prices) : null;
 
-  const handleAdd = () => {
+  const handleAdd = async () => {
     if (!activePrice || !activeProduct || !facility) return;
-    const validityType = activeProduct.title.toLowerCase().includes("sezonsk")
-      ? "SUMMER_SEASON"
-      : "FLEXIBLE_30_DAY";
-    const cartTitle = `${facility.name} - ${activeProduct.title}${activePrice.label ? ` (${activePrice.label})` : ""}`;
-    addToCartAction({
-      ticketPriceId: activePrice.id,
-      facilityId: facility.id,
-      quantity: qty,
-      title: cartTitle,
-      price: activePrice.price,
-      currency: "RSD",
-      facilityName: facility.name,
-      category: facility.category,
-      validityType,
-      requiresIdentity: false,
-      requiresPhoto: false,
-      minPeople: activeProduct.minPeople || 1,
-      maxPeople: activeProduct.maxPeople || null,
-      imageUrl: null,
-    }).catch(console.error);
 
     setIsAdding(true);
+    const addedItem = await persistCartItem({
+      ticketPriceId: activePrice.id,
+      quantity: qty,
+    });
+    if (!addedItem) {
+      setIsAdding(false);
+      return;
+    }
+
     if (typeof navigator !== "undefined" && "vibrate" in navigator) navigator.vibrate([15, 80, 15]);
     setTimeout(() => {
       setIsAdding(false);

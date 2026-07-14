@@ -79,9 +79,7 @@ export function CheckoutButton({
         disabled={isCheckingOut}
         onClick={handleClick}
       >
-        {isCheckingOut
-          ? dict.cart?.processing || "Obrada..."
-          : dict.cart?.checkout || "Plati"}
+        {isCheckingOut ? dict.cart?.processing || "Obrada..." : dict.cart?.checkout || "Plati"}
       </Button>
 
       <IdentitySetupDialog

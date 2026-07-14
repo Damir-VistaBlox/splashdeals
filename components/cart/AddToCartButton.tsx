@@ -5,9 +5,9 @@ import { useUIState } from "@/hooks/use-ui-state";
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { trackAddToCart } from "@/lib/analytics/events";
-import { addToCartAction } from "@/app/(server)/actions/cart";
 import { getClientDictionary } from "@/lib/client-dictionaries";
 import type { Dict } from "@/lib/types";
+import { persistCartItem } from "@/lib/cart/persist-cart-item";
 
 interface AddToCartButtonProps {
   ticket: {
@@ -39,34 +39,23 @@ export function AddToCartButton({ ticket, className }: AddToCartButtonProps) {
     getClientDictionary().then(setDict);
   }, []);
 
-  const handleAdd = (e: React.MouseEvent) => {
+  const handleAdd = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
 
-    // 🛒 Add to server cart directly
-    addToCartAction({
+    const quantityToAdd = Math.max(1, ticket.minPeople ?? 1);
+    const addedItem = await persistCartItem({
       ticketPriceId: ticket.id,
-      facilityId: ticket.facility.id,
-      quantity: 1,
-      title: ticket.title,
-      price: Number(ticket.price),
-      currency: ticket.currency,
-      facilityName: ticket.facility.name,
-      category: ticket.facility.category,
-      validityType: ticket.validityType,
-      requiresIdentity: ticket.requiresIdentity,
-      requiresPhoto: ticket.requiresPhoto,
-      minPeople: ticket.minPeople,
-      maxPeople: ticket.maxPeople,
-      imageUrl: ticket.imageUrl,
-    }).catch(console.error);
+      quantity: quantityToAdd,
+    });
+    if (!addedItem) return;
 
     trackAddToCart({
-      ticketId: ticket.id,
-      facilityName: ticket.facility.name,
-      ticketTitle: ticket.title,
-      price: Number(ticket.price),
-      quantity: 1,
+      ticketId: addedItem.ticketId,
+      facilityName: addedItem.facilityName || ticket.facility.name,
+      ticketTitle: addedItem.title,
+      price: addedItem.price,
+      quantity: quantityToAdd,
     });
 
     // 🔄 Broadcast cart update to other tabs

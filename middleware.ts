@@ -19,8 +19,9 @@ export async function middleware(request: NextRequest) {
   }
 
   // Lightweight check: look for the Better Auth session cookie
-  const sessionCookie = request.cookies.get("better-auth.session_token")?.value
-    ?? request.cookies.get("__Secure-better-auth.session_token")?.value;
+  const sessionCookie =
+    request.cookies.get("better-auth.session_token")?.value ??
+    request.cookies.get("__Secure-better-auth.session_token")?.value;
 
   if (!sessionCookie) {
     const signInUrl = new URL("/prijava", request.url);
