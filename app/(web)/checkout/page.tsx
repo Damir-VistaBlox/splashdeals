@@ -132,9 +132,7 @@ export default async function CheckoutPage() {
 
         {/* Total */}
         <div className="mt-4 flex items-center justify-between border-t pt-4">
-          <span className="text-foreground text-lg font-bold">
-            {dict.cart?.total || "Ukupno"}
-          </span>
+          <span className="text-foreground text-lg font-bold">{dict.cart?.total || "Ukupno"}</span>
           <span className="text-foreground text-lg font-bold tabular-nums">
             {new Intl.NumberFormat("sr-RS").format(totalBeforeDiscount)} RSD
           </span>

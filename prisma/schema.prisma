@@ -453,7 +453,7 @@ model IssuedTicket {
 
 model CartSession {
   id            String           @id @default(uuid())
-  userId        String
+  userId        String           @unique
   items         Json?           /// DEPRECATED — kept for backward compat during migration. Use cartItems relation instead.
   locked        Boolean          @default(false)
   lockedAt      DateTime?        /// Set when cart is locked — enables TTL-based auto-unlock
@@ -466,7 +466,6 @@ model CartSession {
   user  User             @relation(fields: [userId], references: [id], onDelete: Cascade)
   cartItems CartSessionItem[]
 
-  @@index([userId])
   @@schema("sales")
 }
 
@@ -493,6 +492,7 @@ model CartSessionItem {
 
   cart CartSession @relation(fields: [cartId], references: [id], onDelete: Cascade)
   @@index([cartId])
+  @@unique([cartId, ticketPriceId])
   @@schema("sales")
 }
 

@@ -2,7 +2,8 @@
  * 🛒 Shared cart types for the cart session and normalized items.
  *
  * CartItem matches the CartSessionItem Prisma model.
- * CartItemInput is what the client sends to the server.
+ * CartItemInput is the only cart metadata trusted from the client.
+ * All display, price, facility, and restriction fields are hydrated server-side.
  */
 
 export interface CartItem {
@@ -26,19 +27,7 @@ export interface CartItem {
 
 export interface CartItemInput {
   ticketPriceId: string;
-  facilityId: string;
   quantity: number;
-  title: string;
-  price: number;
-  currency?: string;
-  facilityName?: string;
-  category?: string;
-  validityType?: string;
-  requiresIdentity?: boolean;
-  requiresPhoto?: boolean;
-  imageUrl?: string | null;
-  minPeople?: number;
-  maxPeople?: number | null;
 }
 
 export interface DiscountInfo {

@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import { MAX_QUANTITY_PER_ITEM } from "@/lib/types/cart";
 import { useUIState } from "@/hooks/use-ui-state";
 import { getDayTypeForDate, filterPricesByDate } from "@/app/(server)/lib/ticket-utils";
-import { addToCartAction } from "@/app/(server)/actions/cart";
+import { persistCartItem } from "@/lib/cart/persist-cart-item";
 
 interface TicketPurchaseModalProps {
   isOpen: boolean;
@@ -210,24 +210,15 @@ export function TicketPurchaseModal({
   const handleAddToCart = async () => {
     if (!activePrice || !activeProduct || !facility) return;
 
-    addToCartAction({
-      ticketPriceId: activePrice.id,
-      facilityId: facility.id,
-      quantity,
-      title: `${facility.name} - ${activeProduct.title}${activePrice.label ? ` (${activePrice.label})` : ""}`,
-      price: activePrice.price,
-      currency: "RSD",
-      facilityName: facility.name,
-      category: facility.category,
-      validityType: activeProduct.isSeasonPass ? "SUMMER_SEASON" : "FLEXIBLE_30_DAY",
-      requiresIdentity: activeProduct.requiresIdentity,
-      requiresPhoto: activeProduct.requiresPhoto,
-      minPeople: activeProduct.minPeople,
-      maxPeople: activeProduct.maxPeople,
-      imageUrl: activeProduct.imageUrl || null,
-    }).catch(console.error);
-
     setIsAdding(true);
+    const addedItem = await persistCartItem({
+      ticketPriceId: activePrice.id,
+      quantity,
+    });
+    if (!addedItem) {
+      setIsAdding(false);
+      return;
+    }
     if (typeof navigator !== "undefined" && "vibrate" in navigator) navigator.vibrate([15, 80, 15]);
     await new Promise((r) => setTimeout(r, 700));
     setIsAdding(false);
