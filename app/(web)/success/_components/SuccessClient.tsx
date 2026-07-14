@@ -286,7 +286,7 @@ export function SuccessClient({
           className="animate-fade-in flex flex-col items-center justify-center gap-6 pt-10 sm:flex-row"
           style={{ animationDelay: "0.8s", animationFillMode: "both" }}
         >
-          <Link href="/facilities" className="w-full sm:w-auto">
+          <Link href="/" className="w-full sm:w-auto">
             <Button
               variant="outline"
               size="lg"
