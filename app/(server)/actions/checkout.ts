@@ -9,7 +9,6 @@ import {
 } from "@/app/(server)/actions/campaigns";
 import { auth } from "@/app/(server)/lib/auth";
 import { headers } from "next/headers";
-import { setCartLockAction } from "@/app/(server)/actions/cart";
 
 /**
  * 🌊 Initialise a Stripe Checkout session from the cart.
@@ -18,8 +17,8 @@ import { setCartLockAction } from "@/app/(server)/actions/cart";
  * and returns the Stripe Checkout redirect URL.
  *
  * Requires the user to be authenticated via social auth.
- * Called from CartClient.tsx — the client clears the cart and redirects
- * the browser to the returned URL.
+ * Called from CartClient.tsx — the client redirects the browser to the returned URL.
+ * Cart is cleared in fulfillOrder (webhook) after payment confirmation.
  */
 export async function createCheckoutSessionAction(params: {
   items: { ticketPriceId: string; quantity: number }[];
@@ -34,24 +33,13 @@ export async function createCheckoutSessionAction(params: {
       return { success: false, error: "Morate biti prijavljeni da biste nastavili kupovinu." };
     }
 
-    // 🔒 Lock cart to prevent concurrent mutations during checkout
-    await setCartLockAction(true);
+    const result = await createCheckoutSession({
+      ...params,
+      userId: session.user.id,
+      email: session.user.email,
+    });
 
-    try {
-      const result = await createCheckoutSession({
-        ...params,
-        userId: session.user.id,
-        email: session.user.email,
-      });
-
-      // 🔓 Unlock on success (cart cleared by Stripe webhook)
-      await setCartLockAction(false);
-      return { success: true, data: { url: result.url } };
-    } catch (error) {
-      // 🔓 Unlock on failure so user can retry
-      await setCartLockAction(false);
-      throw error;
-    }
+    return { success: true, data: { url: result.url } };
   } catch (error) {
     return handleServerActionError(error, "checkout");
   }

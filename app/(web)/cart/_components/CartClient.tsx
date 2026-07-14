@@ -13,7 +13,6 @@ import {
   getCartAction,
   removeFromCartAction,
   updateCartQuantityAction,
-  clearCartAction,
 } from "@/app/(server)/actions/cart";
 import { trackBeginCheckout } from "@/lib/analytics/events";
 import { CartItemList } from "./CartItemList";
@@ -165,7 +164,8 @@ export function CartClient({ dict }: { dict: Record<string, any> }) {
       if (!result.success) throw new Error(result.error || "Failed to initialize checkout");
 
       if (result.data?.url) {
-        await clearCartAction().catch(console.error);
+        // Cart is cleared server-side in fulfillOrder (webhook) after payment is confirmed.
+        // This preserves cart items if the user cancels Stripe checkout.
         setItems([]);
         window.location.href = result.data.url;
       } else {

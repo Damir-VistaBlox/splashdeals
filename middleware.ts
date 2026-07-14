@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { auth } from "@/app/(server)/lib/auth";
 
 export const config = {
   matcher: ["/(account)/:path*"],
@@ -8,9 +7,8 @@ export const config = {
 
 /**
  * 🌊 Auth Middleware — Protects customer account pages
- * - Unauthenticated users are redirected to the login page
- * - Non-CUSTOMER roles (admin, staff, owner) are redirected to the admin dashboard
- * - The login page itself (prijava) is excluded to prevent redirect loops
+ * Lightweight edge check: verifies session cookie presence.
+ * Full session validation happens in the page component.
  */
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -20,19 +18,14 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const session = await auth.api.getSession({
-    headers: request.headers,
-  });
+  // Lightweight check: look for the Better Auth session cookie
+  const sessionCookie = request.cookies.get("better-auth.session_token")?.value
+    ?? request.cookies.get("__Secure-better-auth.session_token")?.value;
 
-  if (!session) {
+  if (!sessionCookie) {
     const signInUrl = new URL("/prijava", request.url);
     signInUrl.searchParams.set("callbackUrl", request.nextUrl.pathname);
     return NextResponse.redirect(signInUrl);
-  }
-
-  // Admin/staff users should use the admin dashboard
-  if (session.user.role !== "CUSTOMER") {
-    return NextResponse.redirect(new URL("/admin", request.url));
   }
 
   return NextResponse.next();

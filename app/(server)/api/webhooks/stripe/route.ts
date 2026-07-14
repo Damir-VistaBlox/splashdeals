@@ -229,15 +229,20 @@ export async function fulfillOrder(session: Stripe.Checkout.Session) {
     });
 
     if (transaction && targetEmail) {
-      // Mark any CartSession as notified since checkout completed
-      await prisma.cartSession
-        .updateMany({
-          where: { userId, notified: false },
-          data: { notified: true },
-        })
-        .catch(() => {
-          // CartSession may not exist; that's fine
+      // 🧹 Clear the user's cart — payment confirmed, items fulfilled
+      const cart = await prisma.cartSession.findFirst({
+        where: { userId },
+        orderBy: { updatedAt: "desc" },
+      });
+      if (cart) {
+        await prisma.cartSessionItem.deleteMany({
+          where: { cartId: cart.id },
         });
+        await prisma.cartSession.update({
+          where: { id: cart.id },
+          data: { locked: false, lockedAt: null, notified: true },
+        });
+      }
 
       await sendTicketConfirmationEmail(targetEmail, transaction as any, session.id).catch(
         (err) => {
