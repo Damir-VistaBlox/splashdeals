@@ -166,7 +166,7 @@ export default async function HowItWorksPage({ params: _params }: PageProps) {
       {/* 🚀 CTA SECTION */}
       <div className="text-center transition-all duration-700">
         <Link
-          href={`/facilities`}
+          href={`/`}
           className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center gap-4 rounded-2xl px-10 py-5 text-xl font-black tracking-tighter uppercase italic shadow-[0_0_40px_hsl(var(--primary)/0.3)] transition-all hover:scale-105 active:scale-95"
         >
           {dict.how_it_works_page.cta}

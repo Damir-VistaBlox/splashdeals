@@ -33,6 +33,12 @@ type FacilityWithIncludes = Prisma.FacilityGetPayload<{
     amenities: { include: { amenity: true }; orderBy: { displayOrder: "asc" } };
     marketplaceCities: { include: { city: true } };
     faqs: { orderBy: { displayOrder: "asc" } };
+    reviews: {
+      where: { isApproved: true };
+      include: { user: { select: { name: true } } };
+      orderBy: { createdAt: "desc" };
+      take: 20;
+    };
   };
 }>;
 
@@ -205,6 +211,12 @@ export const getFacility = cache(async (slug: string): Promise<FacilityWithInclu
       amenities: { include: { amenity: true }, orderBy: { displayOrder: "asc" } },
       marketplaceCities: { include: { city: true } },
       faqs: { orderBy: { displayOrder: "asc" } },
+      reviews: {
+        where: { isApproved: true },
+        include: { user: { select: { name: true } } },
+        orderBy: { createdAt: "desc" },
+        take: 20,
+      },
     },
   });
 

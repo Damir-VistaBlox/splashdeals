@@ -59,6 +59,7 @@ const ShowcaseAmenities = dynamic(
   },
 );
 
+import { FacilityReviews } from "./FacilityReviews";
 import { PartnerBranding } from "./PartnerBranding";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -380,6 +381,16 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
                 answer: f.answer,
                 category: inferFaqCategory(f.question),
               }))}
+            />
+          </div>
+        )}
+
+        {facility.id && (
+          <div className="mx-auto w-full max-w-3xl space-y-8 px-6 py-8 md:px-12">
+            <FacilityReviews
+              facilityId={facility.id}
+              initialReviews={facility.reviews || []}
+              dict={dict}
             />
           </div>
         )}
