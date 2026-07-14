@@ -2,7 +2,7 @@
 import { Icon } from "@/components/ui/Icon";
 import { Button } from "@/components/ui/button";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { formatTime24h } from "@/lib/utils/date-time";
 
 interface HoursSubset {
@@ -53,52 +53,57 @@ export function MobileUnifiedControlPill({
   const { todayHours, isOpen } = todayInfo;
   const { distance, failed: geoError } = geoState;
 
-  // 🧭 Geolocation (Haversine) with timeout fallback
-  useEffect(() => {
-    if (typeof navigator !== "undefined" && navigator.geolocation) {
-      geoTimeoutRef.current = window.setTimeout(() => {
-        setGeoState({ distance: null, failed: true });
-      }, 8000);
-
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          if (geoTimeoutRef.current !== null) window.clearTimeout(geoTimeoutRef.current);
-          const R = 6371;
-          const dLat = (position.coords.latitude - destLat) * (Math.PI / 180);
-          const dLon = (position.coords.longitude - destLng) * (Math.PI / 180);
-          const a =
-            Math.sin(dLat / 2) ** 2 +
-            Math.cos(destLat * (Math.PI / 180)) *
-              Math.cos(position.coords.latitude * (Math.PI / 180)) *
-              Math.sin(dLon / 2) ** 2;
-          setGeoState({
-            distance: R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)),
-            failed: false,
-          });
-        },
-        () => {
-          if (geoTimeoutRef.current !== null) window.clearTimeout(geoTimeoutRef.current);
-          setGeoState({ distance: null, failed: true });
-        },
-        { enableHighAccuracy: false, timeout: 5000 },
-      );
-    } else {
-      Promise.resolve().then(() => setGeoState({ distance: null, failed: true }));
+  // 🧭 Geolocation (Haversine) — user-initiated, never auto-fires
+  const calculateDistance = () => {
+    if (typeof navigator === "undefined" || !navigator.geolocation) {
+      setGeoState({ distance: null, failed: true });
+      return;
     }
-    return () => {
-      if (geoTimeoutRef.current !== null) window.clearTimeout(geoTimeoutRef.current);
-    };
-  }, [destLat, destLng]);
+
+    setGeoState({ distance: null, failed: false }); // show loading state
+    geoTimeoutRef.current = window.setTimeout(() => {
+      setGeoState({ distance: null, failed: true });
+    }, 8000);
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        if (geoTimeoutRef.current !== null) window.clearTimeout(geoTimeoutRef.current);
+        const R = 6371;
+        const dLat = (position.coords.latitude - destLat) * (Math.PI / 180);
+        const dLon = (position.coords.longitude - destLng) * (Math.PI / 180);
+        const a =
+          Math.sin(dLat / 2) ** 2 +
+          Math.cos(destLat * (Math.PI / 180)) *
+            Math.cos(position.coords.latitude * (Math.PI / 180)) *
+            Math.sin(dLon / 2) ** 2;
+        setGeoState({
+          distance: R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)),
+          failed: false,
+        });
+      },
+      () => {
+        if (geoTimeoutRef.current !== null) window.clearTimeout(geoTimeoutRef.current);
+        setGeoState({ distance: null, failed: true });
+      },
+      { enableHighAccuracy: false, timeout: 5000 },
+    );
+  };
 
   // 🗺️ Navigation trigger
   const handleNavigation = () => {
-    if ("vibrate" in navigator) navigator.vibrate(15);
-    const isApple =
-      typeof navigator !== "undefined" && /Mac|iPod|iPhone|iPad/.test(navigator.userAgent);
-    const url = isApple
-      ? `maps://maps.google.com/maps?daddr=${destLat},${destLng}`
-      : `https://www.google.com/maps/dir/?api=1&destination=${destLat},${destLng}`;
-    window.open(url, "_blank");
+    // If distance already known, open maps directly
+    if (distance !== null) {
+      if ("vibrate" in navigator) navigator.vibrate(15);
+      const isApple =
+        typeof navigator !== "undefined" && /Mac|iPod|iPhone|iPad/.test(navigator.userAgent);
+      const url = isApple
+        ? `maps://maps.google.com/maps?daddr=${destLat},${destLng}`
+        : `https://www.google.com/maps/dir/?api=1&destination=${destLat},${destLng}`;
+      window.open(url, "_blank");
+      return;
+    }
+    // First tap: calculate distance
+    calculateDistance();
   };
 
   return (
