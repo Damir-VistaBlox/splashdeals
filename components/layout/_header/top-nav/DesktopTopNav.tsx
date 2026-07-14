@@ -45,28 +45,19 @@ export function DesktopTopNav({
           <MegaMenu side="left" />
         </div>
 
-        {/* Center — Logo + mobile account icon */}
-        <div className="absolute left-1/2 z-10 flex -translate-x-1/2 items-center gap-2">
+        {/* Center — Logo */}
+        <div className="absolute left-1/2 z-10 -translate-x-1/2">
           <Logo
             isTabActive={isTabActive}
             isReducedMotion={isReducedMotion}
             isHovered={isHovered}
             setIsHovered={setIsHovered}
           />
-          {/* 📱 Mobile account icon — right next to the logo */}
-          <Link
-            href={isLoggedIn ? "/moje-karte" : "/prijava"}
-            className="md:hidden"
-            aria-label={isLoggedIn ? "Moj nalog" : "Prijava"}
-          >
-            <Icon name="person" className="text-primary text-[20px]" />
-          </Link>
         </div>
 
         {/* Right — MegaMenu (right-placed menus) + controls */}
         <div className="flex flex-1 items-center justify-end gap-1.5 md:gap-3">
           <MegaMenu side="right" />
-          {/* Desktop account — hidden on mobile (moved next to logo) */}
           <div className="hidden md:block">
             <AccountButton dict={dict} />
           </div>
@@ -77,6 +68,13 @@ export function DesktopTopNav({
             totalItems={totalItems}
             openCart={openCart}
           />
+          <Link
+            href={isLoggedIn ? "/moje-karte" : "/prijava"}
+            className="text-primary hover:bg-primary/10 flex size-11 shrink-0 items-center justify-center rounded-full transition-colors md:hidden"
+            aria-label={isLoggedIn ? "Moj nalog" : "Prijava"}
+          >
+            <Icon name="person" className="size-7 fill-current stroke-0" />
+          </Link>
         </div>
       </nav>
     </div>
