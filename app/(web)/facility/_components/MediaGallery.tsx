@@ -61,7 +61,7 @@ export function MediaGallery({ media, dict }: MediaGalleryProps) {
         </p>
       </div>
 
-      <div className="grid auto-rows-[180px] grid-cols-2 gap-2 sm:gap-4 md:auto-rows-[250px] md:grid-cols-4">
+      <div className="mx-auto grid max-w-6xl auto-rows-[180px] grid-cols-2 gap-2 sm:gap-4 md:auto-rows-[250px] md:grid-cols-4">
         {galleryMedia.map((m: FacilityMedia, i: number) => (
           <button
             key={m.id}
@@ -93,7 +93,8 @@ export function MediaGallery({ media, dict }: MediaGalleryProps) {
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                 className="h-full w-full object-cover transition-[transform] duration-1000 group-hover:scale-110 group-hover:rotate-1"
                 alt={m.caption || "Facility media"}
-                loading="lazy"
+                loading={i < 2 ? "eager" : "lazy"}
+                priority={i < 2}
               />
             )}
             <div className="from-background/90 absolute inset-0 flex flex-col justify-end bg-gradient-to-t via-transparent to-transparent p-8 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
