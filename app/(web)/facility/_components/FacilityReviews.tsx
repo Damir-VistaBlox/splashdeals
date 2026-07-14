@@ -160,8 +160,8 @@ export function FacilityReviews({ facilityId, initialReviews, dict }: FacilityRe
                     name="star"
                     className={
                       star <= (hoverRating || rating)
-                        ? "text-yellow-500 size-6"
-                        : "text-muted-foreground/20 size-6"
+                        ? "text-yellow-500 size-9 md:size-6"
+                        : "text-muted-foreground/20 size-9 md:size-6"
                     }
                   />
                 </button>
