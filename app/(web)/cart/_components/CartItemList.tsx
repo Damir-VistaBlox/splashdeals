@@ -2,6 +2,7 @@
 
 import { Icon } from "@/components/ui/Icon";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { MAX_QUANTITY_PER_ITEM } from "@/lib/types/cart";
 import type { CartItem, CartDictionary } from "@/lib/types/cart";
@@ -83,43 +84,49 @@ export function CartItemList({
 
           <div className="flex items-center justify-between gap-3 sm:justify-end">
             <div className="border-border bg-muted/30 flex items-center overflow-hidden rounded-xl border">
-              <button
+              <Button
                 type="button"
+                variant="ghost"
+                size="icon"
                 onClick={() => onQuantityChange(item.id, item.quantity - 1)}
                 disabled={item.quantity <= (item.minPeople || 1)}
                 aria-label={dict?.cart?.decrease_qty || "Smanji količinu"}
-                className="text-muted-foreground hover:text-foreground flex h-11 w-11 items-center justify-center transition-colors disabled:opacity-30"
+                className="text-muted-foreground hover:text-foreground h-11 w-11 rounded-none"
               >
                 <Icon name="remove" className="text-[14px]" />
-              </button>
+              </Button>
               <span className="text-foreground min-w-[32px] text-center text-sm font-bold tabular-nums">
                 {item.quantity}
               </span>
-              <button
+              <Button
                 type="button"
+                variant="ghost"
+                size="icon"
                 onClick={() => onQuantityChange(item.id, item.quantity + 1)}
                 disabled={
                   item.quantity >=
                   Math.min(item.maxPeople ?? MAX_QUANTITY_PER_ITEM, MAX_QUANTITY_PER_ITEM)
                 }
                 aria-label={dict?.cart?.increase_qty || "Povećaj količinu"}
-                className="text-muted-foreground hover:text-foreground flex h-11 w-11 items-center justify-center transition-colors disabled:opacity-30"
+                className="text-muted-foreground hover:text-foreground h-11 w-11 rounded-none"
               >
                 <Icon name="add" className="text-[14px]" />
-              </button>
+              </Button>
             </div>
             <div className="min-w-[88px] text-right">
               <div className="text-foreground text-base font-black tracking-tight tabular-nums sm:text-lg">
                 {formatPrice(item.price * item.quantity)} RSD
               </div>
-              <button
+              <Button
                 type="button"
+                variant="ghost"
+                size="sm"
                 onClick={() => onRemove(item.id)}
                 aria-label={dict?.cart?.remove || "Ukloni"}
-                className="text-muted-foreground/70 hover:text-destructive mt-1 min-h-11 text-[10px] font-black tracking-widest uppercase transition-colors sm:min-h-0 sm:text-[9px]"
+                className="text-muted-foreground/70 hover:text-destructive mt-1 h-11 px-0 text-[10px] font-black tracking-widest uppercase sm:h-8 sm:text-[9px]"
               >
                 {dict?.cart?.remove || "Ukloni"}
-              </button>
+              </Button>
             </div>
           </div>
         </Card>

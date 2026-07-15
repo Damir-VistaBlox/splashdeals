@@ -138,11 +138,8 @@ async function SuccessContent({
     },
   });
 
-  // 🧪 Optimization: Pre-serialize Decimal or Date types if Prisma uses them
-  // (Standard practice for Client Components in Splashdeals)
-  const serialized = transaction
-    ? JSON.parse(JSON.stringify(toCheckoutStatusDto(transaction)))
-    : null;
+  // Explicit DTO already normalizes Decimals/dates for the client.
+  const serialized = transaction ? toCheckoutStatusDto(transaction) : null;
 
   return <SuccessClient sessionId={session_id} initialTransaction={serialized} dict={dict} />;
 }

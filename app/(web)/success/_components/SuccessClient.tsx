@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { resendConfirmationAction } from "@/app/(server)/actions/checkout";
 import { buildSuccessPrijavaUrl } from "@/lib/auth/callback-url";
+import { toast } from "sonner";
 import {
   getCheckoutTerminalMessage,
   hasExceededCheckoutStatusPolls,
@@ -106,13 +107,16 @@ export function SuccessClient({
         const result = await resendConfirmationAction(transaction!.id);
         if (result.success) {
           setResendStatus("sent");
+          toast.success(dict.resend_sent);
           setTimeout(() => setResendStatus("idle"), 3000);
         } else {
           setResendStatus("error");
+          toast.error(result.error || dict.resend_error);
           setTimeout(() => setResendStatus("idle"), 3000);
         }
       } catch {
         setResendStatus("error");
+        toast.error(dict.resend_error);
         setTimeout(() => setResendStatus("idle"), 3000);
       }
     });
@@ -154,8 +158,7 @@ export function SuccessClient({
           } else {
             timerId = setTimeout(poll, 3000);
           }
-        } catch (error) {
-          console.error("Polling error:", error);
+        } catch {
           if (isActive) {
             if (hasExceededCheckoutStatusPolls(attempt)) {
               setPollingError(CHECKOUT_STATUS_STILL_PROCESSING_MESSAGE);
@@ -302,7 +305,7 @@ export function SuccessClient({
                       size={160}
                       level="H"
                       includeMargin={false}
-                      className="drop-shadow-2xl grayscale transition-all duration-700 group-hover:grayscale-0"
+                      className="drop-shadow-2xl grayscale transition-[filter] duration-700 group-hover:grayscale-0"
                     />
                     {/* Corner Accents */}
                     <div className="border-muted-foreground/10 absolute -top-2 -left-2 h-4 w-4 border-t-2 border-l-2" />
@@ -367,8 +370,8 @@ export function SuccessClient({
                     <div className="text-muted-foreground/50 font-mono text-[10px] tracking-wider">
                       {dict.ticket.ref}: {issuedTicket.id.slice(-12).toUpperCase()}
                     </div>
-                    <div className="bg-muted/5 text-foreground/20 group-hover:text-primary group-hover:bg-primary/10 flex h-8 w-8 items-center justify-center rounded-full transition-all">
-                      <SuccessSparkles size={14} />
+                    <div className="bg-muted/5 text-foreground/20 group-hover:text-primary group-hover:bg-primary/10 flex h-8 w-8 items-center justify-center rounded-full transition-colors">
+                      <Icon name="auto_awesome" className="text-[14px]" />
                     </div>
                   </div>
                 </div>
@@ -396,7 +399,7 @@ export function SuccessClient({
           <Button
             onClick={() => window.print()}
             size="lg"
-            className="bg-primary hover:bg-primary/90 text-primary-foreground h-14 w-full rounded-full px-8 shadow-[0_0_30px_hsl(var(--primary)/0.3)] sm:h-16 sm:w-auto sm:px-10"
+            className="no-print bg-primary hover:bg-primary/90 text-primary-foreground h-14 w-full rounded-full px-8 shadow-[0_0_30px_hsl(var(--primary)/0.3)] sm:h-16 sm:w-auto sm:px-10"
           >
             <Icon name="download" className="text-primary-foreground mr-3 text-[20px]" />
             {dict.actions.download}
@@ -430,53 +433,6 @@ export function SuccessClient({
           </p>
         </div>
       </div>
-
-      <style jsx global>{`
-        @media print {
-          header,
-          footer,
-          nav,
-          button,
-          .no-print {
-            display: none !important;
-          }
-          body {
-            background: white !important;
-            color: black !important;
-          }
-          .container {
-            max-width: 100% !important;
-            margin: 0 !important;
-            padding: 0 !important;
-          }
-          .issued-ticket {
-            break-inside: avoid;
-            page-break-inside: avoid;
-          }
-        }
-      `}</style>
     </div>
-  );
-}
-
-function SuccessSparkles({ size, className }: { size: number; className?: string }) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-    >
-      <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
-      <path d="M5 3v4" />
-      <path d="M19 17v4" />
-      <path d="M3 5h4" />
-      <path d="M17 19h4" />
-    </svg>
   );
 }

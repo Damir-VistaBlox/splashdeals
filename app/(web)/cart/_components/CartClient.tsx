@@ -56,6 +56,7 @@ export function CartClient({
     userFacilityName: string;
   } | null>(null);
   const [resolvingConflict, setResolvingConflict] = React.useState(false);
+  const [isBootstrapping, setIsBootstrapping] = React.useState(true);
   const claimHandledRef = React.useRef(false);
 
   const totalBeforeDiscount = items.reduce(
@@ -81,21 +82,31 @@ export function CartClient({
   }, [refresh]);
 
   React.useEffect(() => {
+    let active = true;
     const timer = requestAnimationFrame(async () => {
       setIsMounted(true);
-      if (!claimHandledRef.current) {
-        claimHandledRef.current = true;
-        const claim = await claimGuestCartAction();
-        if (claim.success && claim.data?.action === "conflict") {
-          setConflict({
-            guestFacilityName: claim.data.guestFacilityName,
-            userFacilityName: claim.data.userFacilityName,
-          });
+      setIsBootstrapping(true);
+      try {
+        if (!claimHandledRef.current) {
+          claimHandledRef.current = true;
+          const claim = await claimGuestCartAction();
+          if (!active) return;
+          if (claim.success && claim.data?.action === "conflict") {
+            setConflict({
+              guestFacilityName: claim.data.guestFacilityName,
+              userFacilityName: claim.data.userFacilityName,
+            });
+          }
         }
+        await loadCart();
+      } finally {
+        if (active) setIsBootstrapping(false);
       }
-      await loadCart();
     });
-    return () => cancelAnimationFrame(timer);
+    return () => {
+      active = false;
+      cancelAnimationFrame(timer);
+    };
   }, [loadCart]);
 
   const handleResolveConflict = async (choice: "guest" | "user") => {
@@ -142,13 +153,8 @@ export function CartClient({
     };
   }, [checkoutCancelled, loadCart]);
 
-  // 🔄 Tab sync is handled by shared useServerCart BroadcastChannel subscription
-  // Broadcast cart changes to other tabs
-  const broadcastCartUpdate = React.useCallback(() => {
-    notifyUpdated();
-  }, [notifyUpdated]);
-
-  if (!isMounted) {
+  // Tab sync is handled by shared useServerCart BroadcastChannel subscription
+  if (!isMounted || isBootstrapping) {
     return (
       <div className="mx-auto min-h-[50vh] max-w-7xl px-4 pt-8 pb-28 sm:px-12 sm:pt-12 sm:pb-32">
         <div className="bg-muted/30 mb-6 h-8 w-40 animate-pulse rounded-lg" />
@@ -170,7 +176,7 @@ export function CartClient({
     }
 
     await loadCart();
-    broadcastCartUpdate();
+    notifyUpdated();
   };
 
   const handleRemoveItem = async (itemId: string) => {
@@ -182,7 +188,7 @@ export function CartClient({
     }
 
     await loadCart();
-    broadcastCartUpdate();
+    notifyUpdated();
   };
 
   const handleApplyPromo = async () => {
@@ -270,10 +276,8 @@ export function CartClient({
       } else {
         throw new Error("Nije dobijena adresa za plaćanje.");
       }
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "Nepoznata greška";
+    } catch {
       toast.error(dict?.cart?.checkout_error || "Došlo je do greške. Pokušajte ponovo.");
-      console.error("Checkout error:", message);
     } finally {
       setIsCheckingOut(false);
     }

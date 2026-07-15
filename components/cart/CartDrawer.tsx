@@ -12,6 +12,7 @@ import { getClientDictionary } from "@/lib/client-dictionaries";
 import type { Dict } from "@/lib/types";
 import { removeFromCartAction, updateCartQuantityAction } from "@/app/(server)/actions/cart";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 
 export const CartDrawer = () => {
   const isCartOpen = useUIState((s) => s.isCartOpen);
@@ -92,14 +93,16 @@ export const CartDrawer = () => {
                 </p>
               </div>
             </div>
-            <button
+            <Button
               type="button"
+              variant="ghost"
+              size="icon"
               onClick={closeCart}
               aria-label={dict?.cart?.close || "Zatvori korpu"}
-              className="bg-muted/40 text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:ring-ring flex h-11 w-11 items-center justify-center rounded-2xl transition-colors focus-visible:ring-2 focus-visible:outline-none"
+              className="bg-muted/40 text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:ring-ring h-11 w-11 rounded-2xl focus-visible:ring-2"
             >
               <Icon name="close" className="text-[20px]" />
-            </button>
+            </Button>
           </div>
 
           <div className="flex-1 space-y-4 overflow-y-auto p-6">
@@ -127,30 +130,34 @@ export const CartDrawer = () => {
                     </div>
                     <div className="mt-4 flex items-center justify-between gap-3">
                       <div className="border-border bg-muted/40 flex items-center overflow-hidden rounded-xl border">
-                        <button
+                        <Button
                           type="button"
+                          variant="ghost"
+                          size="icon"
                           onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)}
                           disabled={item.quantity <= (item.minPeople || 1)}
                           aria-label={dict?.cart?.decrease_qty || "Smanji količinu"}
-                          className="text-muted-foreground hover:text-foreground flex h-11 w-11 items-center justify-center transition-colors disabled:opacity-30"
+                          className="text-muted-foreground hover:text-foreground h-11 w-11 rounded-none"
                         >
                           <Icon name="remove" className="text-[14px]" />
-                        </button>
+                        </Button>
                         <span className="text-foreground w-8 text-center text-xs font-black tabular-nums">
                           {item.quantity}
                         </span>
-                        <button
+                        <Button
                           type="button"
+                          variant="ghost"
+                          size="icon"
                           onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)}
                           disabled={
                             item.quantity >=
                             Math.min(item.maxPeople ?? MAX_QUANTITY_PER_ITEM, MAX_QUANTITY_PER_ITEM)
                           }
                           aria-label={dict?.cart?.increase_qty || "Povećaj količinu"}
-                          className="text-muted-foreground hover:text-foreground flex h-11 w-11 items-center justify-center transition-colors disabled:opacity-30"
+                          className="text-muted-foreground hover:text-foreground h-11 w-11 rounded-none"
                         >
                           <Icon name="add" className="text-[14px]" />
-                        </button>
+                        </Button>
                       </div>
                       <p className="text-primary text-sm font-black tabular-nums">
                         {formatPrice(item.price * item.quantity)} RSD

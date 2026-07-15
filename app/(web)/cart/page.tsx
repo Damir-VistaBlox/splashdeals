@@ -1,7 +1,6 @@
 import { Metadata } from "next";
 import { getDictionary } from "@/lib/dictionaries";
 import { CartClient } from "./_components/CartClient";
-import { JsonLd } from "@/components/SEO/JsonLd";
 
 import { connection } from "next/server";
 
@@ -33,18 +32,6 @@ export default async function CartPage({
   const [dict, params] = await Promise.all([getDictionary(), searchParams]);
   const checkoutCancelled = params.checkout === "cancelled";
 
-  return (
-    <>
-      <JsonLd
-        id="cart-schema"
-        data={{
-          "@context": "https://schema.org",
-          "@type": "WebPage",
-          name: "Korpa | Splashdeals",
-          description: "Pregledajte karte za akva parkove pre plaćanja.",
-        }}
-      />
-      <CartClient dict={dict} checkoutCancelled={checkoutCancelled} />
-    </>
-  );
+  // Noindex cart page — skip low-value WebPage JsonLd.
+  return <CartClient dict={dict} checkoutCancelled={checkoutCancelled} />;
 }
