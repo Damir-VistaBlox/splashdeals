@@ -12,6 +12,7 @@ import { useServerCart } from "@/hooks/use-server-cart";
 import { broadcastCartUpdated } from "@/lib/cart/cart-sync";
 import { openCartIfDesktop } from "@/lib/cart/open-cart-if-desktop";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 
 interface AddToCartButtonProps {
   ticket: {
@@ -80,13 +81,16 @@ export function AddToCartButton({ ticket, className }: AddToCartButtonProps) {
   };
 
   return (
-    <button
+    <Button
+      type="button"
+      variant="ghost"
+      size="icon"
       onClick={handleAdd}
       className={cn(
-        "relative z-30 flex h-14 w-14 items-center justify-center rounded-2xl transition-all duration-300 active:scale-95",
+        "relative z-30 h-14 w-14 rounded-2xl transition-colors transition-transform duration-300 active:scale-95",
         added
-          ? "scale-110 bg-emerald-500 text-slate-950 shadow-[0_0_20px_rgba(34,197,94,0.4)]"
-          : "hover:bg-primary bg-white/5 text-slate-100 hover:scale-110 hover:text-slate-950",
+          ? "bg-success text-success-foreground hover:bg-success scale-110 shadow-[0_0_20px_hsl(var(--success)/0.35)]"
+          : "bg-muted/40 text-foreground hover:bg-primary hover:text-primary-foreground hover:scale-110",
         className,
       )}
       title={
@@ -109,6 +113,6 @@ export function AddToCartButton({ ticket, className }: AddToCartButtonProps) {
       ) : (
         <Icon name="shopping_cart" className="text-[20px]" />
       )}
-    </button>
+    </Button>
   );
 }

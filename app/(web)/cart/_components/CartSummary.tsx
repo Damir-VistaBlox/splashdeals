@@ -112,13 +112,15 @@ export function CartSummary({
             </p>
           )}
           {discount && (
-            <button
+            <Button
               type="button"
+              variant="ghost"
+              size="sm"
               onClick={onRemovePromo}
-              className="text-destructive/70 hover:text-destructive min-h-11 text-[10px] font-black tracking-widest uppercase transition-colors sm:min-h-0 sm:text-[9px]"
+              className="text-destructive/70 hover:text-destructive h-11 px-0 text-[10px] font-black tracking-widest uppercase sm:h-8"
             >
               {dict?.cart?.remove || "Ukloni"} {discount.code}
-            </button>
+            </Button>
           )}
         </div>
 
@@ -135,29 +137,20 @@ export function CartSummary({
       </Card>
 
       <Card className="bg-muted/20 border-border flex flex-wrap items-center justify-center gap-4 p-4 sm:p-6">
+        <Image src="/payments/visa.svg" alt="Visa" width={64} height={24} className="h-6 w-auto" />
         <Image
-          src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/2560px-Visa_Inc._logo.svg.png"
-          alt="Visa"
-          width={64}
-          height={12}
-          className="h-3 w-auto"
-          unoptimized
-        />
-        <Image
-          src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/1280px-Mastercard-logo.svg.png"
+          src="/payments/mastercard.svg"
           alt="Mastercard"
-          width={48}
+          width={64}
           height={24}
           className="h-6 w-auto"
-          unoptimized
         />
         <Image
-          src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/DinaCard_logo.svg/2560px-DinaCard_logo.svg.png"
+          src="/payments/dinacard.svg"
           alt="DinaCard"
-          width={48}
+          width={64}
           height={24}
           className="h-6 w-auto"
-          unoptimized
         />
       </Card>
 
