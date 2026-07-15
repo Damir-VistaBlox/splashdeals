@@ -1,6 +1,5 @@
 import { prisma } from "@/app/(server)/lib/prisma";
 import { DataTable } from "./table/data-table";
-import { columns } from "./columns";
 import { FacilityStatus, Prisma } from "@prisma/client";
 import {
   facilityListOrderBy,
@@ -23,6 +22,7 @@ const STATUS_VALUES = new Set<string>(Object.values(FacilityStatus));
 
 /**
  * Server-side pagination + search + status filter + sort for the facilities registry.
+ * Column defs are owned by DataTable (no dead columns prop).
  */
 export async function FacilitiesList({ q, page, limit, status, sort, order }: FacilitiesListProps) {
   const currentPage = parseFacilityListPage(page);
@@ -61,7 +61,6 @@ export async function FacilitiesList({ q, page, limit, status, sort, order }: Fa
 
   return (
     <DataTable
-      columns={columns}
       data={facilities}
       totalCount={totalCount}
       currentPage={currentPage}

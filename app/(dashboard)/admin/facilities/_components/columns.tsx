@@ -14,40 +14,34 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { StatusToggle } from "@/app/(dashboard)/admin/_common/StatusToggle";
 import { buildPublicFacilityPath } from "@/lib/routing/public-facility-path";
 import type { FacilityListSortKey } from "@/lib/admin/facilities-list-params";
+
+export type FacilitySortHandler = (columnId: FacilityListSortKey) => void;
 
 function SortHeader({
   label,
   columnId,
   activeSort,
   activeOrder,
+  onSort,
 }: {
   label: string;
   columnId: FacilityListSortKey;
   activeSort?: FacilityListSortKey;
   activeOrder?: "asc" | "desc";
+  onSort: FacilitySortHandler;
 }) {
-  const router = useRouter();
   const isActive = activeSort === columnId;
-  const nextOrder: "asc" | "desc" = isActive && activeOrder === "asc" ? "desc" : "asc";
 
   return (
     <Button
       variant="ghost"
       type="button"
-      onClick={() => {
-        const params = new URLSearchParams(window.location.search);
-        params.set("sort", columnId);
-        params.set("order", nextOrder);
-        params.set("page", "1");
-        router.push(`?${params.toString()}`, { scroll: false });
-      }}
+      onClick={() => onSort(columnId)}
       className="data-[state=open]:bg-accent -ml-4 h-8"
-      aria-sort={isActive ? (activeOrder === "asc" ? "ascending" : "descending") : "none"}
     >
       {label}
       <Icon
@@ -61,6 +55,7 @@ function SortHeader({
 export function createFacilityColumns(
   sort: FacilityListSortKey = "createdAt",
   order: "asc" | "desc" = "desc",
+  onSort: FacilitySortHandler = () => {},
 ): ColumnDef<Facility>[] {
   return [
     {
@@ -87,8 +82,17 @@ export function createFacilityColumns(
     },
     {
       accessorKey: "name",
+      meta: {
+        ariaSort: sort === "name" ? (order === "asc" ? "ascending" : "descending") : "none",
+      },
       header: () => (
-        <SortHeader label="Naziv objekta" columnId="name" activeSort={sort} activeOrder={order} />
+        <SortHeader
+          label="Naziv objekta"
+          columnId="name"
+          activeSort={sort}
+          activeOrder={order}
+          onSort={onSort}
+        />
       ),
       cell: ({ row }) => (
         <div className="relative flex items-center gap-2">
@@ -104,14 +108,32 @@ export function createFacilityColumns(
     },
     {
       accessorKey: "category",
+      meta: {
+        ariaSort: sort === "category" ? (order === "asc" ? "ascending" : "descending") : "none",
+      },
       header: () => (
-        <SortHeader label="Kategorija" columnId="category" activeSort={sort} activeOrder={order} />
+        <SortHeader
+          label="Kategorija"
+          columnId="category"
+          activeSort={sort}
+          activeOrder={order}
+          onSort={onSort}
+        />
       ),
     },
     {
       accessorKey: "city",
+      meta: {
+        ariaSort: sort === "city" ? (order === "asc" ? "ascending" : "descending") : "none",
+      },
       header: () => (
-        <SortHeader label="Lokacija" columnId="city" activeSort={sort} activeOrder={order} />
+        <SortHeader
+          label="Lokacija"
+          columnId="city"
+          activeSort={sort}
+          activeOrder={order}
+          onSort={onSort}
+        />
       ),
       cell: ({ row }) => {
         const city = row.original.city;
@@ -131,8 +153,17 @@ export function createFacilityColumns(
     },
     {
       accessorKey: "status",
+      meta: {
+        ariaSort: sort === "status" ? (order === "asc" ? "ascending" : "descending") : "none",
+      },
       header: () => (
-        <SortHeader label="Status" columnId="status" activeSort={sort} activeOrder={order} />
+        <SortHeader
+          label="Status"
+          columnId="status"
+          activeSort={sort}
+          activeOrder={order}
+          onSort={onSort}
+        />
       ),
       cell: ({ row }) => (
         <StatusToggle facilityId={row.original.id} status={row.original.status} compact />
@@ -140,8 +171,17 @@ export function createFacilityColumns(
     },
     {
       accessorKey: "createdAt",
+      meta: {
+        ariaSort: sort === "createdAt" ? (order === "asc" ? "ascending" : "descending") : "none",
+      },
       header: () => (
-        <SortHeader label="Kreirano" columnId="createdAt" activeSort={sort} activeOrder={order} />
+        <SortHeader
+          label="Kreirano"
+          columnId="createdAt"
+          activeSort={sort}
+          activeOrder={order}
+          onSort={onSort}
+        />
       ),
       cell: ({ row }) => (
         <span className="font-mono text-[10px]">
@@ -185,7 +225,11 @@ export function createFacilityColumns(
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link href={buildPublicFacilityPath(facility.slug)} target="_blank">
+                  <Link
+                    href={buildPublicFacilityPath(facility.slug)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     <Icon name="open_in_new" className="mr-2 text-[16px]" />
                     Prikaz na sajtu
                   </Link>
@@ -198,6 +242,3 @@ export function createFacilityColumns(
     },
   ];
 }
-
-/** Default export for static import sites that don't pass sort (back-compat). */
-export const columns = createFacilityColumns();
