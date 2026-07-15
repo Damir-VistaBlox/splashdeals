@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useTransition } from "react";
+import { useCallback, useEffect, useState, useTransition } from "react";
 import { Icon } from "@/components/ui/Icon";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,17 +18,16 @@ export function FacilityOwnersWidget({ facilityId }: { facilityId: string }) {
   const [email, setEmail] = useState("");
   const [pending, startTransition] = useTransition();
 
-  const reload = () => {
+  const reload = useCallback(() => {
     startTransition(async () => {
       const res = await listFacilityOwnersAction(facilityId);
       if (res.success && res.data) setOwners(res.data);
     });
-  };
+  }, [facilityId]);
 
   useEffect(() => {
     reload();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [facilityId]);
+  }, [reload]);
 
   return (
     <div className="border-border bg-card space-y-3 rounded-xl border p-4">
