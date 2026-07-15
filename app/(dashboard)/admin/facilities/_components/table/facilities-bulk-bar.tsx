@@ -72,6 +72,36 @@ export function FacilitiesBulkBar({
           <Button
             variant="ghost"
             size="sm"
+            className="hover:bg-warning/20 hover:text-warning h-7 text-[10px] font-bold tracking-tight uppercase"
+            disabled={isPending}
+          >
+            {isPending ? (
+              <Icon name="progress_activity" className="mr-1 animate-spin text-[12px]" />
+            ) : (
+              <Icon name="edit_note" className="mr-1 text-[12px]" />
+            )}
+            Nacrt
+          </Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Vrati u nacrt?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Status će biti postavljen na NACRT za {selectedCount} izabranih objekata.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Odustani</AlertDialogCancel>
+            <AlertDialogAction onClick={() => onConfirm("DRAFT")}>Nacrt</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <Button
+            variant="ghost"
+            size="sm"
             className="hover:bg-destructive/20 hover:text-destructive h-7 text-[10px] font-bold tracking-tight uppercase"
             disabled={isPending}
           >
@@ -80,12 +110,12 @@ export function FacilitiesBulkBar({
             ) : (
               <Icon name="archive" className="mr-1 text-[12px]" />
             )}
-            Arhiviraj
+            Zatvori
           </Button>
         </AlertDialogTrigger>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Arhiviraj objekte?</AlertDialogTitle>
+            <AlertDialogTitle>Zatvori objekte?</AlertDialogTitle>
             <AlertDialogDescription>
               Status će biti postavljen na ZATVOREN za {selectedCount} izabranih objekata.
             </AlertDialogDescription>
@@ -96,7 +126,7 @@ export function FacilitiesBulkBar({
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
               onClick={() => onConfirm("CLOSED")}
             >
-              Arhiviraj
+              Zatvori
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

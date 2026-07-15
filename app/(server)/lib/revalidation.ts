@@ -26,6 +26,8 @@ export function revalidateAdminFacilities() {
 
 export function revalidateAdminFacility(facilityId: string) {
   revalidatePath(ADMIN_PATHS.facilities.detail(facilityId), "layout");
+  // List counts + registry row status also depend on this mutation
+  revalidatePath(ADMIN_PATHS.facilities.list());
 }
 
 export function revalidateAdminAmenities(facilityId: string) {

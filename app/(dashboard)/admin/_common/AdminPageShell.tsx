@@ -33,7 +33,6 @@ export function AdminPageShell({
 }: AdminPageShellProps) {
   return (
     <div className="bg-background border-border/50 relative flex min-h-[calc(100vh-4rem)] w-full flex-col gap-8 overflow-hidden rounded-2xl border p-4 md:p-6">
-      {/* Immersive Ambient Glow */}
       <div
         className={`pointer-events-none absolute top-0 right-0 -mt-64 -mr-64 h-[500px] w-[500px] rounded-full blur-[120px] ${glowColor}`}
       />
@@ -52,7 +51,7 @@ export function AdminPageShell({
           <Button
             asChild
             size="lg"
-            className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-primary/25 hover:shadow-primary/40 h-11 shrink-0 rounded-xl px-6 text-[11px] font-black tracking-widest uppercase shadow-lg transition-all duration-300 hover:shadow-xl"
+            className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-primary/25 hover:shadow-primary/40 h-11 shrink-0 rounded-xl px-6 text-[11px] font-black tracking-widest uppercase shadow-lg transition-colors hover:shadow-xl"
           >
             <Link href={cta.href}>
               <Icon name={cta.icon} className="mr-2 text-[16px]" />

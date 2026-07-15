@@ -3,7 +3,6 @@
 import { Icon } from "@/components/ui/Icon";
 import * as React from "react";
 import {
-  ColumnDef,
   VisibilityState,
   flexRender,
   getCoreRowModel,
@@ -18,9 +17,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { bulkUpdateFacilityStatusAction } from "@/app/(server)/actions/facilities";
 import { FacilityStatus } from "@prisma/client";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { FacilitiesTableToolbar } from "./facilities-table-toolbar";
@@ -30,9 +31,8 @@ import { createFacilityColumns } from "../columns";
 import type { FacilityListSortKey } from "@/lib/admin/facilities-list-params";
 import type { Facility } from "@prisma/client";
 
-interface DataTableProps<TData extends { id: string }, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
+interface DataTableProps {
+  data: Facility[];
   totalCount: number;
   currentPage: number;
   pageSize: number;
@@ -42,14 +42,20 @@ interface DataTableProps<TData extends { id: string }, TValue> {
   initialOrder?: "asc" | "desc";
 }
 
-function readDensity(): "comfortable" | "compact" {
-  if (typeof window === "undefined") return "compact";
-  const saved = window.localStorage.getItem("table-density");
-  return saved === "comfortable" || saved === "compact" ? saved : "compact";
+const VISIBILITY_KEY = "facilities-column-visibility";
+
+function readVisibility(): VisibilityState {
+  if (typeof window === "undefined") return {};
+  try {
+    const raw = window.localStorage.getItem(VISIBILITY_KEY);
+    if (!raw) return {};
+    return JSON.parse(raw) as VisibilityState;
+  } catch {
+    return {};
+  }
 }
 
-export function DataTable<TData extends { id: string }, TValue>({
-  columns: _columnsIgnored,
+export function DataTable({
   data,
   totalCount,
   currentPage,
@@ -58,25 +64,26 @@ export function DataTable<TData extends { id: string }, TValue>({
   initialStatus = "all",
   initialSort = "createdAt",
   initialOrder = "desc",
-}: DataTableProps<TData, TValue>) {
-  // Server sort drives headers; ignore static client-sort columns prop.
-  const columns = React.useMemo(
-    () => createFacilityColumns(initialSort, initialOrder) as ColumnDef<TData, TValue>[],
-    [initialSort, initialOrder],
-  );
+}: DataTableProps) {
+  const router = useRouter();
+  const initialSearch = initialQ ?? "";
 
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
   const [focusRowIndex, setFocusRowIndex] = React.useState(0);
   const [isPending, startTransition] = React.useTransition();
-  const router = useRouter();
-  const initialSearch = initialQ ?? "";
-
-  const [density, setDensity] = React.useState<"comfortable" | "compact">(readDensity);
+  // Hydration-safe density: always start compact on SSR, apply localStorage after mount (H2)
+  const [density, setDensity] = React.useState<"comfortable" | "compact">("compact");
   const [globalFilter, setGlobalFilter] = React.useState(initialSearch);
   const [statusFilter, setStatusFilter] = React.useState(initialStatus || "all");
   const previousSearchRef = React.useRef(initialSearch);
   const previousStatusRef = React.useRef(initialStatus || "all");
+
+  React.useEffect(() => {
+    const saved = window.localStorage.getItem("table-density");
+    if (saved === "comfortable" || saved === "compact") setDensity(saved);
+    setColumnVisibility(readVisibility());
+  }, []);
 
   React.useEffect(() => {
     setGlobalFilter(initialSearch);
@@ -88,13 +95,11 @@ export function DataTable<TData extends { id: string }, TValue>({
     previousStatusRef.current = initialStatus || "all";
   }, [initialStatus]);
 
-  // Clear selection when page / filter / dataset identity changes (H3)
   React.useEffect(() => {
     setRowSelection({});
     setFocusRowIndex(0);
   }, [currentPage, pageSize, initialSearch, initialStatus, initialSort, initialOrder, data]);
 
-  // Debounced search → URL
   React.useEffect(() => {
     if (globalFilter === previousSearchRef.current) return;
     const timer = setTimeout(() => {
@@ -108,6 +113,24 @@ export function DataTable<TData extends { id: string }, TValue>({
     return () => clearTimeout(timer);
   }, [globalFilter, router]);
 
+  const handleSort = React.useCallback(
+    (columnId: FacilityListSortKey) => {
+      const params = new URLSearchParams(window.location.search);
+      const nextOrder: "asc" | "desc" =
+        initialSort === columnId && initialOrder === "asc" ? "desc" : "asc";
+      params.set("sort", columnId);
+      params.set("order", nextOrder);
+      params.set("page", "1");
+      router.push(`?${params.toString()}`, { scroll: false });
+    },
+    [initialSort, initialOrder, router],
+  );
+
+  const columns = React.useMemo(
+    () => createFacilityColumns(initialSort, initialOrder, handleSort),
+    [initialSort, initialOrder, handleSort],
+  );
+
   const handleStatusChange = (value: string) => {
     setStatusFilter(value);
     if (value === previousStatusRef.current) return;
@@ -119,12 +142,16 @@ export function DataTable<TData extends { id: string }, TValue>({
     router.push(`?${params.toString()}`, { scroll: false });
   };
 
+  // Preserve page size (and optional sort) when clearing filters (M9)
   const handleResetFilters = () => {
     setGlobalFilter("");
     setStatusFilter("all");
     previousSearchRef.current = "";
     previousStatusRef.current = "all";
-    router.push("?", { scroll: false });
+    const params = new URLSearchParams();
+    if (pageSize !== 15) params.set("limit", String(pageSize));
+    const qs = params.toString();
+    router.push(qs ? `?${qs}` : "?", { scroll: false });
   };
 
   const toggleDensity = () => {
@@ -133,20 +160,35 @@ export function DataTable<TData extends { id: string }, TValue>({
     localStorage.setItem("table-density", next);
   };
 
+  const onColumnVisibilityChange = (
+    updater: VisibilityState | ((old: VisibilityState) => VisibilityState),
+  ) => {
+    setColumnVisibility((prev) => {
+      const next = typeof updater === "function" ? updater(prev) : updater;
+      try {
+        localStorage.setItem(VISIBILITY_KEY, JSON.stringify(next));
+      } catch {
+        /* ignore */
+      }
+      return next;
+    });
+  };
+
+  // TanStack Table returns unstable function identities — React Compiler skip (documented M7)
   // eslint-disable-next-line react-hooks/incompatible-library
-  const table = useReactTable<TData>({
+  const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getRowId: (row) => row.id,
-    onColumnVisibilityChange: setColumnVisibility,
+    onColumnVisibilityChange,
     onRowSelectionChange: setRowSelection,
     enableRowSelection: true,
     state: { columnVisibility, rowSelection },
   });
 
   const selectedRows = table.getFilteredSelectedRowModel().rows;
-  const selectedIds = selectedRows.map((row: Row<TData>) => row.original.id);
+  const selectedIds = selectedRows.map((row: Row<Facility>) => row.original.id);
 
   const handleBulkStatusUpdate = (status: FacilityStatus) => {
     if (!selectedIds.length) {
@@ -165,8 +207,8 @@ export function DataTable<TData extends { id: string }, TValue>({
     });
   };
 
-  const handleRowClick = (row: Row<TData>) => {
-    router.push(`/admin/facilities/${row.original.id}`, { scroll: false });
+  const handleRowClick = (row: Row<Facility>) => {
+    router.push(`/admin/facilities/${row.original.id}`);
   };
 
   const totalPages = Math.max(1, Math.ceil(totalCount / pageSize) || 1);
@@ -232,31 +274,36 @@ export function DataTable<TData extends { id: string }, TValue>({
       />
 
       <div
-        className="border-border/50 bg-muted/40 overflow-hidden overflow-x-auto rounded-2xl border shadow-2xl backdrop-blur-md"
+        className="border-border/50 bg-muted/40 max-h-[min(70vh,720px)] overflow-auto rounded-2xl border shadow-2xl backdrop-blur-md"
         tabIndex={0}
         role="grid"
         aria-label="Registar objekata"
-        aria-rowcount={rows.length}
+        aria-rowcount={totalCount}
         onKeyDown={handleTableKeyDown}
       >
         <Table>
-          <TableHeader>
+          <TableHeader className="bg-muted/80 sticky top-0 z-20 backdrop-blur-md">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} role="row">
-                {headerGroup.headers.map((header) => (
-                  <TableHead
-                    key={header.id}
-                    role="columnheader"
-                    className={cn(
-                      "px-3",
-                      density === "compact" ? "h-8 py-1 text-[10px]" : "h-10 py-2 text-[11px]",
-                    )}
-                  >
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(header.column.columnDef.header, header.getContext())}
-                  </TableHead>
-                ))}
+                {headerGroup.headers.map((header) => {
+                  const meta = header.column.columnDef.meta as
+                    { ariaSort?: "ascending" | "descending" | "none" } | undefined;
+                  return (
+                    <TableHead
+                      key={header.id}
+                      role="columnheader"
+                      aria-sort={meta?.ariaSort ?? "none"}
+                      className={cn(
+                        "bg-muted/80 px-3",
+                        density === "compact" ? "h-8 py-1 text-[10px]" : "h-10 py-2 text-[11px]",
+                      )}
+                    >
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(header.column.columnDef.header, header.getContext())}
+                    </TableHead>
+                  );
+                })}
               </TableRow>
             ))}
           </TableHeader>
@@ -266,8 +313,8 @@ export function DataTable<TData extends { id: string }, TValue>({
                 <TableRow
                   key={row.id}
                   role="row"
-                  aria-rowindex={idx + 1}
-                  aria-selected={row.getIsSelected() || idx === focusRowIndex}
+                  aria-rowindex={(currentPage - 1) * pageSize + idx + 1}
+                  aria-selected={row.getIsSelected()}
                   tabIndex={idx === focusRowIndex ? 0 : -1}
                   data-state={row.getIsSelected() && "selected"}
                   className={cn(
@@ -276,7 +323,8 @@ export function DataTable<TData extends { id: string }, TValue>({
                   )}
                   onClick={(e) => {
                     const target = e.target as HTMLElement;
-                    if (target.closest("button, a, input, [role='checkbox']")) return;
+                    if (target.closest("button, a, input, [role='checkbox'], [role='menuitem']"))
+                      return;
                     setFocusRowIndex(idx);
                     handleRowClick(row);
                   }}
@@ -304,14 +352,20 @@ export function DataTable<TData extends { id: string }, TValue>({
                       Nema pronađenih objekata
                     </p>
                     <p className="text-[10px]">Podesite pretragu ili filter statusa.</p>
-                    {hasActiveFilters && (
-                      <button
+                    {hasActiveFilters ? (
+                      <Button
                         type="button"
+                        variant="link"
+                        size="sm"
                         onClick={handleResetFilters}
-                        className="text-primary mt-1 text-[10px] font-bold tracking-wide uppercase underline-offset-2 hover:underline"
+                        className="text-primary h-auto p-0 text-[10px] font-bold tracking-wide uppercase"
                       >
                         Resetuj filtere
-                      </button>
+                      </Button>
+                    ) : (
+                      <Button asChild variant="outline" size="sm" className="mt-1 h-8 text-[10px]">
+                        <Link href="/admin/facilities/new">Novi objekat</Link>
+                      </Button>
                     )}
                   </div>
                 </TableCell>
@@ -331,5 +385,4 @@ export function DataTable<TData extends { id: string }, TValue>({
   );
 }
 
-// Keep Facility type referenced for consumers
 export type FacilitiesDataTableRow = Facility;

@@ -60,7 +60,7 @@ export function FacilitiesTableToolbar<TData>({
   onResetFilters,
 }: FacilitiesTableToolbarProps<TData>) {
   return (
-    <div className="bg-background/40 border-border/50 flex flex-col items-stretch justify-between gap-3 rounded-xl border p-2 backdrop-blur-md lg:flex-row lg:items-center">
+    <div className="bg-background/40 border-border/50 flex flex-col items-stretch justify-between gap-3 rounded-xl border p-2 backdrop-blur-md xl:flex-row xl:items-center">
       <div className="flex flex-1 flex-col items-stretch gap-3 sm:flex-row sm:items-center">
         <div className="relative flex-1 sm:max-w-xs">
           <Icon
@@ -79,16 +79,10 @@ export function FacilitiesTableToolbar<TData>({
         <div className="flex flex-wrap items-center gap-2">
           <Select value={status || "all"} onValueChange={onStatusChange}>
             <SelectTrigger
-              className="bg-background/40 border-border/50 hover:bg-background/60 relative h-9 flex-1 text-[10px] font-black tracking-wider uppercase transition-colors sm:w-[160px]"
+              className="bg-background/40 border-border/50 hover:bg-background/60 h-9 w-[160px] text-[10px] font-black tracking-wider uppercase transition-colors"
               aria-label="Filter statusa"
             >
               <SelectValue placeholder="Status objekta" />
-              <Badge
-                variant="outline"
-                className="bg-primary/10 border-primary/20 text-primary pointer-events-none ml-2 h-5 px-1.5 text-[9px] font-black"
-              >
-                {totalCount}
-              </Badge>
             </SelectTrigger>
             <SelectContent className="bg-muted border-border">
               <SelectItem value="all">Svi statusi</SelectItem>
@@ -98,6 +92,14 @@ export function FacilitiesTableToolbar<TData>({
               <SelectItem value="EMERGENCY_SHUTDOWN">Vanredno</SelectItem>
             </SelectContent>
           </Select>
+
+          <Badge
+            variant="outline"
+            className="bg-primary/10 border-primary/20 text-primary h-9 px-2.5 text-[9px] font-black"
+            title="Broj rezultata"
+          >
+            {totalCount} rez.
+          </Badge>
 
           <Select value={String(pageSize)} onValueChange={(v) => onPageSizeChange(Number(v))}>
             <SelectTrigger

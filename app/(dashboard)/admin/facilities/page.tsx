@@ -11,6 +11,21 @@ export const metadata: Metadata = {
   description: "Globalni direktorijum akva parkova i operativnih konfiguracija.",
 };
 
+/** Preserve non-status query params when metric cards filter by status (M8). */
+function buildStatusFilterHref(
+  status: string | null,
+  current: { q?: string; limit?: string; sort?: string; order?: string },
+): string {
+  const params = new URLSearchParams();
+  if (status) params.set("status", status);
+  if (current.q) params.set("q", current.q);
+  if (current.limit) params.set("limit", current.limit);
+  if (current.sort) params.set("sort", current.sort);
+  if (current.order) params.set("order", current.order);
+  const qs = params.toString();
+  return qs ? `/admin/facilities?${qs}` : "/admin/facilities";
+}
+
 export default async function FacilitiesDirectoryPage({
   searchParams,
 }: {
@@ -25,6 +40,7 @@ export default async function FacilitiesDirectoryPage({
 }) {
   await connection();
   const { q, page, limit, status, sort, order } = await searchParams;
+  const preserve = { q, limit, sort, order };
 
   const counts = await getFacilityCounts();
 
@@ -34,35 +50,35 @@ export default async function FacilitiesDirectoryPage({
       value: counts.total,
       color: "text-foreground",
       glow: "border-border bg-muted/10",
-      href: "/admin/facilities",
+      href: buildStatusFilterHref(null, preserve),
     },
     {
       label: "Aktivni",
       value: counts.active,
       color: "text-primary",
       glow: "border-primary/10 bg-primary/[0.02]",
-      href: "/admin/facilities?status=ACTIVE",
+      href: buildStatusFilterHref("ACTIVE", preserve),
     },
     {
       label: "Nacrti",
       value: counts.draft,
       color: "text-warning",
       glow: "border-warning/10 bg-warning/5",
-      href: "/admin/facilities?status=DRAFT",
+      href: buildStatusFilterHref("DRAFT", preserve),
     },
     {
       label: "Zatvoreni",
       value: counts.closed,
       color: "text-muted-foreground",
       glow: "border-muted/10 bg-muted/5",
-      href: "/admin/facilities?status=CLOSED",
+      href: buildStatusFilterHref("CLOSED", preserve),
     },
     {
       label: "Vanredno",
       value: counts.emergency,
       color: "text-destructive",
       glow: "border-destructive/10 bg-destructive/5",
-      href: "/admin/facilities?status=EMERGENCY_SHUTDOWN",
+      href: buildStatusFilterHref("EMERGENCY_SHUTDOWN", preserve),
     },
   ];
 
