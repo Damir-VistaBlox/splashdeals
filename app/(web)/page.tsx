@@ -58,6 +58,8 @@ export async function generateMetadata({ params: _params }: PageProps): Promise<
 
 /**
  * Homepage composition root — sections live in app/(web)/_components/Home*.
+ * Mobile path (#667): Hero → Gate → Savings → Inventory → How → FAQ.
+ * Secondary education/trust/growth blocks are `hidden md:block` inside their components.
  */
 export default async function LandingPage({
   params: _params,
@@ -131,21 +133,24 @@ export default async function LandingPage({
       <JsonLd id="website-schema" data={websiteSchema} />
       <JsonLd id="organization-schema" data={organizationSchema} />
 
+      {/* Mobile conversion path first in DOM order */}
       <HomeHero dict={home} />
-      <HomeIntentLanes dict={home} />
       <HomeGatePriceProof dict={home} deal={gateDeal} />
       <HomeBiggestSavings dict={home} deals={savings} />
       <HomeInventorySection dict={home} deals={featured} />
+      <HomeHowItWorks dict={home} />
+      <HomeFaq dict={home} />
+
+      {/* Desktop-expanded story (components self-hide on mobile) */}
+      <HomeIntentLanes dict={home} />
       <HomeHowSavingsWork dict={home} />
       <HomeTicketEducation dict={home} />
-      <HomeHowItWorks dict={home} />
       <HomeTrustStrip dict={home} />
       <HomeOpenToday dict={home} deals={openToday} />
       <HomeRegionChips dict={home} />
       <HomeFamilyMath dict={home} adultDeal={gateDeal} />
       <HomeExperienceStats dict={home} metrics={metrics} />
       <HomeSocialProof dict={home} />
-      <HomeFaq dict={home} />
       <HomeBlogStrip dict={home} posts={posts} />
       <HomeB2bTeaser dict={home} />
       <HomeSeoAccordion dict={home} />

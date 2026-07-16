@@ -11,7 +11,7 @@ const ITEMS = [
 
 export function HomeHowSavingsWork({ dict }: { dict: HomeDict }) {
   return (
-    <section className="border-border mx-auto max-w-7xl border-t px-6 py-12 sm:py-16 md:px-12">
+    <section className="border-border mx-auto hidden max-w-7xl border-t px-6 py-12 sm:py-16 md:block md:px-12">
       <div className="mb-8 text-center sm:mb-10">
         <h2 className="mb-2 text-3xl font-black tracking-tighter uppercase italic sm:text-4xl">
           {dict.how_savings_title}

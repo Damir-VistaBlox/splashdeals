@@ -13,21 +13,24 @@ import type { Dict } from "@/lib/types";
 const SCROLL_THRESHOLD = 10;
 
 /**
- * 📱 BottomNav — Mobile-only bottom navigation bar with scroll-hide.
- * Account entry wired to /moje-karte (protected → middleware → /prijava).
+ * 📱 BottomNav — Mobile-only bottom navigation.
+ * Home (`/`): always visible (conversion + cart badge after ATC) — #667.
+ * Other routes: hide on scroll-down to reclaim vertical space.
+ * Touch: min 48×48 targets; labels ≥10px for outdoor readability.
  */
 export function BottomNav() {
   const pathname = usePathname();
   const totalItems = useServerCart((state) => state.totalItems);
-  const [isVisible, setIsVisible] = useState(true);
+  const isHome = pathname === "/";
+  const [scrollHidden, setScrollHidden] = useState(false);
   const [dict, setDict] = useState<Dict | null>(null);
   const lastScrollY = useRef(0);
+  const isVisible = isHome || !scrollHidden;
 
   useEffect(() => {
     getClientDictionary().then(setDict);
   }, []);
 
-  // Ponude (/#deals) replaced by Nalog for account surface entry (audit #606)
   const NAV_ITEMS = [
     { label: dict?.nav?.home || "Početna", href: "/", icon: "home", kind: "path" as const },
     {
@@ -57,16 +60,18 @@ export function BottomNav() {
   ];
 
   useEffect(() => {
+    if (isHome) return;
+
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       const delta = currentScrollY - lastScrollY.current;
 
       if (currentScrollY < SCROLL_THRESHOLD) {
-        setIsVisible(true);
+        setScrollHidden(false);
       } else if (delta > SCROLL_THRESHOLD) {
-        setIsVisible(false);
+        setScrollHidden(true);
       } else if (delta < -SCROLL_THRESHOLD) {
-        setIsVisible(true);
+        setScrollHidden(false);
       }
 
       lastScrollY.current = currentScrollY;
@@ -74,7 +79,7 @@ export function BottomNav() {
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [isHome]);
 
   return (
     <nav
@@ -82,7 +87,7 @@ export function BottomNav() {
       style={{ transform: isVisible ? "translateY(0)" : "translateY(100%)" }}
       aria-label={dict?.layout?.mobile_nav_aria || "Mobilna navigacija"}
     >
-      <div className="mx-auto flex h-16 max-w-lg items-center justify-around px-2">
+      <div className="mx-auto flex h-16 max-w-lg items-center justify-around px-1">
         {NAV_ITEMS.map((item) => {
           const active =
             item.kind === "account"
@@ -93,7 +98,7 @@ export function BottomNav() {
             <Link
               key={item.href}
               href={item.href}
-              className={`relative flex min-h-[44px] min-w-[56px] flex-col items-center justify-center gap-0.5 rounded-xl px-2 py-1 transition-colors duration-200 ${
+              className={`relative flex min-h-12 min-w-12 flex-col items-center justify-center gap-0.5 rounded-xl px-2 py-1 transition-colors duration-200 ${
                 active
                   ? "text-primary"
                   : "text-muted-foreground/60 hover:text-muted-foreground hover:bg-muted/30"
@@ -103,7 +108,7 @@ export function BottomNav() {
             >
               <div className="relative">
                 {item.icon === "shopping_bag" && totalItems > 0 && (
-                  <span className="bg-primary text-primary-foreground shadow-primary/30 absolute -top-2 -right-2 flex h-[18px] min-w-[18px] items-center justify-center rounded-full px-1 text-[9px] leading-none font-black shadow-lg">
+                  <span className="bg-primary text-primary-foreground shadow-primary/30 absolute -top-2 -right-2 flex h-[18px] min-w-[18px] items-center justify-center rounded-full px-1 text-[10px] leading-none font-black shadow-lg">
                     {totalItems > 99 ? "99+" : totalItems}
                   </span>
                 )}
@@ -115,7 +120,7 @@ export function BottomNav() {
                 />
               </div>
               <span
-                className={`text-[9px] leading-none font-black tracking-[0.12em] uppercase transition-colors duration-200 ${
+                className={`text-[10px] leading-none font-black tracking-[0.08em] uppercase transition-colors duration-200 ${
                   active ? "text-primary" : ""
                 }`}
               >

@@ -16,7 +16,7 @@ type Post = {
 
 export function HomeBlogStrip({ dict, posts }: { dict: HomeDict; posts: Post[] }) {
   return (
-    <section className="mx-auto max-w-7xl px-6 py-12 sm:py-14 md:px-12">
+    <section className="mx-auto hidden max-w-7xl px-6 py-12 sm:py-14 md:block md:px-12">
       <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
         <div>
           <h2 className="mb-1 text-3xl font-black tracking-tighter uppercase italic sm:text-4xl">

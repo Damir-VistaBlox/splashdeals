@@ -16,7 +16,7 @@ export function HomeExperienceStats({
   const savings = metrics.avgDiscountPercent > 0 ? metrics.avgDiscountPercent : 15;
 
   return (
-    <section className="border-border mx-auto max-w-7xl border-t px-6 py-12 sm:py-20 md:px-12">
+    <section className="border-border mx-auto hidden max-w-7xl border-t px-6 py-12 sm:py-20 md:block md:px-12">
       <div className="mb-10 text-center sm:mb-14">
         <h2 className="mb-4 text-[clamp(2rem,6vw,3.5rem)] leading-[0.95] font-black tracking-tighter uppercase italic">
           {dict.experience_title_base}
