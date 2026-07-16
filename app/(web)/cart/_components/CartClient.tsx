@@ -214,6 +214,17 @@ export function CartClient({
 
   const handleQuantityChange = async (itemId: string, newQuantity: number) => {
     setMutatingItemId(itemId);
+    const previousItems = useServerCart.getState().items;
+    // Optimistic UI so mobile steppers feel instant
+    if (newQuantity <= 0) {
+      useServerCart.getState().setItems(previousItems.filter((i) => i.id !== itemId));
+    } else {
+      useServerCart
+        .getState()
+        .setItems(
+          previousItems.map((i) => (i.id === itemId ? { ...i, quantity: newQuantity } : i)),
+        );
+    }
     try {
       const result =
         newQuantity <= 0
@@ -221,6 +232,7 @@ export function CartClient({
           : await updateCartQuantityAction({ itemId, quantity: newQuantity });
 
       if (!result.success) {
+        useServerCart.getState().setItems(previousItems);
         toast.error(result.error || cartDict?.update_error);
         await softRefresh();
         return;
@@ -229,6 +241,9 @@ export function CartClient({
       await softRefresh();
       notifyUpdated();
       await revalidateAppliedPromo(discount);
+    } catch {
+      useServerCart.getState().setItems(previousItems);
+      toast.error(cartDict?.update_error);
     } finally {
       setMutatingItemId(null);
     }
@@ -236,9 +251,13 @@ export function CartClient({
 
   const handleRemoveItem = async (itemId: string) => {
     setMutatingItemId(itemId);
+    const previousItems = useServerCart.getState().items;
+    // Optimistic remove — critical on mobile where network lag looks like “nothing happens”
+    useServerCart.getState().setItems(previousItems.filter((i) => i.id !== itemId));
     try {
       const result = await removeFromCartAction({ itemId });
       if (!result.success) {
+        useServerCart.getState().setItems(previousItems);
         toast.error(result.error || cartDict?.remove_error);
         await softRefresh();
         return;
@@ -247,6 +266,9 @@ export function CartClient({
       await softRefresh();
       notifyUpdated();
       await revalidateAppliedPromo(discount);
+    } catch {
+      useServerCart.getState().setItems(previousItems);
+      toast.error(cartDict?.remove_error);
     } finally {
       setMutatingItemId(null);
     }
@@ -344,7 +366,7 @@ export function CartClient({
   };
 
   return (
-    <div className="mx-auto min-h-screen max-w-7xl px-4 pt-8 pb-36 sm:px-12 sm:pt-12 sm:pb-32">
+    <div className="mx-auto min-h-[50vh] max-w-7xl px-3 pt-6 pb-[calc(10.5rem+env(safe-area-inset-bottom,0px))] sm:px-12 sm:pt-12 sm:pb-32">
       <GuestCartConflictModal
         open={Boolean(conflict)}
         guestFacilityName={conflict?.guestFacilityName || ""}
@@ -414,7 +436,7 @@ export function CartClient({
       )}
 
       {items.length > 0 && (
-        <div className="border-border/50 bg-background/98 fixed inset-x-0 bottom-[calc(4rem+env(safe-area-inset-bottom,0px))] z-[999] border-t px-4 py-3 backdrop-blur-[40px] md:hidden">
+        <div className="border-border/50 bg-background/98 pointer-events-auto fixed inset-x-0 bottom-[calc(4rem+env(safe-area-inset-bottom,0px))] z-[999] border-t px-4 py-3 backdrop-blur-[40px] md:hidden">
           <div className="mx-auto flex max-w-lg items-center gap-3">
             <div className="min-w-0 flex-1">
               <p className="text-muted-foreground text-[10px] font-black tracking-widest uppercase">
@@ -428,7 +450,7 @@ export function CartClient({
             <Button
               onClick={handleStartCheckout}
               disabled={isCheckingOut}
-              className="h-12 min-w-[9.5rem] shrink-0 rounded-2xl px-5 text-sm font-bold"
+              className="h-12 min-h-12 min-w-[9.5rem] shrink-0 touch-manipulation rounded-2xl px-5 text-sm font-bold"
             >
               {isCheckingOut ? cartDict?.processing : cartDict?.checkout}
             </Button>

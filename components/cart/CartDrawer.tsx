@@ -20,9 +20,11 @@ export const CartDrawer = () => {
   const totalPrice = useServerCart((s) => s.totalPrice);
   const refresh = useServerCart((s) => s.refresh);
   const notifyUpdated = useServerCart((s) => s.notifyUpdated);
+  const setItems = useServerCart((s) => s.setItems);
   const [isMounted, setIsMounted] = React.useState(false);
   const [dict, setDict] = React.useState<Dict | null>(null);
   const [mutatingItemId, setMutatingItemId] = React.useState<string | null>(null);
+  const [isDesktop, setIsDesktop] = React.useState(false);
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("sr-RS").format(price);
@@ -33,7 +35,14 @@ export const CartDrawer = () => {
       setIsMounted(true);
     });
     getClientDictionary().then(setDict);
-    return () => cancelAnimationFrame(timer);
+    const mq = window.matchMedia("(min-width: 768px)");
+    const apply = () => setIsDesktop(mq.matches);
+    apply();
+    mq.addEventListener("change", apply);
+    return () => {
+      cancelAnimationFrame(timer);
+      mq.removeEventListener("change", apply);
+    };
   }, []);
 
   React.useEffect(() => {
@@ -46,21 +55,29 @@ export const CartDrawer = () => {
     void refresh();
   }, [isCartOpen, refresh, closeCart]);
 
-  if (!isMounted) return null;
+  // Never mount drawer portal on mobile — avoids stuck overlays intercepting taps on /cart
+  if (!isMounted || !isDesktop) return null;
 
   const handleUpdateQuantity = async (itemId: string, newQuantity: number) => {
     setMutatingItemId(itemId);
-    try {
-      // At or below minPeople, treat decrease as full remove (qty steppers alone were a dead end).
-      const item = items.find((i) => i.id === itemId);
-      const minQty = Math.max(1, item?.minPeople || 1);
-      const shouldRemove = newQuantity < minQty || newQuantity <= 0;
+    const previousItems = useServerCart.getState().items;
+    const item = previousItems.find((i) => i.id === itemId);
+    const minQty = Math.max(1, item?.minPeople || 1);
+    const shouldRemove = newQuantity < minQty || newQuantity <= 0;
 
+    if (shouldRemove) {
+      setItems(previousItems.filter((i) => i.id !== itemId));
+    } else {
+      setItems(previousItems.map((i) => (i.id === itemId ? { ...i, quantity: newQuantity } : i)));
+    }
+
+    try {
       const result = shouldRemove
         ? await removeFromCartAction({ itemId })
         : await updateCartQuantityAction({ itemId, quantity: newQuantity });
 
       if (!result.success) {
+        setItems(previousItems);
         toast.error(result.error || dict?.cart?.update_error || dict?.cart?.remove_error);
         await refresh();
         return;
@@ -68,6 +85,9 @@ export const CartDrawer = () => {
 
       await refresh();
       notifyUpdated();
+    } catch {
+      setItems(previousItems);
+      toast.error(dict?.cart?.update_error || dict?.cart?.remove_error);
     } finally {
       setMutatingItemId(null);
     }
@@ -75,15 +95,21 @@ export const CartDrawer = () => {
 
   const handleRemoveItem = async (itemId: string) => {
     setMutatingItemId(itemId);
+    const previousItems = useServerCart.getState().items;
+    setItems(previousItems.filter((i) => i.id !== itemId));
     try {
       const result = await removeFromCartAction({ itemId });
       if (!result.success) {
+        setItems(previousItems);
         toast.error(result.error || dict?.cart?.remove_error || dict?.cart?.update_error);
         await refresh();
         return;
       }
       await refresh();
       notifyUpdated();
+    } catch {
+      setItems(previousItems);
+      toast.error(dict?.cart?.remove_error || dict?.cart?.update_error);
     } finally {
       setMutatingItemId(null);
     }
