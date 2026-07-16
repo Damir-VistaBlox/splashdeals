@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
 import { toast } from "sonner";
-import { StatusToggle } from "@/app/(dashboard)/admin/_common/StatusToggle";
+import { FacilityStatusControl } from "@/app/(dashboard)/admin/_common/FacilityStatusControl";
 import { buildPublicFacilityPath } from "@/lib/routing/public-facility-path";
 import type { FacilityListSortKey } from "@/lib/admin/facilities-list-params";
 
@@ -166,7 +166,13 @@ export function createFacilityColumns(
         />
       ),
       cell: ({ row }) => (
-        <StatusToggle facilityId={row.original.id} status={row.original.status} compact />
+        <FacilityStatusControl
+          facilityId={row.original.id}
+          status={row.original.status}
+          facilityName={row.original.name}
+          compact
+          operationsHref={`/admin/facilities/${row.original.id}/operations#closures`}
+        />
       ),
     },
     {

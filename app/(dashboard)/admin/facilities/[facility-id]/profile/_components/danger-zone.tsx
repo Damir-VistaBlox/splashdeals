@@ -18,6 +18,8 @@ import {
 } from "@/components/ui/dialog";
 import { Card } from "@/components/ui/card";
 import { deleteFacilityAction } from "@/app/(server)/actions/facilities";
+import { updateFacilityStatusAction } from "@/app/(server)/actions/governance";
+import { FACILITY_STATUS_CONSEQUENCES } from "@/lib/facility/status-labels";
 
 interface DangerZoneProps {
   facilityId: string;
@@ -27,10 +29,8 @@ interface DangerZoneProps {
 }
 
 /**
- * ⚠️ DangerZone Component (Aquastream UI Pro Max)
- *
- * Implements high-friction, Super Admin-gated deletion with cascade transaction safeguards.
- * Respects strict color-ban rules (Absolutely NO purple/indigo/violet).
+ * Super Admin-gated hard delete with cascade transaction safeguards.
+ * When transactions exist, offers one-click soft close (CLOSED) instead of prose-only guidance.
  */
 export function DangerZone({
   facilityId,
@@ -70,6 +70,21 @@ export function DangerZone({
     });
   };
 
+  const handleSoftClose = () => {
+    startTransition(async () => {
+      const result = await updateFacilityStatusAction({
+        facilityId,
+        status: "CLOSED",
+      });
+      if (result.success) {
+        toast.success("Objekat je sada: Zatvoren");
+        router.refresh();
+      } else {
+        toast.error(result.error || "Greška pri zatvaranju objekta");
+      }
+    });
+  };
+
   return (
     <Card className="border-destructive/20 bg-destructive/5 space-y-6 p-6 backdrop-blur-md">
       <div className="border-destructive/10 flex items-center justify-between border-b pb-4">
@@ -103,22 +118,43 @@ export function DangerZone({
             </div>
           </div>
         ) : hasTransactions ? (
-          <div className="bg-background/40 border-destructive/10 flex items-start gap-3 rounded-xl border p-4">
-            <Icon name="lock" className="text-destructive mt-0.5 shrink-0 text-[16px]" />
-            <div className="space-y-1">
-              <p className="text-destructive text-xs font-black tracking-wider uppercase">
-                Brisanje zaključano
-              </p>
-              <p className="text-muted-foreground text-[10px] leading-relaxed font-medium">
-                Ovaj objekat je povezan sa{" "}
-                <strong className="text-foreground">
-                  {transactionCount} aktivnih ili istorijskih transakcija
-                </strong>{" "}
-                u sistemskom registru. Potpuno brisanje je onemogućeno radi očuvanja
-                računovodstvenih revizija. Postavite status objekta na{" "}
-                <strong className="text-foreground">CLOSED</strong>.
-              </p>
+          <div className="bg-background/40 border-destructive/10 flex flex-col gap-4 rounded-xl border p-4">
+            <div className="flex items-start gap-3">
+              <Icon name="lock" className="text-destructive mt-0.5 shrink-0 text-[16px]" />
+              <div className="space-y-1">
+                <p className="text-destructive text-xs font-black tracking-wider uppercase">
+                  Brisanje zaključano
+                </p>
+                <p className="text-muted-foreground text-[10px] leading-relaxed font-medium">
+                  Ovaj objekat je povezan sa{" "}
+                  <strong className="text-foreground">
+                    {transactionCount} aktivnih ili istorijskih transakcija
+                  </strong>{" "}
+                  u sistemskom registru. Potpuno brisanje je onemogućeno radi očuvanja
+                  računovodstvenih revizija. Umesto brisanja, soft-zatvorite objekat statusom{" "}
+                  <strong className="text-foreground">Zatvoren</strong>.
+                </p>
+                <ul className="text-muted-foreground mt-2 list-disc space-y-1 pl-4 text-[10px]">
+                  {FACILITY_STATUS_CONSEQUENCES.CLOSED.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </div>
             </div>
+            <Button
+              type="button"
+              variant="outline"
+              disabled={isPending}
+              onClick={handleSoftClose}
+              className="border-muted-foreground/30 bg-muted/20 hover:bg-muted/40 h-10 w-full rounded-xl text-[9px] font-black tracking-widest uppercase sm:w-auto"
+            >
+              {isPending ? (
+                <Icon name="progress_activity" className="mr-2 size-3.5 animate-spin" />
+              ) : (
+                <Icon name="block" className="mr-2 size-3.5" />
+              )}
+              Postavi status na Zatvoren
+            </Button>
           </div>
         ) : (
           <div className="bg-background/40 border-destructive/10 flex flex-col justify-between gap-4 rounded-xl border p-4 md:flex-row md:items-center">

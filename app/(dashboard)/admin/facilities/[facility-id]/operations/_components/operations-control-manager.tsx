@@ -105,13 +105,13 @@ function OperationsTableInner({
       });
 
       if (result.success) {
-        toast.success("Operational windows updated");
+        toast.success("Radno vreme sačuvano");
         router.refresh();
       } else {
-        toast.error(result.error || "Failed to update schedule");
+        toast.error(result.error || "Greška pri čuvanju radnog vremena");
       }
     } catch {
-      toast.error("Failed to persist operational data");
+      toast.error("Greška pri čuvanju radnog vremena");
     } finally {
       setIsPending(false);
     }
@@ -123,7 +123,7 @@ function OperationsTableInner({
         <div className="flex items-center gap-3">
           <Icon name="schedule" className="text-warning size-3.5" />
           <h3 className="text-foreground/70 text-[10px] font-black tracking-widest uppercase">
-            Institutional Availability Patterns
+            Radno vreme
           </h3>
         </div>
         <div className="flex items-center gap-2">
@@ -143,11 +143,11 @@ function OperationsTableInner({
                   isClosed: first.isClosed,
                 }));
                 setValue("hours", updatedHours, { shouldDirty: true });
-                toast.success("Schedule synchronized across nodes");
+                toast.success("Raspored primenjen na sve dane");
               }}
             >
               <Icon name="undo" className="text-[10px]" />
-              Sync Cluster
+              Primeni na sve
             </Button>
           )}
           <Button
@@ -170,7 +170,7 @@ function OperationsTableInner({
             className="border-border/50 bg-muted/30 hover:bg-muted/50 h-6 gap-1 border px-2 text-[9px] font-black tracking-widest uppercase disabled:opacity-30"
           >
             <Icon name="add" className="text-[10px]" />
-            Node
+            Dan
           </Button>
         </div>
       </header>
@@ -178,9 +178,11 @@ function OperationsTableInner({
       {fields.length === 0 && (
         <div className="flex flex-col items-center justify-center gap-3 py-12 text-center">
           <Icon name="schedule" className="text-muted-foreground/40 text-[32px]" />
-          <p className="text-muted-foreground text-xs font-medium">No operating hours configured</p>
+          <p className="text-muted-foreground text-xs font-medium">
+            Nema konfigurisanog radnog vremena
+          </p>
           <p className="text-muted-foreground/60 text-[10px]">
-            Click &quot;Add Node&quot; to set operating days and hours
+            Kliknite „Dan“ da dodate radne dane i sate
           </p>
         </div>
       )}
@@ -191,13 +193,13 @@ function OperationsTableInner({
             <thead>
               <tr className="border-border/50 bg-muted/30 border-b">
                 <th className="text-muted-foreground w-[120px] px-3 py-2 text-[9px] font-black tracking-widest uppercase">
-                  Domain
+                  Dan
                 </th>
                 <th className="text-muted-foreground px-3 py-2 text-[9px] font-black tracking-widest uppercase">
-                  Logistics
+                  Interval
                 </th>
-                <th className="text-muted-foreground w-[60px] px-3 py-2 text-right text-[9px] font-black tracking-widest uppercase">
-                  Status
+                <th className="text-muted-foreground w-[80px] px-3 py-2 text-right text-[9px] font-black tracking-widest uppercase">
+                  Zatvoreno
                 </th>
               </tr>
             </thead>
@@ -252,7 +254,7 @@ function OperationsTableInner({
                           )}
                         />
                         <span className="text-[9px] font-black tracking-tighter uppercase opacity-30">
-                          to
+                          do
                         </span>
                         <FormField
                           control={control}
@@ -276,6 +278,7 @@ function OperationsTableInner({
                             <Checkbox
                               checked={field.value}
                               onCheckedChange={field.onChange}
+                              aria-label="Zatvoreno ovog dana"
                               className="border-border data-[state=checked]:border-destructive data-[state=checked]:bg-destructive size-4"
                             />
                           )}
@@ -285,6 +288,7 @@ function OperationsTableInner({
                           size="icon"
                           type="button"
                           onClick={() => remove(index)}
+                          aria-label="Ukloni dan"
                           className="text-muted-foreground hover:text-destructive opacity-0 transition-colors group-hover:opacity-100"
                         >
                           <Icon name="delete" className="text-[12px]" />
@@ -315,7 +319,7 @@ function OperationsTableInner({
         ) : (
           <Icon name="save" className="text-[12px]" />
         )}
-        Persist Schedule
+        Sačuvaj radno vreme
       </Button>
     </Card>
   );

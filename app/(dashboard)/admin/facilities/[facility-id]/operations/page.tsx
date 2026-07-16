@@ -20,8 +20,8 @@ export async function generateMetadata({
     select: { name: true },
   });
   return {
-    title: `${facility?.name || "Facility"} — Operations | Splashdeals Admin`,
-    description: `Manage operating hours and seasonal schedules for ${facility?.name || "this facility"}.`,
+    title: `${facility?.name || "Objekat"} — Radno vreme | Splashdeals Admin`,
+    description: `Upravljanje radnim vremenom i privremenim zatvaranjima za ${facility?.name || "objekat"}.`,
   };
 }
 
@@ -63,21 +63,21 @@ export default async function FacilityOperationsPage({ params }: OperationsPageP
               </Link>
             </Button>
             <h1 className="text-foreground text-2xl font-black tracking-tight italic">
-              Operational Pulse
+              Operativnost
             </h1>
           </div>
           <p className="text-muted-foreground ml-11 text-[10px] font-bold tracking-[0.2em] uppercase">
-            Adjust entry availability for {facility.name}
+            Radno vreme i privremena zatvaranja — {facility.name}
           </p>
         </div>
         <div className="border-primary/20 bg-primary/10 rounded-full border px-4 py-1.5">
           <span className="text-primary text-[10px] font-black tracking-widest uppercase">
-            Live Editor
+            Uživo
           </span>
         </div>
       </div>
 
-      <div className="border-border/50 bg-muted/20 rounded-2xl border p-1">
+      <div id="hours" className="border-border/50 bg-muted/20 scroll-mt-20 rounded-2xl border p-1">
         <OperationsTable facilityId={facilityId} initialHours={facility.hours} />
       </div>
 
