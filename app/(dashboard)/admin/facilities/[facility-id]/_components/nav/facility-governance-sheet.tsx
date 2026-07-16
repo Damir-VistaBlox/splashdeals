@@ -1,12 +1,7 @@
 "use client";
 
 import { Icon } from "@/components/ui/Icon";
-
-import { useState, useTransition } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 import {
   Sheet,
   SheetContent,
@@ -14,39 +9,11 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-  SheetFooter,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { z } from "zod";
-
-// Narrowed schema for strictly administrative governance
-const adminGovernanceSchema = z.object({
-  facilityId: z.string().uuid(),
-  status: z.enum(["DRAFT", "ACTIVE", "CLOSED", "EMERGENCY_SHUTDOWN"]),
-});
-
-type AdminGovernanceValues = z.infer<typeof adminGovernanceSchema>;
-
-// Import the dedicated status action for efficiency
-import { updateFacilityStatusAction } from "@/app/(server)/actions/governance";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-
-import { FacilityStatus } from "@prisma/client";
+import Link from "next/link";
+import type { FacilityStatus } from "@prisma/client";
+import { FACILITY_STATUS_DESCRIPTION, FACILITY_STATUS_LABEL } from "@/lib/facility/status-labels";
 
 interface FacilityGovernanceSheetProps {
   facility: {
@@ -56,32 +23,13 @@ interface FacilityGovernanceSheetProps {
   };
 }
 
+/**
+ * Advanced admin info sheet — lifecycle status is controlled exclusively via
+ * FacilityStatusControl (nav/list). This sheet explains layers and deep-links ops.
+ */
 export function FacilityGovernanceSheet({ facility }: FacilityGovernanceSheetProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [isPending, startTransition] = useTransition();
-  const router = useRouter();
-
-  const form = useForm<AdminGovernanceValues>({
-    resolver: zodResolver(adminGovernanceSchema),
-    defaultValues: {
-      facilityId: facility.id,
-      status: facility.status,
-    },
-  });
-
-  function onSubmit(values: AdminGovernanceValues) {
-    startTransition(async () => {
-      const result = await updateFacilityStatusAction(values);
-
-      if (result.success) {
-        toast.success("Status operativnosti ažuriran");
-        setIsOpen(false);
-        router.refresh();
-      } else {
-        toast.error(result.error || "Greška pri ažuriranju statusa");
-      }
-    });
-  }
+  const opsHref = `/admin/facilities/${facility.id}/operations`;
 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -102,65 +50,65 @@ export function FacilityGovernanceSheet({ facility }: FacilityGovernanceSheetPro
             Sistemsko upravljanje
           </SheetTitle>
           <SheetDescription className="text-xs font-bold tracking-widest uppercase opacity-50">
-            Administrativne kontrole i upravljanje registrom.
+            Objašnjenje operativnih slojeva — status se menja preko čipa u navigaciji.
           </SheetDescription>
         </SheetHeader>
 
-        <div className="space-y-8 py-8">
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-              <FormField
-                control={form.control}
-                name="status"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="flex items-center gap-2 text-[10px] font-black tracking-widest uppercase opacity-60">
-                      <Icon name="monitor_heart" className="text-[12px]" />
-                      Operativni status
-                    </FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger className="bg-muted/20 border-border focus:ring-primary h-12">
-                          <SelectValue placeholder="Izaberite status" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent className="bg-background border-border">
-                        <SelectItem value="DRAFT">Draft (Skica)</SelectItem>
-                        <SelectItem value="ACTIVE">Aktivno</SelectItem>
-                        <SelectItem value="CLOSED">Zatvoreno</SelectItem>
-                        <SelectItem
-                          value="EMERGENCY_SHUTDOWN"
-                          className="text-destructive font-bold"
-                        >
-                          Hitno gašenje
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormDescription className="text-[10px] leading-relaxed">
-                      &quot;Hitno gašenje&quot; će trenutno povući sve mogućnosti skeniranja
-                      ulaznica za ovaj objekat.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+        <div className="space-y-6 py-8">
+          <div className="border-border/50 bg-muted/20 space-y-2 rounded-xl border p-4">
+            <p className="text-muted-foreground text-[10px] font-black tracking-widest uppercase">
+              Trenutni lifecycle status
+            </p>
+            <p className="text-foreground text-sm font-black tracking-wide">
+              {FACILITY_STATUS_LABEL[facility.status]}
+            </p>
+            <p className="text-muted-foreground text-[11px] leading-relaxed">
+              {FACILITY_STATUS_DESCRIPTION[facility.status]}
+            </p>
+          </div>
 
-              <SheetFooter className="border-border/50 border-t pt-8">
-                <Button
-                  type="submit"
-                  disabled={isPending}
-                  className="bg-primary text-primary-foreground h-12 w-full gap-2 text-[10px] font-black tracking-widest uppercase transition-transform hover:scale-[1.02]"
-                >
-                  {isPending ? (
-                    <Icon name="progress_activity" className="animate-spin text-[14px]" />
-                  ) : (
-                    <Icon name="settings" className="text-[14px]" />
-                  )}
-                  Ažuriraj pravila sistema
-                </Button>
-              </SheetFooter>
-            </form>
-          </Form>
+          <div className="space-y-3">
+            <p className="text-muted-foreground text-[10px] font-black tracking-widest uppercase">
+              Tri sloja operativnosti
+            </p>
+            <ul className="text-muted-foreground list-disc space-y-2 pl-5 text-[11px] leading-relaxed">
+              <li>
+                <strong className="text-foreground">Status objekta</strong> — Aktivan / Nacrt /
+                Zatvoren / Hitno gašenje (kontrola u navigaciji).
+              </li>
+              <li>
+                <strong className="text-foreground">Privremena zatvaranja</strong> — kalendarski
+                blackout; status može ostati Aktivan.
+              </li>
+              <li>
+                <strong className="text-foreground">Radno vreme</strong> — nedeljni dani sa
+                &quot;zatvoreno&quot; zastavicom.
+              </li>
+            </ul>
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <Button
+              asChild
+              variant="outline"
+              className="h-11 justify-start gap-2 text-[10px] font-black tracking-widest uppercase"
+            >
+              <Link href={`${opsHref}#closures`} onClick={() => setIsOpen(false)}>
+                <Icon name="event_busy" className="text-[14px]" />
+                Privremena zatvaranja
+              </Link>
+            </Button>
+            <Button
+              asChild
+              variant="outline"
+              className="h-11 justify-start gap-2 text-[10px] font-black tracking-widest uppercase"
+            >
+              <Link href={`${opsHref}#hours`} onClick={() => setIsOpen(false)}>
+                <Icon name="schedule" className="text-[14px]" />
+                Radno vreme
+              </Link>
+            </Button>
+          </div>
         </div>
       </SheetContent>
     </Sheet>

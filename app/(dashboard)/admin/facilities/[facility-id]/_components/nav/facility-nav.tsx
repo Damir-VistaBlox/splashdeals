@@ -8,9 +8,10 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
-import { StatusToggle } from "@/app/(dashboard)/admin/_common/StatusToggle";
+import { FacilityStatusControl } from "@/app/(dashboard)/admin/_common/FacilityStatusControl";
 import { FacilityGovernanceSheet } from "./facility-governance-sheet";
 import { FacilityStatus } from "@prisma/client";
+import { FACILITY_STATUS_LABEL } from "@/lib/facility/status-labels";
 interface FacilityNavProps {
   facility: {
     id: string;
@@ -109,11 +110,11 @@ export function FacilityNav({ facility, counts }: FacilityNavProps) {
               "size-1.5 shrink-0 rounded-full",
               facility.status === "ACTIVE" && "bg-success",
               facility.status === "DRAFT" && "bg-warning",
-              (facility.status === "CLOSED" || facility.status === "EMERGENCY_SHUTDOWN") &&
-                "bg-destructive",
+              facility.status === "CLOSED" && "bg-muted-foreground",
+              facility.status === "EMERGENCY_SHUTDOWN" && "bg-destructive",
             )}
             role="status"
-            aria-label={`Facility ${facility.status.toLowerCase().replace("_", " ")}`}
+            aria-label={`Status: ${FACILITY_STATUS_LABEL[facility.status]}`}
           />
         </div>
 
@@ -150,7 +151,13 @@ export function FacilityNav({ facility, counts }: FacilityNavProps) {
         <div className="flex shrink-0 items-center gap-2">
           <Separator orientation="vertical" className="hidden h-5 md:block" />
           <div className="hidden sm:block">
-            <StatusToggle facilityId={facility.id} status={facility.status} compact />
+            <FacilityStatusControl
+              facilityId={facility.id}
+              status={facility.status}
+              facilityName={facility.name}
+              compact
+              operationsHref={`${b}/operations#closures`}
+            />
           </div>
           <FacilityGovernanceSheet facility={facility} />
         </div>

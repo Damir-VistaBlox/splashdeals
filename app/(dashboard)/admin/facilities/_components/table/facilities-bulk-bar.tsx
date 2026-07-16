@@ -117,7 +117,9 @@ export function FacilitiesBulkBar({
           <AlertDialogHeader>
             <AlertDialogTitle>Zatvori objekte?</AlertDialogTitle>
             <AlertDialogDescription>
-              Status će biti postavljen na ZATVOREN za {selectedCount} izabranih objekata.
+              Status će biti postavljen na Zatvoren za {selectedCount} izabranih objekata. Objekti
+              nestaju iz pretrage, nova prodaja se zaustavlja. Hitno gašenje nije dostupno u bulk
+              režimu.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

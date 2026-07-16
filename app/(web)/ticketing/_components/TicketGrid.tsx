@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/card";
 import { AddToCartButton } from "@/components/cart/AddToCartButton";
 import { Badge } from "@/components/ui/badge";
 import { dbValueToSlug, slugToName } from "@/lib/routing/categories";
+import { isOpenOnDay } from "@/lib/facility/availability";
 
 const CATEGORY_COLORS: Record<string, string> = {
   akva_park: "bg-cyan-500 hover:bg-cyan-600",
@@ -13,13 +14,6 @@ const CATEGORY_COLORS: Record<string, string> = {
   wellness_spa: "bg-emerald-600 hover:bg-emerald-700",
   gradski_bazen: "bg-sky-600 hover:bg-sky-700",
 };
-
-function isOpenToday(hours: { dayOfWeek: number; isClosed: boolean }[]): boolean {
-  if (!hours || hours.length === 0) return false;
-  const today = new Date().getDay();
-  const todayHours = hours.find((h) => h.dayOfWeek === today);
-  return todayHours ? !todayHours.isClosed : false;
-}
 
 async function getTickets() {
   const now = new Date();
@@ -161,7 +155,7 @@ export async function TicketGrid({ dict }: { dict: Record<string, any> }) {
         const categoryKey = dbSlug || "";
         const badgeColorClass = CATEGORY_COLORS[categoryKey] || "bg-primary hover:bg-primary/90";
 
-        const openToday = isOpenToday(ticket.facility.hours);
+        const openToday = isOpenOnDay(ticket.facility.hours);
 
         return (
           <article key={ticket.id} className="group relative h-full transition-all duration-700">
