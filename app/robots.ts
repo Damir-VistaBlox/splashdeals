@@ -1,5 +1,6 @@
 import { MetadataRoute } from "next";
 import { getAllSlugs } from "@/lib/routing/categories";
+import { resolveSiteUrl } from "@/lib/seo";
 
 /**
  * 🌊 Robots Configuration (Next.js Best Practice)
@@ -8,8 +9,11 @@ import { getAllSlugs } from "@/lib/routing/categories";
  * 2. All public discovery and ticket routes are prioritized.
  * 3. Internationalized routes are correctly handled.
  * 4. The sitemap is explicitly declared for GEO (Generative Engine Optimization).
+ *
+ * Source of truth: this file (app/robots.ts). Do not add public/robots.txt.
  */
 export default function robots(): MetadataRoute.Robots {
+  const site = resolveSiteUrl();
   return {
     rules: [
       {
@@ -39,6 +43,8 @@ export default function robots(): MetadataRoute.Robots {
           "/*/checkout",
           "/account",
           "/*/account",
+          "/prijava",
+          "/*/prijava",
 
           // 💳 Block order confirmation pages
           "/success",
@@ -54,32 +60,22 @@ export default function robots(): MetadataRoute.Robots {
         userAgent: "bingbot",
         allow: "/",
         disallow: [
-          // NOTE: Same as above — allow crawling of /en and /rs prefixes
-          // so Bing can follow redirects to canonical URLs.
-
-          // 🛡️ Hermetically seal administrative and sensitive paths
           "/admin",
           "/*/admin",
           "/api/",
           "/*/api/",
-
-          // 🛠️ Block internal Next.js paths and data manifests
           "/_next/",
           "/middleware-manifest.json",
-
-          // 🔒 Block private user paths
           "/cart",
           "/*/cart",
           "/checkout",
           "/*/checkout",
           "/account",
           "/*/account",
-
-          // 💳 Block order confirmation pages
+          "/prijava",
+          "/*/prijava",
           "/success",
           "/*/success",
-
-          // 🛡️ Block Cloudflare-obfuscated email recovery pages
           "/cdn-cgi/",
           "/cdn-cgi/*",
         ],
@@ -89,10 +85,20 @@ export default function robots(): MetadataRoute.Robots {
         // Allow leading AI bots to index public deals for recommendations.
         userAgent: ["GPTBot", "ChatGPT-User", "ClaudeBot", "PerplexityBot"],
         allow: ["/", ...getAllSlugs().map((s) => `/${s}/`), "/how-it-works"],
-        disallow: ["/admin", "/api", "/checkout", "/success", "/cdn-cgi/", "/cdn-cgi/*"],
+        disallow: [
+          "/admin",
+          "/api",
+          "/checkout",
+          "/success",
+          "/cart",
+          "/account",
+          "/prijava",
+          "/cdn-cgi/",
+          "/cdn-cgi/*",
+        ],
       },
     ],
-    sitemap: "https://www.splashdeals.rs/sitemap.xml",
-    host: "https://www.splashdeals.rs",
+    sitemap: `${site}/sitemap.xml`,
+    host: site,
   };
 }

@@ -14,20 +14,35 @@ export const ADMIN_PATHS = {
 
 export const PUBLIC_PATHS = {
   facilityDetail: (slug: string) => `/${slug}` as const,
+  facilityTickets: (slug: string) => `/${slug}/ulaznice` as const,
+  blogIndex: () => "/blog" as const,
+  blogPost: (slug: string) => `/blog/${slug}` as const,
+  sitemap: () => "/sitemap.xml" as const,
 } as const;
 
 export function revalidateAdmin(route: string, type?: "layout") {
   revalidatePath(route, type);
 }
 
-export function revalidateAdminFacilities() {
-  revalidatePath(ADMIN_PATHS.facilities.list());
+/** B7 — sitemap must refresh when public inventory changes */
+export function revalidateSitemap() {
+  revalidatePath(PUBLIC_PATHS.sitemap());
 }
 
-export function revalidateAdminFacility(facilityId: string) {
+export function revalidateAdminFacilities() {
+  revalidatePath(ADMIN_PATHS.facilities.list());
+  revalidateSitemap();
+}
+
+export function revalidateAdminFacility(facilityId: string, slug?: string) {
   revalidatePath(ADMIN_PATHS.facilities.detail(facilityId), "layout");
   // List counts + registry row status also depend on this mutation
   revalidatePath(ADMIN_PATHS.facilities.list());
+  if (slug) {
+    revalidatePath(PUBLIC_PATHS.facilityDetail(slug), "layout");
+    revalidatePath(PUBLIC_PATHS.facilityTickets(slug));
+  }
+  revalidateSitemap();
 }
 
 export function revalidateAdminAmenities(facilityId: string) {
@@ -38,7 +53,9 @@ export function revalidateAdminMedia(facilityId: string, slug?: string) {
   revalidatePath(ADMIN_PATHS.facilities.media(facilityId));
   if (slug) {
     revalidatePath(PUBLIC_PATHS.facilityDetail(slug), "layout");
+    revalidatePath(PUBLIC_PATHS.facilityTickets(slug));
   }
+  revalidateSitemap();
 }
 
 export function revalidateAdminUsers() {
@@ -68,6 +85,15 @@ export function revalidateAdminPosts() {
 
 export function revalidateAdminPost(postId: string) {
   revalidatePath(CMS_PATHS.posts.detail(postId));
+}
+
+/** Blog publish / unpublish / schedule — public blog + sitemap */
+export function revalidatePublicBlog(slug?: string) {
+  revalidatePath(PUBLIC_PATHS.blogIndex());
+  if (slug) {
+    revalidatePath(PUBLIC_PATHS.blogPost(slug));
+  }
+  revalidateSitemap();
 }
 
 export function revalidateAdminPages() {

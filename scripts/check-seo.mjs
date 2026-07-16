@@ -168,7 +168,7 @@ async function checkSitemap() {
   const isIndex = xml.includes("<sitemapindex");
   pass("Sitemap", "/sitemap.xml", `Type: ${isIndex ? "sitemap index" : "urlset"}`);
 
-  // Duplicates
+  // Duplicates (raw URL strings)
   const seen = new Set();
   const dups = [];
   for (const url of urls) {
@@ -176,9 +176,53 @@ async function checkSitemap() {
     seen.add(url);
   }
   if (dups.length > 0) {
-    warn("Sitemap", "", `${dups.length} duplicate URL(s)`);
+    fail(SEVERE, "Sitemap", "", `${dups.length} duplicate URL(s)`);
     for (const dup of dups.slice(0, 3)) warn("Sitemap", "", `  ${dup}`);
   } else pass("Sitemap", "", "No duplicate URLs");
+
+  // Normalized path duplicates (…rs vs …rs/)
+  const pathKeys = new Map();
+  const pathDups = [];
+  for (const url of urls) {
+    try {
+      const u = new URL(url);
+      const key = `${u.host}${u.pathname.replace(/\/$/, "") || "/"}`;
+      if (pathKeys.has(key)) pathDups.push(url);
+      else pathKeys.set(key, url);
+    } catch {
+      /* skip */
+    }
+  }
+  if (pathDups.length > 0) {
+    fail(SEVERE, "Sitemap", "", `${pathDups.length} normalized path duplicate(s)`);
+  } else pass("Sitemap", "", "No normalized path duplicates");
+
+  // Query-string locs are never allowed (tag filters, search, etc.)
+  const withQuery = urls.filter((u) => {
+    try {
+      return Boolean(new URL(u).search);
+    } catch {
+      return false;
+    }
+  });
+  if (withQuery.length > 0) {
+    fail(SEVERE, "Sitemap", "", `${withQuery.length} query-string URL(s)`);
+    for (const q of withQuery.slice(0, 3)) warn("Sitemap", "", `  ${q}`);
+  } else pass("Sitemap", "", "No query-string URLs");
+
+  // Private / transactional paths must never appear
+  const privateRe =
+    /\/(admin|api|cart|checkout|account|prijava|success|search|_next|cdn-cgi)(\/|$)/i;
+  const privateHits = urls.filter((u) => {
+    try {
+      return privateRe.test(new URL(u).pathname);
+    } catch {
+      return false;
+    }
+  });
+  if (privateHits.length > 0) {
+    fail(SEVERE, "Sitemap", "", `${privateHits.length} private/transactional URL(s)`);
+  } else pass("Sitemap", "", "No private/transactional URLs");
 
   // lastmod coverage
   const mods = [...xml.matchAll(/<lastmod[^>]*>([\s\S]*?)<\/lastmod>/gi)];
@@ -204,9 +248,16 @@ async function checkSitemap() {
   if (protos.size > 1) warn("Sitemap", "", `Mixed protocols: ${[...protos].join(", ")}`);
   else pass("Sitemap", "", `All URLs use ${[...protos][0]}`);
 
-  // Host consistency
+  // Host consistency (prefer www splashdeals)
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.splashdeals.rs";
-  const siteHost = new URL(siteUrl).host;
+  let siteHost;
+  try {
+    const su = new URL(siteUrl.includes("://") ? siteUrl : `https://${siteUrl}`);
+    if (su.hostname === "splashdeals.rs") su.hostname = "www.splashdeals.rs";
+    siteHost = su.host;
+  } catch {
+    siteHost = "www.splashdeals.rs";
+  }
   const wrongHost = urls.filter((u) => {
     try {
       return new URL(u).host !== siteHost;
@@ -215,9 +266,47 @@ async function checkSitemap() {
     }
   });
   if (wrongHost.length > 0) {
-    warn("Sitemap", "", `${wrongHost.length} URL(s) don't match host "${siteHost}"`);
+    fail(SEVERE, "Sitemap", "", `${wrongHost.length} URL(s) don't match host "${siteHost}"`);
     for (const w of wrongHost.slice(0, 3)) warn("Sitemap", "", `  ${w}`);
   } else pass("Sitemap", "", `All URLs match host "${siteHost}"`);
+
+  // Broken EN hreflang targets (gated off by default — fail if any /en/ alternate exists while broken)
+  const enAlts = [...xml.matchAll(/hreflang="en"\s+href="([^"]+)"/g)].map((m) => m[1]);
+  if (enAlts.length > 0) {
+    // Sample up to 5 EN alternates; any 5xx is a severe failure
+    let enFailures = 0;
+    for (const enUrl of [...new Set(enAlts)].slice(0, 5)) {
+      const cr = await httpFetch(enUrl, SITEMAP_CRAWL_TIMEOUT);
+      if (cr.status >= 500 || cr.status === 404) enFailures++;
+      if (cr.text && /Stranica Nije Pronađena/i.test(cr.text)) enFailures++;
+    }
+    if (enFailures > 0) {
+      fail(
+        SEVERE,
+        "Sitemap",
+        "",
+        `${enFailures} broken en hreflang target(s) — set SEO_ENABLE_EN_HREFLANG only when /en/* is live`,
+      );
+    } else {
+      pass("Sitemap", "", `en hreflang present (${enAlts.length}) and sample OK`);
+    }
+  } else {
+    pass("Sitemap", "", "en hreflang gated off (expected until EN locale ships)");
+  }
+
+  // Known soft-404 / pollution paths must not appear
+  const forbiddenPaths = ["/svi-objekti", "/za-biznis", "/za-biznis/prodaja", "/podrska"];
+  const pollution = urls.filter((u) => {
+    try {
+      const p = new URL(u).pathname.replace(/\/$/, "") || "/";
+      return forbiddenPaths.includes(p);
+    } catch {
+      return false;
+    }
+  });
+  if (pollution.length > 0) {
+    fail(SEVERE, "Sitemap", "", `${pollution.length} known soft-404/nav pollution URL(s)`);
+  } else pass("Sitemap", "", "No known nav-pollution URLs");
 
   // Lightweight crawl of first 50 URLs
   const MAX_CRAWL = 50;
@@ -227,7 +316,8 @@ async function checkSitemap() {
 
   let ok = 0,
     notFound = 0,
-    errors = 0;
+    errors = 0,
+    soft404 = 0;
   for (let i = 0; i < toCrawl.length; i++) {
     const url = toCrawl[i];
     let path;
@@ -240,18 +330,27 @@ async function checkSitemap() {
     const cr = await httpFetch(url, SITEMAP_CRAWL_TIMEOUT);
     if (cr.status === 200) {
       ok++;
-      if (cr.text && cr.text.includes('content="noindex'))
-        warn("Sitemap", path, "200 with noindex (soft-404?)");
+      if (cr.text && cr.text.includes('content="noindex')) {
+        soft404++;
+        fail(SEVERE, "Sitemap", path, "200 with noindex (soft-404?)");
+      }
+      if (cr.text && /Stranica Nije Pronađena/i.test(cr.text)) {
+        soft404++;
+        fail(SEVERE, "Sitemap", path, "soft-404 title in body");
+      }
     } else if (cr.status === 404) {
       notFound++;
       fail(SEVERE, "Sitemap", path, "404 in sitemap");
+    } else if (cr.status >= 500) {
+      errors++;
+      fail(SEVERE, "Sitemap", path, `HTTP ${cr.status} in sitemap`);
     } else errors++;
   }
 
   pass(
     "Sitemap",
     "",
-    `Crawl: ${ok} OK, ${notFound} 404, ${errors} errors (${toCrawl.length} checked)`,
+    `Crawl: ${ok} OK, ${notFound} 404, ${errors} errors, ${soft404} soft-404 (${toCrawl.length} checked)`,
   );
 
   return urls;

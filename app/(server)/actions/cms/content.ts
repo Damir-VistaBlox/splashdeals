@@ -139,6 +139,11 @@ export async function createBlogPostAction(
 
     revalidatePath("/admin/cms/posts");
 
+    if (validated.status === "PUBLISHED") {
+      const { revalidatePublicBlog } = await import("@/app/(server)/lib/revalidation");
+      revalidatePublicBlog(post.slug);
+    }
+
     // Fire webhook events
     const createdEvent =
       validated.status === "PUBLISHED"
@@ -250,6 +255,11 @@ export async function updateBlogPostAction(
     revalidatePath("/admin/cms/posts");
     revalidatePath(`/admin/cms/posts/${id}`);
 
+    {
+      const { revalidatePublicBlog } = await import("@/app/(server)/lib/revalidation");
+      revalidatePublicBlog(post.slug);
+    }
+
     triggerWebhooks("post.updated", {
       id,
       title: post.title,
@@ -325,8 +335,16 @@ export async function getBlogPostRevisionAction(
 export async function deleteBlogPostAction(id: string): Promise<ActionResult> {
   try {
     await requireSuperAdmin();
+    const existing = await prisma.blogPost.findUnique({
+      where: { id },
+      select: { slug: true },
+    });
     await prisma.blogPost.delete({ where: { id } });
     revalidatePath("/admin/cms/posts");
+    {
+      const { revalidatePublicBlog } = await import("@/app/(server)/lib/revalidation");
+      revalidatePublicBlog(existing?.slug);
+    }
     triggerWebhooks("post.deleted", { id });
 
     // Log activity (non-blocking)
