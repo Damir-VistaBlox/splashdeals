@@ -44,31 +44,31 @@ export function HomeDealCard({
         className="focus-visible:ring-primary absolute inset-0 z-20 rounded-xl focus-visible:ring-2"
         aria-label={`${deal.facility.name} — ${deal.title}`}
       />
-      <Card className="border-border hover:border-primary/30 flex h-full flex-col overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+      <Card className="border-border hover:border-primary/30 flex h-full flex-col overflow-hidden transition-all duration-300 md:hover:-translate-y-1 md:hover:shadow-lg">
         <div className="flex flex-col gap-0.5 px-3 pt-3 sm:px-4 sm:pt-4">
-          <h3 className="text-foreground line-clamp-1 text-[11px] leading-tight font-black tracking-tight uppercase sm:text-xs">
+          <h3 className="text-foreground line-clamp-1 text-xs leading-tight font-black tracking-tight uppercase sm:text-sm">
             {deal.facility.name}
           </h3>
           {deal.facility.city ? (
-            <span className="text-muted-foreground flex items-center gap-1 text-[9px] font-bold">
-              <Icon name="location_on" className="text-primary/70 text-[9px]" />
+            <span className="text-muted-foreground flex items-center gap-1 text-[11px] font-bold">
+              <Icon name="location_on" className="text-primary/70 text-[12px]" />
               {deal.facility.city}
             </span>
           ) : null}
         </div>
 
-        <div className="relative mx-3 mt-2 aspect-[4/3] w-[calc(100%-1.5rem)] overflow-hidden rounded-lg sm:mx-4 sm:w-[calc(100%-2rem)]">
+        <div className="bg-muted relative mx-3 mt-2 aspect-[4/3] w-[calc(100%-1.5rem)] overflow-hidden rounded-lg sm:mx-4 sm:w-[calc(100%-2rem)]">
           {deal.imageUrl ? (
             <Image
               src={deal.imageUrl}
               alt={`${deal.facility.name} - ${deal.title}`}
               fill
               priority={priority}
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 25vw"
-              className="object-cover transition-transform duration-700 group-hover:scale-105"
+              sizes="(max-width: 640px) 92vw, (max-width: 1024px) 45vw, 28vw"
+              className="object-cover transition-transform duration-700 md:group-hover:scale-105"
             />
           ) : (
-            <div className="bg-muted flex h-full w-full items-center justify-center">
+            <div className="bg-muted flex h-full w-full items-center justify-center" aria-hidden>
               <Icon name="waves" className="text-muted-foreground/40 text-[40px]" />
             </div>
           )}
@@ -78,7 +78,7 @@ export function HomeDealCard({
               <Badge
                 className={cn(
                   badgeColor,
-                  "border-none px-2 py-0.5 text-[9px] font-black tracking-widest text-white uppercase",
+                  "border-none px-2 py-1 text-[11px] font-black tracking-widest text-white uppercase",
                 )}
               >
                 {badgeLabel}
@@ -88,7 +88,7 @@ export function HomeDealCard({
 
           {hasDiscount ? (
             <div className="pointer-events-none absolute top-3 right-3 z-10">
-              <span className="inline-flex items-center rounded-full bg-amber-500 px-2 py-0.5 text-[10px] font-black text-amber-950 shadow-lg">
+              <span className="inline-flex items-center rounded-full bg-amber-500 px-2.5 py-1 text-[11px] font-black text-amber-950 shadow-lg">
                 -{deal.discountPercent}%
               </span>
             </div>
@@ -96,7 +96,7 @@ export function HomeDealCard({
 
           {deal.facility.openToday ? (
             <div className="pointer-events-none absolute right-3 bottom-3 z-10">
-              <span className="bg-background/90 text-foreground inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-bold shadow-sm backdrop-blur-sm">
+              <span className="bg-background/90 text-foreground inline-flex items-center gap-1 rounded-full px-2 py-1 text-[11px] font-bold shadow-sm backdrop-blur-sm">
                 <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-500" />
                 {openTodayLabel}
               </span>
@@ -105,28 +105,28 @@ export function HomeDealCard({
         </div>
 
         <div className="flex flex-grow flex-col px-3 pt-2 pb-3 sm:px-4 sm:pb-4">
-          <h4 className="group-hover:text-primary mb-1 text-sm leading-tight font-black tracking-tight uppercase transition-colors">
+          <h4 className="group-hover:text-primary mb-1 text-sm leading-tight font-black tracking-tight uppercase transition-colors sm:text-base">
             {deal.title}
           </h4>
-          <p className="text-muted-foreground mb-2 line-clamp-2 text-[10px] leading-relaxed font-medium">
+          <p className="text-muted-foreground mb-2 line-clamp-2 text-xs leading-relaxed font-medium">
             {deal.pitch}
           </p>
 
           <div className="relative z-30 mt-auto flex items-end justify-between gap-2">
             <div className="flex flex-col">
               {hasDiscount ? (
-                <span className="text-muted-foreground/50 text-[9px] line-through">
+                <span className="text-muted-foreground/50 text-[11px] line-through">
                   {priceFormat.format(deal.originalPrice!)}
                 </span>
               ) : null}
               <div className="flex items-baseline gap-1">
                 <data
                   value={deal.price}
-                  className="text-foreground text-base font-black tracking-tighter italic sm:text-lg"
+                  className="text-foreground text-lg font-black tracking-tighter italic sm:text-xl"
                 >
                   {priceFormat.format(deal.price)}
                 </data>
-                <span className="text-muted-foreground/60 text-[8px] font-black tracking-[0.2em] uppercase">
+                <span className="text-muted-foreground/60 text-[10px] font-black tracking-[0.2em] uppercase">
                   {deal.currency}
                 </span>
               </div>
@@ -134,14 +134,17 @@ export function HomeDealCard({
 
             {showAddToCart ? (
               <AddToCartButton
+                className="min-h-12 min-w-12"
                 ticket={{
                   id: deal.id,
                   title: `${deal.facility.name} - ${deal.title}`,
                   price: deal.price,
                   currency: deal.currency,
-                  validityType: "FLEXIBLE_30_DAY",
-                  requiresIdentity: false,
-                  requiresPhoto: false,
+                  validityType: deal.validityType || "FLEXIBLE_30_DAY",
+                  requiresIdentity: deal.requiresIdentity,
+                  requiresPhoto: deal.requiresPhoto,
+                  minPeople: deal.minPeople,
+                  maxPeople: deal.maxPeople,
                   imageUrl: deal.imageUrl,
                   facility: {
                     id: deal.facility.id,

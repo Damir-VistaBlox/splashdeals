@@ -10,7 +10,7 @@ type HomeDict = Record<string, string>;
 
 export function HomeSeoAccordion({ dict }: { dict: HomeDict }) {
   return (
-    <section className="mx-auto max-w-3xl px-6 py-10 sm:py-12 md:px-12">
+    <section className="mx-auto hidden max-w-3xl px-6 py-10 sm:py-12 md:block md:px-12">
       <Accordion type="single" collapsible className="w-full">
         <AccordionItem value="seo">
           <AccordionTrigger className="text-left text-sm font-black tracking-wide uppercase">

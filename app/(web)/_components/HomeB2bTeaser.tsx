@@ -7,7 +7,7 @@ type HomeDict = Record<string, string>;
 
 export function HomeB2bTeaser({ dict }: { dict: HomeDict }) {
   return (
-    <section className="mx-auto max-w-7xl px-6 py-10 md:px-12">
+    <section className="mx-auto hidden max-w-7xl px-6 py-10 md:block md:px-12">
       <Card className="border-border bg-muted/20 flex flex-col items-start justify-between gap-6 p-6 sm:flex-row sm:items-center sm:p-8">
         <div className="flex items-start gap-4">
           <div className="bg-primary/10 text-primary flex h-12 w-12 shrink-0 items-center justify-center rounded-xl">

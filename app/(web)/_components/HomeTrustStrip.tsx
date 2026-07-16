@@ -12,7 +12,7 @@ const ITEMS = [
 
 export function HomeTrustStrip({ dict }: { dict: HomeDict }) {
   return (
-    <section className="mx-auto max-w-7xl px-6 py-10 sm:py-12 md:px-12">
+    <section className="mx-auto hidden max-w-7xl px-6 py-10 sm:py-12 md:block md:px-12">
       <h2 className="mb-6 text-center text-2xl font-black tracking-tighter uppercase italic sm:text-3xl">
         {dict.trust_title}
       </h2>

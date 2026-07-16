@@ -70,7 +70,21 @@ export function AddToCartButton({ ticket, className }: AddToCartButtonProps) {
     setAdded(true);
     // Mobile: single cart destination is /cart (bottom nav). Desktop: open drawer.
     openCartIfDesktop(openCart);
-    toast.success(dict?.product?.added_to_cart || "Dodato u korpu");
+    const isMobileViewport =
+      typeof window !== "undefined" &&
+      typeof window.matchMedia === "function" &&
+      window.matchMedia("(max-width: 767px)").matches;
+    toast.success(dict?.product?.added_to_cart || "Dodato u korpu", {
+      // Keep action above BottomNav; toast offset handled in Sonner (#667).
+      action: isMobileViewport
+        ? {
+            label: dict?.home?.view_cart || "Pogledaj korpu",
+            onClick: () => {
+              window.location.href = "/cart";
+            },
+          }
+        : undefined,
+    });
 
     // 📳 Haptic Feedback (PWA standard)
     if (typeof navigator !== "undefined" && navigator.vibrate) {

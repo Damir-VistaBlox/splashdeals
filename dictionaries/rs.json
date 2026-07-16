@@ -148,7 +148,9 @@
     "view_facility": "Pogledaj objekat",
     "included_label": "Uključeno",
     "open_today": "Otvoreno danas",
-    "inventory_cta": "Pogledaj sve destinacije"
+    "inventory_cta": "Pogledaj sve destinacije",
+    "rail_empty": "Trenutno nema ponuda sa slikom — pogledajte destinacije.",
+    "view_cart": "Pogledaj korpu"
   },
   "footer": {
     "desc": "Vodeća destinacija u Srbiji za digitalne ulaznice za akva parkove i sezonske propusnice. Preskočite čekanje i uživajte u letu.",

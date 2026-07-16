@@ -9,7 +9,7 @@ export function HomeOpenToday({ dict, deals }: { dict: HomeDict; deals: HomeDeal
   return (
     <section
       id="ops-open"
-      className="border-border mx-auto max-w-7xl scroll-mt-28 border-t px-6 py-12 md:px-12"
+      className="border-border mx-auto hidden max-w-7xl scroll-mt-28 border-t px-6 py-12 max-md:scroll-mt-36 md:block md:px-12"
     >
       <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
         <div>
@@ -23,8 +23,7 @@ export function HomeOpenToday({ dict, deals }: { dict: HomeDict; deals: HomeDeal
         <Button
           asChild
           variant="outline"
-          size="sm"
-          className="rounded-full text-[10px] font-black uppercase"
+          className="h-12 min-h-12 rounded-full px-5 text-[11px] font-black uppercase"
         >
           <Link href="/akva-parkovi">{dict.ops_view_all}</Link>
         </Button>

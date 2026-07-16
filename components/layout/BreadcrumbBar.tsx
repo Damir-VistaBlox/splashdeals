@@ -181,6 +181,9 @@ export function BreadcrumbBar({ facilityMap = {} }: { facilityMap?: FacilityMap 
       );
     });
 
+  // Homepage: no breadcrumb chrome — reclaim ~45px under fixed header (#667).
+  if (!pathname || pathname === "/") return null;
+
   return (
     <div className="bg-background/98 border-border/40 sticky top-16 z-[100] w-full border-b backdrop-blur-[40px]">
       <div className="mx-auto flex min-h-11 w-full max-w-7xl items-center gap-0 px-4 md:h-10 md:min-h-10 md:px-12">

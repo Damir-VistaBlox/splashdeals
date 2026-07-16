@@ -11,7 +11,7 @@ const ITEMS = [
 
 export function HomeTicketEducation({ dict }: { dict: HomeDict }) {
   return (
-    <section className="mx-auto max-w-7xl px-6 py-8 md:px-12">
+    <section className="mx-auto hidden max-w-7xl px-6 py-8 md:block md:px-12">
       <h2 className="text-muted-foreground mb-4 text-center text-[10px] font-black tracking-[0.25em] uppercase">
         {dict.edu_title}
       </h2>

@@ -26,9 +26,13 @@ const LANES = [
   { href: "/bazeni", titleKey: "intent_pools_title", descKey: "intent_pools_desc", icon: "pool" },
 ] as const;
 
+/** Desktop conversion lanes — hidden on mobile to shorten path to first ticket. */
 export function HomeIntentLanes({ dict }: { dict: HomeDict }) {
   return (
-    <section id="intent" className="mx-auto max-w-7xl scroll-mt-28 px-6 py-12 sm:py-16 md:px-12">
+    <section
+      id="intent"
+      className="mx-auto hidden max-w-7xl scroll-mt-28 px-6 py-12 sm:py-16 md:block md:px-12"
+    >
       <div className="mb-8 text-center sm:mb-10">
         <h2 className="mb-2 text-3xl font-black tracking-tighter uppercase italic sm:text-4xl">
           {dict.intent_title}
