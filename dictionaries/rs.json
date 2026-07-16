@@ -829,7 +829,8 @@
     "loading": "Učitavanje...",
     "error_title": "Došlo je do greške",
     "error_description": "Nismo mogli da učitamo ovu stranicu. Pokušajte ponovo ili nas kontaktirajte.",
-    "error_retry": "Pokušaj ponovo"
+    "error_retry": "Pokušaj ponovo",
+    "sign_in_error": "Prijava nije uspela. Pokušajte ponovo."
   },
   "order_detail": {
     "title": "Porudžbina",
