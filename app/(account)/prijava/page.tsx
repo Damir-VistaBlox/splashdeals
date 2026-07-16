@@ -15,12 +15,13 @@ export const metadata: Metadata = {
 export default async function PrijavaPage({
   searchParams,
 }: {
-  searchParams: Promise<{ callbackUrl?: string }>;
+  searchParams: Promise<{ callbackUrl?: string; error?: string }>;
 }) {
   const dict = await getDictionary();
   const t = dict.account;
   const sp = await searchParams;
   const callbackUrl = isSafeCallbackPath(sp.callbackUrl) ? sp.callbackUrl : "/moje-karte";
+  const oauthError = sp.error ? t.sign_in_error || "Prijava nije uspela. Pokušajte ponovo." : null;
 
   return (
     <div className="flex min-h-[60vh] items-center justify-center px-4 py-12">
@@ -31,6 +32,15 @@ export default async function PrijavaPage({
           </h1>
           <p className="text-muted-foreground text-sm font-medium">{t.sign_in_desc}</p>
         </div>
+
+        {oauthError ? (
+          <p
+            role="alert"
+            className="border-destructive/30 bg-destructive/10 text-destructive rounded-xl border px-3 py-2 text-center text-sm font-medium"
+          >
+            {oauthError}
+          </p>
+        ) : null}
 
         <SignInButtons dict={t} callbackUrl={callbackUrl} />
       </div>
