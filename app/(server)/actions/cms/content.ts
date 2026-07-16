@@ -811,3 +811,22 @@ export async function getFacilityNamesAction(): Promise<
     return handleServerActionError(error, "cms/getFacilityNames");
   }
 }
+
+/** Cancel a future publish schedule (DRAFT with future publishedAt). */
+export async function cancelPostScheduleAction(id: string): Promise<ActionResult<{ id: string }>> {
+  try {
+    await requireAdmin();
+    if (!id) return { success: false, error: "ID je obavezan." };
+
+    await prisma.blogPost.update({
+      where: { id },
+      data: { publishedAt: null },
+    });
+
+    revalidatePath("/admin/cms/posts");
+    revalidatePath("/admin/cms/posts/scheduled");
+    return { success: true, data: { id } };
+  } catch (error) {
+    return handleServerActionError(error, "cms/cancelPostSchedule");
+  }
+}

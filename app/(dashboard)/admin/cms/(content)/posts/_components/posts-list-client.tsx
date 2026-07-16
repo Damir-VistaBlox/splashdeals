@@ -53,6 +53,9 @@ import {
   rejectPostAction,
 } from "@/app/(server)/actions/cms/content";
 import { CMS_STATUS_LABELS } from "../../../_lib/cms-editor-utils";
+import type { PostRow } from "./post-types";
+
+export type { PostRow } from "./post-types";
 
 const statusBadgeVariant = (status: string): "default" | "secondary" | "outline" => {
   switch (status) {
@@ -67,32 +70,16 @@ const statusBadgeVariant = (status: string): "default" | "secondary" | "outline"
   }
 };
 
-interface PostRow {
-  id: string;
-  title: string;
-  slug: string;
-  status: string;
-  category?: { id: string; name: string; slug: string; color: string | null } | null;
-  createdAt: string;
-  updatedAt: string;
-  reviewedAt: string | null;
-  publishedAt: string | null;
-  isFeatured: boolean;
-  readingTime: number | null;
-  isStale: boolean;
-  _count?: { tags: number };
-}
-
-export type { PostRow };
-
 export function PostsListClient({
   posts,
   isStaleFilter,
   isReviewFilter = false,
+  isScheduledFilter = false,
 }: {
   posts: PostRow[];
   isStaleFilter: boolean;
   isReviewFilter: boolean;
+  isScheduledFilter?: boolean;
 }) {
   const router = useRouter();
   const [sorting, setSorting] = useState<SortingState>([{ id: "createdAt", desc: true }]);
@@ -404,6 +391,12 @@ export function PostsListClient({
           <Link href={isReviewFilter ? "/admin/cms/posts" : "/admin/cms/posts?status=review"}>
             <Icon name="eye" className="size-3.5" />
             Na pregledu
+          </Link>
+        </Button>
+        <Button variant={isScheduledFilter ? "default" : "outline"} size="sm" asChild>
+          <Link href={isScheduledFilter ? "/admin/cms/posts" : "/admin/cms/posts?status=scheduled"}>
+            <Icon name="schedule" className="size-3.5" />
+            Zakazane
           </Link>
         </Button>
       </div>

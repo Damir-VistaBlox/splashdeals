@@ -1,15 +1,22 @@
 import { requireAdmin } from "@/app/(server)/lib/auth-guards";
-import { prisma } from "@/app/(server)/lib/prisma";
-import { PostsListClient, type PostRow } from "./_components/posts-list-client";
+import { PostsListClient } from "./_components/posts-list-client";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/Icon";
 import type { Metadata } from "next";
 import { connection } from "next/server";
+import { loadCmsPosts, type PostsListFilter } from "@/app/(dashboard)/admin/cms/_data/cms-loaders";
 
 export const metadata: Metadata = {
   title: "Blog objave | CMS | Splashdeals",
 };
+
+function resolveFilter(params: { stale?: string; status?: string }): PostsListFilter {
+  if (params.status === "review") return "review";
+  if (params.status === "scheduled") return "scheduled";
+  if (params.stale === "true") return "stale";
+  return "all";
+}
 
 export default async function PostsPage({
   searchParams,
@@ -20,61 +27,8 @@ export default async function PostsPage({
   await connection();
 
   const params = await searchParams;
-  const isStaleFilter = params.stale === "true";
-  const isReviewFilter = params.status === "review";
-
-  const staleThreshold = new Date();
-  staleThreshold.setFullYear(staleThreshold.getFullYear() - 1);
-
-  let posts;
-  if (isReviewFilter) {
-    posts = await prisma.blogPost.findMany({
-      where: { status: "REVIEW" },
-      orderBy: { updatedAt: "desc" },
-      include: {
-        category: { select: { id: true, name: true, slug: true, color: true } },
-        _count: { select: { tags: true } },
-      },
-    });
-  } else if (isStaleFilter) {
-    posts = await prisma.blogPost.findMany({
-      where: {
-        status: "PUBLISHED",
-        updatedAt: { lt: staleThreshold },
-        OR: [{ reviewedAt: null }, { reviewedAt: { lt: staleThreshold } }],
-      },
-      orderBy: { updatedAt: "desc" },
-      include: {
-        category: { select: { id: true, name: true, slug: true, color: true } },
-        _count: { select: { tags: true } },
-      },
-    });
-  } else {
-    posts = await prisma.blogPost.findMany({
-      orderBy: { createdAt: "desc" },
-      include: {
-        category: { select: { id: true, name: true, slug: true, color: true } },
-        _count: { select: { tags: true } },
-      },
-    });
-  }
-
-  // Serialize Date -> ISO string for client + compute isStale
-  const serialized = posts.map((post) => {
-    const lastDate = post.reviewedAt
-      ? new Date(Math.max(post.updatedAt.getTime(), post.reviewedAt.getTime()))
-      : post.updatedAt;
-    const isStale = post.status === "PUBLISHED" && lastDate < staleThreshold;
-
-    return {
-      ...post,
-      createdAt: post.createdAt.toISOString(),
-      updatedAt: post.updatedAt.toISOString(),
-      publishedAt: post.publishedAt?.toISOString() ?? null,
-      reviewedAt: post.reviewedAt?.toISOString() ?? null,
-      isStale,
-    };
-  });
+  const filter = resolveFilter(params);
+  const posts = await loadCmsPosts(filter);
 
   return (
     <div className="space-y-6">
@@ -94,9 +48,10 @@ export default async function PostsPage({
       </div>
 
       <PostsListClient
-        posts={serialized as PostRow[]}
-        isStaleFilter={isStaleFilter}
-        isReviewFilter={isReviewFilter}
+        posts={posts}
+        isStaleFilter={filter === "stale"}
+        isReviewFilter={filter === "review"}
+        isScheduledFilter={filter === "scheduled"}
       />
     </div>
   );

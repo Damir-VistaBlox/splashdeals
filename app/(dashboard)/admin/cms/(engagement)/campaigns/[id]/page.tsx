@@ -1,45 +1,20 @@
 import { requireAdmin } from "@/app/(server)/lib/auth-guards";
-import { prisma } from "@/app/(server)/lib/prisma";
 import { connection } from "next/server";
 import { notFound } from "next/navigation";
-import EditCampaignForm from "./_components/edit-campaign-form";
+import type { Metadata } from "next";
+import { loadCmsCampaign, loadCmsFacilities } from "@/app/(dashboard)/admin/cms/_data/cms-loaders";
+import { CampaignForm } from "../_components/campaign-form";
+
+export const metadata: Metadata = {
+  title: "Izmeni kampanju | CMS | Splashdeals",
+};
 
 export default async function EditCampaignPage({ params }: { params: Promise<{ id: string }> }) {
   await requireAdmin();
   await connection();
-
   const { id } = await params;
+  const [campaign, facilities] = await Promise.all([loadCmsCampaign(id), loadCmsFacilities()]);
+  if (!campaign) notFound();
 
-  const campaign = await prisma.campaign.findUnique({
-    where: { id },
-    include: { facilityRestrictions: true },
-  });
-
-  if (!campaign) {
-    notFound();
-  }
-
-  const facilities = await prisma.facility.findMany({
-    orderBy: { name: "asc" },
-    select: { id: true, name: true },
-  });
-
-  return (
-    <EditCampaignForm
-      campaign={{
-        id: campaign.id,
-        name: campaign.name,
-        code: campaign.code || "",
-        discountPercent: Number(campaign.discountPercent),
-        minPurchaseAmount: campaign.minPurchaseAmount ? Number(campaign.minPurchaseAmount) : null,
-        validFrom: campaign.validFrom.toISOString().slice(0, 10),
-        validTo: campaign.validTo.toISOString().slice(0, 10),
-        usageLimit: campaign.usageLimit,
-        usedCount: campaign.usedCount,
-        isActive: campaign.isActive,
-        facilityIds: campaign.facilityRestrictions.map((fr) => fr.facilityId),
-      }}
-      facilities={facilities}
-    />
-  );
+  return <CampaignForm mode="edit" campaign={campaign} facilities={facilities} />;
 }
