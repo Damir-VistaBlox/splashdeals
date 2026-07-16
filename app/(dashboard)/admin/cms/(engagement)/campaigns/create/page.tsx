@@ -1,16 +1,16 @@
 import { requireAdmin } from "@/app/(server)/lib/auth-guards";
-import { prisma } from "@/app/(server)/lib/prisma";
 import { connection } from "next/server";
-import CreateCampaignForm from "./_components/create-campaign-form";
+import type { Metadata } from "next";
+import { loadCmsFacilities } from "@/app/(dashboard)/admin/cms/_data/cms-loaders";
+import { CampaignForm } from "../_components/campaign-form";
+
+export const metadata: Metadata = {
+  title: "Nova kampanja | CMS | Splashdeals",
+};
 
 export default async function CreateCampaignPage() {
   await requireAdmin();
   await connection();
-
-  const facilities = await prisma.facility.findMany({
-    orderBy: { name: "asc" },
-    select: { id: true, name: true },
-  });
-
-  return <CreateCampaignForm facilities={facilities} />;
+  const facilities = await loadCmsFacilities();
+  return <CampaignForm mode="create" facilities={facilities} />;
 }

@@ -31,42 +31,13 @@ import {
   deleteWebhookAction,
   reactivateWebhookAction,
 } from "@/app/(server)/actions/webhooks";
-
-interface WebhookRow {
-  id: string;
-  name: string;
-  url: string;
-  events: string[];
-  isActive: boolean;
-  consecutiveFailures: number;
-  createdAt: string;
-  updatedAt: string;
-  latestLog: {
-    id: string;
-    event: string;
-    status: string;
-    responseCode: number | null;
-    createdAt: string;
-  } | null;
-}
-
-const EVENT_LABELS: Record<string, string> = {
-  "post.created": "Objava kreirana",
-  "post.updated": "Objava ažurirana",
-  "post.deleted": "Objava obrisana",
-  "page.created": "Strana kreirana",
-  "page.updated": "Strana ažurirana",
-  "page.deleted": "Strana obrisana",
-  "category.created": "Kategorija kreirana",
-  "category.updated": "Kategorija ažurirana",
-  "category.deleted": "Kategorija obrisana",
-};
+import { WEBHOOK_EVENT_LABELS, type WebhookRow } from "./webhook-types";
 
 function truncateUrl(url: string, max = 50): string {
   return url.length > max ? url.slice(0, max) + "…" : url;
 }
 
-export function WebhooksListClient({ webhooks }: { webhooks: Array<Record<string, unknown>> }) {
+export function WebhooksListClient({ webhooks }: { webhooks: WebhookRow[] }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; name: string } | null>(null);
@@ -117,7 +88,7 @@ export function WebhooksListClient({ webhooks }: { webhooks: Array<Record<string
     [router, startTransition],
   );
 
-  const rows = webhooks as unknown as WebhookRow[];
+  const rows = webhooks;
 
   return (
     <div className="space-y-6">
@@ -171,7 +142,7 @@ export function WebhooksListClient({ webhooks }: { webhooks: Array<Record<string
                     <div className="flex flex-wrap gap-1">
                       {wh.events.map((ev) => (
                         <Badge key={ev} variant="outline" className="text-xs">
-                          {EVENT_LABELS[ev] || ev}
+                          {WEBHOOK_EVENT_LABELS[ev] || ev}
                         </Badge>
                       ))}
                     </div>
