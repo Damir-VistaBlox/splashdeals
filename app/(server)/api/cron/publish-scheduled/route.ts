@@ -1,5 +1,5 @@
 import { prisma } from "@/app/(server)/lib/prisma";
-import { revalidatePath } from "next/cache";
+import { revalidatePublicBlog, revalidateSitemap } from "@/app/(server)/lib/revalidation";
 import { NextResponse } from "next/server";
 
 export async function GET() {
@@ -14,25 +14,23 @@ export async function GET() {
       data: { status: "PUBLISHED" },
     });
 
-    if (posts.count > 0) {
-      revalidatePath("/blog");
-    }
-
     // Unpublish expired blog posts
     const expiredPosts = await prisma.blogPost.updateMany({
       where: { status: "PUBLISHED", expiresAt: { lte: now, not: null } },
       data: { status: "ARCHIVED" },
     });
 
-    if (expiredPosts.count > 0) {
-      revalidatePath("/blog");
-    }
-
     // Unpublish expired pages
     const expiredPages = await prisma.page.updateMany({
       where: { status: "PUBLISHED", expiresAt: { lte: now, not: null } },
       data: { status: "ARCHIVED" },
     });
+
+    if (posts.count > 0 || expiredPosts.count > 0) {
+      revalidatePublicBlog();
+    } else if (expiredPages.count > 0) {
+      revalidateSitemap();
+    }
 
     return NextResponse.json({
       published: posts.count,

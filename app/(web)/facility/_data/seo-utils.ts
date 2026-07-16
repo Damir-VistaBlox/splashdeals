@@ -4,6 +4,10 @@
  */
 
 import { getDayTypeLabel, getTimeSlotLabel } from "@/lib/ticketing/day-time-labels";
+import {
+  absoluteUrl as sharedAbsoluteUrl,
+  resolveSiteUrl as sharedResolveSiteUrl,
+} from "@/lib/seo";
 
 /** Categories treated as non-entry extras (not “from X RSD” entry tickets). */
 const EXTRA_CATEGORY_RE =
@@ -16,12 +20,9 @@ const EXTRA_PRODUCT_RE =
 /** Resident / office-only style products — still schema’d but flagged carefully. */
 const RESIDENT_PRODUCT_RE = /stanovnik|mesecn|mesečn|sezon|resident|opštin|opstin/i;
 
+/** @see {@link sharedResolveSiteUrl} — forced www for splashdeals.rs */
 export function resolveSiteUrl(): string {
-  const raw =
-    process.env.NEXT_PUBLIC_SITE_URL?.trim() ||
-    process.env.SITE_URL?.trim() ||
-    "https://www.splashdeals.rs";
-  return raw.replace(/\/$/, "");
+  return sharedResolveSiteUrl();
 }
 
 export function isExtraCategoryTitle(title: string | null | undefined): boolean {
@@ -135,10 +136,7 @@ export function stripBrandSuffix(title: string): string {
 }
 
 export function absoluteUrl(pathOrUrl: string, siteUrl = resolveSiteUrl()): string {
-  if (/^https?:\/\//i.test(pathOrUrl)) return pathOrUrl;
-  if (pathOrUrl.startsWith("//")) return `https:${pathOrUrl}`;
-  const path = pathOrUrl.startsWith("/") ? pathOrUrl : `/${pathOrUrl}`;
-  return `${siteUrl}${path}`;
+  return sharedAbsoluteUrl(pathOrUrl, siteUrl);
 }
 
 export function mapsUrl(lat?: number | string | null, lng?: number | string | null): string | null {

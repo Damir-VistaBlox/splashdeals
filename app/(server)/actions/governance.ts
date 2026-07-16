@@ -41,12 +41,13 @@ export async function updateFacilityStatusAction(rawValues: UpdateFacilityStatus
     const { facilityId, status } = validatedFields;
 
     await validateFacilityAccess(facilityId);
-    await prisma.facility.update({
+    const facility = await prisma.facility.update({
       where: { id: facilityId },
       data: { status },
+      select: { id: true, slug: true },
     });
 
-    revalidateAdminFacility(facilityId);
+    revalidateAdminFacility(facility.id, facility.slug);
     return { success: true };
   } catch (error: unknown) {
     return handleServerActionError(error, "governance");

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/app/(server)/lib/prisma";
-import { revalidatePath } from "next/cache";
+import { revalidatePublicBlog } from "@/app/(server)/lib/revalidation";
 
 /**
  * 📅 CMS Scheduled Publishing Cron
@@ -27,8 +27,9 @@ export async function GET(request: Request) {
       },
     });
 
-    // Revalidate blog pages
-    revalidatePath("/blog");
+    if (result.count > 0) {
+      revalidatePublicBlog();
+    }
 
     return NextResponse.json({
       success: true,
