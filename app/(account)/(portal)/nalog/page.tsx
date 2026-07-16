@@ -51,9 +51,9 @@ export default async function NalogPage() {
   ];
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-5 sm:space-y-8">
       <div>
-        <h1 className="text-3xl font-black tracking-tighter uppercase italic">
+        <h1 className="text-2xl font-black tracking-tighter uppercase italic sm:text-3xl">
           {t.profile || t.title || "Nalog"}
         </h1>
         <p className="text-muted-foreground mt-1 text-sm font-medium">
@@ -61,16 +61,16 @@ export default async function NalogPage() {
         </p>
       </div>
 
-      <Card className="border-border flex flex-col gap-6 p-6 sm:flex-row sm:items-center">
-        <Avatar className="size-16">
+      <Card className="border-border flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:gap-6 sm:p-6">
+        <Avatar className="size-14 sm:size-16">
           {image ? <AvatarImage src={image} alt="" /> : null}
-          <AvatarFallback className="text-lg font-bold">
+          <AvatarFallback className="text-base font-bold sm:text-lg">
             {initials(displayName, email)}
           </AvatarFallback>
         </Avatar>
         <div className="min-w-0 space-y-1">
-          <p className="truncate text-lg font-black">{displayName || "Korisnik"}</p>
-          <p className="text-muted-foreground truncate text-sm">{email}</p>
+          <p className="truncate text-base font-black sm:text-lg">{displayName || "Korisnik"}</p>
+          <p className="text-muted-foreground truncate text-sm break-all">{email}</p>
           <p className="text-muted-foreground text-xs">
             {user?.emailVerified
               ? t.email_verified || "Email potvrđen"
@@ -79,7 +79,7 @@ export default async function NalogPage() {
         </div>
       </Card>
 
-      <Card className="border-border space-y-4 p-6">
+      <Card className="border-border space-y-4 p-4 sm:p-6">
         <h2 className="text-sm font-black tracking-widest uppercase">
           {t.edit_profile || "Izmena profila"}
         </h2>
@@ -95,7 +95,7 @@ export default async function NalogPage() {
       </Card>
 
       {providers.length > 0 ? (
-        <Card className="border-border space-y-3 p-6">
+        <Card className="border-border space-y-3 p-4 sm:p-6">
           <h2 className="text-sm font-black tracking-widest uppercase">
             {t.linked_providers || "Povezani nalozi"}
           </h2>
@@ -105,28 +105,28 @@ export default async function NalogPage() {
                 key={p}
                 className="border-border bg-muted/30 flex min-h-11 items-center gap-2 rounded-lg border px-3 text-sm font-medium capitalize"
               >
-                <Icon name="link" className="text-primary size-4" />
-                {p}
+                <Icon name="link" className="text-primary size-4 shrink-0" />
+                <span className="truncate">{p}</span>
               </li>
             ))}
           </ul>
         </Card>
       ) : null}
 
-      <div className="grid gap-3 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-3">
         {quickLinks.map((link) => (
           <Link
             key={link.href}
             href={link.href}
             className="border-border hover:border-primary/40 flex min-h-11 items-center gap-3 rounded-xl border px-4 py-3 text-sm font-bold transition-colors"
           >
-            <Icon name={link.icon} className="text-primary size-5" />
+            <Icon name={link.icon} className="text-primary size-5 shrink-0" />
             {link.label}
           </Link>
         ))}
       </div>
 
-      <p className="text-muted-foreground text-xs">
+      <p className="text-muted-foreground pb-2 text-xs leading-relaxed">
         <Link href="/privacy" className="underline underline-offset-2">
           {t.privacy_link || "Politika privatnosti"}
         </Link>

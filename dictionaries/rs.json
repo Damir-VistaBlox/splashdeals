@@ -853,7 +853,12 @@
     "review_pending": "Čeka odobrenje",
     "view_facility": "Pogledaj objekat",
     "review_deleted": "Recenzija obrisana",
-    "review_saved": "Recenzija sačuvana"
+    "review_saved": "Recenzija sačuvana",
+    "chip_tickets": "Karte",
+    "chip_history": "Istorija",
+    "chip_favorites": "Omiljeni",
+    "chip_reviews": "Recenzije",
+    "chip_profile": "Nalog"
   },
   "order_detail": {
     "title": "Porudžbina",

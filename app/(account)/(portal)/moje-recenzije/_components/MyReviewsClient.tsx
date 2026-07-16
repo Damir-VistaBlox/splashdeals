@@ -46,8 +46,8 @@ export function MyReviewsClient({
 
   if (reviews.length === 0) {
     return (
-      <Card className="border-border flex flex-col items-center gap-4 p-12 text-center">
-        <Icon name="star" className="text-muted-foreground size-12" />
+      <Card className="border-border flex flex-col items-center gap-4 p-8 text-center sm:p-12">
+        <Icon name="star" className="text-muted-foreground size-10 sm:size-12" />
         <p className="text-muted-foreground text-sm font-medium">{labels.no_reviews}</p>
       </Card>
     );
@@ -162,7 +162,7 @@ export function MyReviewsClient({
                   type="button"
                   variant="outline"
                   size="sm"
-                  className="h-11 min-h-11"
+                  className="h-11 min-h-11 flex-1 sm:flex-none"
                   onClick={() => {
                     setEditingId(review.id);
                     setDraft({
@@ -178,7 +178,7 @@ export function MyReviewsClient({
                   type="button"
                   variant="ghost"
                   size="sm"
-                  className="text-destructive h-11 min-h-11"
+                  className="text-destructive h-11 min-h-11 flex-1 sm:flex-none"
                   disabled={isPending}
                   onClick={() => {
                     startTransition(async () => {
@@ -195,7 +195,7 @@ export function MyReviewsClient({
                 >
                   {labels.delete_review}
                 </Button>
-                <Button asChild variant="link" size="sm" className="h-11 min-h-11">
+                <Button asChild variant="link" size="sm" className="h-11 min-h-11 w-full sm:w-auto">
                   <Link href={`/${review.facility.slug}`}>{labels.view_facility}</Link>
                 </Button>
               </div>

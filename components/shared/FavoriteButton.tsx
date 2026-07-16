@@ -101,14 +101,14 @@ export function FavoriteButton({
       variant="ghost"
       size="icon"
       className={cn(
-        "z-30 size-11 min-h-11 min-w-11 rounded-full transition-all",
+        "z-30 size-11 min-h-11 min-w-11 touch-manipulation rounded-full transition-all",
         onMedia
           ? "hover:bg-background/20 absolute top-2 left-2 backdrop-blur-sm"
-          : "border-border bg-background/80 hover:bg-muted border shadow-sm",
+          : "border-border bg-background/90 hover:bg-muted border shadow-sm",
         optimistic
           ? "text-red-500"
           : onMedia
-            ? "text-white/70 hover:text-white"
+            ? "text-white/80 hover:text-white"
             : "text-muted-foreground hover:text-foreground",
         className,
       )}

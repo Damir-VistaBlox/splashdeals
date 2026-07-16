@@ -47,15 +47,19 @@ export default async function MojeKartePage() {
   sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-5 sm:space-y-8">
       <div>
-        <h1 className="text-3xl font-black tracking-tighter uppercase italic">{t.moje_karte}</h1>
-        <p className="text-muted-foreground mt-1 text-sm font-medium">{session.user.name}</p>
+        <h1 className="text-2xl font-black tracking-tighter uppercase italic sm:text-3xl">
+          {t.moje_karte}
+        </h1>
+        <p className="text-muted-foreground mt-1 truncate text-sm font-medium">
+          {session.user.name}
+        </p>
       </div>
 
       {activeTickets.length === 0 ? (
-        <Card className="border-border flex flex-col items-center gap-4 p-12 text-center">
-          <Icon name="confirmation_number" className="text-muted-foreground size-12" />
+        <Card className="border-border flex flex-col items-center gap-4 p-8 text-center sm:p-12">
+          <Icon name="confirmation_number" className="text-muted-foreground size-10 sm:size-12" />
           <div>
             <p className="mb-1 font-bold">{t.no_tickets}</p>
             <p className="text-muted-foreground text-sm">{t.no_tickets_desc}</p>
@@ -68,7 +72,7 @@ export default async function MojeKartePage() {
           </Link>
         </Card>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
           {activeTickets.map((ticket) => {
             const facility = ticket.ticketPrice?.ticketType?.category?.facility;
             const isExpiring = ticket.expiryDate < sevenDaysFromNow;

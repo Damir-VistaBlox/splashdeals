@@ -386,74 +386,85 @@ export function SuccessClient({
           ))}
         </div>
 
-        {/* 🛠️ Footer Actions */}
+        {/* 🛠️ Footer Actions — mobile: primary stack + 2-col secondary; desktop: row */}
         <div
-          className="animate-fade-in flex flex-col items-center justify-center gap-3 pt-6 sm:flex-row sm:gap-6 sm:pt-10"
+          className="animate-fade-in space-y-3 pt-6 sm:space-y-0 sm:pt-10"
           style={{ animationDelay: "0.8s", animationFillMode: "both" }}
         >
-          <Link href="/moje-karte" className="w-full sm:w-auto">
-            <Button
-              size="lg"
-              className="bg-primary hover:bg-primary/90 text-primary-foreground h-14 w-full rounded-full px-8 shadow-[0_0_30px_hsl(var(--primary)/0.3)] sm:h-16 sm:w-auto sm:px-10"
-            >
-              <Icon name="confirmation_number" className="mr-3 text-[20px]" />
-              {dict.actions.view_tickets || "Pogledaj karte"}
-            </Button>
-          </Link>
+          <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-center sm:gap-4">
+            <Link href="/moje-karte" className="w-full sm:w-auto">
+              <Button
+                size="lg"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground h-12 w-full rounded-full px-6 text-sm shadow-[0_0_30px_hsl(var(--primary)/0.3)] sm:h-14 sm:px-10"
+              >
+                <Icon
+                  name="confirmation_number"
+                  className="mr-2 text-[18px] sm:mr-3 sm:text-[20px]"
+                />
+                {dict.actions.view_tickets || "Pogledaj karte"}
+              </Button>
+            </Link>
 
-          {transaction?.id ? (
-            <Link href={`/orders/${transaction.id}`} className="w-full sm:w-auto">
+            {transaction?.id ? (
+              <Link href={`/orders/${transaction.id}`} className="w-full sm:w-auto">
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="bg-muted/5 text-foreground hover:bg-muted/10 border-border/10 h-12 w-full rounded-full border px-6 text-sm sm:h-14 sm:px-10"
+                >
+                  <Icon name="receipt" className="mr-2 text-[18px] sm:mr-3 sm:text-[20px]" />
+                  {dict.actions.view_order || "Detalji porudžbine"}
+                </Button>
+              </Link>
+            ) : null}
+          </div>
+
+          <div className="grid grid-cols-1 gap-2 sm:flex sm:flex-wrap sm:items-center sm:justify-center sm:gap-3">
+            <Link href="/" className="w-full sm:w-auto">
               <Button
                 variant="outline"
                 size="lg"
-                className="bg-muted/5 text-foreground hover:bg-muted/10 border-border/10 h-14 w-full rounded-full border px-8 sm:h-16 sm:w-auto sm:px-10"
+                className="bg-muted/5 text-foreground hover:bg-muted/10 border-border/10 h-11 w-full rounded-full border px-5 text-xs sm:h-12 sm:w-auto sm:px-8 sm:text-sm"
               >
-                <Icon name="receipt" className="mr-3 text-[20px]" />
-                {dict.actions.view_order || "Detalji porudžbine"}
+                <Icon name="arrow_back" className="mr-2 text-[16px]" />
+                {dict.actions.continue}
               </Button>
             </Link>
-          ) : null}
 
-          <Link href="/" className="w-full sm:w-auto">
             <Button
-              variant="outline"
+              onClick={() => window.print()}
               size="lg"
-              className="bg-muted/5 text-foreground hover:bg-muted/10 border-border/10 h-14 w-full rounded-full border px-8 sm:h-16 sm:w-auto sm:px-10"
+              variant="outline"
+              className="no-print bg-muted/5 text-foreground hover:bg-muted/10 border-border/10 h-11 w-full rounded-full border px-5 text-xs sm:h-12 sm:w-auto sm:px-8 sm:text-sm"
             >
-              <Icon name="arrow_back" className="mr-3 text-[20px]" />
-              {dict.actions.continue}
+              <Icon name="download" className="mr-2 text-[16px]" />
+              {dict.actions.download}
             </Button>
-          </Link>
 
-          <Button
-            onClick={() => window.print()}
-            size="lg"
-            variant="outline"
-            className="no-print bg-muted/5 text-foreground hover:bg-muted/10 border-border/10 h-14 w-full rounded-full border px-8 sm:h-16 sm:w-auto sm:px-10"
-          >
-            <Icon name="download" className="mr-3 text-[20px]" />
-            {dict.actions.download}
-          </Button>
-
-          <Button
-            onClick={handleResend}
-            disabled={isPending}
-            size="lg"
-            variant="outline"
-            className="bg-muted/5 text-foreground hover:bg-muted/10 border-border/10 h-14 w-full rounded-full border px-8 sm:h-16 sm:w-auto sm:px-10"
-          >
-            <Icon
-              name={
-                resendStatus === "sent" ? "check_circle" : isPending ? "progress_activity" : "mail"
-              }
-              className={`mr-3 text-[20px] ${isPending ? "animate-spin" : ""}`}
-            />
-            {resendStatus === "sent"
-              ? dict.resend_sent
-              : resendStatus === "error"
-                ? dict.resend_error
-                : dict.resend_button}
-          </Button>
+            <Button
+              onClick={handleResend}
+              disabled={isPending}
+              size="lg"
+              variant="outline"
+              className="bg-muted/5 text-foreground hover:bg-muted/10 border-border/10 h-11 w-full rounded-full border px-5 text-xs sm:h-12 sm:w-auto sm:px-8 sm:text-sm"
+            >
+              <Icon
+                name={
+                  resendStatus === "sent"
+                    ? "check_circle"
+                    : isPending
+                      ? "progress_activity"
+                      : "mail"
+                }
+                className={`mr-2 text-[16px] ${isPending ? "animate-spin" : ""}`}
+              />
+              {resendStatus === "sent"
+                ? dict.resend_sent
+                : resendStatus === "error"
+                  ? dict.resend_error
+                  : dict.resend_button}
+            </Button>
+          </div>
         </div>
 
         <div className="pt-8 text-center">
