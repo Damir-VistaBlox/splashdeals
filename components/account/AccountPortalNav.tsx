@@ -12,6 +12,8 @@ import type { Dict } from "@/lib/types";
 export type AccountNavLink = {
   href: string;
   label: string;
+  /** Compact label for mobile chips (390px) — falls back to label */
+  mobileLabel?: string;
   icon: string;
 };
 
@@ -56,28 +58,29 @@ export function AccountPortalNav({
 
   return (
     <>
-      {/* Mobile chips — scrollable, not fixed bottom */}
+      {/* Mobile chips — sticky under header+breadcrumb, scrollable, not fixed bottom */}
       <nav
-        className="border-border/40 bg-background/95 sticky top-[6.5rem] z-[90] -mx-4 mb-6 border-b px-4 py-2 backdrop-blur-md lg:hidden"
+        className="border-border/40 bg-background/95 sticky top-[6.5rem] z-[90] -mx-4 mb-4 border-b px-3 py-2 backdrop-blur-md sm:px-4 lg:hidden"
         aria-label={title}
       >
-        <div className="no-scrollbar flex items-center gap-2 overflow-x-auto pb-1">
+        <div className="no-scrollbar flex items-center gap-1.5 overflow-x-auto overscroll-x-contain pb-0.5 [-webkit-overflow-scrolling:touch]">
           {links.map((link) => {
             const active = isActive(pathname, link.href);
+            const chipLabel = link.mobileLabel || link.label;
             return (
               <Link
                 key={link.href}
                 href={link.href}
                 aria-current={active ? "page" : undefined}
                 className={cn(
-                  "inline-flex h-11 min-h-11 shrink-0 items-center gap-1.5 rounded-full border px-3 text-[11px] font-bold tracking-wide whitespace-nowrap uppercase transition-colors",
+                  "inline-flex h-11 min-h-11 shrink-0 items-center gap-1 rounded-full border px-2.5 text-[10px] font-bold tracking-wide whitespace-nowrap uppercase transition-colors sm:gap-1.5 sm:px-3 sm:text-[11px]",
                   active
                     ? "border-primary/40 bg-primary/10 text-primary"
                     : "border-border text-muted-foreground hover:text-foreground hover:bg-muted/40",
                 )}
               >
-                <Icon name={link.icon} className="size-4" />
-                {link.label}
+                <Icon name={link.icon} className="size-3.5 sm:size-4" />
+                {chipLabel}
               </Link>
             );
           })}
@@ -85,11 +88,11 @@ export function AccountPortalNav({
             type="button"
             variant="ghost"
             size="sm"
-            className="text-muted-foreground h-11 min-h-11 shrink-0 px-3 text-[11px] font-bold tracking-wide uppercase"
+            className="text-muted-foreground h-11 min-h-11 shrink-0 px-2.5 text-[10px] font-bold tracking-wide uppercase sm:px-3 sm:text-[11px]"
             onClick={handleLogout}
             disabled={isPending}
           >
-            <Icon name="logout" className="size-4" />
+            <Icon name="logout" className="size-3.5 sm:size-4" />
             {logoutLabel}
           </Button>
         </div>

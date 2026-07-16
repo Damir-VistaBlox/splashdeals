@@ -7,6 +7,7 @@ import { WeatherBadge } from "./ShowcaseHero";
 import { CurrentOperationalStatus } from "./OperationalPortal";
 import { DistanceCalculator } from "./DistanceCalculator";
 import { MobileUnifiedControlPill } from "./MobileUnifiedControlPill";
+import { FavoriteButton } from "@/components/shared/FavoriteButton";
 
 interface CurrentWeather {
   temperature: number;
@@ -15,6 +16,7 @@ interface CurrentWeather {
 
 interface HeroActionPillProps {
   facility: {
+    id: string;
     name: string;
     slug: string;
     lat?: number | string | null;
@@ -28,25 +30,31 @@ interface HeroActionPillProps {
   facilitySlug: string;
   categorySlug: string;
   weather: CurrentWeather | null;
+  isFavorited?: boolean;
 }
 
 /**
- * 🧭 HeroActionPill — Unified action bar for the facility hero section.
- *
- * Consolidates navigation, sharing, weather, operational status, distance,
- * and the mobile unified pill into a single client component.
- * Weather data is fetched server-side and passed as a prop.
+ * 🧭 HeroActionPill — facility hero actions.
+ * Mobile: 44×44 favorite + share row; control pill below.
  */
 export function HeroActionPill({
   facility,
   facilitySlug,
   categorySlug,
   weather,
+  isFavorited = false,
 }: HeroActionPillProps) {
   return (
     <>
-      {/* 📱 MOBILE SHARE ROW */}
-      <div className="flex items-center justify-end md:hidden">
+      {/* 📱 MOBILE SHARE + FAVORITE ROW — equal 44px targets */}
+      <div className="flex items-center justify-end gap-2 md:hidden">
+        <FavoriteButton
+          facilityId={facility.id}
+          facilitySlug={facilitySlug}
+          isFavorited={isFavorited}
+          variant="default"
+          className="bg-background/80 border-border relative top-0 left-0 shadow-sm backdrop-blur-xl"
+        />
         <ShareButton
           title={facility.name}
           url={`${process.env.NEXT_PUBLIC_SITE_URL || ""}/${facilitySlug}`}
@@ -57,10 +65,17 @@ export function HeroActionPill({
       <div className="hidden flex-wrap items-center gap-2 md:flex">
         <Link
           href={`/${categorySlug}`}
-          className="border-border text-muted-foreground bg-muted/20 hover:bg-muted/30 flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-black tracking-widest uppercase backdrop-blur-xl transition-colors"
+          className="border-border text-muted-foreground bg-muted/20 hover:bg-muted/30 flex h-11 min-h-11 items-center gap-2 rounded-full border px-4 text-xs font-black tracking-widest uppercase backdrop-blur-xl transition-colors"
         >
           <Icon name="arrow_back" className="text-[12px]" /> Nazad
         </Link>
+        <FavoriteButton
+          facilityId={facility.id}
+          facilitySlug={facilitySlug}
+          isFavorited={isFavorited}
+          variant="default"
+          className="bg-background/80 border-border relative top-0 left-0 shadow-sm backdrop-blur-xl"
+        />
         <ShareButton
           title={facility.name}
           url={`${process.env.NEXT_PUBLIC_SITE_URL || ""}/${facilitySlug}`}
@@ -69,7 +84,7 @@ export function HeroActionPill({
       </div>
 
       {/* 🏙️ HERO INFO ROW */}
-      <div className="text-muted-foreground flex w-full flex-wrap items-center gap-6 pb-4 font-bold">
+      <div className="text-muted-foreground flex w-full flex-wrap items-center gap-4 pb-2 font-bold sm:gap-6 sm:pb-4">
         <div className="bg-muted/50 border-border hidden items-center gap-2 rounded-2xl border px-5 py-2.5 backdrop-blur-md md:flex">
           <Icon name="location_on" className="text-primary text-[16px]" />
           <span className="text-sm font-medium tracking-tight opacity-80">
@@ -88,7 +103,7 @@ export function HeroActionPill({
             />
           )}
         </div>
-        <div className="block w-full pt-2 md:hidden">
+        <div className="block w-full pt-1 md:hidden">
           <MobileUnifiedControlPill
             hours={facility.hours}
             destLat={Number(facility.lat)}

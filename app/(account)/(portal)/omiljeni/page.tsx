@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { Icon } from "@/components/ui/Icon";
+import { FavoriteButton } from "@/components/shared/FavoriteButton";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -42,12 +43,14 @@ export default async function OmiljeniPage() {
   const favorites = await getUserFavorites(session.user.id);
 
   return (
-    <div className="space-y-8">
-      <h1 className="text-3xl font-black tracking-tighter uppercase italic">{t.omiljeni}</h1>
+    <div className="space-y-5 sm:space-y-8">
+      <h1 className="text-2xl font-black tracking-tighter uppercase italic sm:text-3xl">
+        {t.omiljeni}
+      </h1>
 
       {favorites.length === 0 ? (
-        <Card className="border-border flex flex-col items-center gap-4 p-12 text-center">
-          <Icon name="favorite" className="text-muted-foreground size-12" />
+        <Card className="border-border flex flex-col items-center gap-4 p-8 text-center sm:p-12">
+          <Icon name="favorite" className="text-muted-foreground size-10 sm:size-12" />
           <p className="text-muted-foreground text-sm font-medium">{t.no_favorites}</p>
           <Link
             href="/akva-parkovi"
@@ -57,20 +60,33 @@ export default async function OmiljeniPage() {
           </Link>
         </Card>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
           {favorites.map((fav) => {
             const image = fav.facility.media[0];
             return (
-              <Link key={fav.facility.id} href={`/${fav.facility.slug}`}>
-                <Card className="border-border group hover:border-primary/30 flex flex-col overflow-hidden transition-colors">
-                  <div className="relative h-32 w-full overflow-hidden">
+              <Card
+                key={fav.facility.id}
+                className="border-border group relative flex flex-col overflow-hidden transition-colors"
+              >
+                {/* Touch-safe unfavorite — top-right, outside link hit area stacking */}
+                <div className="absolute top-2 right-2 z-20">
+                  <FavoriteButton
+                    facilityId={fav.facility.id}
+                    facilitySlug={fav.facility.slug}
+                    isFavorited
+                    variant="default"
+                    className="bg-background/95 border-border relative top-0 left-0 shadow-sm"
+                  />
+                </div>
+                <Link href={`/${fav.facility.slug}`} className="block min-w-0">
+                  <div className="relative h-28 w-full overflow-hidden sm:h-32">
                     {image ? (
                       <Image
                         src={image.url}
                         alt={fav.facility.name}
                         fill
                         className="object-cover transition-transform duration-500 group-hover:scale-105"
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        sizes="(max-width: 640px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       />
                     ) : (
                       <div className="bg-muted flex h-full items-center justify-center">
@@ -78,19 +94,19 @@ export default async function OmiljeniPage() {
                       </div>
                     )}
                   </div>
-                  <div className="flex flex-col gap-1 p-4">
-                    <h3 className="group-hover:text-primary text-sm font-black uppercase transition-colors">
+                  <div className="flex flex-col gap-1 p-3 sm:p-4">
+                    <h3 className="group-hover:text-primary line-clamp-2 pr-10 text-sm font-black uppercase transition-colors">
                       {fav.facility.name}
                     </h3>
                     {fav.facility.city && (
                       <span className="text-muted-foreground flex items-center gap-1 text-[10px] font-medium">
-                        <Icon name="location_on" className="text-primary/70 size-[10px]" />
-                        {fav.facility.city}
+                        <Icon name="location_on" className="text-primary/70 size-[10px] shrink-0" />
+                        <span className="truncate">{fav.facility.city}</span>
                       </span>
                     )}
                   </div>
-                </Card>
-              </Link>
+                </Link>
+              </Card>
             );
           })}
         </div>
