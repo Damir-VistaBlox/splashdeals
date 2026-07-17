@@ -12,21 +12,28 @@ import type { Dict } from "@/lib/types";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { mutateCartLine } from "@/lib/cart/mutate-cart-line";
+import { cartCurrency } from "@/lib/cart/cart-helpers";
+import { cancelCheckoutSessionAction } from "@/app/(server)/actions/checkout";
 
 export const CartDrawer = () => {
   const isCartOpen = useUIState((s) => s.isCartOpen);
   const closeCart = useUIState((s) => s.closeCart);
   const items = useServerCart((s) => s.items);
   const totalPrice = useServerCart((s) => s.totalPrice);
+  const locked = useServerCart((s) => s.locked);
   const refresh = useServerCart((s) => s.refresh);
+  const setLocked = useServerCart((s) => s.setLocked);
+  const notifyUpdated = useServerCart((s) => s.notifyUpdated);
   const [isMounted, setIsMounted] = React.useState(false);
   const [dict, setDict] = React.useState<Dict | null>(null);
-  const [mutatingItemId, setMutatingItemId] = React.useState<string | null>(null);
+  const [mutatingItemIds, setMutatingItemIds] = React.useState<Set<string>>(() => new Set());
   const [isDesktop, setIsDesktop] = React.useState(false);
+  const [isCancellingCheckout, setIsCancellingCheckout] = React.useState(false);
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("sr-RS").format(price);
   };
+  const currency = cartCurrency(items);
 
   React.useEffect(() => {
     const timer = requestAnimationFrame(() => {
@@ -56,10 +63,22 @@ export const CartDrawer = () => {
   // Never mount drawer portal on mobile — avoids stuck overlays intercepting taps on /cart
   if (!isMounted || !isDesktop) return null;
 
+  const withMutating = async (itemId: string, fn: () => Promise<void>) => {
+    setMutatingItemIds((prev) => new Set(prev).add(itemId));
+    try {
+      await fn();
+    } finally {
+      setMutatingItemIds((prev) => {
+        const next = new Set(prev);
+        next.delete(itemId);
+        return next;
+      });
+    }
+  };
+
   const handleUpdateQuantity = async (itemId: string, newQuantity: number) => {
     if (!itemId) return;
-    setMutatingItemId(itemId);
-    try {
+    await withMutating(itemId, async () => {
       const result = await mutateCartLine({
         itemId,
         mode: "setQuantity",
@@ -70,16 +89,12 @@ export const CartDrawer = () => {
         toast.error(result.error || dict?.cart?.update_error || dict?.cart?.remove_error);
         await refresh();
       }
-    } finally {
-      setMutatingItemId(null);
-    }
+    });
   };
 
   const handleRemoveItem = async (itemId: string) => {
     if (!itemId) return;
-    setMutatingItemId(itemId);
-    try {
-      // Unit-aware remove (drawer has no CartItemList helper).
+    await withMutating(itemId, async () => {
       const result = await mutateCartLine({
         itemId,
         mode: "removeOneUnit",
@@ -89,8 +104,25 @@ export const CartDrawer = () => {
         toast.error(result.error || dict?.cart?.remove_error || dict?.cart?.update_error);
         await refresh();
       }
+    });
+  };
+
+  const handleCancelCheckout = async () => {
+    setIsCancellingCheckout(true);
+    try {
+      const result = await cancelCheckoutSessionAction();
+      if (!result.success) {
+        toast.error(result.error || dict?.cart?.checkout_cancel_error);
+        return;
+      }
+      toast.info(dict?.cart?.checkout_cancelled);
+      setLocked(false);
+      await refresh();
+      notifyUpdated();
+    } catch {
+      toast.error(dict?.cart?.checkout_cancel_error);
     } finally {
-      setMutatingItemId(null);
+      setIsCancellingCheckout(false);
     }
   };
 
@@ -135,6 +167,29 @@ export const CartDrawer = () => {
             </Button>
           </div>
 
+          {locked && (
+            <div className="border-warning/30 bg-warning/10 mx-6 mt-4 rounded-2xl border p-4">
+              <p className="text-warning text-xs font-black tracking-wide uppercase">
+                {dict?.cart?.locked_title || "Plaćanje je u toku"}
+              </p>
+              <p className="text-muted-foreground mt-1 text-xs leading-relaxed">
+                {dict?.cart?.locked_description}
+              </p>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                disabled={isCancellingCheckout}
+                onClick={() => void handleCancelCheckout()}
+                className="mt-3 min-h-10 rounded-xl"
+              >
+                {isCancellingCheckout
+                  ? dict?.cart?.cancel_checkout_processing
+                  : dict?.cart?.cancel_checkout || "Otkaži plaćanje"}
+              </Button>
+            </div>
+          )}
+
           <div className="flex-1 space-y-4 overflow-y-auto p-6">
             {items.length === 0 ? (
               <div className="flex h-full flex-col items-center justify-center space-y-4 text-center opacity-60">
@@ -144,7 +199,8 @@ export const CartDrawer = () => {
             ) : (
               items.map((item) => {
                 const minQty = Math.max(1, item.minPeople || 1);
-                const isMutating = mutatingItemId === item.id;
+                const isMutating = mutatingItemIds.has(item.id);
+                const itemCurrency = item.currency || currency;
                 return (
                   <div
                     key={item.id}
@@ -165,7 +221,7 @@ export const CartDrawer = () => {
                           variant="ghost"
                           size="icon"
                           onClick={() => handleRemoveItem(item.id)}
-                          disabled={isMutating}
+                          disabled={isMutating || locked}
                           aria-label={dict?.cart?.remove || "Ukloni"}
                           className="text-muted-foreground hover:text-destructive h-11 w-11 shrink-0 rounded-xl"
                         >
@@ -179,7 +235,7 @@ export const CartDrawer = () => {
                             variant="ghost"
                             size="icon"
                             onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)}
-                            disabled={isMutating}
+                            disabled={isMutating || locked}
                             aria-label={
                               item.quantity <= minQty
                                 ? dict?.cart?.remove || "Ukloni"
@@ -202,6 +258,7 @@ export const CartDrawer = () => {
                             onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)}
                             disabled={
                               isMutating ||
+                              locked ||
                               item.quantity >=
                                 Math.min(
                                   item.maxPeople ?? MAX_QUANTITY_PER_ITEM,
@@ -215,7 +272,7 @@ export const CartDrawer = () => {
                           </Button>
                         </div>
                         <p className="text-primary text-sm font-black tabular-nums">
-                          {formatPrice(item.price * item.quantity)} RSD
+                          {formatPrice(item.price * item.quantity)} {itemCurrency}
                         </p>
                       </div>
                       <Button
@@ -223,7 +280,7 @@ export const CartDrawer = () => {
                         variant="ghost"
                         size="sm"
                         onClick={() => handleRemoveItem(item.id)}
-                        disabled={isMutating}
+                        disabled={isMutating || locked}
                         className="text-muted-foreground/80 hover:text-destructive mt-2 h-9 self-start px-0 text-[10px] font-black tracking-widest uppercase"
                       >
                         {dict?.cart?.remove || "Ukloni"}
@@ -239,14 +296,13 @@ export const CartDrawer = () => {
             <div className="border-border bg-muted/20 space-y-6 border-t p-8">
               <div className="flex items-end justify-between">
                 <span className="text-muted-foreground text-[10px] font-black tracking-[0.2em] uppercase">
-                  {dict?.cart?.total}
+                  {dict?.cart?.total_label || dict?.cart?.total}
                 </span>
                 <span className="text-foreground text-3xl font-black tracking-tighter italic">
                   {formatPrice(totalPrice)}{" "}
-                  <span className="text-primary text-sm not-italic">RSD</span>
+                  <span className="text-primary text-sm not-italic">{currency}</span>
                 </span>
               </div>
-              {/* Drawer is a preview — full checkout lives on /cart */}
               <Button asChild className="h-16 w-full text-sm font-black tracking-widest uppercase">
                 <Link href="/cart" onClick={closeCart}>
                   {dict?.cart?.view_cart}

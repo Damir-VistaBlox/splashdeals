@@ -9,7 +9,6 @@ import { getClientDictionary } from "@/lib/client-dictionaries";
 import type { Dict } from "@/lib/types";
 import { persistCartItem } from "@/lib/cart/persist-cart-item";
 import { useServerCart } from "@/hooks/use-server-cart";
-import { broadcastCartUpdated } from "@/lib/cart/cart-sync";
 import { openCartIfDesktop } from "@/lib/cart/open-cart-if-desktop";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -37,7 +36,8 @@ interface AddToCartButtonProps {
 
 export function AddToCartButton({ ticket, className }: AddToCartButtonProps) {
   const openCart = useUIState((state) => state.openCart);
-  const refresh = useServerCart((state) => state.refresh);
+  const setItems = useServerCart((state) => state.setItems);
+  const notifyUpdated = useServerCart((state) => state.notifyUpdated);
   const [added, setAdded] = useState(false);
   const [dict, setDict] = useState<Dict | null>(null);
 
@@ -64,18 +64,22 @@ export function AddToCartButton({ ticket, className }: AddToCartButtonProps) {
       quantity: quantityToAdd,
     });
 
-    await refresh();
-    broadcastCartUpdated();
+    // Optimistic store merge from returned item — avoid full getCart when possible (#686 L3).
+    const previous = useServerCart.getState().items;
+    const next = [
+      ...previous.filter((i) => i.id !== addedItem.id && i.ticketId !== addedItem.ticketId),
+      addedItem,
+    ];
+    setItems(next);
+    notifyUpdated();
 
     setAdded(true);
-    // Mobile: single cart destination is /cart (bottom nav). Desktop: open drawer.
     openCartIfDesktop(openCart);
     const isMobileViewport =
       typeof window !== "undefined" &&
       typeof window.matchMedia === "function" &&
       window.matchMedia("(max-width: 767px)").matches;
     toast.success(dict?.product?.added_to_cart || "Dodato u korpu", {
-      // Keep action above BottomNav; toast offset handled in Sonner (#667).
       action: isMobileViewport
         ? {
             label: dict?.home?.view_cart || "Pogledaj korpu",
@@ -86,7 +90,6 @@ export function AddToCartButton({ ticket, className }: AddToCartButtonProps) {
         : undefined,
     });
 
-    // 📳 Haptic Feedback (PWA standard)
     if (typeof navigator !== "undefined" && navigator.vibrate) {
       navigator.vibrate(20);
     }

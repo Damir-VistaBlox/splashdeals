@@ -10,6 +10,7 @@ import type { CartDictionary, DiscountInfo } from "@/lib/types/cart";
 interface CartSummaryProps {
   totalBeforeDiscount: number;
   total: number;
+  currency?: string;
   discount: DiscountInfo | null;
   dict: { cart?: CartDictionary } & Record<string, unknown>;
   promoCode: string;
@@ -25,6 +26,7 @@ interface CartSummaryProps {
 export function CartSummary({
   totalBeforeDiscount,
   total,
+  currency = "RSD",
   discount,
   dict,
   promoCode,
@@ -41,6 +43,8 @@ export function CartSummary({
     ? Math.round(totalBeforeDiscount * (discount.discountPercent / 100))
     : 0;
   const promoLabel = dict?.cart?.promo_label;
+  const checkoutLabel = dict?.cart?.checkout_button || dict?.cart?.checkout;
+  const totalLabel = dict?.cart?.total_label || dict?.cart?.total;
 
   return (
     <div className="space-y-4 sm:space-y-6">
@@ -52,7 +56,9 @@ export function CartSummary({
         <div className="space-y-3">
           <div className="text-foreground flex justify-between text-sm">
             <span className="text-muted-foreground">{dict?.cart?.subtotal}</span>
-            <span className="font-bold tabular-nums">{formatPrice(totalBeforeDiscount)} RSD</span>
+            <span className="font-bold tabular-nums">
+              {formatPrice(totalBeforeDiscount)} {currency}
+            </span>
           </div>
 
           {discount && (
@@ -61,22 +67,21 @@ export function CartSummary({
                 {dict?.cart?.discount} ({discount.discountPercent}%)
               </span>
               <span className="text-success font-bold tabular-nums">
-                -{formatPrice(discountAmount)} RSD
+                -{formatPrice(discountAmount)} {currency}
               </span>
             </div>
           )}
 
           <div className="border-border border-t pt-3">
             <div className="flex justify-between text-base">
-              <span className="text-foreground font-bold">{dict?.cart?.total}</span>
+              <span className="text-foreground font-bold">{totalLabel}</span>
               <span className="text-foreground text-xl font-black tracking-tight tabular-nums">
-                {formatPrice(total)} RSD
+                {formatPrice(total)} {currency}
               </span>
             </div>
           </div>
         </div>
 
-        {/* Promo Code */}
         <div className="mt-5 space-y-2 sm:mt-6">
           <Label
             htmlFor="cart-promo-code"
@@ -124,13 +129,12 @@ export function CartSummary({
           )}
         </div>
 
-        {/* Desktop / in-flow checkout — mobile uses sticky bar in CartClient */}
         <Button
           onClick={onCheckout}
           disabled={isCheckingOut}
           className="mt-5 hidden h-14 w-full rounded-2xl text-base font-bold sm:mt-6 lg:inline-flex"
         >
-          {isCheckingOut ? dict?.cart?.processing : dict?.cart?.checkout}
+          {isCheckingOut ? dict?.cart?.processing : checkoutLabel}
         </Button>
       </Card>
 
@@ -152,6 +156,11 @@ export function CartSummary({
         />
       </Card>
 
+      {dict?.cart?.security_notice && (
+        <p className="text-muted-foreground px-2 text-center text-[10px] leading-relaxed font-bold sm:px-8">
+          {dict.cart.security_notice}
+        </p>
+      )}
       <p className="text-muted-foreground px-2 text-center text-[10px] leading-relaxed font-bold sm:px-8">
         {dict?.cart?.terms_notice}
       </p>
