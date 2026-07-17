@@ -9,9 +9,9 @@ import { MAX_QUANTITY_PER_ITEM } from "@/lib/types/cart";
 import Link from "next/link";
 import { getClientDictionary } from "@/lib/client-dictionaries";
 import type { Dict } from "@/lib/types";
-import { removeFromCartAction, updateCartQuantityAction } from "@/app/(server)/actions/cart";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { mutateCartLine } from "@/lib/cart/mutate-cart-line";
 
 export const CartDrawer = () => {
   const isCartOpen = useUIState((s) => s.isCartOpen);
@@ -19,8 +19,6 @@ export const CartDrawer = () => {
   const items = useServerCart((s) => s.items);
   const totalPrice = useServerCart((s) => s.totalPrice);
   const refresh = useServerCart((s) => s.refresh);
-  const notifyUpdated = useServerCart((s) => s.notifyUpdated);
-  const setItems = useServerCart((s) => s.setItems);
   const [isMounted, setIsMounted] = React.useState(false);
   const [dict, setDict] = React.useState<Dict | null>(null);
   const [mutatingItemId, setMutatingItemId] = React.useState<string | null>(null);
@@ -61,56 +59,17 @@ export const CartDrawer = () => {
   const handleUpdateQuantity = async (itemId: string, newQuantity: number) => {
     if (!itemId) return;
     setMutatingItemId(itemId);
-    const previousItems = useServerCart.getState().items;
-    const item = previousItems.find((i) => i.id === itemId);
-    if (!item) {
-      setMutatingItemId(null);
-      return;
-    }
-    const minQty = Math.max(1, item.minPeople || 1);
-    const shouldRemove = newQuantity < minQty || newQuantity <= 0;
-
-    if (shouldRemove) {
-      setItems(previousItems.filter((i) => i.id !== itemId));
-    } else {
-      setItems(previousItems.map((i) => (i.id === itemId ? { ...i, quantity: newQuantity } : i)));
-    }
-
     try {
-      const result = shouldRemove
-        ? await removeFromCartAction({ itemId })
-        : await updateCartQuantityAction({ itemId, quantity: newQuantity });
-
-      if (!result.success) {
-        setItems(previousItems);
+      const result = await mutateCartLine({
+        itemId,
+        mode: "setQuantity",
+        quantity: newQuantity,
+        errorFallback: dict?.cart?.update_error || dict?.cart?.remove_error,
+      });
+      if (!result.ok) {
         toast.error(result.error || dict?.cart?.update_error || dict?.cart?.remove_error);
         await refresh();
-        return;
       }
-
-      if (
-        shouldRemove &&
-        result.data &&
-        "items" in result.data &&
-        Array.isArray(result.data.items)
-      ) {
-        const serverItems = result.data.items;
-        const expectedRemaining = previousItems.filter((i) => i.id !== itemId);
-        if (serverItems.length === 0 && expectedRemaining.length > 0) {
-          await refresh();
-        } else {
-          setItems(serverItems);
-        }
-      } else if (!shouldRemove && result.data && "item" in result.data && result.data.item) {
-        const updated = result.data.item;
-        setItems(useServerCart.getState().items.map((i) => (i.id === updated.id ? updated : i)));
-      } else {
-        await refresh();
-      }
-      notifyUpdated();
-    } catch {
-      setItems(previousItems);
-      toast.error(dict?.cart?.update_error || dict?.cart?.remove_error);
     } finally {
       setMutatingItemId(null);
     }
@@ -119,42 +78,17 @@ export const CartDrawer = () => {
   const handleRemoveItem = async (itemId: string) => {
     if (!itemId) return;
     setMutatingItemId(itemId);
-    const previousItems = useServerCart.getState().items;
-    const item = previousItems.find((i) => i.id === itemId);
-    if (!item) {
-      setMutatingItemId(null);
-      return;
-    }
-
-    // Unit-aware: decrease one when qty above min; only delete the line at min.
-    const minQty = Math.max(1, item.minPeople || 1);
-    if (item.quantity > minQty) {
-      await handleUpdateQuantity(itemId, item.quantity - 1);
-      return;
-    }
-
-    const optimistic = previousItems.filter((i) => i.id !== itemId);
-    setItems(optimistic);
     try {
-      const result = await removeFromCartAction({ itemId });
-      if (!result.success) {
-        setItems(previousItems);
+      // Unit-aware remove (drawer has no CartItemList helper).
+      const result = await mutateCartLine({
+        itemId,
+        mode: "removeOneUnit",
+        errorFallback: dict?.cart?.remove_error || dict?.cart?.update_error,
+      });
+      if (!result.ok) {
         toast.error(result.error || dict?.cart?.remove_error || dict?.cart?.update_error);
         await refresh();
-        return;
       }
-      if (Array.isArray(result.data?.items)) {
-        const serverItems = result.data.items;
-        if (serverItems.length === 0 && optimistic.length > 0) {
-          await refresh();
-        } else {
-          setItems(serverItems);
-        }
-      }
-      notifyUpdated();
-    } catch {
-      setItems(previousItems);
-      toast.error(dict?.cart?.remove_error || dict?.cart?.update_error);
     } finally {
       setMutatingItemId(null);
     }

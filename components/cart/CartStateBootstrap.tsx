@@ -4,6 +4,11 @@ import * as React from "react";
 import { useServerCart } from "@/hooks/use-server-cart";
 import { authClient } from "@/lib/auth-client";
 import { claimGuestCartAction } from "@/app/(server)/actions/guest-cart-claim";
+import {
+  isGuestClaimHandled,
+  markGuestClaimHandled,
+  storeGuestClaimConflict,
+} from "@/lib/cart/guest-claim-conflict";
 
 /**
  * Mount once in the web shell to hydrate shared cart badge/drawer state
@@ -14,6 +19,9 @@ import { claimGuestCartAction } from "@/app/(server)/actions/guest-cart-claim";
  *
  * Claim is once per browser tab session per userId (sessionStorage) so
  * remounts after remove cannot re-import a leftover guest cart.
+ *
+ * Facility conflicts are NEVER silent: payload is stored + event dispatched
+ * so CartClient can open GuestCartConflictModal (#686).
  */
 export function CartStateBootstrap() {
   const refresh = useServerCart((state) => state.refresh);
@@ -29,14 +37,17 @@ export function CartStateBootstrap() {
     void (async () => {
       if (userId && claimedForUserRef.current !== userId) {
         claimedForUserRef.current = userId;
-        const claimKey = `sd_guest_claim:${userId}`;
-        const alreadyClaimed =
-          typeof window !== "undefined" && sessionStorage.getItem(claimKey) === "1";
-        if (!alreadyClaimed) {
+        if (!isGuestClaimHandled(userId)) {
           try {
-            await claimGuestCartAction();
-            if (typeof window !== "undefined") {
-              sessionStorage.setItem(claimKey, "1");
+            const claim = await claimGuestCartAction();
+            if (claim.success && claim.data?.action === "conflict") {
+              // Do NOT mark claim handled until user resolves — CartClient must see modal.
+              storeGuestClaimConflict(userId, {
+                guestFacilityName: claim.data.guestFacilityName,
+                userFacilityName: claim.data.userFacilityName,
+              });
+            } else {
+              markGuestClaimHandled(userId);
             }
           } catch {
             // Non-fatal — cart page mount can still claim once.

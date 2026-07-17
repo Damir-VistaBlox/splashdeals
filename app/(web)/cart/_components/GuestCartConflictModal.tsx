@@ -19,6 +19,7 @@ export function GuestCartConflictModal({
   resolving,
   onChooseGuest,
   onChooseUser,
+  onDismiss,
   dict,
 }: {
   open: boolean;
@@ -27,14 +28,21 @@ export function GuestCartConflictModal({
   resolving: boolean;
   onChooseGuest: () => void;
   onChooseUser: () => void;
+  /** Optional: close for now (conflict remains in sessionStorage for next visit). */
+  onDismiss?: () => void;
   dict?: CartDictionary | null;
 }) {
   const facilityLine = (name: string) =>
     (dict?.conflict_facility || "{name}").replace("{name}", name);
 
   return (
-    <Dialog open={open}>
-      <DialogContent className="sm:max-w-md" showCloseButton={false}>
+    <Dialog
+      open={open}
+      onOpenChange={(next) => {
+        if (!next && onDismiss && !resolving) onDismiss();
+      }}
+    >
+      <DialogContent className="sm:max-w-md" showCloseButton={Boolean(onDismiss)}>
         <DialogHeader>
           <DialogTitle>{dict?.conflict_title}</DialogTitle>
           <DialogDescription>{dict?.conflict_description}</DialogDescription>
@@ -56,6 +64,17 @@ export function GuestCartConflictModal({
           <Button disabled={resolving} variant="outline" onClick={onChooseUser} className="w-full">
             {dict?.conflict_keep_user}
           </Button>
+          {onDismiss && (
+            <Button
+              type="button"
+              disabled={resolving}
+              variant="ghost"
+              onClick={onDismiss}
+              className="w-full"
+            >
+              Kasnije
+            </Button>
+          )}
         </DialogFooter>
       </DialogContent>
     </Dialog>

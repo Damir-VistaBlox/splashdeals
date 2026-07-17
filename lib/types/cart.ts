@@ -88,6 +88,11 @@ export type CartDictionary = {
   checkout_start_error?: string;
   checkout_url_error?: string;
   default_category?: string;
+  locked_title?: string;
+  locked_description?: string;
+  cancel_checkout?: string;
+  cancel_checkout_processing?: string;
+  lines_and_tickets?: string;
 };
 
 /** Typed identity dialog dictionary slice (dictionaries/rs.json → identity). */

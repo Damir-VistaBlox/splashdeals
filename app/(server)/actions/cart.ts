@@ -189,12 +189,22 @@ async function getCartSession(principal: CartPrincipal, db: CartDbClient = prism
   return null;
 }
 
-/** Unlock abandoned checkout locks before cart mutations/reads. */
+/**
+ * Unlock abandoned checkout locks before cart mutations/reads.
+ * Expired locks only — active checkout windows stay locked until cancel/expiry.
+ */
 async function ensureUserCartUnlocked(principal: CartPrincipal) {
   if (principal.type === "user") {
     await releaseExpiredCartLocksForUser(principal.userId);
   }
 }
+
+/**
+ * revalidatePath("/cart") policy:
+ * - add / update qty / clear / claim: OK (RSC refresh is fine)
+ * - remove: NEVER — remount re-runs claim bootstrap and can resurrect guest lines
+ * Prefer returning authoritative items from the mutation response instead.
+ */
 
 async function incrementCartVersion(db: CartDbClient, cart: { id: string; version: number }) {
   const updated = await db.cartSession.updateMany({
@@ -375,13 +385,16 @@ export async function addToCartAction(
   }
 }
 
-export async function getCartAction(): Promise<ActionResult<{ items: CartItem[] }>> {
+export async function getCartAction(): Promise<
+  ActionResult<{ items: CartItem[]; locked: boolean }>
+> {
   try {
     const principal = await resolveCartPrincipal({ createGuestIfMissing: false });
     if (principal.type === "anonymous") {
-      return { success: true, data: { items: [] } };
+      return { success: true, data: { items: [], locked: false } };
     }
 
+    // Clear expired checkout locks on every read so soft refresh is not stuck.
     await ensureUserCartUnlocked(principal);
 
     // NOTE: Do NOT auto-claim guest cart here when the user cart is empty.
@@ -391,19 +404,20 @@ export async function getCartAction(): Promise<ActionResult<{ items: CartItem[] 
     if (principal.type === "user") {
       const cartSession = await getCartSession(principal);
       const items = cartSession ? await readCartItems(cartSession.id) : [];
+      const locked = Boolean(cartSession?.locked);
 
       // Orphan guest cookie/cart after empty user cart: purge so remount claim can't resurrect.
       if (items.length === 0 && (await hasGuestCartCookie())) {
         await purgeGuestCartAndCookie();
       }
 
-      return { success: true, data: { items } };
+      return { success: true, data: { items, locked } };
     }
 
     const cartSession = await getCartSession(principal);
     const items = cartSession ? await readCartItems(cartSession.id) : [];
 
-    return { success: true, data: { items } };
+    return { success: true, data: { items, locked: false } };
   } catch (error) {
     return handleServerActionError(error, "getCart");
   }
@@ -473,7 +487,7 @@ export async function removeFromCartAction(
 
 export async function updateCartQuantityAction(
   input: z.infer<typeof updateCartQuantitySchema>,
-): Promise<ActionResult<{ item: CartItem } | { cleared: boolean }>> {
+): Promise<ActionResult<{ item: CartItem }>> {
   try {
     const { itemId, quantity } = updateCartQuantitySchema.parse(input);
 
@@ -504,12 +518,13 @@ export async function updateCartQuantityAction(
         return { success: false, error: "Stavka nije pronađena u vašoj korpi." } as const;
       }
 
+      // qty ≤ 0 is not supported — clients must use removeFromCartAction for line delete.
+      // Avoids a response shape without remaining `items` (was a silent footgun).
       if (quantity <= 0) {
-        await tx.cartSessionItem.deleteMany({
-          where: { id: itemId, cartId: cartSession.id },
-        });
-        await incrementCartVersion(tx, cartSession);
-        return { success: true, data: { cleared: true } } as const;
+        return {
+          success: false,
+          error: "Za uklanjanje stavke koristite removeFromCartAction.",
+        } as const;
       }
 
       const minimumQuantity = Math.max(1, ownedItem.minPeople ?? 1);
@@ -544,13 +559,24 @@ export async function updateCartQuantityAction(
  * Removes unavailable tickets and updates changed prices so /cart notices can fire.
  */
 export async function reconcileCartAction(): Promise<
-  ActionResult<{ items: CartItem[]; removedItems: string[]; changedItems: string[] }>
+  ActionResult<{
+    items: CartItem[];
+    removedItems: string[];
+    changedItems: string[];
+    locked: boolean;
+  }>
 > {
   try {
     const principal = await resolveCartPrincipal({ createGuestIfMissing: false });
     if (principal.type === "anonymous") {
-      return { success: true, data: { items: [], removedItems: [], changedItems: [] } };
+      return {
+        success: true,
+        data: { items: [], removedItems: [], changedItems: [], locked: false },
+      };
     }
+
+    // Unlock expired locks before reconciling so active-only locks freeze mutation.
+    await ensureUserCartUnlocked(principal);
 
     const result = await withSerializableRetry(async (tx) => {
       const cartSession = await getCartSession(principal, tx);
@@ -559,10 +585,11 @@ export async function reconcileCartAction(): Promise<
           items: [] as CartItem[],
           removedItems: [] as string[],
           changedItems: [] as string[],
+          locked: false,
         };
       }
 
-      // Do not mutate a locked cart mid-checkout; just return current snapshot.
+      // Active checkout lock: snapshot only (no price/availability mutations).
       if (cartSession.locked) {
         const lockedItems = await tx.cartSessionItem.findMany({
           where: { cartId: cartSession.id },
@@ -572,6 +599,7 @@ export async function reconcileCartAction(): Promise<
           items: lockedItems.map(toCartItem),
           removedItems: [] as string[],
           changedItems: [] as string[],
+          locked: true,
         };
       }
 
@@ -622,6 +650,7 @@ export async function reconcileCartAction(): Promise<
         items: nextItems.map(toCartItem),
         removedItems,
         changedItems,
+        locked: false,
       };
     });
 
@@ -635,6 +664,11 @@ export async function reconcileCartAction(): Promise<
   }
 }
 
+/**
+ * Clears all lines from the current cart session.
+ * Internal / tests / future “Isprazni korpu” UI — no production button yet (#686).
+ * Locked carts return CART_LOCKED_ERROR; prefer cancelCheckoutSessionAction first.
+ */
 export async function clearCartAction(): Promise<ActionResult<{ cleared: boolean }>> {
   try {
     const principal = await resolveCartPrincipal({ createGuestIfMissing: false });

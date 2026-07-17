@@ -12,11 +12,7 @@ import {
   cancelCheckoutSessionAction,
 } from "@/app/(server)/actions/checkout";
 import { validatePromoCodeAction } from "@/app/(server)/actions/campaigns";
-import {
-  removeFromCartAction,
-  updateCartQuantityAction,
-  reconcileCartAction,
-} from "@/app/(server)/actions/cart";
+import { reconcileCartAction } from "@/app/(server)/actions/cart";
 import {
   claimGuestCartAction,
   resolveGuestCartConflictAction,
@@ -25,6 +21,16 @@ import { trackBeginCheckout } from "@/lib/analytics/events";
 import { useServerCart } from "@/hooks/use-server-cart";
 import { authClient } from "@/lib/auth-client";
 import { buildPrijavaUrl } from "@/lib/auth/callback-url";
+import { mutateCartLine } from "@/lib/cart/mutate-cart-line";
+import {
+  clearGuestClaimConflict,
+  GUEST_CLAIM_CONFLICT_EVENT,
+  isGuestClaimHandled,
+  markGuestClaimHandled,
+  readGuestClaimConflict,
+  storeGuestClaimConflict,
+} from "@/lib/cart/guest-claim-conflict";
+import { getCartTotalItems } from "@/lib/cart/cart-totals";
 import { CartItemList } from "./CartItemList";
 import { CartSummary } from "./CartSummary";
 import { GuestCartConflictModal } from "./GuestCartConflictModal";
@@ -45,10 +51,13 @@ export function CartClient({
   const router = useRouter();
   const { data: authSession, isPending: isAuthPending } = authClient.useSession();
   const items = useServerCart((s) => s.items);
+  const locked = useServerCart((s) => s.locked);
   const refresh = useServerCart((s) => s.refresh);
+  const setLocked = useServerCart((s) => s.setLocked);
   const notifyUpdated = useServerCart((s) => s.notifyUpdated);
   const [isMounted, setIsMounted] = React.useState(false);
   const [isCheckingOut, setIsCheckingOut] = React.useState(false);
+  const [isCancellingCheckout, setIsCancellingCheckout] = React.useState(false);
   const [showIdentityDialog, setShowIdentityDialog] = React.useState(false);
   const [promoCode, setPromoCode] = React.useState("");
   const [promoError, setPromoError] = React.useState("");
@@ -76,6 +85,14 @@ export function CartClient({
   const requiresIdentity = items.some((i) => i.requiresIdentity);
   const requiresPhoto = items.some((i) => i.requiresPhoto);
   const cartFacilityId = items[0]?.facilityId;
+  const totalTickets = getCartTotalItems(items);
+
+  const headingCount =
+    items.length > 0
+      ? (cartDict?.lines_and_tickets || "{lines} stavki · {tickets} karata")
+          .replace("{lines}", String(items.length))
+          .replace("{tickets}", String(totalTickets))
+      : cartDict?.empty;
 
   /** Soft refresh after qty/remove — no full reconcile (reconcile is mount/claim only). */
   const softRefresh = React.useCallback(async () => {
@@ -88,9 +105,10 @@ export function CartClient({
     if (reconcile.success && reconcile.data) {
       setRemovedItems(reconcile.data.removedItems);
       setChangedItems(reconcile.data.changedItems);
+      setLocked(Boolean(reconcile.data.locked));
     }
     await refresh();
-  }, [refresh]);
+  }, [refresh, setLocked]);
 
   /** Revalidate applied promo against the latest store cart (after mutations). */
   const revalidateAppliedPromo = React.useCallback(
@@ -137,20 +155,24 @@ export function CartClient({
         if (!claimHandledRef.current) {
           claimHandledRef.current = true;
           if (authSession?.user) {
-            const claimKey = `sd_guest_claim:${authSession.user.id}`;
-            const alreadyClaimed =
-              typeof window !== "undefined" && sessionStorage.getItem(claimKey) === "1";
-            if (!alreadyClaimed) {
+            const userId = authSession.user.id;
+            const pendingConflict = readGuestClaimConflict(userId);
+            if (pendingConflict) {
+              setConflict(pendingConflict);
+            } else if (!isGuestClaimHandled(userId)) {
               const claim = await claimGuestCartAction();
-              if (typeof window !== "undefined") {
-                sessionStorage.setItem(claimKey, "1");
-              }
               if (!active) return;
               if (claim.success && claim.data?.action === "conflict") {
+                storeGuestClaimConflict(userId, {
+                  guestFacilityName: claim.data.guestFacilityName,
+                  userFacilityName: claim.data.userFacilityName,
+                });
                 setConflict({
                   guestFacilityName: claim.data.guestFacilityName,
                   userFacilityName: claim.data.userFacilityName,
                 });
+              } else {
+                markGuestClaimHandled(userId);
               }
             }
           }
@@ -166,6 +188,30 @@ export function CartClient({
     };
   }, [isAuthPending, authSession?.user, reconcileAndRefresh]);
 
+  // Bootstrap may surface conflict after /cart is already open — listen for event.
+  React.useEffect(() => {
+    const userId = authSession?.user?.id;
+    if (!userId) return;
+
+    const onConflict = (event: Event) => {
+      const detail = (event as CustomEvent).detail as {
+        userId?: string;
+        guestFacilityName?: string;
+        userFacilityName?: string;
+      };
+      if (detail?.userId && detail.userId !== userId) return;
+      if (detail?.guestFacilityName && detail?.userFacilityName) {
+        setConflict({
+          guestFacilityName: detail.guestFacilityName,
+          userFacilityName: detail.userFacilityName,
+        });
+      }
+    };
+
+    window.addEventListener(GUEST_CLAIM_CONFLICT_EVENT, onConflict);
+    return () => window.removeEventListener(GUEST_CLAIM_CONFLICT_EVENT, onConflict);
+  }, [authSession?.user?.id]);
+
   const handleResolveConflict = async (choice: "guest" | "user") => {
     setResolvingConflict(true);
     try {
@@ -173,6 +219,11 @@ export function CartClient({
       if (!result.success) {
         toast.error(result.error || cartDict?.conflict_resolve_error);
         return;
+      }
+      const userId = authSession?.user?.id;
+      if (userId) {
+        clearGuestClaimConflict(userId);
+        markGuestClaimHandled(userId);
       }
       setConflict(null);
       toast.success(
@@ -183,6 +234,11 @@ export function CartClient({
     } finally {
       setResolvingConflict(false);
     }
+  };
+
+  const handleDismissConflict = () => {
+    // Keep sessionStorage so modal reappears on next /cart visit; free the page for now.
+    setConflict(null);
   };
 
   const cancellationHandledRef = React.useRef(false);
@@ -196,6 +252,7 @@ export function CartClient({
         if (!active) return;
         if (result.success) {
           toast.info(cartDict?.checkout_cancelled);
+          setLocked(false);
           await reconcileAndRefresh();
           window.history.replaceState({}, "", "/cart");
         } else {
@@ -209,7 +266,26 @@ export function CartClient({
     return () => {
       active = false;
     };
-  }, [checkoutCancelled, reconcileAndRefresh, cartDict]);
+  }, [checkoutCancelled, reconcileAndRefresh, cartDict, setLocked]);
+
+  const handleCancelCheckout = async () => {
+    setIsCancellingCheckout(true);
+    try {
+      const result = await cancelCheckoutSessionAction();
+      if (!result.success) {
+        toast.error(result.error || cartDict?.checkout_cancel_error);
+        return;
+      }
+      toast.info(cartDict?.checkout_cancelled);
+      setLocked(false);
+      await reconcileAndRefresh();
+      notifyUpdated();
+    } catch {
+      toast.error(cartDict?.checkout_cancel_error);
+    } finally {
+      setIsCancellingCheckout(false);
+    }
+  };
 
   if (!isMounted || isBootstrapping || isAuthPending) {
     return (
@@ -223,64 +299,19 @@ export function CartClient({
   const handleQuantityChange = async (itemId: string, newQuantity: number) => {
     if (!itemId) return;
     setMutatingItemId(itemId);
-    const previousItems = useServerCart.getState().items;
-    const target = previousItems.find((i) => i.id === itemId);
-    if (!target) {
-      setMutatingItemId(null);
-      return;
-    }
-
-    // Optimistic UI so mobile steppers feel instant
-    if (newQuantity <= 0) {
-      useServerCart.getState().setItems(previousItems.filter((i) => i.id !== itemId));
-    } else {
-      useServerCart
-        .getState()
-        .setItems(
-          previousItems.map((i) => (i.id === itemId ? { ...i, quantity: newQuantity } : i)),
-        );
-    }
     try {
-      const result =
-        newQuantity <= 0
-          ? await removeFromCartAction({ itemId })
-          : await updateCartQuantityAction({ itemId, quantity: newQuantity });
-
-      if (!result.success) {
-        useServerCart.getState().setItems(previousItems);
+      const result = await mutateCartLine({
+        itemId,
+        mode: "setQuantity",
+        quantity: newQuantity,
+        errorFallback: cartDict?.update_error,
+      });
+      if (!result.ok) {
         toast.error(result.error || cartDict?.update_error);
         await softRefresh();
         return;
       }
-
-      // Prefer authoritative items from remove response — avoid extra getCart race.
-      if (
-        newQuantity <= 0 &&
-        result.data &&
-        "items" in result.data &&
-        Array.isArray(result.data.items)
-      ) {
-        const serverItems = result.data.items as CartItem[];
-        const expectedRemaining = previousItems.filter((i) => i.id !== itemId);
-        // Guard: never wipe sibling lines if server unexpectedly returns empty.
-        if (serverItems.length === 0 && expectedRemaining.length > 0) {
-          await softRefresh();
-        } else {
-          useServerCart.getState().setItems(serverItems);
-        }
-      } else if (newQuantity > 0 && result.data && "item" in result.data && result.data.item) {
-        const updated = result.data.item as CartItem;
-        useServerCart
-          .getState()
-          .setItems(useServerCart.getState().items.map((i) => (i.id === updated.id ? updated : i)));
-      } else {
-        await softRefresh();
-      }
-      notifyUpdated();
       await revalidateAppliedPromo(discount);
-    } catch {
-      useServerCart.getState().setItems(previousItems);
-      toast.error(cartDict?.update_error);
     } finally {
       setMutatingItemId(null);
     }
@@ -289,39 +320,19 @@ export function CartClient({
   const handleRemoveItem = async (itemId: string) => {
     if (!itemId) return;
     setMutatingItemId(itemId);
-    const previousItems = useServerCart.getState().items;
-    if (!previousItems.some((i) => i.id === itemId)) {
-      setMutatingItemId(null);
-      return;
-    }
-
-    // Optimistic remove of THIS line only
-    const optimistic = previousItems.filter((i) => i.id !== itemId);
-    useServerCart.getState().setItems(optimistic);
     try {
-      const result = await removeFromCartAction({ itemId });
-      if (!result.success) {
-        useServerCart.getState().setItems(previousItems);
+      // CartItemList already applies unit-aware logic before calling onRemove at min qty.
+      const result = await mutateCartLine({
+        itemId,
+        mode: "removeLine",
+        errorFallback: cartDict?.remove_error,
+      });
+      if (!result.ok) {
         toast.error(result.error || cartDict?.remove_error);
         await softRefresh();
         return;
       }
-
-      // Authoritative remaining items from the mutation — do NOT softRefresh by default.
-      if (Array.isArray(result.data?.items)) {
-        const serverItems = result.data.items;
-        // Guard: server empty but we still expected siblings → re-fetch once.
-        if (serverItems.length === 0 && optimistic.length > 0) {
-          await softRefresh();
-        } else {
-          useServerCart.getState().setItems(serverItems);
-        }
-      }
-      notifyUpdated();
       await revalidateAppliedPromo(discount);
-    } catch {
-      useServerCart.getState().setItems(previousItems);
-      toast.error(cartDict?.remove_error);
     } finally {
       setMutatingItemId(null);
     }
@@ -351,6 +362,10 @@ export function CartClient({
   };
 
   const handleStartCheckout = () => {
+    if (locked) {
+      toast.error(cartDict?.locked_description || cartDict?.checkout_error);
+      return;
+    }
     if (!isAuthPending && !authSession?.user) {
       router.push(buildPrijavaUrl("/cart"));
       return;
@@ -403,16 +418,21 @@ export function CartClient({
           router.push(buildPrijavaUrl("/cart"));
           return;
         }
-        throw new Error(result.error || cartDict?.checkout_start_error);
+        toast.error(result.error || cartDict?.checkout_start_error || cartDict?.checkout_error);
+        return;
       }
 
       if (result.data?.url) {
         window.location.href = result.data.url;
       } else {
-        throw new Error(cartDict?.checkout_url_error);
+        toast.error(cartDict?.checkout_url_error || cartDict?.checkout_error);
       }
-    } catch {
-      toast.error(cartDict?.checkout_error);
+    } catch (error) {
+      const message =
+        error instanceof Error && error.message
+          ? error.message
+          : cartDict?.checkout_error || "Greška";
+      toast.error(message);
     } finally {
       setIsCheckingOut(false);
     }
@@ -427,6 +447,7 @@ export function CartClient({
         resolving={resolvingConflict}
         onChooseGuest={() => handleResolveConflict("guest")}
         onChooseUser={() => handleResolveConflict("user")}
+        onDismiss={handleDismissConflict}
         dict={cartDict}
       />
       <div className="mb-6 sm:mb-12">
@@ -434,9 +455,34 @@ export function CartClient({
           {cartDict?.title}
         </p>
         <h1 className="text-foreground text-2xl leading-none font-black tracking-tighter sm:text-5xl">
-          {items.length > 0 ? `${items.length} ${cartDict?.items}` : cartDict?.empty}
+          {headingCount}
         </h1>
       </div>
+
+      {locked && (
+        <div
+          role="status"
+          className="border-warning/30 bg-warning/10 mb-6 rounded-2xl border p-4 sm:p-5"
+        >
+          <p className="text-warning text-sm font-black tracking-wide uppercase">
+            {cartDict?.locked_title || "Plaćanje je u toku"}
+          </p>
+          <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
+            {cartDict?.locked_description}
+          </p>
+          <Button
+            type="button"
+            variant="outline"
+            disabled={isCancellingCheckout}
+            onClick={() => void handleCancelCheckout()}
+            className="mt-4 min-h-11 rounded-xl"
+          >
+            {isCancellingCheckout
+              ? cartDict?.cancel_checkout_processing || "Otkazivanje..."
+              : cartDict?.cancel_checkout || "Otkaži plaćanje"}
+          </Button>
+        </div>
+      )}
 
       {items.length === 0 ? (
         <div className="flex flex-col items-center justify-center pt-10 sm:pt-20">
@@ -476,7 +522,7 @@ export function CartClient({
             promoCode={promoCode}
             promoError={promoError}
             promoLoading={promoLoading}
-            isCheckingOut={isCheckingOut}
+            isCheckingOut={isCheckingOut || locked}
             onPromoCodeChange={(code) => {
               setPromoCode(code);
               setPromoError("");
@@ -500,13 +546,27 @@ export function CartClient({
                 <span className="text-primary text-xs">RSD</span>
               </p>
             </div>
-            <Button
-              onClick={handleStartCheckout}
-              disabled={isCheckingOut}
-              className="h-12 min-h-12 min-w-[9.5rem] shrink-0 touch-manipulation rounded-2xl px-5 text-sm font-bold"
-            >
-              {isCheckingOut ? cartDict?.processing : cartDict?.checkout}
-            </Button>
+            {locked ? (
+              <Button
+                type="button"
+                variant="outline"
+                disabled={isCancellingCheckout}
+                onClick={() => void handleCancelCheckout()}
+                className="h-12 min-h-12 min-w-[9.5rem] shrink-0 touch-manipulation rounded-2xl px-5 text-sm font-bold"
+              >
+                {isCancellingCheckout
+                  ? cartDict?.cancel_checkout_processing
+                  : cartDict?.cancel_checkout}
+              </Button>
+            ) : (
+              <Button
+                onClick={handleStartCheckout}
+                disabled={isCheckingOut}
+                className="h-12 min-h-12 min-w-[9.5rem] shrink-0 touch-manipulation rounded-2xl px-5 text-sm font-bold"
+              >
+                {isCheckingOut ? cartDict?.processing : cartDict?.checkout}
+              </Button>
+            )}
           </div>
         </div>
       )}
