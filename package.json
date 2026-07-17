@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "engines": {
-    "node": ">=24.0.0"
+    "node": "24.x"
   },
   "scripts": {
     "seed": "tsx prisma/seed.ts",
@@ -11,7 +11,8 @@
     "postinstall": "prisma generate",
     "prepare": "node -e \"try{require('child_process').execSync('npx husky',{stdio:'inherit'})}catch(e){}\"",
     "dev": "next dev",
-    "build": "node -e \"try{require('child_process').execSync('prisma migrate deploy',{stdio:'inherit'})}catch(e){console.log('Skipping prisma migrate deploy:',e.message)}\" && next build",
+    "build": "node scripts/prisma-migrate-deploy.mjs && next build",
+    "db:migrate:deploy": "node scripts/prisma-migrate-deploy.mjs",
     "start": "next start",
     "lint": "eslint",
     "format": "prettier --write .",
