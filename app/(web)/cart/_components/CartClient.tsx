@@ -12,7 +12,7 @@ import {
   cancelCheckoutSessionAction,
 } from "@/app/(server)/actions/checkout";
 import { validatePromoCodeAction } from "@/app/(server)/actions/campaigns";
-import { reconcileCartAction } from "@/app/(server)/actions/cart";
+import { reconcileCartAction, setCartPromoAction } from "@/app/(server)/actions/cart";
 import {
   claimGuestCartAction,
   resolveGuestCartConflictAction,
@@ -31,6 +31,8 @@ import {
   storeGuestClaimConflict,
 } from "@/lib/cart/guest-claim-conflict";
 import { getCartTotalItems } from "@/lib/cart/cart-totals";
+import { cartCurrency, type CartReconcileNotice } from "@/lib/cart/cart-helpers";
+import { clearPersistedPromo, loadPersistedPromo, persistPromo } from "@/lib/cart/promo-persist";
 import { CartItemList } from "./CartItemList";
 import { CartSummary } from "./CartSummary";
 import { GuestCartConflictModal } from "./GuestCartConflictModal";
@@ -39,12 +41,19 @@ import { useRouter } from "next/navigation";
 export function CartClient({
   dict,
   checkoutCancelled = false,
+  initialItems,
+  initialLocked = false,
+  initialPromo = null,
 }: {
   dict: {
     cart?: CartDictionary;
     identity?: IdentityDictionary;
   } & Record<string, unknown>;
   checkoutCancelled?: boolean;
+  /** RSC-seeded cart lines to reduce skeleton flash (#686 M10). */
+  initialItems?: CartItem[];
+  initialLocked?: boolean;
+  initialPromo?: DiscountInfo | null;
 }) {
   const cartDict = dict.cart;
   const identityDict = dict.identity;
@@ -53,26 +62,50 @@ export function CartClient({
   const items = useServerCart((s) => s.items);
   const locked = useServerCart((s) => s.locked);
   const refresh = useServerCart((s) => s.refresh);
+  const setItems = useServerCart((s) => s.setItems);
   const setLocked = useServerCart((s) => s.setLocked);
   const notifyUpdated = useServerCart((s) => s.notifyUpdated);
   const [isMounted, setIsMounted] = React.useState(false);
   const [isCheckingOut, setIsCheckingOut] = React.useState(false);
   const [isCancellingCheckout, setIsCancellingCheckout] = React.useState(false);
   const [showIdentityDialog, setShowIdentityDialog] = React.useState(false);
-  const [promoCode, setPromoCode] = React.useState("");
+  const [promoCode, setPromoCode] = React.useState(
+    () => initialPromo?.code || loadPersistedPromo()?.code || "",
+  );
   const [promoError, setPromoError] = React.useState("");
   const [promoLoading, setPromoLoading] = React.useState(false);
-  const [discount, setDiscount] = React.useState<DiscountInfo | null>(null);
-  const [removedItems, setRemovedItems] = React.useState<string[]>([]);
-  const [changedItems, setChangedItems] = React.useState<string[]>([]);
+  const [discount, setDiscount] = React.useState<DiscountInfo | null>(
+    () => initialPromo || loadPersistedPromo(),
+  );
+  const [removedItems, setRemovedItems] = React.useState<CartReconcileNotice[]>([]);
+  const [changedItems, setChangedItems] = React.useState<CartReconcileNotice[]>([]);
   const [conflict, setConflict] = React.useState<{
     guestFacilityName: string;
     userFacilityName: string;
   } | null>(null);
   const [resolvingConflict, setResolvingConflict] = React.useState(false);
   const [isBootstrapping, setIsBootstrapping] = React.useState(true);
-  const [mutatingItemId, setMutatingItemId] = React.useState<string | null>(null);
+  const [mutatingItemIds, setMutatingItemIds] = React.useState<Set<string>>(() => new Set());
   const claimHandledRef = React.useRef(false);
+  const seededRef = React.useRef(false);
+  const discountRef = React.useRef<DiscountInfo | null>(initialPromo || null);
+
+  React.useEffect(() => {
+    discountRef.current = discount;
+  }, [discount]);
+
+  // Seed store from RSC snapshot once (before first paint of real content).
+  React.useLayoutEffect(() => {
+    if (seededRef.current) return;
+    seededRef.current = true;
+    if (initialItems && initialItems.length > 0) {
+      setItems(initialItems);
+    }
+    setLocked(Boolean(initialLocked));
+    if (initialPromo) {
+      persistPromo(initialPromo);
+    }
+  }, [initialItems, initialLocked, initialPromo, setItems, setLocked]);
 
   const totalBeforeDiscount = items.reduce(
     (sum: number, i: CartItem) => sum + i.price * i.quantity,
@@ -82,6 +115,7 @@ export function CartClient({
     ? Math.round(totalBeforeDiscount * (discount.discountPercent / 100))
     : 0;
   const total = totalBeforeDiscount - discountAmount;
+  const currency = cartCurrency(items);
   const requiresIdentity = items.some((i) => i.requiresIdentity);
   const requiresPhoto = items.some((i) => i.requiresPhoto);
   const cartFacilityId = items[0]?.facilityId;
@@ -89,17 +123,28 @@ export function CartClient({
 
   const headingCount =
     items.length > 0
-      ? (cartDict?.lines_and_tickets || "{lines} stavki · {tickets} karata")
+      ? (
+          cartDict?.lines_and_tickets ||
+          cartDict?.items_count ||
+          "{lines} stavki · {tickets} karata"
+        )
           .replace("{lines}", String(items.length))
           .replace("{tickets}", String(totalTickets))
-      : cartDict?.empty;
+          .replace("{count}", String(totalTickets))
+      : cartDict?.empty_title || cartDict?.empty;
 
-  /** Soft refresh after qty/remove — no full reconcile (reconcile is mount/claim only). */
   const softRefresh = React.useCallback(async () => {
     await refresh();
   }, [refresh]);
 
-  /** Full reconcile + refresh (mount / conflict / cancel). */
+  const applyDiscount = React.useCallback((next: DiscountInfo | null) => {
+    setDiscount(next);
+    persistPromo(next);
+    void setCartPromoAction(next).catch(() => {
+      // Non-fatal — sessionStorage still holds the promo for remount.
+    });
+  }, []);
+
   const reconcileAndRefresh = React.useCallback(async () => {
     const reconcile = await reconcileCartAction();
     if (reconcile.success && reconcile.data) {
@@ -110,14 +155,13 @@ export function CartClient({
     await refresh();
   }, [refresh, setLocked]);
 
-  /** Revalidate applied promo against the latest store cart (after mutations). */
   const revalidateAppliedPromo = React.useCallback(
     async (applied: DiscountInfo | null) => {
       if (!applied?.code) return;
 
       const nextItems = useServerCart.getState().items;
       if (nextItems.length === 0) {
-        setDiscount(null);
+        applyDiscount(null);
         setPromoError("");
         return;
       }
@@ -127,7 +171,7 @@ export function CartClient({
       const result = await validatePromoCodeAction(applied.code, facilityId, nextTotal);
 
       if (result.success && result.data?.valid) {
-        setDiscount({
+        applyDiscount({
           campaignId: result.data.campaignId,
           code: applied.code,
           discountPercent: result.data.discountPercent,
@@ -135,15 +179,14 @@ export function CartClient({
         return;
       }
 
-      setDiscount(null);
+      applyDiscount(null);
       const message = cartDict?.promo_cleared || cartDict?.promo_invalid || "";
       setPromoError(message);
       if (message) toast.info(message);
     },
-    [cartDict?.promo_cleared, cartDict?.promo_invalid],
+    [applyDiscount, cartDict?.promo_cleared, cartDict?.promo_invalid],
   );
 
-  // Wait for auth resolution, claim only once per browser session per user, then reconcile once.
   React.useEffect(() => {
     if (isAuthPending) return;
 
@@ -178,6 +221,10 @@ export function CartClient({
           }
         }
         await reconcileAndRefresh();
+        const applied = discountRef.current;
+        if (active && applied) {
+          await revalidateAppliedPromo(applied);
+        }
       } finally {
         if (active) setIsBootstrapping(false);
       }
@@ -186,9 +233,8 @@ export function CartClient({
       active = false;
       cancelAnimationFrame(timer);
     };
-  }, [isAuthPending, authSession?.user, reconcileAndRefresh]);
+  }, [isAuthPending, authSession?.user, reconcileAndRefresh, revalidateAppliedPromo]);
 
-  // Bootstrap may surface conflict after /cart is already open — listen for event.
   React.useEffect(() => {
     const userId = authSession?.user?.id;
     if (!userId) return;
@@ -237,7 +283,6 @@ export function CartClient({
   };
 
   const handleDismissConflict = () => {
-    // Keep sessionStorage so modal reappears on next /cart visit; free the page for now.
     setConflict(null);
   };
 
@@ -287,19 +332,22 @@ export function CartClient({
     }
   };
 
-  if (!isMounted || isBootstrapping || isAuthPending) {
-    return (
-      <div className="mx-auto min-h-[50vh] max-w-7xl px-4 pt-8 pb-28 sm:px-12 sm:pt-12 sm:pb-32">
-        <div className="bg-muted/30 mb-6 h-8 w-40 animate-pulse rounded-lg" />
-        <div className="bg-muted/20 h-28 animate-pulse rounded-2xl" />
-      </div>
-    );
-  }
+  const withMutating = async (itemId: string, fn: () => Promise<void>) => {
+    setMutatingItemIds((prev) => new Set(prev).add(itemId));
+    try {
+      await fn();
+    } finally {
+      setMutatingItemIds((prev) => {
+        const next = new Set(prev);
+        next.delete(itemId);
+        return next;
+      });
+    }
+  };
 
   const handleQuantityChange = async (itemId: string, newQuantity: number) => {
     if (!itemId) return;
-    setMutatingItemId(itemId);
-    try {
+    await withMutating(itemId, async () => {
       const result = await mutateCartLine({
         itemId,
         mode: "setQuantity",
@@ -312,16 +360,12 @@ export function CartClient({
         return;
       }
       await revalidateAppliedPromo(discount);
-    } finally {
-      setMutatingItemId(null);
-    }
+    });
   };
 
   const handleRemoveItem = async (itemId: string) => {
     if (!itemId) return;
-    setMutatingItemId(itemId);
-    try {
-      // CartItemList already applies unit-aware logic before calling onRemove at min qty.
+    await withMutating(itemId, async () => {
       const result = await mutateCartLine({
         itemId,
         mode: "removeLine",
@@ -333,9 +377,7 @@ export function CartClient({
         return;
       }
       await revalidateAppliedPromo(discount);
-    } finally {
-      setMutatingItemId(null);
-    }
+    });
   };
 
   const handleApplyPromo = async () => {
@@ -343,11 +385,12 @@ export function CartClient({
     try {
       const result = await validatePromoCodeAction(promoCode, cartFacilityId, totalBeforeDiscount);
       if (result.success && result.data?.valid) {
-        setDiscount({
+        const next: DiscountInfo = {
           campaignId: result.data.campaignId,
           code: promoCode,
           discountPercent: result.data.discountPercent,
-        });
+        };
+        applyDiscount(next);
         setPromoError("");
         toast.success(cartDict?.promo_applied);
       } else {
@@ -359,6 +402,13 @@ export function CartClient({
     } finally {
       setPromoLoading(false);
     }
+  };
+
+  const handleRemovePromo = () => {
+    applyDiscount(null);
+    clearPersistedPromo();
+    setPromoCode("");
+    setPromoError("");
   };
 
   const handleStartCheckout = () => {
@@ -404,7 +454,6 @@ export function CartClient({
       setIsCheckingOut(true);
       setShowIdentityDialog(false);
 
-      // Final integrity check before Stripe.
       await reconcileAndRefresh();
 
       const result = await createCheckoutSessionAction({
@@ -438,6 +487,18 @@ export function CartClient({
     }
   };
 
+  // Seeded items can show immediately while auth/claim finishes.
+  const showSkeleton = !isMounted || (isBootstrapping && items.length === 0 && isAuthPending);
+
+  if (showSkeleton) {
+    return (
+      <div className="mx-auto min-h-[50vh] max-w-7xl px-4 pt-8 pb-28 sm:px-12 sm:pt-12 sm:pb-32">
+        <div className="bg-muted/30 mb-6 h-8 w-40 animate-pulse rounded-lg" />
+        <div className="bg-muted/20 h-28 animate-pulse rounded-2xl" />
+      </div>
+    );
+  }
+
   return (
     <div className="mx-auto min-h-[50vh] max-w-7xl px-3 pt-6 pb-[calc(10.5rem+env(safe-area-inset-bottom,0px))] sm:px-12 sm:pt-12 sm:pb-32">
       <GuestCartConflictModal
@@ -457,6 +518,11 @@ export function CartClient({
         <h1 className="text-foreground text-2xl leading-none font-black tracking-tighter sm:text-5xl">
           {headingCount}
         </h1>
+        {items.length === 0 && cartDict?.empty_subtitle && (
+          <p className="text-muted-foreground mt-2 text-sm font-medium">
+            {cartDict.empty_subtitle}
+          </p>
+        )}
       </div>
 
       {locked && (
@@ -511,12 +577,13 @@ export function CartClient({
               onRemove={handleRemoveItem}
               removedItems={removedItems}
               changedItems={changedItems}
-              mutatingItemId={mutatingItemId}
+              mutatingItemIds={mutatingItemIds}
             />
           </div>
           <CartSummary
             totalBeforeDiscount={totalBeforeDiscount}
             total={total}
+            currency={currency}
             discount={discount}
             dict={dict}
             promoCode={promoCode}
@@ -528,7 +595,7 @@ export function CartClient({
               setPromoError("");
             }}
             onApplyPromo={handleApplyPromo}
-            onRemovePromo={() => setDiscount(null)}
+            onRemovePromo={handleRemovePromo}
             onCheckout={handleStartCheckout}
           />
         </div>
@@ -539,11 +606,11 @@ export function CartClient({
           <div className="mx-auto flex max-w-lg items-center gap-3">
             <div className="min-w-0 flex-1">
               <p className="text-muted-foreground text-[10px] font-black tracking-widest uppercase">
-                {cartDict?.total}
+                {cartDict?.total_label || cartDict?.total}
               </p>
               <p className="text-foreground text-lg leading-none font-black tabular-nums">
                 {new Intl.NumberFormat("sr-RS").format(total)}{" "}
-                <span className="text-primary text-xs">RSD</span>
+                <span className="text-primary text-xs">{currency}</span>
               </p>
             </div>
             {locked ? (
@@ -564,7 +631,9 @@ export function CartClient({
                 disabled={isCheckingOut}
                 className="h-12 min-h-12 min-w-[9.5rem] shrink-0 touch-manipulation rounded-2xl px-5 text-sm font-bold"
               >
-                {isCheckingOut ? cartDict?.processing : cartDict?.checkout}
+                {isCheckingOut
+                  ? cartDict?.processing
+                  : cartDict?.checkout_button || cartDict?.checkout}
               </Button>
             )}
           </div>

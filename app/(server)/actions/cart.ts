@@ -5,8 +5,14 @@ import { Prisma } from "@prisma/client";
 import { prisma } from "@/app/(server)/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { handleServerActionError, type ActionResult } from "@/app/(server)/lib/server-action-error";
-import { MAX_QUANTITY_PER_ITEM, type CartItem, type CartItemInput } from "@/lib/types/cart";
+import {
+  MAX_QUANTITY_PER_ITEM,
+  type CartItem,
+  type CartItemInput,
+  type DiscountInfo,
+} from "@/lib/types/cart";
 import { isCanonicalTicketAvailable } from "@/lib/cart/canonical-ticket";
+import { parseAppliedPromo, type CartReconcileNotice } from "@/lib/cart/cart-helpers";
 import {
   applyGuestCartCookie,
   hasGuestCartCookie,
@@ -386,12 +392,12 @@ export async function addToCartAction(
 }
 
 export async function getCartAction(): Promise<
-  ActionResult<{ items: CartItem[]; locked: boolean }>
+  ActionResult<{ items: CartItem[]; locked: boolean; appliedPromo: DiscountInfo | null }>
 > {
   try {
     const principal = await resolveCartPrincipal({ createGuestIfMissing: false });
     if (principal.type === "anonymous") {
-      return { success: true, data: { items: [], locked: false } };
+      return { success: true, data: { items: [], locked: false, appliedPromo: null } };
     }
 
     // Clear expired checkout locks on every read so soft refresh is not stuck.
@@ -405,21 +411,64 @@ export async function getCartAction(): Promise<
       const cartSession = await getCartSession(principal);
       const items = cartSession ? await readCartItems(cartSession.id) : [];
       const locked = Boolean(cartSession?.locked);
+      const appliedPromo = parseAppliedPromo(cartSession?.appliedPromo);
 
       // Orphan guest cookie/cart after empty user cart: purge so remount claim can't resurrect.
       if (items.length === 0 && (await hasGuestCartCookie())) {
         await purgeGuestCartAndCookie();
       }
 
-      return { success: true, data: { items, locked } };
+      return { success: true, data: { items, locked, appliedPromo } };
     }
 
     const cartSession = await getCartSession(principal);
     const items = cartSession ? await readCartItems(cartSession.id) : [];
+    const appliedPromo = parseAppliedPromo(cartSession?.appliedPromo);
 
-    return { success: true, data: { items, locked: false } };
+    return { success: true, data: { items, locked: false, appliedPromo } };
   } catch (error) {
     return handleServerActionError(error, "getCart");
+  }
+}
+
+/**
+ * Persist (or clear) the applied promo on the cart session so remounts keep discount.
+ */
+export async function setCartPromoAction(
+  input: DiscountInfo | null,
+): Promise<ActionResult<{ appliedPromo: DiscountInfo | null }>> {
+  try {
+    const principal = await resolveCartPrincipal({ createGuestIfMissing: false });
+    if (principal.type === "anonymous") {
+      return { success: false, error: "Korpa nije pronađena." };
+    }
+
+    await ensureUserCartUnlocked(principal);
+
+    const cartSession = await getCartSession(principal);
+    if (!cartSession) {
+      return { success: false, error: "Korpa nije pronađena." };
+    }
+    if (cartSession.locked) {
+      return { success: false, error: CART_LOCKED_ERROR };
+    }
+
+    const next = input
+      ? {
+          campaignId: input.campaignId,
+          code: input.code.trim().toUpperCase(),
+          discountPercent: input.discountPercent,
+        }
+      : null;
+
+    await prisma.cartSession.update({
+      where: { id: cartSession.id },
+      data: { appliedPromo: next === null ? Prisma.DbNull : next },
+    });
+
+    return { success: true, data: { appliedPromo: next } };
+  } catch (error) {
+    return handleServerActionError(error, "setCartPromo");
   }
 }
 
@@ -561,8 +610,8 @@ export async function updateCartQuantityAction(
 export async function reconcileCartAction(): Promise<
   ActionResult<{
     items: CartItem[];
-    removedItems: string[];
-    changedItems: string[];
+    removedItems: CartReconcileNotice[];
+    changedItems: CartReconcileNotice[];
     locked: boolean;
   }>
 > {
@@ -583,8 +632,8 @@ export async function reconcileCartAction(): Promise<
       if (!cartSession) {
         return {
           items: [] as CartItem[],
-          removedItems: [] as string[],
-          changedItems: [] as string[],
+          removedItems: [] as CartReconcileNotice[],
+          changedItems: [] as CartReconcileNotice[],
           locked: false,
         };
       }
@@ -597,8 +646,8 @@ export async function reconcileCartAction(): Promise<
         });
         return {
           items: lockedItems.map(toCartItem),
-          removedItems: [] as string[],
-          changedItems: [] as string[],
+          removedItems: [] as CartReconcileNotice[],
+          changedItems: [] as CartReconcileNotice[],
           locked: true,
         };
       }
@@ -613,15 +662,26 @@ export async function reconcileCartAction(): Promise<
         tx,
       );
 
-      const removedItems: string[] = [];
-      const changedItems: string[] = [];
+      const facilityIds = [...new Set(storedItems.map((i) => i.facilityId).filter(Boolean))];
+      const facilities =
+        facilityIds.length > 0
+          ? await tx.facility.findMany({
+              where: { id: { in: facilityIds } },
+              select: { id: true, slug: true },
+            })
+          : [];
+      const slugByFacilityId = new Map(facilities.map((f) => [f.id, f.slug]));
+
+      const removedItems: CartReconcileNotice[] = [];
+      const changedItems: CartReconcileNotice[] = [];
       let mutated = false;
 
       for (const item of storedItems) {
         const ticketPrice = liveTickets.get(item.ticketPriceId);
+        const facilitySlug = slugByFacilityId.get(item.facilityId) || undefined;
         if (!ticketPrice) {
           await tx.cartSessionItem.delete({ where: { id: item.id } });
-          removedItems.push(item.title);
+          removedItems.push({ title: item.title, facilitySlug });
           mutated = true;
           continue;
         }
@@ -632,7 +692,7 @@ export async function reconcileCartAction(): Promise<
             where: { id: item.id },
             data: { price: livePrice },
           });
-          changedItems.push(item.title);
+          changedItems.push({ title: item.title, facilitySlug });
           mutated = true;
         }
       }
