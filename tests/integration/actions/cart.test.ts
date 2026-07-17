@@ -44,6 +44,9 @@ vi.mock("@/app/(server)/lib/prisma", () => ({
     cartSession: mocks.cartSession,
     cartSessionItem: mocks.cartSessionItem,
     ticketPrice: mocks.ticketPrice,
+    transaction: {
+      updateMany: vi.fn().mockResolvedValue({ count: 0 }),
+    },
   },
 }));
 
@@ -352,7 +355,10 @@ describe("cart integrity actions", () => {
   it("increments the cart version atomically when removing an item", async () => {
     const result = await removeFromCartAction({ itemId: ITEM_ID });
 
-    expect(result).toEqual({ success: true, data: { removed: true } });
+    expect(result).toEqual({
+      success: true,
+      data: { removed: true, items: [] },
+    });
     expect(mocks.transaction).toHaveBeenCalledTimes(2);
     expect(mocks.transaction.mock.calls[1]?.[1]).toEqual({ isolationLevel: "Serializable" });
     expect(mocks.cartSession.updateMany).toHaveBeenCalledWith({

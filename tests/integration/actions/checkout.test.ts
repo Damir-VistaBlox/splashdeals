@@ -9,6 +9,8 @@ const mocks = vi.hoisted(() => ({
   stripeExpire: vi.fn(),
   releaseCheckoutSession: vi.fn(),
   fulfillPaidCheckout: vi.fn(),
+  releaseExpiredCartLocksForUser: vi.fn(),
+  forceUnlockUserCart: vi.fn(),
 }));
 
 vi.mock("@/app/(server)/lib/auth", () => ({
@@ -37,6 +39,8 @@ vi.mock("stripe", () => ({
 vi.mock("@/app/(server)/lib/checkout-fulfillment", () => ({
   releaseCheckoutSession: mocks.releaseCheckoutSession,
   fulfillPaidCheckout: mocks.fulfillPaidCheckout,
+  releaseExpiredCartLocksForUser: mocks.releaseExpiredCartLocksForUser,
+  forceUnlockUserCart: mocks.forceUnlockUserCart,
 }));
 
 vi.mock("@/app/(server)/lib/email", () => ({
@@ -58,9 +62,11 @@ const EMAIL = "kupac@example.com";
 
 beforeEach(() => {
   vi.clearAllMocks();
-  process.env.STRIPE_SECRET_KEY = "sk_test_placeholder";
+  process.env.STRIPE_SECRET_KEY = "sk_test_mock";
   mocks.getSession.mockResolvedValue({ user: { id: USER_ID, email: EMAIL } });
   mocks.createCheckoutSession.mockResolvedValue({ url: "https://checkout.stripe.test/session" });
+  mocks.releaseExpiredCartLocksForUser.mockResolvedValue({ unlocked: false });
+  mocks.forceUnlockUserCart.mockResolvedValue(undefined);
 });
 
 describe("checkout actions", () => {
@@ -126,8 +132,12 @@ describe("checkout actions", () => {
 
     const result = await cancelCheckoutSessionAction();
 
-    expect(result).toEqual({ success: true, data: { cancelled: true } });
+    expect(result).toEqual({
+      success: true,
+      data: { cancelled: true, unlocked: true },
+    });
     expect(mocks.stripeExpire).toHaveBeenCalledWith("cs_pending");
     expect(mocks.releaseCheckoutSession).toHaveBeenCalledWith("cs_pending", "CANCELLED");
+    expect(mocks.forceUnlockUserCart).toHaveBeenCalledWith(USER_ID);
   });
 });

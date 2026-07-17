@@ -19,6 +19,7 @@ describe("useServerCart refresh generation", () => {
       isHydrated: false,
       totalItems: 0,
       totalPrice: 0,
+      locked: false,
       refreshGeneration: 0,
     });
   });
@@ -34,6 +35,7 @@ describe("useServerCart refresh generation", () => {
       .mockResolvedValueOnce({
         success: true,
         data: {
+          locked: false,
           items: [
             {
               id: "kept",

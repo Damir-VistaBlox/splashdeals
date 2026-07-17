@@ -167,7 +167,7 @@ export function CartItemList({
 
               <div className="text-right">
                 <div className="text-foreground text-base font-black tracking-tight tabular-nums sm:text-lg">
-                  {formatPrice(item.price * item.quantity)} RSD
+                  {formatPrice(item.price * item.quantity)} {item.currency || "RSD"}
                 </div>
                 <Button
                   type="button"

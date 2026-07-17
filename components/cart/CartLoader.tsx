@@ -11,8 +11,8 @@ const CartDrawer = dynamic(
 /**
  * 🛒 CartLoader
  *
- * Lazy-loads the CartDrawer chunk. The drawer handles its own item loading
- * and empty state internally.
+ * Lazy-loads the CartDrawer chunk only (desktop preview).
+ * Badge/hydration + guest claim live in CartStateBootstrap (web shell).
  */
 export function CartLoader() {
   return (

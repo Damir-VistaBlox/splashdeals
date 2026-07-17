@@ -12,9 +12,12 @@ type ServerCartState = {
   isHydrated: boolean;
   totalItems: number;
   totalPrice: number;
+  /** Active checkout lock (still within lock window after expired-unlock attempt). */
+  locked: boolean;
   /** Monotonic token so overlapping refresh() calls cannot apply stale getCart results. */
   refreshGeneration: number;
   setItems: (items: CartItem[]) => void;
+  setLocked: (locked: boolean) => void;
   refresh: () => Promise<CartItem[]>;
   notifyUpdated: () => void;
 };
@@ -35,6 +38,7 @@ export const useServerCart = create<ServerCartState>((set, get) => ({
   isHydrated: false,
   totalItems: 0,
   totalPrice: 0,
+  locked: false,
   refreshGeneration: 0,
   setItems: (items) => {
     // Bump generation so any in-flight getCart cannot overwrite optimistic mutations.
@@ -47,6 +51,9 @@ export const useServerCart = create<ServerCartState>((set, get) => ({
       refreshGeneration: get().refreshGeneration + 1,
     });
   },
+  setLocked: (locked) => {
+    set({ locked });
+  },
   refresh: async () => {
     ensureCartSyncSubscription(get);
     const generation = get().refreshGeneration + 1;
@@ -58,11 +65,13 @@ export const useServerCart = create<ServerCartState>((set, get) => ({
         return get().items;
       }
       const items = result.success ? ((result.data?.items || []) as CartItem[]) : [];
+      const locked = result.success ? Boolean(result.data?.locked) : get().locked;
       // Apply without bumping generation again (we already own this generation).
       set({
         items,
         totalItems: getCartTotalItems(items),
         totalPrice: getCartTotalPrice(items),
+        locked,
         isHydrated: true,
         isLoading: false,
       });
@@ -79,10 +88,6 @@ export const useServerCart = create<ServerCartState>((set, get) => ({
   },
 }));
 
-export function useCartBadgeCount() {
+export function useCartItemCount() {
   return useServerCart((state) => state.totalItems);
-}
-
-export function useCartItems() {
-  return useServerCart((state) => state.items);
 }

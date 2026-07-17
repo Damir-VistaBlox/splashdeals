@@ -434,6 +434,11 @@
     "checkout_start_error": "Pokretanje plaćanja nije uspelo.",
     "checkout_url_error": "Nije dobijena adresa za plaćanje.",
     "promo_cleared": "Promo kod više ne važi za ažuriranu korpu.",
+    "locked_title": "Plaćanje je u toku",
+    "locked_description": "Korpa je privremeno zaključana dok se završi ili otkaže plaćanje. Otkažite plaćanje da biste menjali stavke.",
+    "cancel_checkout": "Otkaži plaćanje",
+    "cancel_checkout_processing": "Otkazivanje...",
+    "lines_and_tickets": "{lines} stavki · {tickets} karata",
     "default_category": "Akva Park"
   },
   "checkout": {
