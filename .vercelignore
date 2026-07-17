@@ -1,1 +1,13 @@
-docker
+# Never upload local secrets / env files via `vercel` CLI deploys
+.env
+.env.*
+!.env.example
+
+# Local-only / heavy artifacts
+.vercel
+node_modules
+.next
+coverage
+playwright-report
+test-results
+.git
