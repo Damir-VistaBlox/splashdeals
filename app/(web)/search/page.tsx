@@ -51,8 +51,14 @@ export default async function SearchPage({
 
   const query = q.trim();
 
+  // Each raw-SQL block is isolated: one dead table shouldn't 500 the whole page.
+  // Physical table names (partners."Facility", marketing.blog_posts, marketing.pages) match
+  // what the Prisma @@map directives produce — NOT the Prisma model names.
+
   // Search facilities
-  const facilities = await prisma.$queryRaw<FacilityRow[]>`
+  let facilities: FacilityRow[] = [];
+  try {
+    facilities = await prisma.$queryRaw<FacilityRow[]>`
     SELECT id, name, slug, city,
            ts_rank(to_tsvector('serbian', coalesce(name,'') || ' ' || coalesce(description,'') || ' ' || coalesce(city,'')), plainto_tsquery('serbian', ${query})) as rank
     FROM partners."Facility"
@@ -60,38 +66,55 @@ export default async function SearchPage({
     ORDER BY rank DESC
     LIMIT 10
   `;
+  } catch (e) {
+    console.error("[search] facility query failed:", e);
+  }
 
   // Search blog posts
-  const posts = await prisma.$queryRaw<ContentRow[]>`
+  let posts: ContentRow[] = [];
+  try {
+    posts = await prisma.$queryRaw<ContentRow[]>`
     SELECT id, title, slug,
            substring(content, 0, 300) as excerpt,
            ts_rank(to_tsvector('serbian', coalesce(title,'') || ' ' || coalesce(content,'')), plainto_tsquery('serbian', ${query})) as rank
-    FROM marketing."BlogPost"
+    FROM marketing.blog_posts
     WHERE to_tsvector('serbian', coalesce(title,'') || ' ' || coalesce(content,'')) @@ plainto_tsquery('serbian', ${query})
       AND status = 'PUBLISHED'
     ORDER BY rank DESC
     LIMIT 5
   `;
+  } catch (e) {
+    console.error("[search] blog query failed:", e);
+  }
 
   // Search pages
-  const pages = await prisma.$queryRaw<ContentRow[]>`
+  let pages: ContentRow[] = [];
+  try {
+    pages = await prisma.$queryRaw<ContentRow[]>`
     SELECT id, title, slug,
            substring(content, 0, 300) as excerpt,
            ts_rank(to_tsvector('serbian', coalesce(title,'') || ' ' || coalesce(content,'')), plainto_tsquery('serbian', ${query})) as rank
-    FROM marketing."Page"
+    FROM marketing.pages
     WHERE to_tsvector('serbian', coalesce(title,'') || ' ' || coalesce(content,'')) @@ plainto_tsquery('serbian', ${query})
       AND status = 'PUBLISHED'
     ORDER BY rank DESC
     LIMIT 5
   `;
+  } catch (e) {
+    console.error("[search] pages query failed:", e);
+  }
 
   const totalResults = facilities.length + posts.length + pages.length;
 
   // Log zero-result queries
-  if (totalResults === 0) {
-    await prisma.searchLog.create({
-      data: { query, results: 0 },
-    });
+  try {
+    if (totalResults === 0) {
+      await prisma.searchLog.create({
+        data: { query, results: 0 },
+      });
+    }
+  } catch (e) {
+    console.error("[search] logging failed:", e);
   }
 
   return (

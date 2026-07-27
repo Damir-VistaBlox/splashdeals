@@ -75,7 +75,9 @@ export default async function FacilityManagementLayout({
 
         <FacilityBreadcrumb facilityName={facility.name} facilityId={facilityId} />
 
-        <ErrorBoundary fallback={<SlotError reset={() => {}} title="Navigacija nije učitana" />}>
+        {/* Do NOT pass function props (e.g. reset={() => {}}) from this Server Component into
+            client SlotError — RSC serialization throws "Functions cannot be passed directly…". */}
+        <ErrorBoundary fallback={<SlotError title="Navigacija nije učitana" />}>
           <Suspense fallback={<FacilityNavSkeleton />}>
             <FacilityNav
               facility={facility}
@@ -98,7 +100,7 @@ export default async function FacilityManagementLayout({
             </div>
 
             <aside className="sticky top-8 hidden lg:col-span-3 lg:block">
-              <ErrorBoundary fallback={<SlotError reset={() => {}} title="Sidebar nije učitan" />}>
+              <ErrorBoundary fallback={<SlotError title="Sidebar nije učitan" />}>
                 <Suspense fallback={<FacilityActionSidebarSkeleton />}>
                   <FacilityActionSidebar facility={facility as FacilityLayoutData} />
                 </Suspense>
