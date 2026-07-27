@@ -6,27 +6,42 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Icon } from "@/components/ui/Icon";
 import { toast } from "sonner";
-import {
-  uploadProductImage,
-  deleteProductImage,
-  renameProductImage,
-} from "../_lib/ticket-image-actions";
+import { upload } from "@vercel/blob/client";
+import { MAX_FILE_SIZE } from "@/lib/constants";
+import { optimizeImageOnClient } from "@/lib/media/client-image-optimizer";
+import { setProductImageUrl, deleteProductImage } from "../_lib/ticket-image-actions";
 
 interface Props {
   productId: string;
+  facilityId: string;
   imageUrl: string | null;
   productTitle: string;
   onImageChange: (url: string | null) => void;
 }
 
-export function ProductImageSection({ productId, imageUrl, productTitle, onImageChange }: Props) {
+/**
+ * Ticket product image uploader.
+ *
+ * CRITICAL: files go browser → Vercel Blob directly (client upload).
+ * Only the resulting URL string is sent to a server action.
+ * Never pipe File/FormData through a server action — that triggers
+ * FUNCTION_PAYLOAD_TOO_LARGE (413) on Vercel for multi-MB images.
+ */
+export function ProductImageSection({
+  productId,
+  facilityId,
+  imageUrl,
+  productTitle,
+  onImageChange,
+}: Props) {
   const [uploading, setUploading] = React.useState(false);
   const [renaming, setRenaming] = React.useState(false);
   const currentFileName = imageUrl
     ? (imageUrl
         .split("/")
         .pop()
-        ?.replace(/\.webp$/, "") ?? "")
+        ?.replace(/\.webp$/, "")
+        ?.split("?")[0] ?? "")
     : "";
   const [newName, setNewName] = React.useState(currentFileName);
   const fileRef = React.useRef<HTMLInputElement>(null);
@@ -34,19 +49,67 @@ export function ProductImageSection({ productId, imageUrl, productTitle, onImage
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      toast.error("Nepodržan format. Otpremite sliku.");
+      if (fileRef.current) fileRef.current.value = "";
+      return;
+    }
+
+    if (file.size > MAX_FILE_SIZE) {
+      toast.error("Fajl je prevelik. Maksimalna veličina je 25MB.");
+      if (fileRef.current) fileRef.current.value = "";
+      return;
+    }
+
     setUploading(true);
     try {
-      const formData = new FormData();
-      formData.append("file", file);
-      const result = await uploadProductImage(productId, formData);
+      // Client-side optimize → WebP (same pattern as facility logo upload)
+      const optimized =
+        file.type === "image/gif"
+          ? file
+          : await optimizeImageOnClient(file, {
+              mode: "fit",
+              maxWidth: 1600,
+              maxHeight: 1600,
+              quality: 0.85,
+              format: "image/webp",
+            });
+
+      const ext = file.type === "image/gif" ? "gif" : "webp";
+      const contentType = file.type === "image/gif" ? "image/gif" : "image/webp";
+      const filename = `tickets/products/${productId}/${Date.now()}.${ext}`;
+      const uploadFile =
+        optimized instanceof File
+          ? optimized
+          : new File([optimized], filename, { type: contentType });
+
+      // Direct-to-blob — bypasses serverless request body limits entirely
+      const blob = await upload(filename, uploadFile, {
+        access: "public",
+        handleUploadUrl: "/api/upload",
+        clientPayload: JSON.stringify({ facilityId, uploadType: "TICKET" }),
+      });
+
+      if (!blob.url) throw new Error("Upload endpoint returned empty URL");
+
+      const result = await setProductImageUrl(productId, blob.url);
       if (result.success && result.url) {
         onImageChange(result.url);
+        setNewName(
+          result.url
+            .split("/")
+            .pop()
+            ?.replace(/\.webp$/, "")
+            ?.split("?")[0] ?? "",
+        );
         toast.success("Slika otpremljena");
       } else {
         toast.error(result.error || "Otpremanje nije uspelo");
       }
-    } catch {
-      toast.error("Otpremanje nije uspelo");
+    } catch (err) {
+      console.error("[ticket-image-upload]", err);
+      toast.error(err instanceof Error ? err.message : "Otpremanje nije uspelo");
     } finally {
       setUploading(false);
       if (fileRef.current) fileRef.current.value = "";
@@ -59,6 +122,7 @@ export function ProductImageSection({ productId, imageUrl, productTitle, onImage
       const result = await deleteProductImage(productId, imageUrl);
       if (result.success) {
         onImageChange(null);
+        setNewName("");
         toast.success("Slika obrisana");
       } else toast.error(result.error || "Brisanje slike nije uspelo");
     } catch {
@@ -70,15 +134,32 @@ export function ProductImageSection({ productId, imageUrl, productTitle, onImage
     if (!imageUrl || !newName.trim()) return;
     setRenaming(true);
     try {
-      const result = await renameProductImage(productId, imageUrl, newName.trim());
+      // Client-side copy under new name — never re-download through a server action
+      const response = await fetch(imageUrl);
+      if (!response.ok) throw new Error("Učitavanje postojeće slike nije uspelo");
+      const buffer = await response.arrayBuffer();
+      const safe = newName.trim().replace(/[^a-zA-Z0-9_-]/g, "_");
+      const filename = `tickets/products/${productId}/${safe}.webp`;
+      const file = new File([buffer], filename, { type: "image/webp" });
+
+      const blob = await upload(filename, file, {
+        access: "public",
+        handleUploadUrl: "/api/upload",
+        clientPayload: JSON.stringify({ facilityId, uploadType: "TICKET" }),
+      });
+
+      if (!blob.url) throw new Error("Upload endpoint returned empty URL");
+
+      const result = await setProductImageUrl(productId, blob.url);
       if (result.success && result.url) {
         onImageChange(result.url);
         toast.success("Slika preimenovana");
       } else {
         toast.error(result.error || "Preimenovanje nije uspelo");
       }
-    } catch {
-      toast.error("Preimenovanje nije uspelo");
+    } catch (err) {
+      console.error("[ticket-image-rename]", err);
+      toast.error(err instanceof Error ? err.message : "Preimenovanje nije uspelo");
     } finally {
       setRenaming(false);
     }
