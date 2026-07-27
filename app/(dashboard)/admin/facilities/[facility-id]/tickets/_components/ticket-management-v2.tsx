@@ -512,6 +512,7 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
           <ProductImageSection
             key={selectedProduct.imageUrl ?? `empty-${selectedProduct.id}`}
             productId={selectedProduct.id}
+            facilityId={facilityId}
             imageUrl={selectedProduct.imageUrl}
             productTitle={selectedProduct.title}
             onImageChange={(url: string | null) => {

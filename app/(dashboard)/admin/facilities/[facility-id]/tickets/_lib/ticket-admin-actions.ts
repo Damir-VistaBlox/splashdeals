@@ -106,14 +106,49 @@ export interface SerializedPrice {
 export async function getTicketHierarchy(facilityId: string): Promise<SerializedCategory[]> {
   await validateFacilityAccess(facilityId);
 
+  // Explicit select only — never pull full rows / accidental large columns into RSC payload.
   const categories = await prisma.ticketCategory.findMany({
     where: { facilityId },
     orderBy: { displayOrder: "asc" },
-    include: {
+    select: {
+      id: true,
+      title: true,
+      slug: true,
+      displayOrder: true,
+      isActive: true,
       types: {
         orderBy: { displayOrder: "asc" },
-        include: {
-          prices: { orderBy: { displayOrder: "asc" } },
+        select: {
+          id: true,
+          categoryId: true,
+          title: true,
+          label: true,
+          requiresIdentity: true,
+          requiresPhoto: true,
+          minPeople: true,
+          maxPeople: true,
+          isSeasonPass: true,
+          validityType: true,
+          displayOrder: true,
+          isActive: true,
+          imageUrl: true,
+          // deliberately omit description — not used by admin UI, can bloat payload
+          prices: {
+            orderBy: { displayOrder: "asc" },
+            select: {
+              id: true,
+              ticketTypeId: true,
+              label: true,
+              price: true,
+              originalPrice: true,
+              dayType: true,
+              timeSlot: true,
+              validFrom: true,
+              validTo: true,
+              displayOrder: true,
+              isActive: true,
+            },
+          },
         },
       },
     },
