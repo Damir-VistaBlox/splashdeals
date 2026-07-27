@@ -6,7 +6,8 @@ import Link from "next/link";
 
 interface SlotErrorProps {
   error?: Error & { digest?: string };
-  reset: () => void;
+  /** Optional — Server Components cannot pass functions to Client Components. */
+  reset?: () => void;
   title?: string;
 }
 
@@ -27,8 +28,12 @@ export function SlotError({ reset, title = "Segment nije učitan" }: SlotErrorPr
           variant="outline"
           size="sm"
           onClick={() => {
+            // Prefer boundary reset when available (client error.tsx); otherwise hard reload.
+            if (reset) {
+              reset();
+              return;
+            }
             if (typeof window !== "undefined") window.location.reload();
-            reset();
           }}
           className="border-destructive/20 hover:bg-destructive/10 h-8 text-[10px] font-black tracking-widest uppercase"
         >
