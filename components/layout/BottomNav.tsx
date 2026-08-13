@@ -91,10 +91,9 @@ export function BottomNav({ dict }: { dict?: Dict | null }) {
       kind: "path",
     },
     {
-      // SEO: indexable category hub — not noindex /search
-      label: dict?.nav?.explore || dict?.nav?.waterparks || "Istraži",
-      href: "/akva-parkovi",
-      icon: "explore",
+      label: dict?.nav?.search || "Pretraga",
+      href: "/search",
+      icon: "search",
       kind: "path",
     },
     {
@@ -181,6 +180,19 @@ export function BottomNav({ dict }: { dict?: Dict | null }) {
                           }`}
                         />
                       )}
+                    </div>
+                  ) : item.href === "/search" ? (
+                    <div
+                      className={`flex h-9 w-9 items-center justify-center rounded-2xl border shadow-[0_10px_18px_rgba(15,23,42,0.08)] transition-colors duration-200 motion-reduce:transition-none ${
+                        active ? "border-primary/25 bg-primary/12" : "border-white/70 bg-white/74"
+                      }`}
+                    >
+                      <Icon
+                        name={item.icon}
+                        className={`text-[19px] transition-colors duration-200 motion-reduce:transition-none ${
+                          active ? "text-primary" : "text-slate-700"
+                        }`}
+                      />
                     </div>
                   ) : (
                     <Icon
