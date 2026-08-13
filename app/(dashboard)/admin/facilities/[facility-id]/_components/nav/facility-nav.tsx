@@ -102,9 +102,14 @@ export function FacilityNav({ facility, counts }: FacilityNavProps) {
 
         {/* Facility name */}
         <div className="mr-2 flex min-w-0 shrink-0 items-center gap-2">
-          <span className="text-muted-foreground max-w-[160px] truncate text-xs font-medium tracking-wider uppercase sm:max-w-[240px]">
-            {facility.name}
-          </span>
+          <div className="min-w-0">
+            <div className="text-muted-foreground/70 text-[9px] font-black tracking-[0.18em] uppercase">
+              Objekat
+            </div>
+            <span className="text-muted-foreground block max-w-[160px] truncate text-xs font-medium tracking-wider uppercase sm:max-w-[240px]">
+              {facility.name}
+            </span>
+          </div>
           <div
             className={cn(
               "size-1.5 shrink-0 rounded-full",
@@ -122,6 +127,9 @@ export function FacilityNav({ facility, counts }: FacilityNavProps) {
 
         {/* Center — Horizontal Tabs */}
         <div className="no-scrollbar flex flex-1 items-center gap-0.5 overflow-x-auto">
+          <span className="text-muted-foreground/55 hidden shrink-0 pr-2 text-[9px] font-black tracking-[0.18em] uppercase lg:inline">
+            Sekcije
+          </span>
           {tabs.map((tab) => (
             <Button
               key={tab.href}

@@ -25,16 +25,16 @@ export function SearchForm({ ...props }: React.ComponentProps<"form">) {
     <form {...props} onSubmit={handleSearch}>
       <SidebarGroup className="py-2">
         <SidebarGroupLabel className="text-muted-foreground/50 mb-1 px-2 text-[10px] font-bold tracking-wider uppercase">
-          Search Network
+          Pretraga objekata
         </SidebarGroupLabel>
         <SidebarGroupContent className="relative">
           <Label htmlFor="search" className="sr-only">
-            Search Facilities
+            Pretraži objekte
           </Label>
           <SidebarInput
             id="search"
             name="q"
-            placeholder="Find a partner..."
+            placeholder="Pronađi objekat..."
             className="bg-sidebar-accent/30 focus-visible:ring-primary/50 border-none pl-8 focus-visible:ring-1"
           />
           <Icon
