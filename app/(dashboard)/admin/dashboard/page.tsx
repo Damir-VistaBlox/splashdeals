@@ -4,8 +4,9 @@ import type { Metadata } from "next";
 import { getAdminDashboardStats, getRecentActivity } from "@/app/(server)/lib/data/admin";
 
 export const metadata: Metadata = {
-  title: "Command Center | Governance Hub",
-  description: "Real-time institutional oversight and facility management console.",
+  title: "Kontrolni centar | Splashdeals Admin",
+  description:
+    "Centralni operativni pregled prodaje, objekata i sadržaja na platformi Splashdeals.",
 };
 
 export default async function DashboardPage() {

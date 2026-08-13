@@ -28,9 +28,9 @@ import { UserRole } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 const formSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.string().email("Invalid email address"),
-  password: z.string().min(8, "Password must be at least 8 characters"),
+  name: z.string().min(2, "Ime mora imati najmanje 2 karaktera"),
+  email: z.string().email("Unesite ispravnu email adresu"),
+  password: z.string().min(8, "Lozinka mora imati najmanje 8 karaktera"),
   role: z.nativeEnum(UserRole),
 });
 
@@ -53,13 +53,13 @@ export function CreateUserForm() {
     try {
       const result = await createAdminUserAction(values);
       if (result.success) {
-        toast.success("Admin onboarded successfully");
+        toast.success("Administratorski nalog je uspešno kreiran");
         router.push("/admin/users");
       } else {
-        toast.error(result.error || "Failed to onboard admin");
+        toast.error(result.error || "Kreiranje administratorskog naloga nije uspelo");
       }
     } catch {
-      toast.error("An unexpected error occurred");
+      toast.error("Došlo je do neočekivane greške");
     } finally {
       setIsPending(false);
     }
@@ -74,7 +74,7 @@ export function CreateUserForm() {
           render={({ field }) => (
             <FormItem>
               <FormLabel className="text-muted-foreground text-xs font-black tracking-widest uppercase">
-                Full Name
+                Ime i prezime
               </FormLabel>
               <FormControl>
                 <Input
@@ -94,7 +94,7 @@ export function CreateUserForm() {
           render={({ field }) => (
             <FormItem>
               <FormLabel className="text-muted-foreground text-xs font-black tracking-widest uppercase">
-                Corporate Email
+                Službeni email
               </FormLabel>
               <FormControl>
                 <Input
@@ -114,7 +114,7 @@ export function CreateUserForm() {
           render={({ field }) => (
             <FormItem>
               <FormLabel className="text-muted-foreground text-xs font-black tracking-widest uppercase">
-                Temporary Password
+                Privremena lozinka
               </FormLabel>
               <FormControl>
                 <Input
@@ -125,7 +125,7 @@ export function CreateUserForm() {
                 />
               </FormControl>
               <FormDescription className="text-muted-foreground text-[9px] tracking-tighter uppercase">
-                Min 8 characters. User can reset this via email later.
+                Minimum 8 karaktera. Korisnik kasnije može da je resetuje putem emaila.
               </FormDescription>
               <FormMessage className="text-[10px] font-bold tracking-tight text-red-400 uppercase" />
             </FormItem>
@@ -138,12 +138,12 @@ export function CreateUserForm() {
           render={({ field }) => (
             <FormItem>
               <FormLabel className="text-muted-foreground text-xs font-black tracking-widest uppercase">
-                Access Level
+                Nivo pristupa
               </FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger className="bg-background border-border focus:border-ring h-11 rounded-xl transition-all">
-                    <SelectValue placeholder="Select a role" />
+                    <SelectValue placeholder="Izaberite ulogu" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent className="bg-background border-border text-foreground">
@@ -153,7 +153,7 @@ export function CreateUserForm() {
                   >
                     <div className="flex items-center gap-2">
                       <Icon name="manage_accounts" className="text-[14px] text-amber-400" />
-                      <span>Facility Staff</span>
+                      <span>Operater objekta</span>
                     </div>
                   </SelectItem>
                   <SelectItem
@@ -162,7 +162,7 @@ export function CreateUserForm() {
                   >
                     <div className="flex items-center gap-2">
                       <Icon name="security" className="text-primary text-[14px]" />
-                      <span>Super Admin</span>
+                      <span>Super admin</span>
                     </div>
                   </SelectItem>
                 </SelectContent>
@@ -180,7 +180,7 @@ export function CreateUserForm() {
           {isPending ? (
             <Icon name="progress_activity" className="animate-spin text-[16px]" />
           ) : (
-            "Authorize Admin Access"
+            "Kreiraj administratorski nalog"
           )}
         </Button>
       </form>

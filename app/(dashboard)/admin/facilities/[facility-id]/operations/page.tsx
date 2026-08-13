@@ -62,17 +62,15 @@ export default async function FacilityOperationsPage({ params }: OperationsPageP
                 <Icon name="keyboard_arrow_left" className="size-4" />
               </Link>
             </Button>
-            <h1 className="text-foreground text-2xl font-black tracking-tight italic">
-              Operativnost
-            </h1>
+            <h1 className="text-foreground text-2xl font-black tracking-tight">Operativni režim</h1>
           </div>
           <p className="text-muted-foreground ml-11 text-[10px] font-bold tracking-[0.2em] uppercase">
-            Radno vreme i privremena zatvaranja — {facility.name}
+            Radno vreme, prekidi rada i kalendarska dostupnost — {facility.name}
           </p>
         </div>
         <div className="border-primary/20 bg-primary/10 rounded-full border px-4 py-1.5">
           <span className="text-primary text-[10px] font-black tracking-widest uppercase">
-            Uživo
+            Aktivna kontrola
           </span>
         </div>
       </div>

@@ -104,22 +104,22 @@ function MediaItemCard({
                   `${x},${y}`,
                 );
                 if (res.success) {
-                  toast.success(`Focal point set to ${x}%, ${y}%`);
+                  toast.success(`Fokusna tačka je postavljena na ${x}%, ${y}%`);
                   onFocalPointSaved?.(item.id, `${x},${y}`);
                   onToggleFocalPoint?.();
                 } else {
-                  toast.error("Failed to save focal point");
+                  toast.error("Čuvanje fokusne tačke nije uspelo");
                 }
               } catch (err) {
                 console.error(err);
-                toast.error("Error setting focal point");
+                toast.error("Greška pri postavljanju fokusne tačke");
               }
             }}
             className="bg-primary/80 animate-in fade-in absolute inset-0 z-30 flex cursor-crosshair flex-col items-center justify-center p-3 text-center backdrop-blur-sm duration-200"
           >
             <Icon name="gps_fixed" className="text-primary mb-1.5 size-6 animate-pulse" />
             <span className="text-foreground text-[10px] font-black tracking-wider uppercase">
-              Postavi Fokus
+              Postavi fokus
             </span>
             <span className="text-primary/60 mt-0.5 max-w-[120px] text-[8px] leading-tight font-medium tracking-widest uppercase">
               Klikni bilo gde za pozicioniranje
@@ -132,7 +132,7 @@ function MediaItemCard({
                 onToggleFocalPoint?.();
               }}
               className="bg-muted/50 text-foreground hover:bg-background/20 absolute right-2 bottom-2 size-5 rounded-md"
-              aria-label="Close focal point"
+              aria-label="Zatvori fokusnu tačku"
             >
               <Icon name="close" className="size-3" />
             </Button>
@@ -143,7 +143,7 @@ function MediaItemCard({
           <>
             <Image
               src={item.url}
-              alt={item.caption || "Facility media photo"}
+              alt={item.caption || "Fotografija objekta"}
               fill
               className={cn(
                 "object-cover transition-transform duration-500 group-hover:scale-110",
@@ -157,7 +157,7 @@ function MediaItemCard({
             />
             {isPortrait && (
               <div className="bg-warning text-warning-foreground absolute bottom-3 left-3 z-30 flex items-center gap-0.5 rounded-md px-2 py-0.5 text-[8px] font-black uppercase opacity-100 shadow-lg transition-opacity group-hover:opacity-0">
-                ⚠️ Portrait
+                Vertikalna
               </div>
             )}
           </>
@@ -230,7 +230,7 @@ function MediaItemCard({
           {item.isCardBackground && (
             <div className="bg-primary text-primary-foreground flex items-center gap-1 rounded-md px-2 py-1 text-[8px] font-black uppercase shadow-lg">
               <Icon name="dashboard" className="size-3 fill-current" />
-              Card BG
+              Pozadina kartice
             </div>
           )}
         </div>
@@ -245,7 +245,7 @@ function MediaItemCard({
               onDelete?.();
             }}
             className="absolute right-3 bottom-3 z-30 size-8 rounded-xl opacity-60 transition-colors group-hover:opacity-100 focus-visible:opacity-100"
-            aria-label="Delete media"
+            aria-label="Obriši medij"
           >
             <Icon name="delete" className="size-4" />
           </Button>
@@ -298,7 +298,7 @@ function MediaItemCard({
             ) : (
               <Icon name="visibility_off" className="size-4" />
             )}
-            {item.isGalleryVisible ? "Public" : "Hidden"}
+            {item.isGalleryVisible ? "Javno" : "Skriveno"}
           </Button>
         </div>
       )}
@@ -332,7 +332,7 @@ function MediaItemCard({
           <Input
             type="text"
             placeholder="Dodajte SEO ALT tag..."
-            aria-label="Image caption"
+            aria-label="ALT opis slike"
             key={item.caption || ""}
             defaultValue={item.caption || ""}
             onFocus={() => onUnsavedEdit?.(true)}
@@ -345,14 +345,14 @@ function MediaItemCard({
               try {
                 const res = await updateMediaCaptionAction(item.id, item.facilityId, val);
                 if (res.success) {
-                  toast.success("SEO Caption updated successfully");
+                  toast.success("SEO ALT opis je sačuvan");
                   onUnsavedEdit?.(false);
                 } else {
-                  toast.error("Failed to save caption");
+                  toast.error("Čuvanje ALT opisa nije uspelo");
                 }
               } catch (err) {
                 console.error(err);
-                toast.error("Caption save error");
+                toast.error("Greška pri čuvanju ALT opisa");
               }
             }}
             className="border-border/50 text-foreground/80 focus:border-ring placeholder:text-muted-foreground/80 w-full rounded-lg border bg-black/20 px-2.5 py-1 text-[10px] font-medium transition-colors focus:outline-none"
@@ -369,8 +369,8 @@ function MediaItemCard({
                     ? "border-primary/20 bg-primary/5 text-primary"
                     : "text-muted-foreground",
                 )}
-                title="Set focal point"
-                aria-label="Set focal point"
+                title="Postavi fokusnu tačku"
+                aria-label="Postavi fokusnu tačku"
               >
                 <Icon name="gps_fixed" className="size-3.5" />
               </Button>
@@ -379,8 +379,8 @@ function MediaItemCard({
                 size="icon"
                 onClick={() => onCrop?.()}
                 className="text-muted-foreground border-border/50 hover:bg-primary/10 hover:text-primary size-7 rounded-lg border transition-colors"
-                title="Crop image"
-                aria-label="Crop image"
+                title="Iseci sliku"
+                aria-label="Iseci sliku"
               >
                 <Icon name="crop" className="size-3.5" />
               </Button>

@@ -14,55 +14,57 @@ interface SectionCardsProps {
 export function SectionCards({ stats }: SectionCardsProps) {
   const displayStats = [
     {
-      title: "Total Revenue",
+      title: "Ukupan promet",
       value: `${(stats?.totalRevenue || 0).toLocaleString("sr-RS")} RSD`,
-      description: "Platform Volume",
+      description: "Platformski promet",
       icon: <Icon name="credit_card" className="text-[14px]" />,
       trend: "+12.5%",
-      subtext: "Stripe",
+      subtext: "Prodaja i naplata",
       color: "cyan",
     },
     {
-      title: "Active Facilities",
+      title: "Aktivni objekti",
       value: stats?.activeFacilities || 0,
-      description: "Facility Hub",
+      description: "Mreža objekata",
       icon: <Icon name="monitor_heart" className="text-[14px]" />,
-      trend: "Optimal",
-      subtext: "Live",
+      trend: "Aktivno",
+      subtext: "Objekti u prodaji",
       color: "emerald",
     },
     {
-      title: "Total Users",
+      title: "Ukupno kupaca",
       value: (stats?.totalCustomers || 0).toLocaleString(),
-      description: "User Base",
+      description: "Korisnička baza",
       icon: <Icon name="group" className="text-[14px]" />,
       trend: "+4.2%",
-      subtext: "Accounts",
+      subtext: "Registrovani korisnici",
       color: "sky",
     },
     {
-      title: "Active Catalog",
+      title: "Aktivan katalog",
       value: stats?.activeTickets || 0,
-      description: "Offerings",
+      description: "Ponuda",
       icon: <Icon name="package_2" className="text-[14px]" />,
-      trend: "Unlimited",
-      subtext: "Variants",
+      trend: "Dostupno",
+      subtext: "Tipovi i varijante",
       color: "amber",
     },
   ];
 
   return (
-    <div className="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-4">
+    <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
       {displayStats.map((item, index) => (
         <div
           key={index}
-          className="group border-border bg-card hover:border-border/80 hover:bg-muted/50 relative rounded-2xl border p-4 transition-all duration-300 outline-none focus-within:ring-2 focus-within:ring-cyan-500/20"
+          className="group border-border/60 bg-card/95 hover:border-primary/20 hover:bg-background relative overflow-hidden rounded-3xl border p-5 shadow-sm transition-all duration-300 outline-none focus-within:ring-2 focus-within:ring-cyan-500/20"
         >
-          <div className="mb-2 flex items-center justify-between">
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+
+          <div className="mb-4 flex items-start justify-between gap-3">
             <div className="text-muted-foreground flex items-center gap-2 text-[9px] font-bold tracking-widest uppercase">
               <div
                 className={cn(
-                  "border-border/50 bg-muted/20 rounded-lg border p-1.5 transition-colors duration-300",
+                  "border-border/50 bg-muted/30 rounded-2xl border p-2 transition-colors duration-300",
                   item.color === "cyan" && "text-cyan-400 group-hover:text-cyan-300",
                   item.color === "emerald" && "text-emerald-400 group-hover:text-emerald-300",
                   item.color === "sky" && "text-sky-400 group-hover:text-sky-300",
@@ -75,22 +77,31 @@ export function SectionCards({ stats }: SectionCardsProps) {
             </div>
             <Badge
               variant="outline"
-              className="border-border bg-muted/50 h-4 px-1.5 text-[8px] font-bold tracking-tighter text-cyan-400 uppercase transition-all"
+              className="border-border bg-background/80 h-6 rounded-full px-2.5 text-[8px] font-bold tracking-[0.18em] text-cyan-400 uppercase transition-all"
             >
               {item.trend}
             </Badge>
           </div>
 
-          <div className="flex items-baseline justify-between">
-            <div className="text-foreground font-mono text-xl font-bold tracking-tight">
-              {item.value}
+          <div className="space-y-3">
+            <div className="flex items-baseline justify-between gap-3">
+              <div className="text-foreground font-mono text-2xl font-black tracking-tight">
+                {item.value}
+              </div>
+              <div className="text-muted-foreground/70 text-right text-[9px] font-bold tracking-[0.16em] uppercase">
+                {item.title}
+              </div>
             </div>
-            <div className="text-muted-foreground flex items-center gap-1.5 text-[9px] font-bold tracking-tighter uppercase opacity-60">
-              <span>{item.subtext}</span>
+
+            <div className="flex items-center justify-between gap-3 border-t border-white/5 pt-3">
+              <div className="text-muted-foreground text-[10px] font-bold tracking-[0.16em] uppercase">
+                {item.subtext}
+              </div>
+              <div className="text-muted-foreground flex items-center gap-1.5 text-[9px] font-bold tracking-[0.18em] uppercase opacity-70">
+                <span className="bg-primary/70 size-1.5 rounded-full" />
+                <span>U fokusu</span>
+              </div>
             </div>
-          </div>
-          <div className="text-muted-foreground group-hover:text-foreground/80 mt-1 truncate text-[10px] font-bold tracking-wide uppercase transition-colors">
-            {item.title}
           </div>
         </div>
       ))}

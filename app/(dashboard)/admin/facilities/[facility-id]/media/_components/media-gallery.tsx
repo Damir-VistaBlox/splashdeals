@@ -242,7 +242,7 @@ export function MediaGallery({
 
   const retryUpload = useCallback(async (fileName: string) => {
     setUploadingFiles((prev) => prev.filter((f) => f.name !== fileName));
-    toast.info(`Please re-select "${fileName}" to retry`);
+    toast.info(`Ponovo izaberite "${fileName}" da biste pokušali opet`);
   }, []);
 
   const processFilesUpload = useCallback(
@@ -272,7 +272,7 @@ export function MediaGallery({
         for (const file of files) {
           const abortController = abortControllersRef.current.get(file.name);
           if (abortController?.signal.aborted) {
-            markFailed(file.name, "Upload cancelled");
+            markFailed(file.name, "Otpremanje je otkazano");
             continue;
           }
 
@@ -327,7 +327,7 @@ export function MediaGallery({
               }).catch(() => file);
 
               if (abortController?.signal.aborted) {
-                markFailed(file.name, "Upload cancelled");
+                markFailed(file.name, "Otpremanje je otkazano");
                 continue;
               }
 
@@ -348,13 +348,14 @@ export function MediaGallery({
                 markDone(file.name);
               } else {
                 const msg =
-                  ("error" in result ? result.error : null) || `Upload failed for ${file.name}`;
+                  ("error" in result ? result.error : null) ||
+                  `Otpremanje nije uspelo za ${file.name}`;
                 markFailed(file.name, msg);
               }
             }
           } catch (error) {
             if (error instanceof DOMException && error.name === "AbortError") {
-              markFailed(file.name, "Upload cancelled");
+              markFailed(file.name, "Otpremanje je otkazano");
             } else {
               const msg = error instanceof Error ? error.message : "Unknown upload error";
               markFailed(file.name, msg);
@@ -451,16 +452,16 @@ export function MediaGallery({
       if (key === "a") {
         e.preventDefault();
         handleSelectAll();
-        toast.info("Selected all media assets");
+        toast.info("Izabrani su svi medijski zapisi");
       } else if (key === "d") {
         e.preventDefault();
         handleDeselectAll();
-        toast.info("Deselected all media assets");
+        toast.info("Poništen je izbor svih medijskih zapisa");
       } else if (e.key === "Escape") {
         e.preventDefault();
         setIsSelectionMode(false);
         setSelectedIds(new Set());
-        toast.info("Exited curation selection mode");
+        toast.info("Izašli ste iz režima selekcije");
       } else if ((e.key === "Delete" || e.key === "Backspace") && selectedIds.size > 0) {
         e.preventDefault();
         handleBulkDelete();
@@ -482,13 +483,13 @@ export function MediaGallery({
     const result = await deleteMediaAction(id, facilityId);
 
     if (result.success) {
-      toast.success("Media deleted");
+      toast.success("Medijski zapis je obrisan");
     } else {
       setMedia((prev) => {
         const next = [...prev, itemToDelete];
         return next.sort((a, b) => (a.order || 0) - (b.order || 0));
       });
-      toast.error(result.error || "Delete failed");
+      toast.error(result.error || "Brisanje nije uspelo");
     }
   };
 
@@ -543,9 +544,9 @@ export function MediaGallery({
           return m;
         }),
       );
-      toast.error("Failed to update Hero status");
+      toast.error("Ažuriranje hero slike nije uspelo");
     } else {
-      toast.success(wasHero ? "Hero status removed" : "Set as Facility Hero");
+      toast.success(wasHero ? "Hero oznaka je uklonjena" : "Postavljeno kao hero slika objekta");
     }
   };
 
@@ -571,9 +572,11 @@ export function MediaGallery({
           return m;
         }),
       );
-      toast.error("Failed to update Card Background");
+      toast.error("Ažuriranje pozadine kartice nije uspelo");
     } else {
-      toast.success(wasCardBg ? "Background removed" : "Set as Card Background");
+      toast.success(
+        wasCardBg ? "Pozadina kartice je uklonjena" : "Postavljeno kao pozadina kartice",
+      );
     }
   };
 
@@ -593,7 +596,7 @@ export function MediaGallery({
           return m;
         }),
       );
-      toast.error("Visibility toggle failed");
+      toast.error("Promena javne vidljivosti nije uspela");
     }
   };
 
@@ -649,10 +652,10 @@ export function MediaGallery({
               Spusti datoteke za otpremanje
             </h3>
             <p className="text-primary mb-1 text-xs leading-relaxed font-semibold tracking-widest uppercase">
-              Splash Engine: High-Bandwidth Protocol
+              Splash Engine: režim grupnog otpremanja
             </p>
             <p className="text-muted-foreground text-xs leading-relaxed font-medium tracking-widest uppercase">
-              Asset Optimization active. Drop anywhere to start bulk curation.
+              Optimizacija je aktivna. Spustite fajlove bilo gde da započnete unos.
             </p>
           </div>
         </div>
@@ -689,7 +692,7 @@ export function MediaGallery({
             ) : (
               <Icon name="edit" className="size-3" />
             )}
-            {isSelectionMode ? "Exit Curation" : "Selection Mode"}
+            {isSelectionMode ? "Zatvori izbor" : "Režim izbora"}
           </Button>
 
           {isSelectionMode && (
@@ -700,7 +703,7 @@ export function MediaGallery({
                 onClick={handleSelectAll}
                 className="bg-muted/30 border-border/50 hover:bg-muted/50 h-9 border px-3 text-[10px] font-black tracking-widest uppercase"
               >
-                Select All
+                Izaberi sve
               </Button>
               <Button
                 variant="outline"
@@ -708,7 +711,7 @@ export function MediaGallery({
                 onClick={handleDeselectAll}
                 className="bg-muted/30 border-border/50 hover:bg-muted/50 h-9 border px-3 text-[10px] font-black tracking-widest uppercase"
               >
-                Deselect All
+                Poništi izbor
               </Button>
               {selectedIds.size > 0 && (
                 <>
@@ -720,7 +723,7 @@ export function MediaGallery({
                     className="mr-2 h-9 gap-2 px-4 text-[10px] font-black tracking-widest uppercase"
                   >
                     <Icon name="delete" className="size-3" />
-                    Delete {selectedIds.size} Assets
+                    Obriši {selectedIds.size} stavki
                   </Button>
 
                   <div className="bg-muted/50 mx-2 h-4 w-[1px]" />
@@ -728,8 +731,8 @@ export function MediaGallery({
                   <div className="border-border/50 animate-in fade-in bg-background/60 flex items-center gap-1.5 rounded-lg border px-2 py-0.5 duration-300">
                     <Input
                       type="text"
-                      placeholder="Bulk Alt tag..."
-                      aria-label="Bulk caption"
+                      placeholder="Grupni ALT opis..."
+                      aria-label="Grupni ALT opis"
                       value={bulkCaptionText}
                       onChange={(e) => setBulkCaptionText(e.target.value)}
                       className="text-foreground placeholder:text-muted-foreground/80 w-32 bg-transparent px-1 text-[10px] focus:outline-none"
@@ -740,7 +743,7 @@ export function MediaGallery({
                       onClick={async () => {
                         const val = bulkCaptionText.trim();
                         if (!val) {
-                          toast.error("Bulk ALT tag je obavezan");
+                          toast.error("Grupni ALT opis je obavezan");
                           return;
                         }
                         startUpload(async () => {
@@ -754,13 +757,13 @@ export function MediaGallery({
                               setSelectedIds(new Set());
                               setIsSelectionMode(false);
                               setBulkCaptionText("");
-                              toast.success(`Bulk ALT ažuriran za ${ids.length} slika`);
+                              toast.success(`Grupni ALT opis je ažuriran za ${ids.length} slika`);
                             } else {
-                              toast.error("Bulk ALT nije sačuvan");
+                              toast.error("Grupni ALT opis nije sačuvan");
                             }
                           } catch (err) {
                             console.error(err);
-                            toast.error("Greška pri bulk čuvanju");
+                            toast.error("Greška pri grupnom čuvanju");
                           }
                         });
                       }}
@@ -768,7 +771,7 @@ export function MediaGallery({
                       className="text-primary hover:bg-primary/10 hover:text-primary-foreground h-7 gap-1 px-2 text-[9px] font-black tracking-widest uppercase"
                     >
                       <Icon name="check" className="size-3" />
-                      Apply
+                      Primeni
                     </Button>
                   </div>
                 </>
@@ -879,12 +882,12 @@ export function MediaGallery({
                   )}
                 >
                   {file.status === "failed"
-                    ? file.errorMessage || "Upload failed"
+                    ? file.errorMessage || "Otpremanje nije uspelo"
                     : file.status === "done"
-                      ? "Uploaded"
+                      ? "Otpremljeno"
                       : uploadProgress[file.name] !== undefined
-                        ? `Uploading ${uploadProgress[file.name].toFixed(0)}%`
-                        : "Optimizing..."}
+                        ? `Otpremanje ${uploadProgress[file.name].toFixed(0)}%`
+                        : "Optimizacija..."}
                 </span>
                 {file.status === "uploading" && (
                   <Button
@@ -895,7 +898,7 @@ export function MediaGallery({
                       cancelUpload(file.name);
                     }}
                     className="hover:bg-destructive/80 bg-background/80 absolute top-2 right-2 z-40 size-6 rounded-md text-white/70 transition-colors hover:text-white"
-                    aria-label={`Cancel upload: ${file.name}`}
+                    aria-label={`Otkaži otpremanje: ${file.name}`}
                   >
                     <Icon name="close" className="size-3.5" />
                   </Button>
@@ -909,7 +912,7 @@ export function MediaGallery({
                       retryUpload(file.name);
                     }}
                     className="hover:bg-primary/80 bg-background/80 absolute top-2 right-2 z-40 size-6 rounded-md text-white/70 transition-colors hover:text-white"
-                    aria-label={`Retry upload: ${file.name}`}
+                    aria-label={`Pokušaj ponovo: ${file.name}`}
                   >
                     <Icon name="refresh" className="size-3.5" />
                   </Button>
@@ -932,10 +935,10 @@ export function MediaGallery({
       {totalPages > 1 && (
         <div className="border-border/50 mt-8 flex items-center justify-between gap-4 border-t py-4">
           <div className="text-muted-foreground text-[11px] font-medium">
-            {totalCount !== undefined && `${totalCount} assets total`}
+            {totalCount !== undefined && `${totalCount} ukupno medijskih zapisa`}
             {totalCount !== undefined &&
               totalPages > 1 &&
-              ` · Page ${currentPage} of ${totalPages}`}
+              ` · Strana ${currentPage} od ${totalPages}`}
           </div>
           <div className="flex items-center gap-2">
             <Button
@@ -950,7 +953,7 @@ export function MediaGallery({
               className="h-8 px-3 text-[10px] font-black tracking-widest uppercase"
             >
               <Icon name="keyboard_arrow_left" className="mr-1 size-3.5" />
-              Previous
+              Nazad
             </Button>
             <div className="flex items-center gap-1">
               {Array.from({ length: Math.min(totalPages, 7) }, (_, i) => {
@@ -996,7 +999,7 @@ export function MediaGallery({
               }}
               className="h-8 px-3 text-[10px] font-black tracking-widest uppercase"
             >
-              Next
+              Dalje
               <Icon name="keyboard_arrow_right" className="ml-1 size-3.5" />
             </Button>
           </div>

@@ -18,8 +18,8 @@ export async function generateMetadata({
     select: { name: true },
   });
   return {
-    title: `${facility?.name || "Facility"} — Amenities | Splashdeals Admin`,
-    description: `Manage features and active amenities for ${facility?.name || "this facility"}.`,
+    title: `${facility?.name || "Objekat"} — Sadržaji | Splashdeals Admin`,
+    description: `Upravljanje sadržajima i aktivnim pogodnostima za ${facility?.name || "izabrani objekat"}.`,
   };
 }
 
@@ -64,17 +64,17 @@ export default async function AmenitiesPage({ params }: AmenitiesPageProps) {
                 <Icon name="keyboard_arrow_left" className="size-4" />
               </Link>
             </Button>
-            <h1 className="text-foreground text-2xl font-black tracking-tight italic">
-              Infrastructure & Features
+            <h1 className="text-foreground text-2xl font-black tracking-tight">
+              Sadržaji i pogodnosti
             </h1>
           </div>
           <p className="text-muted-foreground ml-11 text-[10px] font-bold tracking-[0.2em] uppercase">
-            Manage active features and amenities for {facility.name}
+            Upravljanje aktivnim sadržajima za {facility.name}
           </p>
         </div>
         <div className="bg-primary/5 border-primary/20 rounded-full border px-4 py-1.5">
           <span className="text-primary text-[10px] font-black tracking-widest uppercase">
-            Live Editor
+            Aktivni editor
           </span>
         </div>
       </div>

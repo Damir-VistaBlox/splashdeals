@@ -17,11 +17,6 @@ interface FacilityLogoUploadProps {
   facilityName: string;
 }
 
-/**
- * 🎨 FacilityLogoUpload Component
- * Direct-to-storage client-side optimized logo uploader.
- * Supports static images (→ WebP) and animated GIFs (raw passthrough).
- */
 export function FacilityLogoUpload({
   value,
   onChange,
@@ -41,7 +36,7 @@ export function FacilityLogoUpload({
 
   const processFile = async (file: File) => {
     if (!file || !file.type.startsWith("image/")) {
-      toast.error("Invalid file type. Please upload an image.");
+      toast.error("Neispravan tip fajla. Otpremite sliku.");
       return;
     }
 
@@ -77,7 +72,7 @@ export function FacilityLogoUpload({
       });
 
       if (!blob.url) {
-        throw new Error("Upload endpoint returned void URL");
+        throw new Error("Upload servis nije vratio ispravan URL");
       }
 
       const finalUrl = `${blob.url}?t=${Date.now()}`;
@@ -85,7 +80,7 @@ export function FacilityLogoUpload({
       // 🔥 INSTANT PERSISTENCE: Write directly to Database immediately
       const dbResult = await updateFacilityLogoAction(facilityId, finalUrl);
       if (!dbResult.success) {
-        throw new Error("Storage successful, but database alignment failed.");
+        throw new Error("Otpremanje je uspelo, ali upis u bazu nije dovršen.");
       }
 
       // Update local React-Hook-Form state
@@ -94,9 +89,11 @@ export function FacilityLogoUpload({
     })();
 
     toast.promise(uploadPromise, {
-      loading: isGif ? "Uploading animated logo…" : "Optimizing & shipping WebP payload…",
-      success: "Logo successfully cached & deployed!",
-      error: (err) => err.message || "Direct stream failure",
+      loading: isGif
+        ? "Otpremanje animiranog logotipa…"
+        : "Optimizacija i otpremanje WebP logotipa…",
+      success: "Logo je uspešno sačuvan i primenjen!",
+      error: (err) => err.message || "Otpremanje nije uspelo",
     });
 
     try {
@@ -140,7 +137,7 @@ export function FacilityLogoUpload({
     onChange("");
     // 🔥 Instant Cleanup: Ensure removals sync to database immediately
     await updateFacilityLogoAction(facilityId, "");
-    toast.success("Asset purged from visual identity.");
+    toast.success("Logo je uklonjen iz vizuelnog identiteta.");
   };
 
   const isGif = value?.endsWith(".gif");
@@ -162,7 +159,7 @@ export function FacilityLogoUpload({
             />
           </div>
           <p className="text-primary animate-pulse text-[9px] font-black tracking-[0.2em] uppercase">
-            Rasterizing...
+            Obrada...
           </p>
         </div>
       )}
@@ -181,7 +178,7 @@ export function FacilityLogoUpload({
           >
             <Image
               src={value}
-              alt="Facility Logo"
+              alt="Logo objekta"
               fill
               sizes="128px"
               className="object-contain p-3 drop-shadow-md transition-transform duration-300 group-hover:scale-105"
@@ -191,7 +188,7 @@ export function FacilityLogoUpload({
               <div className="bg-background/70 absolute inset-0 flex flex-col items-center justify-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
                 <Icon name="upload" className="text-primary animate-bounce text-[20px]" />
                 <span className="text-primary text-[8px] font-black tracking-widest uppercase">
-                  Swap Logo
+                  Zameni logo
                 </span>
 
                 <Button
@@ -203,7 +200,7 @@ export function FacilityLogoUpload({
                     removeImage();
                   }}
                   className="text-foreground border-destructive/30 bg-destructive/20 hover:bg-destructive absolute top-2 right-2 scale-90 rounded-lg border p-1.5 transition-colors hover:scale-100"
-                  title="Remove asset"
+                  title="Ukloni logo"
                 >
                   <Icon name="close" className="text-[12px]" />
                 </Button>
@@ -226,7 +223,7 @@ export function FacilityLogoUpload({
                 ? "bg-muted/60 border-border text-muted-foreground hover:text-foreground"
                 : "border-muted/50 text-muted-foreground/80 hover:text-foreground bg-background/80",
             )}
-            title="Toggle Contrast Background"
+            title="Promeni pozadinu pregleda"
           >
             {previewBg === "dark" ? (
               <Icon name="light_mode" className="text-[10px]" />
@@ -263,7 +260,7 @@ export function FacilityLogoUpload({
                 : "text-muted-foreground group-hover/drop:text-foreground/90",
             )}
           >
-            {isDragging ? "Release File" : "Upload Logo"}
+            {isDragging ? "Pustite fajl" : "Otpremi logo"}
           </span>
           {!isDragging && (
             <span className="text-muted-foreground mt-1 text-[7px] font-bold tracking-tighter uppercase opacity-60">

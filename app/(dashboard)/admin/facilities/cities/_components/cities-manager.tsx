@@ -49,6 +49,7 @@ export function CitiesManager({ cities }: { cities: CityRow[] }) {
 
   // Delete confirmation
   const [deleteTarget, setDeleteTarget] = useState<CityRow | null>(null);
+  const usedInitials = cities.filter((city) => city.slug.trim().length > 0).length;
 
   const handleCreate = useCallback(() => {
     if (!newName.trim() || !newSlug.trim()) return;
@@ -120,40 +121,77 @@ export function CitiesManager({ cities }: { cities: CityRow[] }) {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Gradovi</h1>
-        <p className="text-muted-foreground mt-1 text-sm">
-          Upravljajte gradovima koji se koriste za objekte i pretragu.
-        </p>
-      </div>
+      <section className="border-border/60 bg-card/95 relative overflow-hidden rounded-[30px] border p-5 shadow-sm md:p-6">
+        <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-1/3 bg-[radial-gradient(circle_at_top_right,rgba(56,189,248,0.14),transparent_60%)] lg:block" />
+        <div className="relative z-10 grid gap-5 lg:grid-cols-[1.5fr_1fr]">
+          <div className="space-y-3">
+            <div className="text-muted-foreground flex items-center gap-2 text-[10px] font-black tracking-[0.22em] uppercase">
+              <span className="size-2 rounded-full bg-sky-500" />
+              Lokacije i pretraga
+            </div>
+            <div>
+              <h1 className="text-foreground text-3xl font-black tracking-tight uppercase">
+                Gradovi
+              </h1>
+              <p className="text-muted-foreground mt-1 max-w-2xl text-sm leading-6">
+                Upravljajte gradovima koji se koriste za objekte, filtere i pretragu kako bi
+                lokacijski podaci ostali čisti i dosledni kroz ceo katalog.
+              </p>
+            </div>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
+            <div className="border-border/60 bg-background/75 rounded-2xl border px-4 py-3">
+              <div className="text-muted-foreground text-[9px] font-black tracking-[0.18em] uppercase">
+                Ukupno gradova
+              </div>
+              <div className="text-foreground mt-1 text-2xl font-black">{cities.length}</div>
+            </div>
+            <div className="border-border/60 bg-background/75 rounded-2xl border px-4 py-3">
+              <div className="text-muted-foreground text-[9px] font-black tracking-[0.18em] uppercase">
+                Aktivni slugovi
+              </div>
+              <div className="text-foreground mt-1 text-2xl font-black">{usedInitials}</div>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Dodaj grad */}
-      <div className="rounded-lg border p-4">
-        <h3 className="mb-3 text-sm font-semibold">Dodaj grad</h3>
-        <div className="flex items-end gap-3">
-          <div className="max-w-xs flex-1 space-y-1.5">
-            <label className="text-muted-foreground text-xs">Ime</label>
+      <div className="border-border/60 bg-card/95 rounded-[30px] border p-5 shadow-sm md:p-6">
+        <div className="mb-4">
+          <h3 className="text-foreground text-lg font-black uppercase">Dodaj grad</h3>
+          <p className="text-muted-foreground mt-1 text-sm">
+            Kreirajte novi grad koji će biti dostupan pri unosu i filtriranju objekata.
+          </p>
+        </div>
+        <div className="grid gap-4 md:grid-cols-[1fr_1fr_auto] md:items-end">
+          <div className="space-y-1.5">
+            <label className="text-muted-foreground text-[10px] font-black tracking-[0.18em] uppercase">
+              Ime grada
+            </label>
             <Input
               value={newName}
               onChange={(e) => autoSlugNew(e.target.value)}
               placeholder="Naziv grada"
-              className="h-9"
+              className="h-11 rounded-2xl"
             />
           </div>
-          <div className="max-w-xs flex-1 space-y-1.5">
-            <label className="text-muted-foreground text-xs">Slug</label>
+          <div className="space-y-1.5">
+            <label className="text-muted-foreground text-[10px] font-black tracking-[0.18em] uppercase">
+              Slug
+            </label>
             <Input
               value={newSlug}
               onChange={(e) => setNewSlug(e.target.value)}
               placeholder="slug-grada"
-              className="h-9"
+              className="h-11 rounded-2xl"
               onKeyDown={(e) => e.key === "Enter" && handleCreate()}
             />
           </div>
           <Button
             onClick={handleCreate}
             disabled={isPending || !newName.trim() || !newSlug.trim()}
-            className="h-9"
+            className="h-11 rounded-2xl px-5 text-[11px] font-black tracking-[0.18em] uppercase"
           >
             <Icon name="add" className="mr-1 size-4" />
             Dodaj
@@ -162,13 +200,19 @@ export function CitiesManager({ cities }: { cities: CityRow[] }) {
       </div>
 
       {/* Lista gradova */}
-      <div className="rounded-lg border">
+      <div className="border-border/60 bg-card/95 overflow-hidden rounded-[30px] border shadow-sm">
         <Table>
-          <TableHeader>
+          <TableHeader className="bg-muted/10">
             <TableRow>
-              <TableHead>Ime</TableHead>
-              <TableHead>Slug</TableHead>
-              <TableHead className="w-[140px]">Akcije</TableHead>
+              <TableHead className="px-5 py-4 text-[10px] font-black tracking-[0.18em] uppercase">
+                Ime
+              </TableHead>
+              <TableHead className="py-4 text-[10px] font-black tracking-[0.18em] uppercase">
+                Slug
+              </TableHead>
+              <TableHead className="w-[160px] py-4 text-[10px] font-black tracking-[0.18em] uppercase">
+                Akcije
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -180,38 +224,40 @@ export function CitiesManager({ cities }: { cities: CityRow[] }) {
               </TableRow>
             ) : (
               cities.map((city) => (
-                <TableRow key={city.id}>
-                  <TableCell>
+                <TableRow key={city.id} className="hover:bg-muted/10 transition-colors">
+                  <TableCell className="px-5 py-4">
                     {editingId === city.id ? (
                       <Input
                         value={editName}
                         onChange={(e) => setEditName(e.target.value)}
-                        className="h-8 w-48"
+                        className="h-9 w-48 rounded-xl"
                       />
                     ) : (
-                      <span className="text-sm font-medium">{city.name}</span>
+                      <span className="text-sm font-bold">{city.name}</span>
                     )}
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="py-4">
                     {editingId === city.id ? (
                       <Input
                         value={editSlug}
                         onChange={(e) => setEditSlug(e.target.value)}
-                        className="h-8 w-48"
+                        className="h-9 w-48 rounded-xl"
                         onKeyDown={(e) => e.key === "Enter" && handleUpdate(city.id)}
                       />
                     ) : (
-                      <code className="text-muted-foreground text-xs">{city.slug}</code>
+                      <code className="text-primary bg-muted/30 rounded border px-2 py-1 text-xs">
+                        {city.slug}
+                      </code>
                     )}
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="py-4">
                     <div className="flex items-center gap-1">
                       {editingId === city.id ? (
                         <>
                           <Button
                             variant="default"
                             size="sm"
-                            className="h-7 text-xs"
+                            className="h-8 rounded-full px-3 text-xs"
                             onClick={() => handleUpdate(city.id)}
                             disabled={isPending}
                           >
@@ -220,7 +266,7 @@ export function CitiesManager({ cities }: { cities: CityRow[] }) {
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="h-7"
+                            className="h-8 rounded-full px-3"
                             onClick={() => setEditingId(null)}
                           >
                             Odustani
@@ -231,7 +277,7 @@ export function CitiesManager({ cities }: { cities: CityRow[] }) {
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="h-7 w-7 p-0"
+                            className="h-8 w-8 rounded-full p-0"
                             aria-label={`Izmeni grad ${city.name}`}
                             onClick={() => startEditing(city)}
                           >
@@ -247,7 +293,7 @@ export function CitiesManager({ cities }: { cities: CityRow[] }) {
                               <Button
                                 variant="ghost"
                                 size="sm"
-                                className="text-destructive hover:text-destructive h-7 w-7 p-0"
+                                className="text-destructive hover:text-destructive h-8 w-8 rounded-full p-0"
                                 aria-label={`Obriši grad ${city.name}`}
                                 onClick={() => setDeleteTarget(city)}
                               >

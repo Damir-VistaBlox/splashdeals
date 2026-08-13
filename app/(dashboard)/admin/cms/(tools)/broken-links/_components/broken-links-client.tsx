@@ -27,7 +27,7 @@ interface BrokenLink {
 }
 
 const TYPE_LABELS: Record<BrokenLink["contentType"], string> = {
-  post: "Post",
+  post: "Objava",
   page: "Strana",
 };
 

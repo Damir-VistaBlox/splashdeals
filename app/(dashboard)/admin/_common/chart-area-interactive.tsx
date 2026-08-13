@@ -27,7 +27,7 @@ import {
 } from "@/components/ui/select";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
-export const description = "An interactive area chart";
+export const description = "Interaktivni grafikon površine";
 
 /**
  * 🚧 Demo / Placeholder Data
@@ -143,14 +143,14 @@ const demoChartData = [
 
 const chartConfig = {
   visitors: {
-    label: "Visitors",
+    label: "Posetioci",
   },
   desktop: {
     label: "Desktop",
     color: "#06b6d4",
   },
   mobile: {
-    label: "Mobile",
+    label: "Mobilni",
     color: "#22d3ee",
   },
 } satisfies ChartConfig;
@@ -209,7 +209,7 @@ export function ChartAreaInteractive() {
       <CardHeader className="flex flex-row items-center justify-between space-y-0 px-4 py-3 sm:px-6">
         <div className="flex flex-col gap-0 @[540px]/card:flex-row @[540px]/card:items-baseline @[540px]/card:gap-2">
           <CardTitle className="text-foreground inline-flex items-center gap-2 text-base">
-            Total Visitors
+            Ukupno poseta
             {IS_DEMO_CHART && (
               <span className="bg-muted text-muted-foreground inline-flex items-center rounded border px-1.5 py-0.5 text-[9px] font-black tracking-[0.15em] uppercase">
                 DEMO
@@ -217,10 +217,11 @@ export function ChartAreaInteractive() {
             )}
           </CardTitle>
           <CardDescription className="text-muted-foreground text-[10px] font-bold tracking-wider uppercase opacity-70">
-            Last {timeRange === "90d" ? "3 Months" : timeRange === "30d" ? "30 Days" : "7 Days"}
+            Poslednjih{" "}
+            {timeRange === "90d" ? "3 meseca" : timeRange === "30d" ? "30 dana" : "7 dana"}
             {IS_DEMO_CHART && (
               <span className="ml-2 font-mono text-[9px] font-normal normal-case italic opacity-60">
-                — placeholder data
+                - demo podaci
               </span>
             )}
           </CardDescription>
@@ -234,13 +235,13 @@ export function ChartAreaInteractive() {
             className="border-border hidden *:data-[slot=toggle-group-item]:px-4! @[767px]/card:flex"
           >
             <ToggleGroupItem value="90d" className="text-foreground/80">
-              90 Days
+              90 dana
             </ToggleGroupItem>
             <ToggleGroupItem value="30d" className="text-foreground/80">
-              30 Days
+              30 dana
             </ToggleGroupItem>
             <ToggleGroupItem value="7d" className="text-foreground/80">
-              7 Days
+              7 dana
             </ToggleGroupItem>
           </ToggleGroup>
           <Select value={timeRange} onValueChange={setTimeRange}>
@@ -248,12 +249,12 @@ export function ChartAreaInteractive() {
               className="border-border text-foreground/80 flex w-40 @[767px]/card:hidden"
               size="sm"
             >
-              <SelectValue placeholder="Last 3 months" />
+              <SelectValue placeholder="Poslednja 3 meseca" />
             </SelectTrigger>
             <SelectContent className="bg-muted border-border rounded-xl">
-              <SelectItem value="90d">Last 3 months</SelectItem>
-              <SelectItem value="30d">Last 30 days</SelectItem>
-              <SelectItem value="7d">Last 7 days</SelectItem>
+              <SelectItem value="90d">Poslednja 3 meseca</SelectItem>
+              <SelectItem value="30d">Poslednjih 30 dana</SelectItem>
+              <SelectItem value="7d">Poslednjih 7 dana</SelectItem>
             </SelectContent>
           </Select>
         </CardAction>
@@ -281,7 +282,7 @@ export function ChartAreaInteractive() {
               stroke="#64748b"
               tickFormatter={(value) => {
                 const date = new Date(value);
-                return date.toLocaleDateString("en-GB", {
+                return date.toLocaleDateString("sr-RS", {
                   month: "short",
                   day: "numeric",
                 });
@@ -293,7 +294,7 @@ export function ChartAreaInteractive() {
                 <ChartTooltipContent
                   className="bg-muted border-border"
                   labelFormatter={(value) => {
-                    return new Date(value).toLocaleDateString("en-GB", {
+                    return new Date(value).toLocaleDateString("sr-RS", {
                       month: "short",
                       day: "numeric",
                     });

@@ -70,7 +70,7 @@ export function PostsListClient({
         setSelectedIds(new Set());
         router.refresh();
       } else {
-        toast.error(result.error || "Greška");
+        toast.error(result.error || "Označavanje objava nije uspelo");
       }
     },
     [router],
@@ -84,7 +84,7 @@ export function PostsListClient({
         setSelectedIds(new Set());
         router.refresh();
       } else {
-        toast.error(result.error || "Greška");
+        toast.error(result.error || "Ažuriranje statusa objava nije uspelo");
       }
     },
     [router],
@@ -99,7 +99,7 @@ export function PostsListClient({
         setSelectedIds(new Set());
         router.refresh();
       } else {
-        toast.error(result.error || "Greška");
+        toast.error(result.error || "Brisanje objava nije uspelo");
       }
     },
     [router],

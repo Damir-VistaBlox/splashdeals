@@ -9,7 +9,7 @@ import { getUserCounts } from "@/app/(server)/lib/data/admin";
 
 export const metadata: Metadata = {
   title: "Korisnici | Splashdeals Admin",
-  description: "Manage administrative access and roles for Splashdeals.",
+  description: "Upravljanje administratorskim nalozima, ulogama i pristupom za Splashdeals.",
 };
 
 export default async function UsersManagementPage({
@@ -25,19 +25,19 @@ export default async function UsersManagementPage({
 
   const stats = [
     {
-      label: "Ukupno administratora",
+      label: "Ukupno naloga",
       value: counts.total,
       color: "text-foreground",
       glow: "border-border bg-muted/10",
     },
     {
-      label: "Super administratori",
+      label: "Super admin",
       value: counts.superAdmins,
       color: "text-primary",
       glow: "border-primary/10 bg-primary/[0.02]",
     },
     {
-      label: "Osoblje",
+      label: "Operateri",
       value: counts.staff,
       color: "text-amber-400",
       glow: "border-amber-500/10 bg-amber-500/[0.02]",
@@ -47,7 +47,7 @@ export default async function UsersManagementPage({
   return (
     <AdminPageShell
       title="Korisnici"
-      subtitle="Control administrative access, assign roles, and audit security accounts."
+      subtitle="Centralni pregled administratorskih naloga, internih uloga i pristupa koji oblikuju operativni rad platforme."
       cta={{ label: "Novi administrator", href: "/admin/users/new", icon: "person_add" }}
       stats={stats}
       statsGridCols="md:grid-cols-3 lg:grid-cols-3"

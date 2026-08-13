@@ -8,18 +8,18 @@ import { cn } from "@/lib/utils";
 import { useBreadcrumbs } from "./breadcrumb-context";
 
 const HUMANIZED_LABELS: Record<string, string> = {
-  admin: "Dashboard",
-  facilities: "Facilities",
-  tickets: "Tickets",
-  media: "Media Assets",
-  profile: "Profile Settings",
-  support: "Security & Ops",
-  system: "System",
-  settings: "Settings",
-  governance: "Governance",
-  amenities: "Amenities",
-  tiers: "Tiers",
-  groups: "Groups",
+  admin: "Kontrolna tabla",
+  facilities: "Objekti",
+  tickets: "Ulaznice",
+  media: "Medijska biblioteka",
+  profile: "Podešavanja profila",
+  support: "Bezbednost i operacije",
+  system: "Sistem",
+  settings: "Podešavanja",
+  governance: "Upravljanje",
+  amenities: "Sadržaji",
+  tiers: "Nivoi",
+  groups: "Grupe",
 };
 
 export function Breadcrumbs() {
@@ -71,7 +71,7 @@ export function Breadcrumbs() {
 
         // Handle case where UUID is still a UUID (no override)
         if (segment.length > 20 && !overrides[segment]) {
-          label = "Details";
+          label = "Detalji";
         }
 
         return (

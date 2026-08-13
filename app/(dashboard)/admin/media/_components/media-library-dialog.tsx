@@ -37,13 +37,13 @@ export function MediaLibraryDialog({ dict, onInsert, trigger }: MediaLibraryDial
         {trigger || (
           <Button type="button" variant="outline" size="sm" className="gap-1.5">
             <Icon name="photo_library" className="size-4" />
-            {(ml.title as string) || "Media biblioteka"}
+            {(ml.title as string) || "Medijska biblioteka"}
           </Button>
         )}
       </DialogTrigger>
       <DialogContent className="flex max-h-[85vh] max-w-5xl flex-col p-0">
         <DialogHeader className="border-b px-6 py-4">
-          <DialogTitle>{(ml.title as string) || "Media biblioteka"}</DialogTitle>
+          <DialogTitle>{(ml.title as string) || "Medijska biblioteka"}</DialogTitle>
         </DialogHeader>
         <div className="flex-1 overflow-hidden">
           <MediaLibraryContent

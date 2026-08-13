@@ -189,20 +189,23 @@ export function FacilityProfileForm({
       try {
         const result = await updateFacilityGovernanceAction(values);
         if (result.success) {
-          toast.success("Profile and operational settings updated");
+          toast.success("Profil i operativna podešavanja su sačuvani");
           form.reset(values);
           router.refresh();
         } else {
-          toast.error(result.error || "Failed to update settings");
+          toast.error(result.error || "Čuvanje podešavanja nije uspelo");
         }
       } catch (error: unknown) {
         console.error("Failed to update facility:", error instanceof Error ? error.message : error);
-        toast.error("A technical anomaly occurred.");
+        toast.error("Došlo je do tehničke greške.");
       }
     });
   }
 
   const publicPreviewUrl = buildPublicFacilityPath(facility.slug);
+  const activeClosures = facility.closures.filter(
+    (closure) => new Date(closure.endDate) >= new Date(),
+  );
 
   return (
     <Form {...form}>
@@ -226,16 +229,16 @@ export function FacilityProfileForm({
               </div>
             </div>
             <div className="text-muted-foreground flex items-center gap-3 font-mono text-[10px] tracking-widest uppercase">
-              <span>Registry ID: {facility.id}</span>
+              <span>ID registra: {facility.id}</span>
               <span className="opacity-20">•</span>
-              <span>Node Type: {facility.category}</span>
+              <span>Tip objekta: {facility.category}</span>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
             <div className="border-border/50 mr-4 flex flex-col items-end border-r pr-4">
               <span className="text-muted-foreground text-[10px] font-black tracking-widest uppercase">
-                Last Synced
+                Poslednja izmena
               </span>
               <span className="text-foreground/80 font-mono text-[11px] uppercase">
                 {new Date(facility.updatedAt).toLocaleString()}
@@ -249,11 +252,46 @@ export function FacilityProfileForm({
             >
               <a href={publicPreviewUrl} target="_blank" rel="noopener noreferrer">
                 <Icon name="visibility" className="text-primary mr-2 size-3.5" />
-                View Node
+                Otvori javnu stranu
               </a>
             </Button>
           </div>
         </header>
+
+        <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          <div className="border-border/60 bg-card/95 rounded-[24px] border p-4 shadow-sm">
+            <div className="text-muted-foreground text-[9px] font-black tracking-[0.18em] uppercase">
+              Javni URL
+            </div>
+            <div className="text-primary mt-2 font-mono text-[11px] break-all">
+              splashdeals.rs{publicPreviewUrl}
+            </div>
+          </div>
+          <div className="border-border/60 bg-card/95 rounded-[24px] border p-4 shadow-sm">
+            <div className="text-muted-foreground text-[9px] font-black tracking-[0.18em] uppercase">
+              Radno vreme
+            </div>
+            <div className="text-foreground mt-2 text-sm font-black uppercase">
+              {facility.hours.length} dnevnih unosa
+            </div>
+          </div>
+          <div className="border-border/60 bg-card/95 rounded-[24px] border p-4 shadow-sm">
+            <div className="text-muted-foreground text-[9px] font-black tracking-[0.18em] uppercase">
+              Aktivna zatvaranja
+            </div>
+            <div className="text-foreground mt-2 text-sm font-black uppercase">
+              {activeClosures.length}
+            </div>
+          </div>
+          <div className="border-border/60 bg-card/95 rounded-[24px] border p-4 shadow-sm">
+            <div className="text-muted-foreground text-[9px] font-black tracking-[0.18em] uppercase">
+              Kontakt stanje
+            </div>
+            <div className="text-foreground mt-2 text-sm font-black uppercase">
+              {facility.publicEmail || facility.publicPhone ? "Spremno" : "Dopuniti"}
+            </div>
+          </div>
+        </section>
 
         {/* 🏛️ CRM Data Grid */}
         <div className="grid grid-cols-1 gap-6 pb-32 xl:grid-cols-12">
@@ -263,7 +301,7 @@ export function FacilityProfileForm({
               <div className="flex items-center gap-3">
                 <Icon name="language" className="text-primary text-[16px]" />
                 <h2 className="text-foreground/70 text-[11px] font-black tracking-[0.2em] uppercase">
-                  Identity & Global Discovery
+                  Identitet i javna vidljivost
                 </h2>
               </div>
               <ProfileAndSEO facilityId={facility.id} originalSlug={facility.slug} />
@@ -302,10 +340,12 @@ export function FacilityProfileForm({
             </div>
             <div className="flex min-w-[120px] flex-col">
               <span className="text-foreground text-[10px] font-black tracking-widest uppercase">
-                {form.formState.isDirty ? "Unsaved Changes" : "All Changes Saved"}
+                {form.formState.isDirty ? "Izmene nisu sačuvane" : "Sve izmene sačuvane"}
               </span>
               <span className="text-muted-foreground mt-0.5 text-[8px] font-black tracking-widest uppercase opacity-60">
-                {form.formState.isDirty ? "Unsaved local changes" : "Production state verified"}
+                {form.formState.isDirty
+                  ? "Lokalne izmene čekaju potvrdu"
+                  : "Javna verzija je usklađena"}
               </span>
             </div>
           </div>
@@ -324,12 +364,12 @@ export function FacilityProfileForm({
               {isPending ? (
                 <div className="flex items-center gap-2">
                   <Icon name="progress_activity" className="size-3 animate-spin" />
-                  <span>Processing...</span>
+                  <span>Čuvanje...</span>
                 </div>
               ) : (
                 <div className="flex items-center gap-2">
                   <Icon name="save" className="size-3" />
-                  <span>Commit Changes</span>
+                  <span>Sačuvaj izmene</span>
                 </div>
               )}
             </Button>

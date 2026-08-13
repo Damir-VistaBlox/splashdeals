@@ -196,7 +196,7 @@ export function MediaDetailPane({
     if (!detail?.url) return;
     try {
       await navigator.clipboard.writeText(detail.url);
-      toast.success("URL kopiran u clipboard.");
+      toast.success("URL je kopiran u međuspremnik.");
     } catch {
       toast.error("Greška pri kopiranju URL-a.");
     }
@@ -393,7 +393,7 @@ export function MediaDetailPane({
                 updateMediaAction({ id: mediaId, altText }).catch(() => {});
               }
             }}
-            placeholder="Unesite alt tekst..."
+            placeholder="Unesite ALT tekst..."
             aria-label={dict.details.alt_text}
           />
         </div>
