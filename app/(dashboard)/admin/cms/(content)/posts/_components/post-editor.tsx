@@ -266,7 +266,7 @@ export function PostEditor({
           router.push("/admin/cms/posts");
           router.refresh();
         } else {
-          toast.error(result.error || "Greška pri čuvanju");
+          toast.error(result.error || "Čuvanje objave nije uspelo");
         }
       });
     },
@@ -367,7 +367,7 @@ export function PostEditor({
                       router.push("/admin/cms/posts");
                       router.refresh();
                     } else {
-                      toast.error(result.error || "Greška pri vraćanju");
+                      toast.error(result.error || "Vraćanje objave na doradu nije uspelo");
                     }
                   }}
                 >

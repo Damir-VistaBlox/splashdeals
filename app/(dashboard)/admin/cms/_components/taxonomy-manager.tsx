@@ -86,7 +86,12 @@ export function TaxonomyManager({
         setNewName("");
         router.refresh();
       } else {
-        toast.error(result.error || "Greška");
+        toast.error(
+          result.error ||
+            (kind === "category"
+              ? "Kreiranje kategorije nije uspelo"
+              : "Kreiranje taga nije uspelo"),
+        );
       }
     });
   }, [newName, newColor, createItem, kind, router, showColor, startTransition]);
@@ -106,7 +111,12 @@ export function TaxonomyManager({
           setEditingId(null);
           router.refresh();
         } else {
-          toast.error(result.error || "Greška");
+          toast.error(
+            result.error ||
+              (kind === "category"
+                ? "Ažuriranje kategorije nije uspelo"
+                : "Ažuriranje taga nije uspelo"),
+          );
         }
       });
     },
@@ -122,7 +132,12 @@ export function TaxonomyManager({
           toast.success(kind === "category" ? "Kategorija obrisana" : "Tag obrisan");
           router.refresh();
         } else {
-          toast.error(result.error || "Greška");
+          toast.error(
+            result.error ||
+              (kind === "category"
+                ? "Brisanje kategorije nije uspelo"
+                : "Brisanje taga nije uspelo"),
+          );
         }
       });
     },
@@ -193,7 +208,7 @@ export function TaxonomyManager({
                   colSpan={showColor ? 5 : 4}
                   className="text-muted-foreground h-24 text-center text-sm"
                 >
-                  Nema stavki.
+                  {kind === "category" ? "Nema kategorija." : "Nema tagova."}
                 </TableCell>
               </TableRow>
             ) : (

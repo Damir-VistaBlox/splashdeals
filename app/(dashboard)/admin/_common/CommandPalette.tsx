@@ -56,7 +56,7 @@ export function CommandPalette() {
   return (
     <CommandDialog open={open} onOpenChange={setOpen}>
       <CommandInput
-        placeholder="Search facilities, tickets, or transactions..."
+        placeholder="Pretraži objekte, ulaznice ili transakcije..."
         value={query}
         onValueChange={setQuery}
       />
@@ -64,12 +64,12 @@ export function CommandPalette() {
         <CommandEmpty className="py-12 text-center">
           <div className="flex flex-col items-center gap-2 opacity-40">
             <Icon name="search" className="text-[32px]" />
-            <p className="text-xs font-bold tracking-widest uppercase">No results found</p>
+            <p className="text-xs font-bold tracking-widest uppercase">Nema rezultata</p>
           </div>
         </CommandEmpty>
 
         {facilities.length > 0 && (
-          <CommandGroup heading="Facilities (Governance)">
+          <CommandGroup heading="Objekti">
             {facilities.map((f) => (
               <CommandItem
                 key={f.id}
@@ -91,7 +91,7 @@ export function CommandPalette() {
         )}
 
         {tickets.length > 0 && (
-          <CommandGroup heading="Ticket Catalog (Variants)">
+          <CommandGroup heading="Katalog ulaznica">
             {tickets.map((t) => (
               <CommandItem
                 key={t.id}
@@ -113,7 +113,7 @@ export function CommandPalette() {
         )}
 
         {transactions.length > 0 && (
-          <CommandGroup heading="Transactions (Sales Log)">
+          <CommandGroup heading="Transakcije">
             {transactions.map((tr) => (
               <CommandItem
                 key={tr.id}
@@ -134,29 +134,29 @@ export function CommandPalette() {
 
         <CommandSeparator className="bg-muted/30" />
 
-        <CommandGroup heading="Navigation">
+        <CommandGroup heading="Navigacija">
           <CommandItem onSelect={() => runCommand(() => router.push("/admin"))}>
             <Icon name="dashboard" className="text-muted-foreground mr-2 text-[16px]" />
-            <span className="text-xs font-bold">Overview Dashboard</span>
+            <span className="text-xs font-bold">Pregled kontrolnog centra</span>
             <CommandShortcut className="text-[10px]">G H</CommandShortcut>
           </CommandItem>
           <CommandItem onSelect={() => runCommand(() => router.push("/admin/facilities"))}>
             <Icon name="business" className="text-muted-foreground mr-2 text-[16px]" />
-            <span className="text-xs font-bold">Facilities Registry</span>
+            <span className="text-xs font-bold">Registar objekata</span>
             <CommandShortcut className="text-[10px]">G F</CommandShortcut>
           </CommandItem>
           <CommandItem onSelect={() => runCommand(() => router.push("/admin/dashboard"))}>
             <Icon name="history" className="text-muted-foreground mr-2 text-[16px]" />
-            <span className="text-xs font-bold">System Activity Logs</span>
+            <span className="text-xs font-bold">Operativni tok aktivnosti</span>
           </CommandItem>
         </CommandGroup>
 
         <CommandSeparator className="bg-muted/30" />
 
-        <CommandGroup heading="Governance">
+        <CommandGroup heading="Sistem">
           <CommandItem onSelect={() => runCommand(() => setOpen(false))}>
             <Icon name="settings" className="text-muted-foreground mr-2 text-[16px]" />
-            <span className="text-xs font-bold">System Settings</span>
+            <span className="text-xs font-bold">Sistemska podešavanja</span>
             <CommandShortcut className="text-[10px]">S ,</CommandShortcut>
           </CommandItem>
         </CommandGroup>

@@ -6,7 +6,7 @@ import { ApiKeysClient } from "./api-keys-client";
 
 export const metadata: Metadata = {
   title: "API ključevi | Splashdeals Admin",
-  description: "Manage agent API keys for Splashdeals integrations.",
+  description: "Upravljanje API ključevima za interne agente i Splashdeals integracije.",
 };
 
 export default async function ApiKeysPage() {

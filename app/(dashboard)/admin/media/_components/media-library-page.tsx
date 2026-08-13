@@ -12,7 +12,7 @@ export function MediaLibraryPage({ dict }: MediaLibraryPageProps) {
   return (
     <div className="flex h-full flex-col">
       <div className="border-b px-6 py-4">
-        <h1 className="text-xl font-semibold">{(ml.title as string) || "Media biblioteka"}</h1>
+        <h1 className="text-xl font-semibold">{(ml.title as string) || "Medijska biblioteka"}</h1>
       </div>
       <div className="flex-1 overflow-hidden">
         <MediaLibraryContent

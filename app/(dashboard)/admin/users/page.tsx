@@ -9,7 +9,7 @@ import { getUserCounts } from "@/app/(server)/lib/data/admin";
 
 export const metadata: Metadata = {
   title: "Korisnici | Splashdeals Admin",
-  description: "Manage administrative access and roles for Splashdeals.",
+  description: "Upravljanje administratorskim nalozima, ulogama i pristupom za Splashdeals.",
 };
 
 export default async function UsersManagementPage({
@@ -47,7 +47,7 @@ export default async function UsersManagementPage({
   return (
     <AdminPageShell
       title="Korisnici"
-      subtitle="Control administrative access, assign roles, and audit security accounts."
+      subtitle="Upravljajte administratorskim pristupom, dodeljujte uloge i nadgledajte interne naloge."
       cta={{ label: "Novi administrator", href: "/admin/users/new", icon: "person_add" }}
       stats={stats}
       statsGridCols="md:grid-cols-3 lg:grid-cols-3"

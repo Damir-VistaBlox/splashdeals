@@ -3,7 +3,7 @@ import { MediaLibraryPage } from "./_components/media-library-page";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Media biblioteka | CMS | Splashdeals",
+  title: "Medijska biblioteka | CMS | Splashdeals",
 };
 
 export default async function MediaLibraryRoute() {

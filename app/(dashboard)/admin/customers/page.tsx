@@ -8,8 +8,8 @@ import { getCustomerCounts } from "@/app/(server)/lib/data/admin";
 import { CustomersTable } from "./_components/customers-table";
 
 export const metadata: Metadata = {
-  title: "Korisnici | Splashdeals Admin",
-  description: "Manage buyer user accounts for Splashdeals.",
+  title: "Kupci | Splashdeals Admin",
+  description: "Upravljanje korisničkim nalozima kupaca, aktivnim kartama i istorijom kupovine.",
 };
 
 export default async function CustomersManagementPage({
@@ -46,8 +46,8 @@ export default async function CustomersManagementPage({
 
   return (
     <AdminPageShell
-      title="Korisnici"
-      subtitle="Manage buyer accounts, view transaction history and active tickets."
+      title="Kupci"
+      subtitle="Pregledajte naloge kupaca, aktivne karte i istoriju transakcija iz jednog operativnog prikaza."
       stats={stats}
       statsGridCols="md:grid-cols-3 lg:grid-cols-3"
     >

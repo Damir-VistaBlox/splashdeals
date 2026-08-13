@@ -58,10 +58,10 @@ export function DashboardClient({
   return (
     <div
       className="bg-background flex flex-1 flex-col p-4 md:p-6"
-      aria-label="Admin Dashboard Overview"
+      aria-label="Pregled administrativne kontrolne table"
     >
       <div className="@container/main flex w-full flex-1 flex-col gap-4">
-        <h1 className="sr-only">Splashdeals Admin Dashboard Overview</h1>
+        <h1 className="sr-only">Pregled Splashdeals administratorske kontrolne table</h1>
 
         <SectionCards stats={stats} />
 

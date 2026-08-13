@@ -14,7 +14,7 @@ export function TagsManager({ tags }: { tags: Array<Record<string, unknown>> }) 
     <TaxonomyManager
       kind="tag"
       title="Tagovi"
-      description="Dodaj tagove za blog objave (samo SUPER_ADMIN na mutacijama)."
+      description="Dodajte i organizujte tagove za blog objave."
       items={items}
       createItem={(data) => createTagAction({ name: data.name, slug: data.slug })}
       updateItem={(id, data) => updateTagAction(id, { name: data.name, slug: data.slug })}

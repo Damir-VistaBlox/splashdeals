@@ -32,15 +32,20 @@ export default async function TicketsPageV2({
   const hierarchy = await getTicketHierarchy(facilityId);
 
   return (
-    <div className="flex h-full flex-col">
-      <div className="border-border/50 bg-background/60 flex shrink-0 items-center justify-between border-b px-6 py-4 backdrop-blur-md">
+    <div className="animate-in fade-in slide-in-from-right-4 flex h-full flex-col gap-6 duration-500">
+      <div className="border-border/50 bg-background/60 flex shrink-0 items-center justify-between rounded-2xl border px-6 py-5 backdrop-blur-md">
         <div>
-          <h1 className="text-foreground text-lg font-black tracking-tight">
+          <h1 className="text-foreground text-2xl font-black tracking-tight">
             Upravljanje ulaznicama
           </h1>
-          <p className="text-muted-foreground mt-0.5 text-xs">
-            {facility.name} — Kategorije → Tipovi → Cene
+          <p className="text-muted-foreground mt-1 text-sm">
+            {facility.name} — kategorije, tipovi i cenovni nivoi za javnu prodaju
           </p>
+        </div>
+        <div className="border-primary/20 bg-primary/10 rounded-full border px-4 py-1.5">
+          <span className="text-primary text-[10px] font-black tracking-widest uppercase">
+            Prodajni katalog
+          </span>
         </div>
       </div>
 

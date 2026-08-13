@@ -178,7 +178,7 @@ export function CropModal({
               Iseci fotografiju
             </h3>
             <p className="text-muted-foreground mt-0.5 text-[10px] tracking-wider uppercase">
-              Crop utility: re-encodes to high-density WebP
+              Alat za sečenje slike sa ponovnim WebP kodiranjem
             </p>
           </div>
           <Button
@@ -186,7 +186,7 @@ export function CropModal({
             size="icon"
             onClick={onClose}
             className="size-8 rounded-xl"
-            aria-label="Close crop dialog"
+            aria-label="Zatvori dijalog za sečenje"
           >
             <Icon name="close" className="size-4" />
           </Button>

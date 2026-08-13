@@ -50,7 +50,7 @@ export function ApiKeysClient({ initialKeys }: { initialKeys: ApiKey[] }) {
   const { execute: handleCreate, isPending: isCreating } = useAction(
     (name: string) => createApiKeyAction(name),
     {
-      successMessage: "API key generated",
+      successMessage: "API ključ je generisan",
       refresh: false,
       onSuccess: (result) => {
         const createApiKeyResponseSchema = z.object({
@@ -68,16 +68,16 @@ export function ApiKeysClient({ initialKeys }: { initialKeys: ApiKey[] }) {
     const result = await deleteApiKeyAction(id);
     if (result.success) {
       setKeys((prev) => prev.filter((k) => k.id !== id));
-      toast.success("API key revoked");
+      toast.success("API ključ je opozvan");
     } else {
-      toast.error(result.error || "Failed to revoke API key");
+      toast.error(result.error || "Opoziv API ključa nije uspeo");
     }
   };
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
     setHasCopied(true);
-    toast.success("Copied to clipboard");
+    toast.success("Kopirano u međuspremnik");
     setTimeout(() => setHasCopied(false), 2000);
   };
 
@@ -89,7 +89,7 @@ export function ApiKeysClient({ initialKeys }: { initialKeys: ApiKey[] }) {
             API ključevi
           </h1>
           <p className="text-muted-foreground mt-1 font-mono text-sm uppercase opacity-70">
-            Manage headless access for Paperclip Facility Administrator agents
+            Upravljajte sistemskim pristupom za agente, integracije i automatizovane tokove
           </p>
         </div>
 
@@ -125,7 +125,7 @@ export function ApiKeysClient({ initialKeys }: { initialKeys: ApiKey[] }) {
                   </Label>
                   <Input
                     id="name"
-                    placeholder="e.g. Facility Admin Agent"
+                    placeholder="npr. Agent za objekte"
                     value={newKeyName}
                     onChange={(e) => setNewKeyName(e.target.value)}
                     className="bg-muted/30 border-border focus:border-ring"

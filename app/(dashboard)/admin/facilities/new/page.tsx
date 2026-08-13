@@ -8,7 +8,7 @@ import { requireSuperAdmin } from "@/app/(server)/lib/auth-guards";
 
 export const metadata: Metadata = {
   title: "Novi objekat | Splashdeals Admin",
-  description: "Registrujte novi akva park ili objekat na Splashdeals marketplace.",
+  description: "Registrujte novi akva park ili objekat u Splashdeals mrežu partnera.",
 };
 
 export default async function NewFacilityPage() {

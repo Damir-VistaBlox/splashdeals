@@ -8,7 +8,7 @@ import { getFacilityCounts } from "@/app/(server)/lib/data/admin";
 
 export const metadata: Metadata = {
   title: "Objekti | Splashdeals Admin",
-  description: "Globalni direktorijum akva parkova i operativnih konfiguracija.",
+  description: "Centralni registar akva parkova, bazena i operativnih konfiguracija.",
 };
 
 /** Preserve non-status query params when metric cards filter by status (M8). */

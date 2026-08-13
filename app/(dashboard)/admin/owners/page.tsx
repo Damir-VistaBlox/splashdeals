@@ -35,7 +35,7 @@ export default function AdminOwnersPage() {
         const result = await getOwnerFacilitiesAction();
         setFacilities(result);
       } catch {
-        toast.error("Failed to load facilities");
+        toast.error("Učitavanje objekata nije uspelo");
       } finally {
         setLoading(false);
       }
@@ -77,7 +77,7 @@ export default function AdminOwnersPage() {
           <CardTitle>Dodela vlasnika</CardTitle>
           <CardDescription>
             Dodelite vlasništvo nad objektom korisniku putem email adrese. Korisnik će dobiti
-            FACILITY_OWNER rolu i moći će da upravlja cenama i pregleda prodaju.
+            `FACILITY_OWNER` ulogu i moći će da upravlja cenama i prati prodaju.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">

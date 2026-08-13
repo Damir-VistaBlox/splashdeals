@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Create Admin User | Splashdeals Admin",
+  title: "Novi administrator | Splashdeals Admin",
 };
 
 export default async function CreateUserPage() {
@@ -32,7 +32,7 @@ export default async function CreateUserPage() {
             Novi administrator
           </h1>
           <p className="text-muted-foreground mt-1 text-xs tracking-widest uppercase opacity-80">
-            Grant administrative clearance to a new team member.
+            Dodelite administratorski pristup novom članu tima.
           </p>
         </div>
       </div>

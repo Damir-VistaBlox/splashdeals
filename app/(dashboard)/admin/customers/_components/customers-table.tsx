@@ -68,10 +68,10 @@ export function CustomersTable({ page, limit, search: initialSearch }: Customers
             setTotalCount(successResult.totalCount);
           });
         } else {
-          toast.error("Failed to load customers");
+          toast.error("Učitavanje kupaca nije uspelo");
         }
       } catch {
-        toast.error("Failed to load customers");
+        toast.error("Učitavanje kupaca nije uspelo");
       } finally {
         startTransition(() => {
           setLoading(false);
@@ -198,7 +198,7 @@ export function CustomersTable({ page, limit, search: initialSearch }: Customers
                         {customer.image ? (
                           <Image
                             src={customer.image}
-                            alt={customer.name || "Customer"}
+                            alt={customer.name || "Kupac"}
                             fill
                             className="object-cover"
                           />
@@ -207,7 +207,7 @@ export function CustomersTable({ page, limit, search: initialSearch }: Customers
                         )}
                       </div>
                       <span className="text-foreground text-sm font-bold tracking-tight">
-                        {customer.name || "Anonymous"}
+                        {customer.name || "Bez imena"}
                       </span>
                     </div>
                   </TableCell>

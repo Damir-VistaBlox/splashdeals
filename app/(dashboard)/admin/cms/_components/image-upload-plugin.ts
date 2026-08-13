@@ -62,7 +62,7 @@ async function uploadAndInsert(editor: Editor, file: File, source?: "blog" | "st
     const result = await uploadMediaAction(formData);
 
     if (!result.success || !result.data?.url) {
-      throw new Error(result.error || "Upload failed");
+      throw new Error(result.error || "Otpremanje slike nije uspelo");
     }
 
     editor.chain().focus().setImage({ src: result.data.url }).run();

@@ -97,7 +97,7 @@ export function CompactAmenitiesTable({
           id: a.id,
           name: a.name,
           icon: a.icon,
-          category: a.category || "General Features",
+          category: a.category || "Opšte pogodnosti",
           type: a.type,
           checked: !!existing && existing.isActive,
           value: existing?.value || "",
@@ -118,7 +118,7 @@ export function CompactAmenitiesTable({
   const [newRow, setNewRow] = useState({
     name: "",
     type: "BOOLEAN" as "BOOLEAN" | "QUANTIFIABLE" | "TEXT",
-    category: "General Features",
+    category: "Opšte pogodnosti",
     icon: "CircleDot",
   });
   const [isCreating, setIsCreating] = useState(false);
@@ -219,17 +219,17 @@ export function CompactAmenitiesTable({
         const res = await deleteGlobalAmenityAction(id, facilityId);
         if (res && res.success) {
           setItems((prev) => prev.filter((item) => item.id !== id));
-          toast.success("Amenity Deleted", {
-            description: `Permanently removed ${name} from registry.`,
+          toast.success("Stavka je obrisana", {
+            description: `Stavka "${name}" je trajno uklonjena iz registra.`,
           });
           router.refresh();
         } else {
-          throw new Error("Failed to delete custom amenity");
+          throw new Error("Brisanje prilagođene stavke nije uspelo");
         }
       } catch (error) {
         console.error("Failed to save amenities", error);
-        toast.error("Deletion Rejected", {
-          description: "This custom asset is still tied to operational dependencies.",
+        toast.error("Brisanje nije dozvoljeno", {
+          description: "Ova prilagođena stavka je i dalje povezana sa operativnim zavisnostima.",
         });
       }
     });
@@ -238,7 +238,7 @@ export function CompactAmenitiesTable({
   // ➕ Inline Ingest / Row Creation
   const handleCreateAmenity = async () => {
     if (!newRow.name.trim()) {
-      toast.error("Validation Error", { description: "Name is required to register an asset." });
+      toast.error("Greška u validaciji", { description: "Naziv je obavezan za unos nove stavke." });
       return;
     }
 
@@ -263,8 +263,8 @@ export function CompactAmenitiesTable({
       const result = await updateFacilityAmenitiesAction(facilityId, payload);
 
       if (result && result.success) {
-        toast.success("Asset Created & Registered", {
-          description: `Custom infrastructure "${newRow.name}" is now live.`,
+        toast.success("Stavka je kreirana", {
+          description: `Prilagođena stavka "${newRow.name}" je uspešno aktivirana.`,
         });
 
         // Refresh local state lists gracefully
@@ -285,7 +285,7 @@ export function CompactAmenitiesTable({
         setNewRow({
           name: "",
           type: "BOOLEAN",
-          category: "General Features",
+          category: "Opšte pogodnosti",
           icon: "CircleDot",
         });
         router.refresh();
@@ -294,8 +294,8 @@ export function CompactAmenitiesTable({
       }
     } catch (error) {
       console.error("Failed to save amenities", error);
-      toast.error("Registration Failed", {
-        description: "Verify name uniqueness and schema limits.",
+      toast.error("Registracija nije uspela", {
+        description: "Proverite jedinstvenost naziva i dozvoljena ograničenja šeme.",
       });
     } finally {
       setIsCreating(false);
@@ -325,7 +325,7 @@ export function CompactAmenitiesTable({
             <Input
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search facility infrastructure, slides, features..."
+              placeholder="Pretraži sadržaje, pogodnosti i interne oznake..."
               className="bg-background/40 border-border/50 text-foreground/80 focus-visible:ring-primary h-10 rounded-xl pl-10"
             />
           </div>
@@ -351,7 +351,7 @@ export function CompactAmenitiesTable({
           ) : isPending ? (
             <div className="text-primary bg-primary/10 border-primary/20 flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-bold tracking-widest uppercase">
               <Icon name="progress_activity" className="animate-spin text-[14px]" />
-              Synchronizing...
+              Sinhronizacija...
             </div>
           ) : null}
         </div>
@@ -362,22 +362,22 @@ export function CompactAmenitiesTable({
             <TableHeader className="bg-background/80 border-border/50 sticky top-0 z-10 border-b backdrop-blur-md">
               <TableRow className="border-border/50 hover:bg-transparent">
                 <TableHead className="text-muted-foreground w-[80px] text-[10px] font-black tracking-widest uppercase">
-                  Active
+                  Aktivno
                 </TableHead>
                 <TableHead className="text-muted-foreground text-[10px] font-black tracking-widest uppercase">
-                  Infrastructure Asset
+                  Stavka sadržaja
                 </TableHead>
                 <TableHead className="text-muted-foreground w-[120px] text-[10px] font-black tracking-widest uppercase">
-                  Type
+                  Tip
                 </TableHead>
                 <TableHead className="text-muted-foreground w-[200px] text-[10px] font-black tracking-widest uppercase">
-                  Operational Value
+                  Vrednost
                 </TableHead>
                 <TableHead className="text-muted-foreground w-[80px] text-center text-[10px] font-black tracking-widest uppercase">
-                  Featured
+                  Istaknuto
                 </TableHead>
                 <TableHead className="text-muted-foreground w-[80px] text-right text-[10px] font-black tracking-widest uppercase">
-                  Action
+                  Akcija
                 </TableHead>
               </TableRow>
             </TableHeader>
@@ -394,7 +394,7 @@ export function CompactAmenitiesTable({
                         checked={item.checked}
                         onCheckedChange={(val) => handleToggleActive(item.id, val)}
                         className="data-[state=checked]:bg-primary cursor-pointer"
-                        aria-label="Toggle amenity active"
+                        aria-label="Uključi ili isključi stavku"
                       />
                     </TableCell>
 
@@ -433,20 +433,20 @@ export function CompactAmenitiesTable({
                           onKeyDown={(e) => handleValueKeyDown(e)}
                           placeholder={
                             item.type === "QUANTIFIABLE"
-                              ? "e.g. 5 slides"
-                              : "e.g. Wi-Fi speed, extra details"
+                              ? "npr. 5 tobogana"
+                              : "npr. brzina Wi-Fi mreže ili dodatni detalji"
                           }
                           className="bg-background/40 border-border/50 text-foreground/90 focus-visible:ring-primary h-8 max-w-[180px] rounded-lg text-xs"
-                          aria-label={`${item.name} value`}
+                          aria-label={`Vrednost za ${item.name}`}
                         />
                       ) : item.checked ? (
                         <div className="text-primary flex items-center gap-1.5 text-xs font-bold">
                           <Icon name="check" className="text-[14px]" />
-                          <span>Enabled</span>
+                          <span>Aktivno</span>
                         </div>
                       ) : (
                         <span className="text-muted-foreground/80 text-xs font-medium">
-                          Inactive
+                          Neaktivno
                         </span>
                       )}
                     </TableCell>
@@ -462,7 +462,9 @@ export function CompactAmenitiesTable({
                               type="button"
                               onClick={() => handleToggleFeatured(item.id)}
                               className="focus:ring-primary group cursor-pointer rounded p-1 outline-none focus:ring-1"
-                              aria-label={item.isFeatured ? "Unfeature amenity" : "Feature amenity"}
+                              aria-label={
+                                item.isFeatured ? "Ukloni isticanje stavke" : "Istakni stavku"
+                              }
                             >
                               <Icon
                                 name="star"
@@ -476,8 +478,8 @@ export function CompactAmenitiesTable({
                           </TooltipTrigger>
                           <TooltipContent className="bg-background border-border text-foreground/90 border text-[10px] font-medium tracking-wide">
                             {item.isFeatured
-                              ? "Unfeature amenity on landing"
-                              : "Feature amenity on landing"}
+                              ? "Ukloni isticanje sa javne stranice"
+                              : "Istakni stavku na javnoj stranici"}
                           </TooltipContent>
                         </Tooltip>
                       ) : (
@@ -496,13 +498,13 @@ export function CompactAmenitiesTable({
                               type="button"
                               onClick={() => handleDeleteCustom(item.id, item.name)}
                               className="text-muted-foreground/80 hover:text-destructive hover:bg-destructive/10 animate-in fade-in zoom-in-95 cursor-pointer rounded-lg p-1.5 transition-colors duration-100"
-                              aria-label="Delete custom amenity permanently"
+                              aria-label="Trajno obriši prilagođenu stavku"
                             >
                               <Icon name="delete" className="text-[14px]" />
                             </Button>
                           </TooltipTrigger>
                           <TooltipContent className="bg-background border-border text-foreground/90 border text-[10px] font-medium tracking-wide">
-                            Delete custom amenity permanently
+                            Trajno obriši prilagođenu stavku
                           </TooltipContent>
                         </Tooltip>
                       ) : (
@@ -514,7 +516,7 @@ export function CompactAmenitiesTable({
                               variant="ghost"
                               size="icon"
                               className="cursor-help"
-                              aria-label="Core infrastructure, cannot delete"
+                              aria-label="Sistemska stavka se ne može obrisati"
                             >
                               <Icon
                                 name="help"
@@ -523,7 +525,7 @@ export function CompactAmenitiesTable({
                             </Button>
                           </TooltipTrigger>
                           <TooltipContent className="bg-background border-border text-foreground/90 border text-[10px] font-medium tracking-wide">
-                            Core Infrastructure (Cannot Delete)
+                            Sistemska stavka se ne može obrisati
                           </TooltipContent>
                         </Tooltip>
                       )}
@@ -536,7 +538,7 @@ export function CompactAmenitiesTable({
                     colSpan={6}
                     className="text-muted-foreground h-32 text-center text-xs font-medium tracking-widest uppercase"
                   >
-                    No matching assets found
+                    Nema stavki koje odgovaraju pretrazi
                   </TableCell>
                 </TableRow>
               )}
@@ -547,13 +549,13 @@ export function CompactAmenitiesTable({
         {/* ➕ Space-Efficient Table Footer Add Row */}
         <div className="border-border/50 border-t pt-4">
           <h3 className="text-muted-foreground mb-3 text-[10px] font-black tracking-[0.2em] uppercase">
-            Add Custom Facility Infrastructure
+            Dodaj prilagođenu stavku
           </h3>
           <div className="bg-background/40 border-border/50 flex flex-col items-center gap-3 rounded-xl border p-4 md:flex-row">
             <Input
               value={newRow.name}
               onChange={(e) => setNewRow((prev) => ({ ...prev, name: e.target.value }))}
-              placeholder="Infrastructure Asset Name (e.g. Wave Generator)"
+              placeholder="Naziv stavke, npr. talasni bazen"
               className="bg-muted border-border/50 text-foreground/80 focus-visible:ring-primary h-9 flex-1 rounded-lg text-xs"
             />
 
@@ -564,7 +566,7 @@ export function CompactAmenitiesTable({
               }
             >
               <SelectTrigger className="bg-muted border-border/50 text-foreground/80 h-9 w-[140px] rounded-lg text-xs">
-                <SelectValue placeholder="Value Type" />
+                <SelectValue placeholder="Tip vrednosti" />
               </SelectTrigger>
               <SelectContent className="bg-background border-border text-foreground/80">
                 <SelectItem value="BOOLEAN">BOOLEAN</SelectItem>
@@ -576,7 +578,7 @@ export function CompactAmenitiesTable({
             <Input
               value={newRow.category}
               onChange={(e) => setNewRow((prev) => ({ ...prev, category: e.target.value }))}
-              placeholder="Category (e.g. Attractions)"
+              placeholder="Kategorija, npr. atrakcije"
               className="bg-muted border-border/50 text-foreground/80 focus-visible:ring-primary h-9 w-[160px] rounded-lg text-xs"
             />
 

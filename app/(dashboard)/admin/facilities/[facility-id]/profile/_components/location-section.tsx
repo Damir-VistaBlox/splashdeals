@@ -51,7 +51,7 @@ export function LocationSection() {
           render={({ field }) => (
             <FormItem className="space-y-1">
               <FormLabel className="text-[9px] font-black tracking-widest uppercase opacity-60">
-                Postal Code
+                Poštanski broj
               </FormLabel>
               <FormControl>
                 <Input
@@ -72,7 +72,7 @@ export function LocationSection() {
         render={({ field }) => (
           <FormItem className="space-y-1">
             <FormLabel className="text-[9px] font-black tracking-widest uppercase opacity-60">
-              Street Address
+              Adresa
             </FormLabel>
             <FormControl>
               <Input

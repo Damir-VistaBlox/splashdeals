@@ -15,9 +15,6 @@ import { IdentitySection } from "./sections/identity-section";
 import { LocalizationSection } from "./sections/localization-section";
 import { ConfigurationSection } from "./sections/configuration-section";
 
-/**
- * Type guard: checks if the server action returned a successful creation result.
- */
 function isSuccessResponse(result: unknown): result is { success: true; id: string } {
   return (
     typeof result === "object" &&
@@ -28,9 +25,6 @@ function isSuccessResponse(result: unknown): result is { success: true; id: stri
   );
 }
 
-/**
- * Type guard: checks if the server action returned an error result.
- */
 function hasError(result: unknown): result is { success: false; error: string } {
   return (
     typeof result === "object" &&
@@ -41,10 +35,6 @@ function hasError(result: unknown): result is { success: false; error: string } 
   );
 }
 
-/**
- * 🌊 Aquastream Onboarding System
- * specialized form for institutional-grade facility registration.
- */
 export function OnboardFacilityForm() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -88,13 +78,13 @@ export function OnboardFacilityForm() {
 
     if (isSuccessResponse(result)) {
       const { id } = result;
-      toast.success("Facility created successfully");
+      toast.success("Objekat je uspešno kreiran");
       router.push(`/admin/facilities/${id}`);
     } else if (hasError(result)) {
       setServerError(result.error);
       setIsSubmitting(false);
     } else {
-      setServerError("Failed to create facility.");
+      setServerError("Kreiranje objekta nije uspelo.");
       setIsSubmitting(false);
     }
   }
@@ -104,7 +94,7 @@ export function OnboardFacilityForm() {
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         className="mt-4 space-y-6"
-        aria-label="Onboard New Facility Form"
+        aria-label="Forma za unos novog objekta"
       >
         {serverError && (
           <div className="bg-destructive/15 text-destructive border-destructive/20 animate-in fade-in slide-in-from-top-2 rounded-xl border p-4 text-sm font-medium">
@@ -135,12 +125,12 @@ export function OnboardFacilityForm() {
               {isSubmitting ? (
                 <>
                   <Icon name="progress_activity" className="mr-2 animate-spin text-[20px]" />
-                  Generating Workspace...
+                  Kreiranje objekta...
                 </>
               ) : (
                 <>
                   <Icon name="save" className="mr-2 text-[20px]" />
-                  Save & Initialize Facility
+                  Sačuvaj i otvori objekat
                 </>
               )}
             </Button>

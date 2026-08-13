@@ -203,7 +203,7 @@ export function PageEditor({ page, dict, currentUserId = "" }: PageEditorProps) 
           router.push("/admin/cms/pages");
           router.refresh();
         } else {
-          toast.error(result.error || "Greška pri čuvanju");
+          toast.error(result.error || "Čuvanje strane nije uspelo");
         }
       });
     },
@@ -300,7 +300,7 @@ export function PageEditor({ page, dict, currentUserId = "" }: PageEditorProps) 
                       router.push("/admin/cms/pages");
                       router.refresh();
                     } else {
-                      toast.error(result.error || "Greška pri vraćanju");
+                      toast.error(result.error || "Vraćanje strane na doradu nije uspelo");
                     }
                   }}
                 >

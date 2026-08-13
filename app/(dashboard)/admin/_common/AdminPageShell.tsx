@@ -16,7 +16,7 @@ interface AdminPageShellProps {
   title: string;
   subtitle: string;
   cta?: { label: string; href: string; icon: string };
-  stats: StatItem[];
+  stats?: StatItem[];
   statsGridCols?: string;
   glowColor?: string;
   children: ReactNode;
@@ -26,7 +26,7 @@ export function AdminPageShell({
   title,
   subtitle,
   cta,
-  stats,
+  stats = [],
   statsGridCols = "md:grid-cols-2 lg:grid-cols-4",
   glowColor = "bg-primary/5",
   children,
@@ -43,7 +43,7 @@ export function AdminPageShell({
           <h1 className="text-foreground text-2xl font-black tracking-tight uppercase italic">
             {title}
           </h1>
-          <p className="text-muted-foreground mt-1.5 text-xs font-medium tracking-wider uppercase opacity-80">
+          <p className="text-muted-foreground mt-1.5 max-w-3xl text-sm leading-6 md:text-[15px]">
             {subtitle}
           </p>
         </div>
@@ -61,18 +61,20 @@ export function AdminPageShell({
         )}
       </div>
 
-      <div className={`relative z-10 grid gap-4 ${statsGridCols}`}>
-        {stats.map((stat) => (
-          <AdminMetricCard
-            key={stat.label}
-            label={stat.label}
-            value={stat.value}
-            color={stat.color}
-            glow={stat.glow}
-            href={stat.href}
-          />
-        ))}
-      </div>
+      {stats.length > 0 ? (
+        <div className={`relative z-10 grid gap-4 ${statsGridCols}`}>
+          {stats.map((stat) => (
+            <AdminMetricCard
+              key={stat.label}
+              label={stat.label}
+              value={stat.value}
+              color={stat.color}
+              glow={stat.glow}
+              href={stat.href}
+            />
+          ))}
+        </div>
+      ) : null}
 
       <div className="relative z-10 mt-4">{children}</div>
     </div>

@@ -40,7 +40,7 @@ export function RedirectManager({ initialRedirects }: RedirectManagerProps) {
 
   const handleCreate = useCallback(async () => {
     if (!newSource || !newDestination) {
-      toast.error("Source i destination su obavezni.");
+      toast.error("Izvorna i odredišna putanja su obavezne.");
       return;
     }
 
@@ -52,7 +52,7 @@ export function RedirectManager({ initialRedirects }: RedirectManagerProps) {
       });
 
       if (result.success) {
-        toast.success("Redirect kreiran");
+        toast.success("Preusmerenje je kreirano");
         setNewSource("");
         setNewDestination("");
         setNewStatusCode("301");
@@ -83,7 +83,7 @@ export function RedirectManager({ initialRedirects }: RedirectManagerProps) {
       startTransition(async () => {
         const result = await deleteRedirectAction(id);
         if (result.success) {
-          toast.success("Redirect obrisan");
+          toast.success("Preusmerenje je obrisano");
           setRedirects((prev) => prev.filter((r) => r.id !== id));
           router.refresh();
         } else {
@@ -98,10 +98,10 @@ export function RedirectManager({ initialRedirects }: RedirectManagerProps) {
     <div className="space-y-6">
       {/* Create form */}
       <div className="rounded-lg border p-4">
-        <h3 className="mb-4 text-sm font-semibold">Novi redirect</h3>
+        <h3 className="mb-4 text-sm font-semibold">Novo preusmerenje</h3>
         <div className="flex flex-wrap items-end gap-3">
           <div className="flex-1 space-y-1">
-            <Label htmlFor="source">Source URL</Label>
+            <Label htmlFor="source">Izvorna putanja</Label>
             <Input
               id="source"
               value={newSource}
@@ -111,7 +111,7 @@ export function RedirectManager({ initialRedirects }: RedirectManagerProps) {
             />
           </div>
           <div className="flex-1 space-y-1">
-            <Label htmlFor="destination">Destination URL</Label>
+            <Label htmlFor="destination">Odredišna putanja</Label>
             <Input
               id="destination"
               value={newDestination}
@@ -123,7 +123,7 @@ export function RedirectManager({ initialRedirects }: RedirectManagerProps) {
           <div className="w-24 space-y-1">
             <Label htmlFor="statusCode">Tip</Label>
             <Select value={newStatusCode} onValueChange={setNewStatusCode}>
-              <SelectTrigger id="statusCode" aria-label="Status code">
+              <SelectTrigger id="statusCode" aria-label="Status preusmerenja">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -145,8 +145,8 @@ export function RedirectManager({ initialRedirects }: RedirectManagerProps) {
           <table className="w-full text-sm">
             <thead>
               <tr className="bg-muted/50 border-b">
-                <th className="px-4 py-3 text-left font-medium">Source</th>
-                <th className="px-4 py-3 text-left font-medium">Destination</th>
+                <th className="px-4 py-3 text-left font-medium">Izvor</th>
+                <th className="px-4 py-3 text-left font-medium">Odredište</th>
                 <th className="px-4 py-3 text-center font-medium">Tip</th>
                 <th className="px-4 py-3 text-center font-medium">Aktivan</th>
                 <th className="px-4 py-3 text-right font-medium">Akcije</th>
@@ -156,7 +156,7 @@ export function RedirectManager({ initialRedirects }: RedirectManagerProps) {
               {redirects.length === 0 ? (
                 <tr>
                   <td colSpan={5} className="text-muted-foreground px-4 py-8 text-center">
-                    Nema redirecta. Dodaj prvi iznad.
+                    Nema preusmerenja. Dodajte prvo iznad.
                   </td>
                 </tr>
               ) : (
