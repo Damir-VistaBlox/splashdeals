@@ -47,9 +47,9 @@ export function FacilityCard({
 
   return (
     <Link href={`/${facility.slug}`} className="block">
-      <Card className="group border-border hover:border-primary/30 relative flex h-[300px] flex-col justify-end overflow-hidden transition-[border-color] duration-500 sm:h-[400px]">
+      <Card className="surface-card group animated-border hover:border-primary/30 relative flex h-[320px] flex-col justify-end overflow-hidden rounded-[2rem] border-white/70 transition-[transform,border-color,box-shadow] duration-500 hover:-translate-y-1 sm:h-[410px]">
         {facility.logoUrl && (
-          <div className="border-border bg-background/60 absolute top-4 right-4 z-20 flex h-10 w-10 items-center justify-center overflow-hidden rounded-2xl border p-2 shadow-lg backdrop-blur-md transition-transform duration-500 group-hover:scale-105 sm:top-6 sm:right-6 sm:h-14 sm:w-14">
+          <div className="absolute top-4 right-4 z-20 flex h-11 w-11 items-center justify-center overflow-hidden rounded-2xl border border-white/70 bg-white/72 p-2 shadow-lg backdrop-blur-md transition-transform duration-500 group-hover:scale-105 sm:top-6 sm:right-6 sm:h-14 sm:w-14">
             <div className="relative h-full w-full">
               <Image
                 src={facility.logoUrl}
@@ -83,31 +83,31 @@ export function FacilityCard({
               <Icon name="auto_awesome" className="text-foreground text-[48px]" />
             </div>
           )}
-          <div className="from-background via-background/50 absolute inset-0 bg-gradient-to-t to-transparent" />
+          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(2,32,52,0.02),rgba(2,32,52,0.18)_40%,rgba(2,32,52,0.84)_100%)]" />
         </div>
 
-        <div className="from-background/80 via-background/40 relative z-10 flex w-full flex-col gap-1 bg-gradient-to-t to-transparent p-4 sm:p-6">
-          <span className="text-primary mb-2 flex items-center gap-2 text-[10px] font-black tracking-[0.2em] uppercase">
+        <div className="relative z-10 flex w-full flex-col gap-1 p-4 sm:p-6">
+          <span className="mb-2 inline-flex w-fit items-center gap-2 rounded-full border border-white/14 bg-black/18 px-3 py-1 text-[10px] font-black tracking-[0.2em] text-white uppercase backdrop-blur-md">
             <Icon name="navigation" className="text-primary rotate-45 text-[12px]" />
             {dict?.categories?.[facility.category.toLowerCase()] || facility.category}
           </span>
-          <h3 className="text-foreground group-hover:text-primary mb-3 text-xl leading-none font-black tracking-tighter uppercase italic transition-colors sm:text-2xl">
+          <h3 className="mb-3 text-xl leading-none font-black tracking-[-0.06em] text-white uppercase italic transition-colors sm:text-2xl">
             {facility.name}
           </h3>
 
-          <div className="text-muted-foreground flex flex-col gap-2 text-[10px] font-bold tracking-widest uppercase">
+          <div className="flex flex-col gap-2 text-[10px] font-bold tracking-widest text-white/82 uppercase">
             <div className="flex items-center gap-2">
-              <Icon name="location_on" className="text-muted-foreground shrink-0 text-[14px]" />
+              <Icon name="location_on" className="shrink-0 text-[14px] text-white/68" />
               <span className="truncate">
                 {facility.streetName} {facility.streetNumber}, {facility.postalCode} {facility.city}
               </span>
             </div>
 
-            <div className="border-border mt-2 flex items-center justify-between border-t pt-4">
+            <div className="mt-2 flex items-center justify-between border-t border-white/14 pt-4">
               {facility.minPrice ? (
-                <div className="text-muted-foreground text-[10px] font-black tracking-widest uppercase">
+                <div className="text-[10px] font-black tracking-widest text-white/70 uppercase">
                   {fromLabel}{" "}
-                  <span className="text-primary mt-1 block text-base leading-none font-black">
+                  <span className="mt-1 block text-base leading-none font-black text-white">
                     {facility.minPrice} RSD
                   </span>
                 </div>
@@ -115,7 +115,7 @@ export function FacilityCard({
                 <div />
               )}
 
-              <div className="text-primary bg-primary/10 border-primary/20 group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary shadow-primary/10 flex items-center gap-1.5 rounded-xl border px-4 py-2.5 text-[9px] font-black tracking-[0.15em] uppercase shadow-lg transition-colors duration-300 group-hover:translate-x-1">
+              <div className="flex items-center gap-1.5 rounded-xl border border-white/16 bg-white/12 px-4 py-2.5 text-[9px] font-black tracking-[0.15em] text-white uppercase shadow-lg backdrop-blur-md transition-all duration-300 group-hover:translate-x-1 group-hover:border-white/30 group-hover:bg-white/18">
                 <span>Detaljnije</span>
                 <Icon
                   name="navigation"

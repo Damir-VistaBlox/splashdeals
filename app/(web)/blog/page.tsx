@@ -47,14 +47,17 @@ export default async function BlogPage({
   const totalPages = Math.ceil(total / perPage);
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-12">
-      {/* Header */}
-      <div className="mb-12 text-center">
-        <h1 className="mb-3 text-4xl font-bold tracking-tight">{dict.blog.heading || "Blog"}</h1>
-        <p className="text-muted-foreground mx-auto max-w-2xl text-lg">
-          {dict.blog.description ||
-            "Saveti, vodiči i novosti iz sveta akva parkova, bazena i wellness centara u Srbiji."}
-        </p>
+    <div className="mx-auto max-w-6xl px-3 py-8 sm:px-6 sm:py-10 md:px-8">
+      <div className="section-shell mb-10 overflow-hidden rounded-[2rem] px-6 py-10 text-center sm:px-10 sm:py-14">
+        <div className="relative z-10">
+          <h1 className="mb-3 text-4xl font-black tracking-[-0.06em] text-sky-950 sm:text-5xl">
+            {dict.blog.heading || "Blog"}
+          </h1>
+          <p className="mx-auto max-w-2xl text-lg text-slate-600">
+            {dict.blog.description ||
+              "Saveti, vodiči i novosti iz sveta akva parkova, bazena i wellness centara u Srbiji."}
+          </p>
+        </div>
       </div>
 
       {/* Posts grid */}
@@ -70,7 +73,7 @@ export default async function BlogPage({
             <Link
               key={post.id}
               href={`/blog/${post.slug}`}
-              className="group bg-card overflow-hidden rounded-xl border transition-all hover:-translate-y-0.5 hover:shadow-lg"
+              className="surface-card group overflow-hidden rounded-[1.75rem] transition-all hover:-translate-y-0.5 hover:shadow-lg"
             >
               {/* Cover image */}
               <div className="bg-muted relative aspect-[16/9] overflow-hidden">
@@ -142,7 +145,7 @@ export default async function BlogPage({
           {currentPage > 1 && (
             <Link
               href={`/blog?page=${currentPage - 1}`}
-              className="hover:bg-accent inline-flex min-h-[44px] items-center gap-1 rounded-md border px-3 py-2 text-sm transition-colors"
+              className="inline-flex min-h-[44px] items-center gap-1 rounded-full border border-white/70 bg-white/70 px-4 py-2 text-sm transition-colors hover:bg-white"
             >
               <Icon name="chevron_left" className="size-4" />
               {dict.blog.previous || "Prethodna"}
@@ -154,7 +157,7 @@ export default async function BlogPage({
           {currentPage < totalPages && (
             <Link
               href={`/blog?page=${currentPage + 1}`}
-              className="hover:bg-accent inline-flex min-h-[44px] items-center gap-1 rounded-md border px-3 py-2 text-sm transition-colors"
+              className="inline-flex min-h-[44px] items-center gap-1 rounded-full border border-white/70 bg-white/70 px-4 py-2 text-sm transition-colors hover:bg-white"
             >
               {dict.blog.next || "Sledeća"}
               <Icon name="chevron_right" className="size-4" />

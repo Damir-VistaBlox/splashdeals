@@ -216,7 +216,7 @@ export function ShowcaseTicketGroups({
       {/* Scrollable glass pill tabs container */}
       <div className="relative mb-8 w-full">
         <div className="from-background via-background/60 pointer-events-none absolute top-0 right-[-24px] bottom-0 z-10 w-16 bg-gradient-to-l to-transparent lg:hidden" />
-        <div className="no-scrollbar lg:bg-muted/50 lg:border-border -mx-6 flex gap-2 overflow-x-auto scroll-smooth rounded-none border-none bg-transparent px-6 pt-1 pb-2 lg:mx-0 lg:flex-wrap lg:justify-center lg:overflow-visible lg:rounded-full lg:border lg:px-1 lg:py-1 lg:backdrop-blur-md">
+        <div className="no-scrollbar -mx-6 flex gap-2 overflow-x-auto scroll-smooth rounded-none border-none bg-transparent px-6 pt-1 pb-2 lg:mx-0 lg:flex-wrap lg:justify-center lg:overflow-visible lg:rounded-full lg:border lg:border-white/70 lg:bg-white/62 lg:px-1 lg:py-1 lg:backdrop-blur-md">
           {groups.map((group) => {
             const isActive = group.id === activeGroupId;
             return (
@@ -228,7 +228,7 @@ export function ShowcaseTicketGroups({
                   "relative h-11 min-h-11 shrink-0 rounded-full px-6 text-xs font-black tracking-widest uppercase transition-colors duration-300 select-none",
                   isActive
                     ? "text-primary-foreground"
-                    : "text-muted-foreground hover:text-foreground bg-muted/50 border-border border md:border-none md:bg-transparent",
+                    : "text-muted-foreground hover:text-foreground border border-white/70 bg-white/68 md:border-none md:bg-transparent",
                 )}
               >
                 {isActive && <div className="bg-primary absolute inset-0 rounded-full" />}
@@ -263,7 +263,7 @@ export function ShowcaseTicketGroups({
                 dict={dict}
               />
             ) : activeGroup.tiers.length >= 5 ? (
-              <Card className="border-border overflow-visible p-8">
+              <Card className="surface-card overflow-visible rounded-[2rem] p-8">
                 <TierGrid
                   prefix={prefix}
                   main={main}
@@ -274,7 +274,7 @@ export function ShowcaseTicketGroups({
                 />
               </Card>
             ) : (
-              <Card className="border-border overflow-visible p-8">
+              <Card className="surface-card overflow-visible rounded-[2rem] p-8">
                 <TierList
                   prefix={prefix}
                   main={main}
@@ -356,7 +356,7 @@ export function ShowcaseTicketGroups({
       {/* Desktop Sticky Summary Bar */}
       {totalItems > 0 && (
         <div className="animate-in slide-in-from-bottom fixed right-0 bottom-0 left-0 z-[999] hidden border-t duration-300 md:flex">
-          <div className="bg-background/80 border-border mx-auto flex w-full max-w-6xl items-center justify-between gap-6 border-x px-8 py-4 shadow-[0_-4px_30px_hsl(var(--primary)/0.08)] backdrop-blur-xl">
+          <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-6 border-x border-white/60 bg-white/72 px-8 py-4 shadow-[0_-4px_30px_hsl(var(--primary)/0.08)] backdrop-blur-xl">
             <div className="flex items-baseline gap-3">
               <span className="text-muted-foreground text-[9px] font-black tracking-widest uppercase">
                 {dict?.ticketing?.in_cart}

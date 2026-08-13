@@ -135,10 +135,10 @@ export async function DiscoveryTemplate({ params }: PageProps) {
   };
 
   return (
-    <div className="mx-auto min-h-screen max-w-7xl px-6 pt-16 pb-32 sm:px-12">
+    <div className="mx-auto min-h-screen max-w-7xl px-3 pt-8 pb-32 sm:px-6 sm:pt-10 md:px-8">
       <JsonLd data={jsonLd} />
 
-      <nav className="mb-12">
+      <nav className="mb-8">
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
@@ -156,18 +156,22 @@ export async function DiscoveryTemplate({ params }: PageProps) {
         </Breadcrumb>
       </nav>
 
-      <header className="mb-20">
-        <div className="mb-12 flex flex-col justify-between gap-8 md:flex-row md:items-end">
+      <header className="section-shell mb-12 overflow-hidden rounded-[2rem] px-6 py-10 sm:px-10 sm:py-14">
+        <div className="relative z-10 mb-4 flex flex-col justify-between gap-8 md:flex-row md:items-end">
           <div className="max-w-3xl">
-            <span className="mb-4 block animate-pulse text-[10px] font-black tracking-[0.4em] text-cyan-500 uppercase">
+            <span className="mb-4 block text-[10px] font-black tracking-[0.4em] text-cyan-600 uppercase">
               {dict.facilities.category_discovery}
             </span>
-            <h1 className="text-5xl leading-[0.85] font-black tracking-tighter text-white uppercase italic sm:text-8xl">
+            <h1 className="text-4xl leading-[0.9] font-black tracking-[-0.08em] text-sky-950 uppercase italic sm:text-7xl">
               {dict.facilities.best_label} <br />{" "}
               <span className="text-splash capitalize">{displayName}</span>{" "}
               {dict.facilities.facilities_label}
             </h1>
           </div>
+          <p className="max-w-sm text-sm leading-relaxed text-slate-600">
+            Digitalne ulaznice, jasne cene i izbor destinacija koji se lako pretražuje po
+            kategoriji.
+          </p>
         </div>
       </header>
 

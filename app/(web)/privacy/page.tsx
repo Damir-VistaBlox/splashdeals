@@ -62,20 +62,19 @@ export default async function PrivacyPage({ params: _params }: PageProps) {
   return (
     <>
       <JsonLd data={webpageSchema} id="webpage-schema" />
-      <div className="mx-auto min-h-screen max-w-5xl px-6 pt-24 pb-16 sm:px-12 sm:pt-32 sm:pb-32">
-        {/* 🏙️ HEADER */}
-        <header className="mb-12 sm:mb-20">
-          <div className="space-y-6">
+      <div className="mx-auto min-h-screen max-w-5xl px-3 pt-8 pb-16 sm:px-6 sm:pt-10 sm:pb-24 md:px-8">
+        <header className="section-shell mb-10 overflow-hidden rounded-[2rem] px-6 py-10 sm:px-10 sm:py-14">
+          <div className="relative z-10 space-y-6">
             <div className="flex items-center gap-3">
-              <div className="bg-primary/10 border-primary/20 rounded-lg border p-2">
+              <div className="rounded-2xl border border-white/70 bg-white/72 p-2 shadow-sm">
                 <Icon name="lock" className="text-primary text-[20px]" />
               </div>
-              <span className="text-primary animate-pulse text-[10px] font-black tracking-[0.4em] uppercase">
+              <span className="text-primary text-[10px] font-black tracking-[0.4em] uppercase">
                 Data Sovereignty
               </span>
             </div>
 
-            <h1 className="text-foreground text-5xl leading-[0.9] font-black tracking-tighter uppercase italic sm:text-7xl">
+            <h1 className="text-foreground text-4xl leading-[0.9] font-black tracking-[-0.08em] uppercase italic sm:text-6xl">
               {dict.privacy.title}
             </h1>
 
@@ -87,16 +86,15 @@ export default async function PrivacyPage({ params: _params }: PageProps) {
           </div>
         </header>
 
-        {/* 📜 CONTENT GRID */}
         <div className="space-y-12">
-          <div className="text-muted-foreground text-lg leading-relaxed font-medium transition-opacity duration-500">
+          <div className="public-panel rounded-[1.75rem] px-6 py-6 text-lg leading-relaxed font-medium text-slate-700">
             {dict.privacy.intro}
           </div>
 
           <div className="grid gap-8">
             {sections.map((section, idx) => (
               <div key={idx} className="transition-all duration-300">
-                <Card className="border-border hover:border-primary/20 group p-8 transition-colors">
+                <Card className="surface-card group hover:border-primary/20 rounded-[1.75rem] p-8 transition-colors">
                   <h2 className="text-foreground mb-6 flex items-center gap-3 text-xl font-black tracking-tight uppercase italic">
                     <Icon
                       name="keyboard_arrow_right"
@@ -115,7 +113,7 @@ export default async function PrivacyPage({ params: _params }: PageProps) {
 
           {/* 🛡️ TRUST SECTION */}
           <div className="transition-all duration-500">
-            <Card className="border-primary/20 bg-primary/5 p-8">
+            <Card className="animated-border rounded-[1.75rem] border border-white/70 bg-white/60 p-8">
               <div className="flex flex-col justify-between gap-6 sm:flex-row sm:items-center">
                 <div className="space-y-2">
                   <h3 className="text-foreground flex items-center gap-2 text-xl font-black tracking-tight uppercase italic">

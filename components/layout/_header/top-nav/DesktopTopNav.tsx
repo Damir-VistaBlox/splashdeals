@@ -33,14 +33,12 @@ export function DesktopTopNav({
   dict,
 }: DesktopTopNavProps) {
   return (
-    <div className="flex h-16 w-full items-center">
-      <nav className="relative mx-auto flex w-full max-w-7xl items-center justify-between">
-        {/* Left — MegaMenu (left-placed menus) */}
-        <div className="flex flex-1 justify-start">
+    <div className="flex h-[4.25rem] w-full items-center px-3 sm:px-4">
+      <nav className="relative mx-auto flex w-full items-center justify-between gap-3">
+        <div className="flex min-w-0 flex-1 justify-start">
           <MegaMenu side="left" />
         </div>
 
-        {/* Center — Logo */}
         <div className="absolute left-1/2 z-10 -translate-x-1/2">
           <Logo
             isTabActive={isTabActive}
@@ -51,9 +49,8 @@ export function DesktopTopNav({
           />
         </div>
 
-        {/* Right — SearchBox + MegaMenu (right-placed menus) + controls */}
-        <div className="flex flex-1 items-center justify-end gap-1.5 md:gap-3">
-          <div className="hidden md:block">
+        <div className="flex min-w-0 flex-1 items-center justify-end gap-1.5 md:gap-2.5">
+          <div className="hidden md:block md:w-[18rem] lg:w-[22rem]">
             <SearchBox dict={dict as Record<string, any>} />
           </div>
           <MegaMenu side="right" />

@@ -48,8 +48,8 @@ export function CartSummary({
 
   return (
     <div className="space-y-4 sm:space-y-6">
-      <Card className="bg-muted/20 border-border p-5 sm:p-8">
-        <h2 className="text-foreground mb-4 text-[10px] font-black tracking-[0.2em] uppercase sm:mb-6">
+      <Card className="surface-card rounded-[1.75rem] p-5 sm:p-8">
+        <h2 className="text-foreground mb-4 text-[10px] font-black tracking-[0.22em] uppercase sm:mb-6">
           {dict?.cart?.summary}
         </h2>
 
@@ -101,12 +101,12 @@ export function CartSummary({
               enterKeyHint="done"
               aria-invalid={Boolean(promoError)}
               aria-describedby={promoError ? "cart-promo-error" : undefined}
-              className="bg-muted/50 border-border h-11 rounded-xl text-base sm:text-xs"
+              className="h-11 rounded-xl border-white/70 bg-white/78 text-base sm:text-xs"
             />
             <Button
               disabled={!promoCode || promoLoading}
               onClick={onApplyPromo}
-              className="h-11 shrink-0 rounded-xl px-4 text-xs font-bold"
+              className="h-11 shrink-0 rounded-xl px-4 text-xs font-bold shadow-sm"
             >
               {dict?.cart?.apply}
             </Button>
@@ -132,13 +132,13 @@ export function CartSummary({
         <Button
           onClick={onCheckout}
           disabled={isCheckingOut}
-          className="mt-5 hidden h-14 w-full rounded-2xl text-base font-bold sm:mt-6 lg:inline-flex"
+          className="mt-5 hidden h-14 w-full rounded-2xl text-base font-bold shadow-[0_16px_32px_rgba(6,182,212,0.22)] sm:mt-6 lg:inline-flex"
         >
           {isCheckingOut ? dict?.cart?.processing : checkoutLabel}
         </Button>
       </Card>
 
-      <Card className="bg-muted/20 border-border flex flex-wrap items-center justify-center gap-4 p-4 sm:p-6">
+      <Card className="surface-card flex flex-wrap items-center justify-center gap-4 rounded-[1.75rem] p-4 sm:p-6">
         <Image src="/payments/visa.svg" alt="Visa" width={64} height={24} className="h-6 w-auto" />
         <Image
           src="/payments/mastercard.svg"

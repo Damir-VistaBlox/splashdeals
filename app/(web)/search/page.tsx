@@ -118,19 +118,20 @@ export default async function SearchPage({
   }
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-12">
-      {/* Header */}
-      <div className="mb-10">
-        <h1 className="text-foreground text-3xl font-bold tracking-tight">
-          {dict.search.results_for || "Rezultati pretrage za"}:{" "}
-          <span className="text-primary">{query}</span>
-        </h1>
-        <p className="text-muted-foreground mt-2 text-sm">
-          {(dict.search.results_found || "Pronađeno {count} rezultata").replace(
-            "{count}",
-            String(totalResults),
-          )}
-        </p>
+    <div className="mx-auto max-w-5xl px-3 py-8 sm:px-6 sm:py-10 md:px-8">
+      <div className="section-shell mb-10 overflow-hidden rounded-[2rem] px-6 py-8 sm:px-10 sm:py-12">
+        <div className="relative z-10">
+          <h1 className="text-foreground text-3xl font-black tracking-[-0.06em]">
+            {dict.search.results_for || "Rezultati pretrage za"}:{" "}
+            <span className="text-primary">{query}</span>
+          </h1>
+          <p className="text-muted-foreground mt-2 text-sm">
+            {(dict.search.results_found || "Pronađeno {count} rezultata").replace(
+              "{count}",
+              String(totalResults),
+            )}
+          </p>
+        </div>
       </div>
 
       {totalResults === 0 ? (
@@ -153,7 +154,7 @@ export default async function SearchPage({
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {facilities.map((f) => (
                   <Link key={f.id} href={`/${f.slug}`} className="block">
-                    <Card className="hover:border-primary/30 transition-all hover:-translate-y-0.5 hover:shadow-md">
+                    <Card className="surface-card hover:border-primary/30 rounded-[1.5rem] transition-all hover:-translate-y-0.5 hover:shadow-md">
                       <CardHeader>
                         <CardTitle className="text-base">{f.name}</CardTitle>
                       </CardHeader>
@@ -177,7 +178,7 @@ export default async function SearchPage({
               <div className="space-y-3">
                 {posts.map((post) => (
                   <Link key={post.id} href={`/blog/${post.slug}`} className="block">
-                    <Card className="hover:border-primary/30 transition-all hover:-translate-y-0.5 hover:shadow-md">
+                    <Card className="surface-card hover:border-primary/30 rounded-[1.5rem] transition-all hover:-translate-y-0.5 hover:shadow-md">
                       <CardHeader>
                         <CardTitle className="text-base">{post.title}</CardTitle>
                       </CardHeader>
@@ -204,7 +205,7 @@ export default async function SearchPage({
               <div className="space-y-3">
                 {pages.map((page) => (
                   <Link key={page.id} href={`/${page.slug}`} className="block">
-                    <Card className="hover:border-primary/30 transition-all hover:-translate-y-0.5 hover:shadow-md">
+                    <Card className="surface-card hover:border-primary/30 rounded-[1.5rem] transition-all hover:-translate-y-0.5 hover:shadow-md">
                       <CardHeader>
                         <CardTitle className="text-base">{page.title}</CardTitle>
                       </CardHeader>
