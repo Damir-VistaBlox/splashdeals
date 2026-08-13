@@ -32,14 +32,18 @@ export function AdminPageShell({
   children,
 }: AdminPageShellProps) {
   return (
-    <div className="bg-background border-border/50 relative flex min-h-[calc(100vh-4rem)] w-full flex-col gap-8 overflow-hidden rounded-2xl border p-4 md:p-6">
+    <div className="bg-background border-border/50 relative flex min-h-[calc(100vh-4rem)] w-full flex-col gap-8 overflow-hidden rounded-[30px] border p-4 md:p-6">
       <div
         className={`pointer-events-none absolute top-0 right-0 -mt-64 -mr-64 h-[500px] w-[500px] rounded-full blur-[120px] ${glowColor}`}
       />
       <div className="bg-accent/5 pointer-events-none absolute bottom-0 left-0 -mb-48 -ml-48 h-[400px] w-[400px] rounded-full blur-[100px]" />
 
-      <div className="relative z-10 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-        <div>
+      <div className="relative z-10 flex flex-col justify-between gap-5 xl:flex-row xl:items-end">
+        <div className="space-y-3">
+          <div className="text-muted-foreground flex items-center gap-2 text-[10px] font-black tracking-[0.22em] uppercase">
+            <span className="bg-primary size-2 rounded-full" />
+            Admin pregled
+          </div>
           <h1 className="text-foreground text-2xl font-black tracking-tight uppercase italic">
             {title}
           </h1>
@@ -47,18 +51,34 @@ export function AdminPageShell({
             {subtitle}
           </p>
         </div>
-        {cta && (
-          <Button
-            asChild
-            size="lg"
-            className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-primary/25 hover:shadow-primary/40 h-11 shrink-0 rounded-xl px-6 text-[11px] font-black tracking-widest uppercase shadow-lg transition-colors hover:shadow-xl"
-          >
-            <Link href={cta.href}>
-              <Icon name={cta.icon} className="mr-2 text-[16px]" />
-              {cta.label}
-            </Link>
-          </Button>
-        )}
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          {stats.length > 0 ? (
+            <div className="border-border/60 bg-background/70 flex min-w-[180px] items-center justify-between rounded-2xl border px-4 py-3">
+              <div>
+                <div className="text-muted-foreground text-[9px] font-bold tracking-[0.18em] uppercase">
+                  Moduli u prikazu
+                </div>
+                <div className="text-foreground mt-1 text-lg font-black">{stats.length}</div>
+              </div>
+              <div className="bg-primary/10 text-primary flex size-10 items-center justify-center rounded-2xl">
+                <Icon name="dashboard" className="text-[18px]" />
+              </div>
+            </div>
+          ) : null}
+
+          {cta && (
+            <Button
+              asChild
+              size="lg"
+              className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-primary/25 hover:shadow-primary/40 h-11 shrink-0 rounded-2xl px-6 text-[11px] font-black tracking-widest uppercase shadow-lg transition-colors hover:shadow-xl"
+            >
+              <Link href={cta.href}>
+                <Icon name={cta.icon} className="mr-2 text-[16px]" />
+                {cta.label}
+              </Link>
+            </Button>
+          )}
+        </div>
       </div>
 
       {stats.length > 0 ? (
