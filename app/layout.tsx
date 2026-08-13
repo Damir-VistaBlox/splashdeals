@@ -11,7 +11,7 @@ const appSans = Inter({
 });
 
 export const viewport: Viewport = {
-  themeColor: "#06b6d4",
+  themeColor: "#ffffff",
   width: "device-width",
   initialScale: 1,
   // Safe-area for notched phones (BottomNav / fixed chrome)
@@ -60,7 +60,12 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="sr" className="light" suppressHydrationWarning data-scroll-behavior="smooth">
+    <html
+      lang="sr-Latn-RS"
+      className="light"
+      suppressHydrationWarning
+      data-scroll-behavior="smooth"
+    >
       <head>
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="mobile-web-app-capable" content="yes" />

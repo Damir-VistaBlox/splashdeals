@@ -111,46 +111,9 @@ interface FacilityPageProps {
   }>;
 }
 
-/**
- * 🕵️ Metadata Engine — For the legacy long-segment redirect
- * 301 redirects /{category}/{facility} to /{facility} for SEO link equity.
- * Real metadata for facility pages is built in route generateMetadata via
- * buildFacilityMetadata (app/(web)/[categorySlug]/page.tsx and [...slug]).
- * Do NOT implement page titles/OG here — redirects only.
- */
-export async function generateMetadata({ params }: FacilityPageProps): Promise<Metadata> {
-  const { facilitySlug } = await params;
+type FacilityData = NonNullable<Awaited<ReturnType<typeof getFacility>>>;
 
-  permanentRedirect(`/${facilitySlug}`);
-}
-
-/**
- * 🌊 Showcase Template Component (Used natively by catching routes)
- */
-export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
-  const { facilitySlug, categorySlug } = await params;
-  const currentYear = new Date().getFullYear();
-  const dict = await getDictionary();
-
-  const facility = await getFacility(facilitySlug);
-
-  if (!facility) return notFound();
-
-  const categoryLabel = getCategoryLabel(facility.category);
-
-  // 🕵️ Validate that the URL slug matches the facility's category or city.
-  // Never 500 — redirect to the canonical short facility path when invalid.
-  const discovery = validateDiscoverySlug(categorySlug, facility);
-  if (!discovery.valid) {
-    permanentRedirect(discovery.canonicalPath);
-  }
-
-  // Build ticket groups and price data
-  const mappedGroups = buildTicketGroups(facility);
-  const allPrices = flattenActivePrices(facility);
-  const ticketCount = allPrices.length;
-
-  // Build a lookup map so the mobile accordion doesn't need an API call
+function buildTicketProductMap(facility: FacilityData) {
   const ticketProductMap: Record<
     string,
     {
@@ -169,6 +132,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
       }>;
     }
   > = {};
+
   for (const cat of facility.ticketCategories || []) {
     for (const prod of cat.types || []) {
       ticketProductMap[prod.id] = {
@@ -189,15 +153,93 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
     }
   }
 
-  // 🎥 Logic: Priority Hero Selection (Protocol)
+  return ticketProductMap;
+}
+
+function selectHeroMedia(facility: FacilityData) {
   const explicitHero = facility.media.find((m) => m.isHero);
   const firstVideo = facility.media.find((m) => m.type === "VIDEO");
-  const heroMedia = explicitHero || firstVideo || facility.media[0];
+  return explicitHero || firstVideo || facility.media[0] || null;
+}
 
-  // 🧠 Structured Data — price-level tiers (not product min collapse)
+async function loadFacilityShowcaseContext(facilitySlug: string, categorySlug: string) {
+  const facility = await getFacility(facilitySlug);
+
+  if (!facility) return null;
+
+  const discovery = validateDiscoverySlug(categorySlug, facility);
+  const mappedGroups = buildTicketGroups(facility);
+  const allPrices = flattenActivePrices(facility);
+  const heroMedia = selectHeroMedia(facility);
+  const ticketProductMap = buildTicketProductMap(facility);
   const priceLevelTiers = buildPriceLevelTiers(facility) as TierEntry[];
   const schemaCategorySlug =
     dbValueToSlug(facility.category) || categorySlug.toLowerCase().replace(/\s+/g, "-");
+  const [weather, favoritedIds] = await Promise.all([
+    facility.lat && facility.lng ? getWeather(Number(facility.lat), Number(facility.lng)) : null,
+    getFavoritedFacilityIds([facility.id]),
+  ]);
+
+  return {
+    facility,
+    discovery,
+    mappedGroups,
+    allPrices,
+    heroMedia,
+    ticketProductMap,
+    priceLevelTiers,
+    schemaCategorySlug,
+    weather,
+    isFavorited: favoritedIds.has(facility.id),
+  };
+}
+
+/**
+ * 🕵️ Metadata Engine — For the legacy long-segment redirect
+ * 301 redirects /{category}/{facility} to /{facility} for SEO link equity.
+ * Real metadata for facility pages is built in route generateMetadata via
+ * buildFacilityMetadata (app/(web)/[categorySlug]/page.tsx and [...slug]).
+ * Do NOT implement page titles/OG here — redirects only.
+ */
+export async function generateMetadata({ params }: FacilityPageProps): Promise<Metadata> {
+  const { facilitySlug } = await params;
+
+  permanentRedirect(`/${facilitySlug}`);
+}
+
+/**
+ * 🌊 Showcase Template Component (Used natively by catching routes)
+ */
+export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
+  const { facilitySlug, categorySlug } = await params;
+  const currentYear = new Date().getFullYear();
+  const dict = await getDictionary();
+  const showcase = await loadFacilityShowcaseContext(facilitySlug, categorySlug);
+
+  if (!showcase) return notFound();
+
+  const {
+    facility,
+    discovery,
+    mappedGroups,
+    allPrices,
+    heroMedia,
+    ticketProductMap,
+    priceLevelTiers,
+    schemaCategorySlug,
+    weather,
+    isFavorited,
+  } = showcase;
+
+  const categoryLabel = getCategoryLabel(facility.category);
+
+  // 🕵️ Validate that the URL slug matches the facility's category or city.
+  // Never 500 — redirect to the canonical short facility path when invalid.
+  if (!discovery.valid) {
+    permanentRedirect(discovery.canonicalPath);
+  }
+
+  const ticketCount = allPrices.length;
 
   const facilitySchema = buildFacilitySchema({
     facility: {
@@ -239,22 +281,14 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
       userName: r.user?.name ?? null,
     })),
   });
-
-  // 🌤️ Fetch live weather from Open-Meteo (server-side, passed to client component)
-  const weather =
-    facility.lat && facility.lng
-      ? await getWeather(Number(facility.lat), Number(facility.lng))
-      : null;
-  const favoritedIds = await getFavoritedFacilityIds([facility.id]);
-  const isFavorited = favoritedIds.has(facility.id);
   return (
     <div className="text-foreground selection:bg-primary/30 relative min-h-screen font-sans">
       {/* ✅ Structured Data */}
       <JsonLd data={facilitySchema} id={`facility-${facilitySlug}-schema`} />
-      <section className="relative flex min-h-[72svh] w-full flex-col justify-end overflow-hidden px-4 pt-24 pb-8 sm:px-6 md:min-h-[calc(100dvh-120px)] md:p-12">
+      <section className="relative flex min-h-[72svh] w-full flex-col justify-end overflow-hidden px-4 pt-24 pb-8 sm:px-6 md:min-h-[calc(92dvh-120px)] md:px-12 md:pt-18 md:pb-14">
         <ShowcaseHero heroMedia={heroMedia} facility={facility} />
 
-        <div className="relative z-10 mx-auto grid w-full max-w-7xl grid-cols-1 items-end gap-6 md:mb-12 md:grid-cols-12 md:gap-8">
+        <div className="relative z-10 mx-auto grid w-full max-w-7xl grid-cols-1 items-end gap-6 md:mb-10 md:grid-cols-12 md:gap-12">
           <div className="space-y-5 md:col-span-8 md:space-y-6">
             <HeroActionPill
               facility={{
@@ -275,11 +309,11 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
               isFavorited={isFavorited}
             />
 
-            <div className="bg-background/10 max-w-3xl rounded-[2rem] border border-white/12 px-5 py-5 shadow-[0_18px_60px_rgba(7,24,39,0.26)] backdrop-blur-sm sm:px-6 sm:py-6 md:max-w-none md:border-0 md:bg-transparent md:px-0 md:py-0 md:shadow-none md:backdrop-blur-none">
+            <div className="bg-background/10 md:bg-background/6 max-w-3xl rounded-[2rem] border border-white/12 px-5 py-5 shadow-[0_18px_60px_rgba(7,24,39,0.26)] backdrop-blur-sm sm:px-6 sm:py-6 md:max-w-[54rem] md:rounded-[2.5rem] md:border-white/8 md:px-8 md:py-7 md:shadow-[0_20px_70px_rgba(7,24,39,0.2)]">
               <div className="text-primary-foreground/80 mb-3 text-[11px] font-black tracking-[0.2em] uppercase md:mb-4 md:text-xs">
                 {categoryLabel}
               </div>
-              <h1 className="text-primary-foreground py-1 text-[2.15rem] leading-[0.95] font-black tracking-[-0.05em] italic drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)] sm:text-5xl md:py-2 md:text-7xl md:leading-[0.9]">
+              <h1 className="text-primary-foreground py-1 text-[2.15rem] leading-[0.95] font-black tracking-[-0.05em] italic drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)] sm:text-5xl md:py-1 md:text-[5.2rem] md:leading-[0.9]">
                 {(() => {
                   const words = facility.name.split(" ");
                   if (words.length === 1) {
@@ -293,24 +327,109 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
                   ));
                 })()}
               </h1>
-              <p className="text-primary-foreground/80 mt-3 max-w-2xl text-sm leading-relaxed font-medium md:mt-5 md:text-base">
+              <p className="text-primary-foreground/84 mt-3 max-w-2xl text-sm leading-relaxed font-medium md:mt-5 md:text-[1.02rem]">
                 {facility.streetName} {facility.streetNumber}, {facility.postalCode} {facility.city}
               </p>
+              <div className="mt-5 hidden items-center gap-3 md:flex">
+                <a
+                  href="#deals"
+                  className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex min-h-12 items-center gap-2 rounded-full px-6 text-xs font-black tracking-[0.16em] uppercase shadow-[0_18px_40px_rgba(6,182,212,0.26)] transition-colors"
+                >
+                  <Icon name="confirmation_number" className="text-[15px]" />
+                  {dict.facilities?.view_prices}
+                </a>
+                <a
+                  href="#gallery"
+                  className="text-primary-foreground/84 hover:text-primary-foreground inline-flex min-h-12 items-center gap-2 rounded-full border border-white/14 bg-white/8 px-5 text-xs font-black tracking-[0.16em] uppercase backdrop-blur-md transition-colors"
+                >
+                  <Icon name="photo_camera" className="text-[15px]" />
+                  Pogledaj galeriju
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div className="hidden md:col-span-4 md:block">
+            <div className="ml-auto max-w-[21rem] rounded-[2.25rem] border border-white/8 bg-[linear-gradient(180deg,rgba(255,255,255,0.1),rgba(255,255,255,0.04))] p-5 shadow-[0_20px_65px_rgba(7,24,39,0.18)] backdrop-blur-lg">
+              <div className="text-primary-foreground/68 mb-3 text-[10px] font-black tracking-[0.18em] uppercase">
+                Planirajte posetu
+              </div>
+              <p className="text-primary-foreground text-xl leading-tight font-black tracking-[-0.04em] uppercase italic">
+                Jasna cena i brži ulaz.
+              </p>
+              <p className="text-primary-foreground/70 mt-3 text-sm leading-relaxed font-medium">
+                Pregledajte ponude i proverite operativne informacije pre dolaska.
+              </p>
+              <div className="mt-5 grid grid-cols-2 gap-3">
+                <div className="rounded-[1.25rem] border border-white/8 bg-black/8 px-4 py-3">
+                  <div className="text-primary-foreground/62 text-[10px] font-black tracking-[0.16em] uppercase">
+                    Aktivnih ponuda
+                  </div>
+                  <div className="text-primary-foreground mt-2 text-[2rem] font-black tracking-tight">
+                    {ticketCount}
+                  </div>
+                </div>
+                <div className="rounded-[1.25rem] border border-white/8 bg-black/8 px-4 py-3">
+                  <div className="text-primary-foreground/62 text-[10px] font-black tracking-[0.16em] uppercase">
+                    Kategorija
+                  </div>
+                  <div className="text-primary-foreground mt-2 text-sm leading-tight font-black uppercase">
+                    {categoryLabel}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      <main className="relative z-20 mx-auto -mt-6 max-w-7xl [scroll-padding-top:8rem] space-y-12 px-4 pb-24 sm:-mt-8 sm:space-y-32 sm:px-6 sm:pb-48 md:-mt-24 md:px-12">
-        <div
+      <main
+        id="facility-main"
+        className="relative z-20 mx-auto -mt-6 max-w-7xl [scroll-padding-top:8rem] space-y-10 px-4 pb-24 sm:-mt-8 sm:space-y-32 sm:px-6 sm:pb-48 md:-mt-24 md:px-12"
+      >
+        <section
           id="deals"
-          className="bg-background/96 border-border/40 scroll-mt-32 space-y-8 rounded-[2rem] border px-4 py-6 shadow-[0_18px_50px_rgba(15,23,42,0.08)] backdrop-blur-sm sm:space-y-12 sm:px-6 sm:py-8 md:rounded-[2.5rem] md:border-0 md:bg-transparent md:px-0 md:py-0 md:pt-12 md:shadow-none md:backdrop-blur-none"
+          aria-labelledby="facility-deals-heading"
+          className="bg-background/97 border-border/40 scroll-mt-32 space-y-6 rounded-[2rem] border px-4 py-5 shadow-[0_18px_50px_rgba(15,23,42,0.08)] backdrop-blur-sm sm:space-y-12 sm:px-6 sm:py-8 md:rounded-[2.75rem] md:border md:border-white/60 md:bg-white/64 md:px-8 md:py-8 md:pt-10 md:shadow-[0_20px_60px_rgba(15,23,42,0.08)] md:backdrop-blur-xl"
         >
-          <div className="mb-8 flex flex-col items-center space-y-4 text-center sm:mb-16">
-            <div className="brand-divider mb-2 w-16" />
-            <h2 className="text-foreground text-2xl leading-none font-black tracking-tighter uppercase italic md:text-5xl">
+          <div className="mb-4 flex flex-col items-center space-y-3 text-center sm:mb-16 md:mb-10">
+            <div className="brand-divider mb-1 w-14" />
+            <span className="text-primary text-[11px] font-black tracking-[0.2em] uppercase">
+              Ulaznice i paketi
+            </span>
+            <h2
+              id="facility-deals-heading"
+              className="text-foreground text-[1.75rem] leading-[0.92] font-black tracking-tighter uppercase italic md:text-5xl"
+            >
               {dict.facilities.ticket_prices}
             </h2>
+            <p className="text-muted-foreground max-w-2xl text-sm leading-relaxed md:text-base">
+              Uporedite najvažnije opcije za posetu Petrolandu i izaberite kartu koja najbolje
+              odgovara terminu, uzrastu i planu boravka.
+            </p>
+            <ul
+              className="grid w-full max-w-md grid-cols-3 gap-2 pt-1 md:hidden"
+              aria-label="Prednosti kupovine ulaznica"
+            >
+              <li className="bg-muted/35 border-border/40 rounded-2xl border px-3 py-2 text-center">
+                <div className="text-foreground text-[10px] font-black tracking-[0.16em] uppercase">
+                  Online
+                </div>
+                <div className="text-muted-foreground mt-1 text-[11px] font-medium">jasne cene</div>
+              </li>
+              <li className="bg-muted/35 border-border/40 rounded-2xl border px-3 py-2 text-center">
+                <div className="text-foreground text-[10px] font-black tracking-[0.16em] uppercase">
+                  Izbor
+                </div>
+                <div className="text-muted-foreground mt-1 text-[11px] font-medium">po terminu</div>
+              </li>
+              <li className="bg-muted/35 border-border/40 rounded-2xl border px-3 py-2 text-center">
+                <div className="text-foreground text-[10px] font-black tracking-[0.16em] uppercase">
+                  Kupovina
+                </div>
+                <div className="text-muted-foreground mt-1 text-[11px] font-medium">bez poziva</div>
+              </li>
+            </ul>
           </div>
           <Suspense fallback={<TicketGridSkeleton />}>
             <ShowcaseTicketGroups
@@ -324,10 +443,14 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
               ticketProductMap={serialize(ticketProductMap)}
             />
           </Suspense>
-        </div>
+        </section>
 
         {/* 🍱 Bento Experience Sections */}
-        <div id="overview" className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12">
+        <section
+          id="overview"
+          aria-labelledby="facility-overview-heading"
+          className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12"
+        >
           <div className="space-y-8 lg:col-span-8">
             {/* Main Text Card */}
             <Card className="brand-card flex min-h-0 flex-col justify-center">
@@ -337,7 +460,10 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
                   {dict.facilities?.experience_label}
                 </div>
                 <div className="brand-divider mb-4 hidden w-24 md:block" />
-                <CardTitle className="text-foreground hidden text-2xl leading-tight font-black tracking-tighter uppercase italic md:block md:text-5xl">
+                <CardTitle
+                  id="facility-overview-heading"
+                  className="text-foreground hidden text-2xl leading-tight font-black tracking-tighter uppercase italic md:block md:text-5xl"
+                >
                   {dict.facilities?.fun_unlocked}{" "}
                   <span className="text-splash">{dict.facilities?.fun_unlocked_accent}</span>
                 </CardTitle>
@@ -441,10 +567,17 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
               </Suspense>
             </div>
           </aside>
-        </div>
+        </section>
 
         {facility.faqs && facility.faqs.length > 0 && (
-          <div className="bg-brand-amber-subtle mx-auto w-full max-w-3xl space-y-8 rounded-3xl px-6 py-8 pt-8 md:px-12">
+          <section
+            id="faq"
+            aria-labelledby="facility-faq-heading"
+            className="bg-brand-amber-subtle border-border/30 mx-auto w-full max-w-3xl space-y-8 rounded-[2rem] border px-5 py-6 md:rounded-3xl md:px-12 md:py-8"
+          >
+            <h2 id="facility-faq-heading" className="sr-only">
+              Često postavljena pitanja
+            </h2>
             <FaqAccordion
               faqs={facility.faqs.map((f) => ({
                 id: f.id,
@@ -453,20 +586,29 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
                 category: inferFaqCategory(f.question),
               }))}
             />
-          </div>
+          </section>
         )}
 
         {facility.id && (
-          <div className="mx-auto w-full max-w-3xl space-y-8 px-6 py-8 md:px-12">
+          <section
+            id="reviews"
+            aria-labelledby="facility-reviews-heading"
+            className="bg-background/92 border-border/30 mx-auto w-full max-w-3xl space-y-8 rounded-[2rem] border px-5 py-6 shadow-[0_14px_32px_rgba(15,23,42,0.04)] md:border-0 md:bg-transparent md:px-12 md:py-8 md:shadow-none"
+          >
+            <h2 id="facility-reviews-heading" className="sr-only">
+              Recenzije posetilaca
+            </h2>
             <FacilityReviews
               facilityId={facility.id}
               initialReviews={facility.reviews || []}
               dict={dict}
             />
-          </div>
+          </section>
         )}
 
-        <MediaGallery media={facility.media} dict={dict} />
+        <section className="bg-background/92 border-border/30 rounded-[2rem] border px-4 py-6 shadow-[0_14px_32px_rgba(15,23,42,0.04)] md:rounded-[3rem] md:border-0 md:bg-[linear-gradient(180deg,rgba(255,255,255,0.65),rgba(255,255,255,0.18))] md:px-8 md:py-10 md:shadow-[0_20px_60px_rgba(15,23,42,0.05)]">
+          <MediaGallery media={facility.media} dict={dict} />
+        </section>
 
         {facility.seoArticle && (
           <article className="text-muted-foreground border-border mx-auto mt-24 max-w-5xl border-t px-6 py-12 text-center text-xs md:text-left md:text-sm">

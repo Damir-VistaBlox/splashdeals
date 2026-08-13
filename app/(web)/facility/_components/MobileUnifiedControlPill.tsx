@@ -14,8 +14,8 @@ interface HoursSubset {
 
 interface MobileUnifiedControlPillProps {
   hours: HoursSubset[];
-  destLat: number;
-  destLng: number;
+  destLat?: number | null;
+  destLng?: number | null;
 }
 
 function deriveTodayInfo(hours: HoursSubset[]) {
@@ -65,9 +65,14 @@ export function MobileUnifiedControlPill({
 
   const { todayHours, isOpen } = todayInfo;
   const { distance, failed: geoError } = geoState;
+  const hasDirections = Number.isFinite(destLat) && Number.isFinite(destLng);
 
   // 🧭 Geolocation (Haversine) — user-initiated, never auto-fires
   const calculateDistance = () => {
+    if (!hasDirections) {
+      setGeoState({ distance: null, failed: true });
+      return;
+    }
     if (typeof navigator === "undefined" || !navigator.geolocation) {
       setGeoState({ distance: null, failed: true });
       return;
@@ -82,11 +87,13 @@ export function MobileUnifiedControlPill({
       (position) => {
         if (geoTimeoutRef.current !== null) window.clearTimeout(geoTimeoutRef.current);
         const R = 6371;
-        const dLat = (position.coords.latitude - destLat) * (Math.PI / 180);
-        const dLon = (position.coords.longitude - destLng) * (Math.PI / 180);
+        const safeDestLat = Number(destLat);
+        const safeDestLng = Number(destLng);
+        const dLat = (position.coords.latitude - safeDestLat) * (Math.PI / 180);
+        const dLon = (position.coords.longitude - safeDestLng) * (Math.PI / 180);
         const a =
           Math.sin(dLat / 2) ** 2 +
-          Math.cos(destLat * (Math.PI / 180)) *
+          Math.cos(safeDestLat * (Math.PI / 180)) *
             Math.cos(position.coords.latitude * (Math.PI / 180)) *
             Math.sin(dLon / 2) ** 2;
         setGeoState({
@@ -104,6 +111,7 @@ export function MobileUnifiedControlPill({
 
   // 🗺️ Navigation trigger
   const handleNavigation = () => {
+    if (!hasDirections) return;
     // If distance already known, open maps directly
     if (distance !== null) {
       if ("vibrate" in navigator) navigator.vibrate(15);
@@ -174,11 +182,14 @@ export function MobileUnifiedControlPill({
         <Button
           variant="ghost"
           onClick={handleNavigation}
+          disabled={!hasDirections}
           className="text-foreground hover:text-primary group flex min-h-[3.25rem] flex-1 origin-center items-center justify-center gap-2 rounded-[1.1rem] px-2 transition-colors active:scale-[0.98]"
           aria-label={
-            distance !== null
-              ? `Udaljenost ${distance.toFixed(0)} km. Dodirni za otvaranje mape.`
-              : "Prikaži rutu na mapi"
+            !hasDirections
+              ? "Lokacija nije dostupna"
+              : distance !== null
+                ? `Udaljenost ${distance.toFixed(0)} km. Dodirni za otvaranje mape.`
+                : "Prikaži rutu na mapi"
           }
         >
           <Icon
@@ -191,7 +202,7 @@ export function MobileUnifiedControlPill({
             </span>
           ) : (
             <span className="text-muted-foreground/80 group-hover:text-primary text-[10px] font-black tracking-[0.16em] uppercase">
-              {geoError ? "? km" : "Ruta"}
+              {!hasDirections ? "Bez rute" : geoError ? "? km" : "Ruta"}
             </span>
           )}
         </Button>
