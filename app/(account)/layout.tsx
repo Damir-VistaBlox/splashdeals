@@ -1,9 +1,9 @@
 import * as React from "react";
 import { getDictionary } from "@/lib/dictionaries";
-import { prisma } from "@/app/(server)/lib/prisma";
 import { PlatformShell } from "@/components/layout/PlatformShell";
 import { GAScript } from "@/components/analytics/GoogleAnalytics";
 import { WebVitals } from "@/app/(web)/_components/WebVitals";
+import { getFacilityMap } from "@/lib/layout/facility-map";
 
 /**
  * Account route group layout — same platform chrome as `(web)`.
@@ -11,14 +11,7 @@ import { WebVitals } from "@/app/(web)/_components/WebVitals";
  */
 export default async function AccountRootLayout({ children }: { children: React.ReactNode }) {
   const dict = await getDictionary();
-
-  const facilities = await prisma.facility.findMany({
-    where: { status: "ACTIVE" },
-    select: { slug: true, name: true, category: true },
-  });
-  const facilityMap = Object.fromEntries(
-    facilities.map((f) => [f.slug, { name: f.name, category: f.category }]),
-  );
+  const facilityMap = await getFacilityMap();
 
   return (
     <>

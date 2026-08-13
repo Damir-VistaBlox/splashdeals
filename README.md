@@ -84,3 +84,4 @@ Aquastream UI — immersive hydro-premium aesthetic. Dark theme with glassmorphi
 | `DESIGN.md` | Full design system specification |
 | `docs/plans/` | Archived architecture plans |
 | `.agent/bridge/` | Cross-ecosystem agent handoff protocol |
+| `docs/listmonk-templates/README-transactional.md` | Minimal Listmonk tx template required for app-rendered emails |

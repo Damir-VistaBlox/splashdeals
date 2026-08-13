@@ -6,7 +6,10 @@ interface TicketDeliveryData {
   customerName: string;
   tickets: Array<{
     title: string;
-    qrDataUrl: string;
+    qrImageUrl: string;
+    barcodeImageUrl: string;
+    ticketId: string;
+    ticketUrl: string;
     qrHash?: string;
     expiryDate: Date;
     usageLimit: number;
@@ -60,7 +63,14 @@ export function buildTicketDeliveryHtml(
               <tr>
                 <td align="center" style="padding: 8px 0;">
                   <div style="display: inline-block; padding: 12px; background-color: #ffffff; border-radius: 8px;">
-                    <img src="${ticket.qrDataUrl}" alt="${e.ticket_delivery_qr_alt.replace("{title}", ticket.title)}" width="180" height="180" style="display: block; border: 0;" />
+                    <img src="${ticket.qrImageUrl}" alt="${e.ticket_delivery_qr_alt.replace("{title}", ticket.title)}" width="180" height="180" style="display: block; border: 0;" />
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td align="center" style="padding: 12px 0 4px 0;">
+                  <div style="display: inline-block; padding: 10px 12px; background-color: #ffffff; border-radius: 8px;">
+                    <img src="${ticket.barcodeImageUrl}" alt="Code 128 barcode for ticket ${ticket.ticketId}" width="260" height="88" style="display: block; border: 0; max-width: 100%;" />
                   </div>
                 </td>
               </tr>
@@ -68,6 +78,14 @@ export function buildTicketDeliveryHtml(
                 <td style="padding-top: 16px; font-family: sans-serif; font-size: 14px; line-height: 20px; color: #94a3b8; text-align: center;">
                   <p style="margin: 0 0 4px 0; font-weight: 600; color: #38bdf8; font-family: sans-serif;">${usageText}</p>
                   <p style="margin: 0; font-size: 12px; color: #64748b; font-family: sans-serif;">${e.ticket_delivery_valid_until.replace("{date}", formattedDate)}</p>
+                </td>
+              </tr>
+              <tr>
+                <td align="center" style="padding-top: 12px;">
+                  <p style="margin: 0 0 8px 0; font-family: monospace; font-size: 12px; color: #cbd5e1;">${ticket.ticketId}</p>
+                  <a href="${ticket.ticketUrl}" target="_blank" style="display: inline-block; padding: 10px 18px; background-color: #06b6d4; color: #020617; font-size: 13px; font-weight: bold; text-decoration: none; border-radius: 9999px; font-family: sans-serif;">
+                    ${e.ticket_delivery_view_online}
+                  </a>
                 </td>
               </tr>
             </table>
@@ -233,7 +251,7 @@ export function buildTicketDeliveryText(
       const hashText = t.qrHash
         ? `\n   - ${e.ticket_delivery_code_label.replace("{hash}", t.qrHash)}`
         : "";
-      return `${i + 1}. ${t.title}${hashText}\n   - ${usageText}\n   - ${e.ticket_delivery_valid_until.replace("{date}", formattedDate)}`;
+      return `${i + 1}. ${t.title}${hashText}\n   - Ticket ID: ${t.ticketId}\n   - ${usageText}\n   - ${e.ticket_delivery_valid_until.replace("{date}", formattedDate)}\n   - ${t.ticketUrl}`;
     })
     .join("\n\n");
 

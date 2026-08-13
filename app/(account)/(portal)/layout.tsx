@@ -4,6 +4,8 @@ import { StaffRoleBanner } from "@/components/account/StaffRoleBanner";
 import { headers } from "next/headers";
 import { auth } from "@/app/(server)/lib/auth";
 import { isStaffOrOwnerRole } from "@/lib/auth/account-paths";
+import { redirect } from "next/navigation";
+import { buildPrijavaUrl } from "@/lib/auth/callback-url";
 
 /**
  * Authenticated buyer portal chrome:
@@ -14,6 +16,9 @@ export default async function AccountPortalLayout({ children }: { children: Reac
   const dict = await getDictionary();
   const t = dict.account;
   const session = await auth.api.getSession({ headers: await headers() });
+  if (!session?.user) {
+    redirect(buildPrijavaUrl("/moje-karte"));
+  }
 
   const links = [
     {

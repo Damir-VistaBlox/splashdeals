@@ -53,7 +53,12 @@ export const auth = betterAuth({
     provider: "postgresql",
   }),
 
-  trustedOrigins: ["https://www.splashdeals.rs", "https://splashdeals.rs", "http://localhost:3000"],
+  trustedOrigins: [
+    "https://www.splashdeals.rs",
+    "https://splashdeals.rs",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+  ],
 
   // Email/password enabled for admin logins
   // Buyer users use social-only auth
