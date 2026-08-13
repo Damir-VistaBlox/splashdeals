@@ -413,10 +413,10 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
             >
               {dict.facilities.ticket_prices}
             </h2>
-              <p className="text-muted-foreground max-w-[18rem] text-[13px] leading-relaxed sm:max-w-2xl md:text-base">
-                Uporedite najvažnije opcije za posetu Petrolandu i izaberite kartu koja najbolje
-                odgovara terminu, uzrastu i planu boravka.
-              </p>
+            <p className="text-muted-foreground max-w-[18rem] text-[13px] leading-relaxed sm:max-w-2xl md:text-base">
+              Uporedite najvažnije opcije za posetu Petrolandu i izaberite kartu koja najbolje
+              odgovara terminu, uzrastu i planu boravka.
+            </p>
             <ul
               className="grid w-full max-w-md grid-cols-3 gap-2 pt-1 md:hidden"
               aria-label="Prednosti kupovine ulaznica"

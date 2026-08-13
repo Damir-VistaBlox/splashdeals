@@ -48,12 +48,12 @@ export function CartSummary({
 
   return (
     <div className="space-y-4 sm:space-y-6">
-      <Card className="mobile-app-surface rounded-[1.75rem] border-0 p-4 sm:surface-card sm:p-8">
+      <Card className="mobile-app-surface sm:surface-card rounded-[1.75rem] border-0 p-4 sm:p-8">
         <div className="mb-4 flex items-center justify-between gap-3 sm:mb-6">
           <h2 className="text-foreground text-[10px] font-black tracking-[0.22em] uppercase">
             {dict?.cart?.summary}
           </h2>
-          <span className="text-primary rounded-full bg-primary/10 px-2.5 py-1 text-[9px] font-black tracking-[0.14em] uppercase">
+          <span className="text-primary bg-primary/10 rounded-full px-2.5 py-1 text-[9px] font-black tracking-[0.14em] uppercase">
             Spremno za naplatu
           </span>
         </div>
@@ -164,7 +164,7 @@ export function CartSummary({
         </Button>
       </Card>
 
-      <Card className="mobile-app-surface flex flex-wrap items-center justify-center gap-4 rounded-[1.75rem] border-0 p-4 sm:surface-card sm:p-6">
+      <Card className="mobile-app-surface sm:surface-card flex flex-wrap items-center justify-center gap-4 rounded-[1.75rem] border-0 p-4 sm:p-6">
         <Image src="/payments/visa.svg" alt="Visa" width={64} height={24} className="h-6 w-auto" />
         <Image
           src="/payments/mastercard.svg"

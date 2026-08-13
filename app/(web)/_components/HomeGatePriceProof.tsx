@@ -47,14 +47,16 @@ export function HomeGatePriceProof({ dict, deal }: { dict: HomeDict; deal: HomeD
               <p className="text-primary mb-1 text-[11px] font-bold tracking-wider uppercase">
                 {dict.gate_deal_label}
               </p>
-              <p className="text-foreground text-base font-black sm:text-xl">{priceFormat.format(deal.price)}</p>
+              <p className="text-foreground text-base font-black sm:text-xl">
+                {priceFormat.format(deal.price)}
+              </p>
               <p className="text-muted-foreground text-[11px]">RSD</p>
             </div>
             <div className="rounded-[1rem] border border-amber-500/30 bg-amber-500/15 p-3 text-center">
               <p className="mb-1 text-[11px] font-bold tracking-wider text-amber-700 uppercase dark:text-amber-400">
                 {dict.gate_save_label}
               </p>
-              <p className="text-base font-black text-amber-700 dark:text-amber-400 sm:text-xl">
+              <p className="text-base font-black text-amber-700 sm:text-xl dark:text-amber-400">
                 {priceFormat.format(save)}
               </p>
               <p className="text-[11px] font-bold text-amber-700 dark:text-amber-400">
