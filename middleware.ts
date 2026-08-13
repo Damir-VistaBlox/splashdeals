@@ -32,6 +32,8 @@ export async function middleware(request: NextRequest) {
   }
 
   const sessionCookie =
+    request.cookies.get("splashdeals.session")?.value ??
+    request.cookies.get("__Secure-splashdeals.session")?.value ??
     request.cookies.get("better-auth.session_token")?.value ??
     request.cookies.get("__Secure-better-auth.session_token")?.value;
 

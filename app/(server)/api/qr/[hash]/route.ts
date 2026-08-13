@@ -1,15 +1,9 @@
 import { NextResponse } from "next/server";
-import QRCode from "qrcode";
+import { generateTicketQrBuffer } from "@/app/(server)/lib/ticket-assets";
 
 export async function GET(_request: Request, { params }: { params: Promise<{ hash: string }> }) {
   const { hash } = await params;
-  const url = `${process.env.NEXT_PUBLIC_BASE_URL || "https://splashdeals.rs"}/verify/${hash}`;
-  const qrBuffer = await QRCode.toBuffer(url, {
-    type: "png",
-    width: 300,
-    margin: 2,
-    color: { dark: "#1a1a1a", light: "#ffffff" },
-  });
+  const qrBuffer = await generateTicketQrBuffer(hash);
   return new NextResponse(qrBuffer as unknown as BodyInit, {
     headers: {
       "Content-Type": "image/png",
