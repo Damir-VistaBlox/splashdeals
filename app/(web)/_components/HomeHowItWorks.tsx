@@ -28,7 +28,7 @@ export function HomeHowItWorks({ dict }: { dict: HomeDict }) {
         {steps.map((item) => (
           <li
             key={item.step}
-            className="mobile-app-surface relative flex items-start gap-4 rounded-[1.35rem] p-4 text-left md:block md:bg-transparent md:p-0 md:text-left md:shadow-none"
+            className="relative flex items-start gap-4 rounded-[1.35rem] border border-white/50 bg-white/42 p-4 text-left shadow-[0_12px_28px_rgba(15,23,42,0.05)] backdrop-blur-sm md:block md:border-0 md:bg-transparent md:p-0 md:text-left md:shadow-none md:backdrop-blur-none"
           >
             <span className="text-primary/15 pointer-events-none absolute -top-4 left-0 hidden text-6xl font-black select-none md:block">
               {item.step}

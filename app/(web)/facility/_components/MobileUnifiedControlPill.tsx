@@ -16,6 +16,7 @@ interface MobileUnifiedControlPillProps {
   hours: HoursSubset[];
   destLat?: number | null;
   destLng?: number | null;
+  surfaceless?: boolean;
 }
 
 function deriveTodayInfo(hours: HoursSubset[]) {
@@ -43,6 +44,7 @@ export function MobileUnifiedControlPill({
   hours = [],
   destLat,
   destLng,
+  surfaceless = false,
 }: MobileUnifiedControlPillProps) {
   const [geoState, setGeoState] = useState<{ distance: number | null; failed: boolean }>({
     distance: null,
@@ -129,7 +131,11 @@ export function MobileUnifiedControlPill({
 
   return (
     <div className="mx-auto w-full max-w-md">
-      <div className="mobile-app-surface relative flex min-h-[4.25rem] w-full items-center justify-between rounded-[1.45rem] px-3 py-2 select-none">
+      <div
+        className={`relative flex min-h-[4.25rem] w-full items-center justify-between rounded-[1.45rem] px-3 py-2 select-none ${
+          surfaceless ? "" : "surface-glass"
+        }`}
+      >
         {/* ⏰ Segment 1: Operating Hours */}
         <div
           className="flex flex-[1.3] items-center justify-center gap-2 px-2"

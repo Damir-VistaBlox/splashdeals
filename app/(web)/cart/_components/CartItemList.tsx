@@ -107,7 +107,8 @@ export function CartItemList({
         return (
           <Card
             key={item.id}
-            className="mobile-app-surface sm:surface-card relative flex flex-col gap-3 rounded-[1.5rem] border-0 p-3 sm:gap-4 sm:p-6"
+            variant="glass"
+            className="sm:surface-card relative flex flex-col gap-3 rounded-[1.5rem] p-3 sm:gap-4 sm:p-6"
           >
             <div className="flex min-w-0 items-start gap-3">
               {item.imageUrl && (

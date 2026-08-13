@@ -42,7 +42,7 @@ const CATEGORY_LABELS: Record<FAQCategory, string> = {
 
 const CATEGORY_ORDER: FAQCategory[] = ["ulaznice", "boravak", "pravila", "lokacija"];
 
-const INITIAL_VISIBLE = 3;
+const INITIAL_VISIBLE = 4;
 
 function groupByCategory(faqs: FAQItem[]): Array<{ category: FAQCategory; items: FAQItem[] }> {
   const groups = new Map<FAQCategory, FAQItem[]>();
@@ -120,7 +120,7 @@ export function FaqAccordion({ faqs }: Props) {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           aria-label="Pretraži pitanja"
-          className="mobile-app-surface h-11 rounded-2xl border-0 pl-10 text-base md:text-sm"
+          className="h-11 rounded-2xl border border-white/55 bg-[linear-gradient(180deg,rgba(255,255,255,0.62),rgba(255,255,255,0.4))] pl-10 text-base shadow-[0_12px_24px_rgba(15,23,42,0.05)] backdrop-blur-sm md:text-sm"
         />
       </div>
 
@@ -143,8 +143,10 @@ export function FaqAccordion({ faqs }: Props) {
 
             <Accordion
               type="multiple"
-              className="space-y-3"
-              defaultValue={!hasActiveSearch ? [faqs[0].id] : undefined}
+              className="space-y-2.5"
+              defaultValue={
+                !hasActiveSearch && category === "ulaznice" ? [items[0]?.id] : undefined
+              }
               onValueChange={handleValueChange}
             >
               {items.map((faq) => {
@@ -154,7 +156,7 @@ export function FaqAccordion({ faqs }: Props) {
                     key={faq.id}
                     value={faq.id}
                     className={cn(
-                      "mobile-app-surface brand-accent-left rounded-[1.1rem] border-0 px-4 shadow-[0_8px_20px_rgba(15,23,42,0.03)] sm:px-6",
+                      "brand-accent-left rounded-[1.1rem] border border-white/45 bg-white/42 px-4 shadow-[0_10px_24px_rgba(15,23,42,0.04)] backdrop-blur-sm sm:px-6",
                       !hasActiveSearch && globalIndex >= INITIAL_VISIBLE && "hidden md:block",
                       !hasActiveSearch &&
                         globalIndex >= INITIAL_VISIBLE &&
@@ -163,10 +165,10 @@ export function FaqAccordion({ faqs }: Props) {
                     )}
                     ref={(el) => setItemRef(faq.id, el)}
                   >
-                    <AccordionTrigger className="text-foreground py-4 text-left text-sm leading-relaxed font-semibold hover:no-underline">
+                    <AccordionTrigger className="text-foreground py-3 text-left text-sm leading-relaxed font-semibold hover:no-underline">
                       {faq.question}
                     </AccordionTrigger>
-                    <AccordionContent className="text-muted-foreground pb-4 text-sm leading-relaxed whitespace-pre-wrap">
+                    <AccordionContent className="text-muted-foreground pb-3 text-sm leading-relaxed whitespace-pre-wrap">
                       {faq.answer}
                     </AccordionContent>
                   </AccordionItem>
@@ -192,7 +194,7 @@ export function FaqAccordion({ faqs }: Props) {
       <p className="text-muted-foreground pt-2 text-center text-sm">
         Niste pronašli odgovor?{" "}
         <Link
-          href="/podrska"
+          href="/support"
           className="text-primary hover:text-primary/80 inline-flex min-h-11 items-center font-bold underline underline-offset-2 transition-colors"
         >
           Kontaktirajte nas

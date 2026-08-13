@@ -52,7 +52,7 @@ export function HeroActionPill({
   return (
     <>
       {/* 📱 MOBILE SHARE + FAVORITE ROW — equal 44px targets */}
-      <div className="mobile-app-surface rounded-[1.35rem] p-2.5 md:hidden">
+      <div className="surface-glass rounded-[1.35rem] p-2.5 md:hidden">
         <div className="flex items-center justify-between gap-2">
           <Link
             href={`/${categorySlug}`}
@@ -84,6 +84,7 @@ export function HeroActionPill({
             hours={facility.hours}
             destLat={parsedLat}
             destLng={parsedLng}
+            surfaceless
           />
         </div>
       </div>

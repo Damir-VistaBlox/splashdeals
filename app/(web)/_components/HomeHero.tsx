@@ -65,7 +65,7 @@ export function HomeHero({ dict }: { dict: HomeDict }) {
               Brza kupovina. Jasna ponuda. Ulaznice za nekoliko sekundi.
             </p>
 
-            <div className="mobile-app-surface mt-1 w-full max-w-5xl rounded-[1.5rem] p-3.5 sm:mt-0 sm:p-5 lg:p-6">
+            <div className="surface-glass mt-1 w-full max-w-5xl rounded-[1.5rem] p-3.5 sm:mt-0 sm:p-5 lg:p-6">
               <div className="mb-3 flex items-center justify-between gap-3 sm:mb-5">
                 <div className="text-left">
                   <span className="text-primary text-[10px] font-black tracking-[0.18em] uppercase">
