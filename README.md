@@ -85,3 +85,55 @@ Aquastream UI — immersive hydro-premium aesthetic. Dark theme with glassmorphi
 | `docs/plans/` | Archived architecture plans |
 | `.agent/bridge/` | Cross-ecosystem agent handoff protocol |
 | `docs/listmonk-templates/README-transactional.md` | Minimal Listmonk tx template required for app-rendered emails |
+
+## Git / PR Workflow
+
+Use this repo-specific workflow to avoid repeated GitHub PR conflicts, especially in mobile UI hotspot files.
+
+1. Always branch from the latest `origin/master`.
+
+   ```sh
+   git fetch origin
+   git checkout master
+   git pull --ff-only origin master
+   git checkout -b <new-branch>
+   ```
+
+2. Keep one active PR branch per review cycle for the same hotspot file cluster.
+
+   If the work is still touching the same mobile UI surfaces, continue on the open PR branch instead of opening another PR for the same files.
+
+3. Open the PR quickly after the batch is ready.
+
+   Long-lived local branches against a moving `master` create avoidable conflicts.
+
+4. Before every PR update, sync with the latest `origin/master`.
+
+   ```sh
+   git fetch origin
+   git checkout <pr-branch>
+   git merge origin/master
+   ```
+
+   In this repo, merge-from-master is the safer default than rebase for overlapping UI follow-up work.
+
+5. If a PR is already merged, never continue from that old PR branch.
+
+   Start fresh from the latest `master`, then reapply or cherry-pick only the new follow-up commits.
+
+6. Batch related UI tweaks together.
+
+   Avoid opening a new PR for every tiny mobile copy/layout tweak on the same hero/nav/FAQ surfaces.
+
+7. Keep screenshot artifacts local.
+
+   Do not stage `tmp-mobile-*.png` files in PRs.
+
+8. Verify the branch scope before opening a PR.
+
+   ```sh
+   git diff --stat origin/master...HEAD
+   git log --oneline origin/master..HEAD
+   ```
+
+   If the diff is larger than expected, fix the branch before opening the PR.

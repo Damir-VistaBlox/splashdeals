@@ -12,9 +12,17 @@ interface LogoProps {
   isHovered: boolean;
   setIsHovered: (v: boolean) => void;
   dict?: Dict;
+  mobileCompact?: boolean;
 }
 
-export function Logo({ isTabActive, isReducedMotion, isHovered, setIsHovered, dict }: LogoProps) {
+export function Logo({
+  isTabActive,
+  isReducedMotion,
+  isHovered,
+  setIsHovered,
+  dict,
+  mobileCompact = false,
+}: LogoProps) {
   return (
     <Link
       href="/"
@@ -29,12 +37,12 @@ export function Logo({ isTabActive, isReducedMotion, isHovered, setIsHovered, di
       <div className="absolute inset-0 rounded-full bg-white/52 opacity-0 blur-xl transition-opacity duration-300 group-hover:opacity-100" />
       <div className="relative z-10 flex items-center gap-2.5">
         <Image
-          src="/logo-splashdeals.webp"
+          src={mobileCompact ? "/splashdeal-logo-mini.png" : "/logo-splashdeals.webp"}
           alt={dict?.brand?.logo_alt ?? "SplashDeals - digitalne ulaznice za vodene parkove Srbija"}
-          width={331}
-          height={112}
+          width={mobileCompact ? 105 : 331}
+          height={mobileCompact ? 105 : 112}
           className={cn(
-            "h-10 w-auto object-contain sm:h-11",
+            mobileCompact ? "h-12 w-12 object-contain" : "h-10 w-auto object-contain sm:h-11",
             "transition-[transform,filter] duration-300",
             isHovered && "scale-[1.03] brightness-110",
             isReducedMotion && "transition-none",
