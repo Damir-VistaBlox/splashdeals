@@ -95,7 +95,7 @@ export function FacilityReviews({ facilityId, initialReviews, dict }: FacilityRe
       </div>
 
       {reviews.length === 0 && (
-        <Card className="border-border/50 bg-muted/20 rounded-[1.6rem] p-5 text-center">
+        <Card className="mobile-app-surface rounded-[1.6rem] border-0 p-5 text-center">
           <div className="mx-auto flex max-w-xs flex-col items-center gap-2">
             <div className="bg-primary/10 flex size-12 items-center justify-center rounded-full">
               <Icon name="reviews" className="text-primary size-6" />
@@ -112,7 +112,7 @@ export function FacilityReviews({ facilityId, initialReviews, dict }: FacilityRe
 
       {/* Rating summary */}
       {reviews.length > 0 && (
-        <Card className="border-border/50 bg-muted/20 flex flex-col gap-4 rounded-[1.6rem] p-4 sm:flex-row sm:items-center">
+        <Card className="mobile-app-surface flex flex-col gap-4 rounded-[1.6rem] border-0 p-4 sm:flex-row sm:items-center">
           <div className="flex flex-col items-center gap-1">
             <span className="text-foreground text-3xl font-black">{avgRating.toFixed(1)}</span>
             <div className="flex gap-0.5">
@@ -160,7 +160,7 @@ export function FacilityReviews({ facilityId, initialReviews, dict }: FacilityRe
 
       {/* Review form */}
       {session ? (
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="mobile-app-surface space-y-4 rounded-[1.6rem] p-4">
           <div>
             <p className="text-foreground/70 mb-2 text-[10px] font-bold tracking-wider uppercase">
               {t.your_rating || "Vaša ocena"}
@@ -224,7 +224,7 @@ export function FacilityReviews({ facilityId, initialReviews, dict }: FacilityRe
           </Button>
         </form>
       ) : (
-        <Card className="border-border/50 bg-muted/20 rounded-[1.6rem] p-4 text-center">
+        <Card className="mobile-app-surface rounded-[1.6rem] border-0 p-4 text-center">
           <p className="text-muted-foreground text-xs font-medium">{t.login_prompt}</p>
           <Button
             asChild
@@ -243,7 +243,7 @@ export function FacilityReviews({ facilityId, initialReviews, dict }: FacilityRe
           {reviews.map((review) => (
             <Card
               key={review.id}
-              className="border-border/50 bg-muted/10 space-y-2 rounded-[1.45rem] p-4"
+              className="mobile-app-surface space-y-2 rounded-[1.45rem] border-0 p-4"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">

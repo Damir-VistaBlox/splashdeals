@@ -48,10 +48,36 @@ export function CartSummary({
 
   return (
     <div className="space-y-4 sm:space-y-6">
-      <Card className="surface-card rounded-[1.75rem] p-5 sm:p-8">
-        <h2 className="text-foreground mb-4 text-[10px] font-black tracking-[0.22em] uppercase sm:mb-6">
-          {dict?.cart?.summary}
-        </h2>
+      <Card className="mobile-app-surface rounded-[1.75rem] border-0 p-4 sm:surface-card sm:p-8">
+        <div className="mb-4 flex items-center justify-between gap-3 sm:mb-6">
+          <h2 className="text-foreground text-[10px] font-black tracking-[0.22em] uppercase">
+            {dict?.cart?.summary}
+          </h2>
+          <span className="text-primary rounded-full bg-primary/10 px-2.5 py-1 text-[9px] font-black tracking-[0.14em] uppercase">
+            Spremno za naplatu
+          </span>
+        </div>
+
+        <div className="mb-4 grid grid-cols-3 gap-2 sm:hidden">
+          <div className="rounded-2xl bg-white/66 px-3 py-2 text-center">
+            <p className="text-foreground text-[10px] font-black tracking-[0.14em] uppercase">
+              Sigurno
+            </p>
+            <p className="text-muted-foreground mt-1 text-[11px] font-medium">Plaćanje</p>
+          </div>
+          <div className="rounded-2xl bg-white/66 px-3 py-2 text-center">
+            <p className="text-foreground text-[10px] font-black tracking-[0.14em] uppercase">
+              Promo
+            </p>
+            <p className="text-muted-foreground mt-1 text-[11px] font-medium">Kod podržan</p>
+          </div>
+          <div className="rounded-2xl bg-white/66 px-3 py-2 text-center">
+            <p className="text-foreground text-[10px] font-black tracking-[0.14em] uppercase">
+              Karte
+            </p>
+            <p className="text-muted-foreground mt-1 text-[11px] font-medium">Digitalna dostava</p>
+          </div>
+        </div>
 
         <div className="space-y-3">
           <div className="text-foreground flex justify-between text-sm">
@@ -106,7 +132,7 @@ export function CartSummary({
             <Button
               disabled={!promoCode || promoLoading}
               onClick={onApplyPromo}
-              className="h-11 shrink-0 rounded-xl px-4 text-xs font-bold shadow-sm"
+              className="h-11 shrink-0 rounded-xl px-4 text-[11px] font-black tracking-[0.12em] uppercase shadow-sm"
             >
               {dict?.cart?.apply}
             </Button>
@@ -138,7 +164,7 @@ export function CartSummary({
         </Button>
       </Card>
 
-      <Card className="surface-card flex flex-wrap items-center justify-center gap-4 rounded-[1.75rem] p-4 sm:p-6">
+      <Card className="mobile-app-surface flex flex-wrap items-center justify-center gap-4 rounded-[1.75rem] border-0 p-4 sm:surface-card sm:p-6">
         <Image src="/payments/visa.svg" alt="Visa" width={64} height={24} className="h-6 w-auto" />
         <Image
           src="/payments/mastercard.svg"

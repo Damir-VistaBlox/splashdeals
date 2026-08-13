@@ -342,6 +342,16 @@ label {
   pointer-events: none;
 }
 
+.mobile-app-surface {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.44), rgba(255, 255, 255, 0.16)),
+    rgba(255, 255, 255, 0.74);
+  border: 1px solid color-mix(in srgb, var(--border) 75%, white 25%);
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+}
+
 .surface-card {
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.44), rgba(255, 255, 255, 0.14)), var(--card);

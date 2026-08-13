@@ -186,8 +186,8 @@ export function BreadcrumbBar({ facilityMap = {} }: { facilityMap?: FacilityMap 
   if (!pathname || pathname === "/") return null;
 
   return (
-    <div className="sticky top-[4.9rem] z-[100] px-3 pt-2 sm:top-[5.35rem] sm:px-6 md:px-8">
-      <div className="public-panel mx-auto flex min-h-12 w-full max-w-7xl items-center gap-0 rounded-[1.4rem] px-4 md:min-h-11 md:px-6">
+    <div className="sticky top-[8rem] z-[100] px-3 pt-2 sm:top-[5.35rem] sm:px-6 md:px-8">
+      <div className="public-panel mx-auto flex min-h-12 w-full max-w-7xl items-center gap-0 rounded-[1.4rem] px-4 shadow-[0_16px_32px_rgba(15,23,42,0.06)] md:min-h-11 md:px-6 md:shadow-none">
         {backHref && (
           <Link
             href={backHref}

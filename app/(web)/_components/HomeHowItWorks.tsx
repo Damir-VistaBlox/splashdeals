@@ -12,23 +12,23 @@ export function HomeHowItWorks({ dict }: { dict: HomeDict }) {
   return (
     <section
       id="how-it-works"
-      className="border-border mx-auto max-w-7xl scroll-mt-28 border-t px-6 py-10 max-md:scroll-mt-36 sm:py-20 md:px-12"
+      className="border-border mx-auto max-w-7xl scroll-mt-28 border-t px-3 py-8 max-md:scroll-mt-36 sm:px-6 sm:py-20 md:px-8"
     >
-      <div className="mb-8 text-center sm:mb-14">
-        <h2 className="mb-3 text-[clamp(1.75rem,6vw,3.5rem)] leading-[0.95] font-black tracking-tighter uppercase italic">
+      <div className="mb-6 text-center sm:mb-14">
+        <h2 className="mb-2 text-[clamp(1.65rem,6vw,3.5rem)] leading-[0.95] font-black tracking-tighter uppercase italic">
           {dict.steps_title_base}
           <span className="text-primary">{dict.steps_title_highlight}</span>
         </h2>
-        <p className="text-muted-foreground text-sm font-medium sm:text-base">
+        <p className="text-muted-foreground text-[13px] font-medium sm:text-base">
           {dict.steps_subtitle}
         </p>
       </div>
 
-      <ol className="grid grid-cols-1 gap-6 md:grid-cols-3 md:gap-10">
+      <ol className="grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-10">
         {steps.map((item) => (
           <li
             key={item.step}
-            className="relative flex items-start gap-4 text-left md:block md:text-left"
+            className="mobile-app-surface relative flex items-start gap-4 rounded-[1.35rem] p-4 text-left md:block md:bg-transparent md:p-0 md:shadow-none md:text-left"
           >
             <span className="text-primary/15 pointer-events-none absolute -top-4 left-0 hidden text-6xl font-black select-none md:block">
               {item.step}

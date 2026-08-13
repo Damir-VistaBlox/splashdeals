@@ -34,8 +34,8 @@ export function MediaGallery({ media, dict }: MediaGalleryProps) {
   if (!galleryMedia.length) return null;
 
   return (
-    <section id="gallery" className="space-y-8 md:space-y-12">
-      <div className="mx-auto max-w-2xl space-y-3 text-center md:space-y-4">
+    <section id="gallery" className="space-y-6 md:space-y-12">
+      <div className="mx-auto max-w-2xl space-y-2.5 text-center md:space-y-4">
         <div className="text-primary flex items-center justify-center gap-3 text-xs font-extrabold tracking-widest uppercase">
           <Icon name="photo_camera" className="text-[16px]" />
           {dict?.media_gallery?.eyebrow || "Galerija"}
@@ -66,7 +66,7 @@ export function MediaGallery({ media, dict }: MediaGalleryProps) {
           <button
             key={m.id}
             onClick={() => setSelectedIdx(i)}
-            className="group border-border animate-fade-in-up bg-muted/5 relative overflow-hidden rounded-2xl border shadow-[0_14px_34px_rgba(15,23,42,0.04)] md:rounded-[2.5rem]"
+            className="group mobile-app-surface animate-fade-in-up relative overflow-hidden rounded-2xl border-0 md:rounded-[2.5rem]"
             style={{ animationDelay: `${i * 0.05}s`, animationFillMode: "both" }}
             aria-label={`${dict?.media_gallery?.expand_view} ${i + 1}`}
           >

@@ -209,14 +209,14 @@ export function ShowcaseTicketGroups({
 
   const activeGroup = groups.find((g) => g.id === activeGroupId) || groups[0];
   // Extra bottom padding when sticky mini-cart is visible above BottomNav
-  const shellPad = totalItems > 0 ? "pb-44 md:pb-0" : "pb-20 md:pb-0";
+  const shellPad = totalItems > 0 ? "pb-40 md:pb-0" : "pb-16 md:pb-0";
 
   return (
-    <div className={cn("mx-auto w-full max-w-6xl space-y-6", shellPad)}>
+    <div className={cn("mx-auto w-full max-w-6xl space-y-5", shellPad)}>
       {/* Scrollable glass pill tabs container */}
-      <div className="relative mb-4 w-full md:mb-8">
+      <div className="relative mb-3 w-full md:mb-8">
         <div className="from-background via-background/70 pointer-events-none absolute top-0 right-0 bottom-0 z-10 w-12 bg-gradient-to-l to-transparent lg:hidden" />
-        <div className="bg-background/88 border-border/40 no-scrollbar -mx-1 flex gap-2 overflow-x-auto scroll-smooth rounded-[1.2rem] border px-2.5 py-2.5 shadow-[0_12px_30px_rgba(15,23,42,0.06)] backdrop-blur-sm lg:mx-0 lg:flex-wrap lg:justify-center lg:overflow-visible lg:rounded-full lg:border-white/70 lg:bg-white/62 lg:px-1 lg:py-1 lg:backdrop-blur-md">
+        <div className="mobile-app-surface no-scrollbar -mx-1 flex gap-2 overflow-x-auto scroll-smooth rounded-[1.2rem] px-2.5 py-2.5 lg:mx-0 lg:flex-wrap lg:justify-center lg:overflow-visible lg:rounded-full lg:border-white/70 lg:bg-white/62 lg:px-1 lg:py-1 lg:backdrop-blur-md">
           {groups.map((group) => {
             const isActive = group.id === activeGroupId;
             return (
@@ -243,7 +243,7 @@ export function ShowcaseTicketGroups({
         <div key={activeGroupId} className="w-full space-y-6">
           {activeGroup.description && (
             <div className="px-1 md:hidden">
-              <p className="bg-muted/35 border-border/40 text-muted-foreground rounded-2xl border px-3.5 py-3 text-sm leading-relaxed font-medium italic">
+              <p className="mobile-app-surface text-muted-foreground rounded-[1.25rem] px-3.5 py-3 text-sm leading-relaxed font-medium italic">
                 {activeGroup.description}
               </p>
             </div>
@@ -322,8 +322,8 @@ export function ShowcaseTicketGroups({
 
       {/* Mobile Sticky Drawer */}
       {totalItems > 0 && (
-        <div className="animate-in slide-in-from-bottom fixed right-4 bottom-[calc(5rem+env(safe-area-inset-bottom,0px))] left-4 z-[999] duration-300 md:hidden">
-          <div className="mobile-glass flex items-center justify-between gap-4 rounded-3xl p-4 shadow-[0_0_25px_hsl(var(--primary)/0.1)]">
+        <div className="animate-in slide-in-from-bottom fixed right-3 bottom-[calc(5rem+env(safe-area-inset-bottom,0px))] left-3 z-[999] duration-300 md:hidden">
+          <div className="mobile-app-surface flex items-center justify-between gap-4 rounded-[1.45rem] p-3">
             <div className="space-y-0.5">
               <span className="text-muted-foreground text-[9px] font-black tracking-widest uppercase">
                 {dict?.ticketing?.cart_label}
@@ -342,7 +342,7 @@ export function ShowcaseTicketGroups({
             </div>
             <Button
               asChild
-              className="bg-primary hover:bg-primary/90 text-primary-foreground flex h-12 shrink-0 cursor-pointer items-center gap-2 rounded-2xl px-6 text-xs font-black tracking-widest uppercase shadow-[0_0_20px_rgba(6,182,212,0.3)] transition-colors active:scale-95"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground flex h-11 shrink-0 cursor-pointer items-center gap-2 rounded-[1rem] px-4 text-[10px] font-black tracking-[0.14em] uppercase shadow-[0_0_20px_rgba(6,182,212,0.22)] transition-colors active:scale-95"
             >
               <Link href="/cart">
                 <span>{dict?.cart?.view_cart || dict?.ticketing?.view_cart}</span>
@@ -499,7 +499,7 @@ function MobileTicketAccordion({
   return (
     <div
       className={cn(
-        "bg-card/95 border-border/50 overflow-hidden rounded-[1.45rem] border shadow-[0_10px_26px_rgba(15,23,42,0.05)] transition-[transform,box-shadow,border-color,max-height,opacity] duration-300",
+        "bg-card/95 border-border/50 overflow-hidden rounded-[1.3rem] border shadow-[0_10px_26px_rgba(15,23,42,0.05)] transition-[transform,box-shadow,border-color,max-height,opacity] duration-300",
         isExpanded && "border-primary/18 shadow-[0_14px_34px_rgba(6,182,212,0.08)]",
       )}
     >
@@ -508,7 +508,7 @@ function MobileTicketAccordion({
         type="button"
         onClick={onToggle}
         aria-expanded={isExpanded}
-        className="hover:bg-muted/10 active:bg-muted/20 flex min-h-16 w-full items-center justify-between gap-3 px-4 py-3 text-left transition-colors"
+        className="hover:bg-muted/10 active:bg-muted/20 flex min-h-15 w-full items-center justify-between gap-3 px-4 py-3 text-left transition-colors"
       >
         <div className="flex min-w-0 flex-1 items-center gap-2 text-left">
           {tier.imageUrl && (
@@ -519,6 +519,7 @@ function MobileTicketAccordion({
                 fill
                 className="object-cover"
                 sizes="48px"
+                loading="eager"
               />
               <div className="from-background/80 via-background/20 pointer-events-none absolute inset-0 bg-gradient-to-t to-transparent" />
             </div>

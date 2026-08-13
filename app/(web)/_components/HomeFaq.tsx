@@ -18,14 +18,19 @@ const FAQ_KEYS = [
 
 export function HomeFaq({ dict }: { dict: HomeDict }) {
   return (
-    <section className="border-border mx-auto max-w-3xl border-t px-6 py-10 sm:py-16 md:px-12">
-      <div className="mb-6 text-center sm:mb-8">
-        <h2 className="mb-2 text-3xl font-black tracking-tighter uppercase italic sm:text-4xl">
+    <section className="border-border mx-auto max-w-3xl border-t px-3 py-8 sm:px-6 sm:py-16 md:px-8">
+      <div className="mb-5 text-center sm:mb-8">
+        <h2 className="mb-2 text-[1.9rem] font-black tracking-tighter uppercase italic sm:text-4xl">
           {dict.faq_title}
         </h2>
-        <p className="text-muted-foreground text-sm">{dict.faq_subtitle}</p>
+        <p className="text-muted-foreground text-[13px]">{dict.faq_subtitle}</p>
       </div>
-      <Accordion type="single" collapsible defaultValue="faq-0" className="w-full">
+      <Accordion
+        type="single"
+        collapsible
+        defaultValue="faq-0"
+        className="mobile-app-surface w-full rounded-[1.4rem] px-4 py-2"
+      >
         {FAQ_KEYS.map(([q, a], i) => (
           <AccordionItem key={q} value={`faq-${i}`}>
             <AccordionTrigger className="min-h-12 py-3 text-left text-sm font-bold tracking-wide">

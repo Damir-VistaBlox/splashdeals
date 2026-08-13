@@ -49,9 +49,9 @@ export function PlatformShell({
       {showBreadcrumb ? <BreadcrumbBar facilityMap={facilityMap} /> : null}
       <main
         id="main-content"
-        className="relative flex-grow pt-[4.55rem] pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] sm:pt-20 sm:pb-0"
+        className="relative flex-grow pt-[8.85rem] pb-[calc(5.6rem+env(safe-area-inset-bottom,0px))] sm:pt-20 sm:pb-0"
       >
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-[linear-gradient(180deg,rgba(255,255,255,0.45),transparent)]" />
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-36 bg-[linear-gradient(180deg,rgba(255,255,255,0.5),transparent)]" />
         <React.Suspense
           fallback={
             <div className="bg-muted flex flex-1 animate-pulse items-center justify-center p-20" />
