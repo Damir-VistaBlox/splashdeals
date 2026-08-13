@@ -102,7 +102,6 @@ export default async function TicketProductDetailPage({ params }: PageProps) {
   if (!loaded) notFound();
 
   const { facility, product, category } = loaded;
-  const priceFormat = new Intl.NumberFormat("sr-RS");
 
   // Map product shape to TicketVariantSelector's expected props
   const selectorProduct = {
@@ -210,7 +209,6 @@ export default async function TicketProductDetailPage({ params }: PageProps) {
               category: facility.category,
             }}
             dict={t}
-            priceFormat={priceFormat}
           />
         </div>
       </div>

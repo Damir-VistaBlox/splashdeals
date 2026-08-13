@@ -1,6 +1,6 @@
 import "./globals.css";
 import { type ReactNode, Suspense } from "react";
-import { Geist } from "next/font/google";
+import { Inter } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { auth } from "@/app/(server)/lib/auth";
 import { headers } from "next/headers";
@@ -8,7 +8,11 @@ import { redirect } from "next/navigation";
 import { connection } from "next/server";
 import type { Metadata } from "next";
 
-const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
+const appSans = Inter({
+  subsets: ["latin", "latin-ext"],
+  variable: "--font-app-sans",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "Splashdeals - Partner Security Gateway",
@@ -35,7 +39,7 @@ async function AuthGuard({ children }: { children: ReactNode }) {
 
 export default async function AuthLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="sr" suppressHydrationWarning className={cn("font-sans", geist.variable)}>
+    <html lang="sr" suppressHydrationWarning className={cn("font-sans", appSans.variable)}>
       <body className="min-h-screen antialiased">
         <div className="pointer-events-none fixed inset-0 overflow-hidden" aria-hidden="true">
           <div className="absolute -top-[10%] -right-[10%] h-[40%] w-[40%] rounded-full bg-cyan-500/5 blur-[120px]" />

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/Icon";
@@ -48,7 +48,6 @@ interface TicketVariantSelectorProps {
     category: string;
   };
   dict?: Record<string, string>;
-  priceFormat: Intl.NumberFormat;
 }
 
 /** Find the best discount deal ID across prices for default selection */
@@ -67,8 +66,8 @@ export function TicketVariantSelector({
   product,
   facility,
   dict = {} as Record<string, string>,
-  priceFormat,
 }: TicketVariantSelectorProps) {
+  const priceFormat = useMemo(() => new Intl.NumberFormat("sr-RS"), []);
   const [selectedPrice, setSelectedPrice] = useState<string | null>(
     () => findBestDeal(product.prices) ?? null,
   );

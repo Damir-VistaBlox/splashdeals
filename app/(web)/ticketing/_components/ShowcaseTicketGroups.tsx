@@ -214,9 +214,9 @@ export function ShowcaseTicketGroups({
   return (
     <div className={cn("mx-auto w-full max-w-6xl space-y-8", shellPad)}>
       {/* Scrollable glass pill tabs container */}
-      <div className="relative mb-8 w-full">
-        <div className="from-background via-background/60 pointer-events-none absolute top-0 right-[-24px] bottom-0 z-10 w-16 bg-gradient-to-l to-transparent lg:hidden" />
-        <div className="no-scrollbar lg:bg-muted/50 lg:border-border -mx-6 flex gap-2 overflow-x-auto scroll-smooth rounded-none border-none bg-transparent px-6 pt-1 pb-2 lg:mx-0 lg:flex-wrap lg:justify-center lg:overflow-visible lg:rounded-full lg:border lg:px-1 lg:py-1 lg:backdrop-blur-md">
+      <div className="relative mb-6 w-full md:mb-8">
+        <div className="from-background via-background/70 pointer-events-none absolute top-0 right-0 bottom-0 z-10 w-12 bg-gradient-to-l to-transparent lg:hidden" />
+        <div className="bg-background/88 border-border/40 no-scrollbar -mx-1 flex gap-2 overflow-x-auto scroll-smooth rounded-[1.35rem] border px-3 py-3 shadow-[0_12px_30px_rgba(15,23,42,0.06)] backdrop-blur-sm lg:mx-0 lg:flex-wrap lg:justify-center lg:overflow-visible lg:rounded-full lg:border-white/70 lg:bg-white/62 lg:px-1 lg:py-1 lg:backdrop-blur-md">
           {groups.map((group) => {
             const isActive = group.id === activeGroupId;
             return (
@@ -225,10 +225,10 @@ export function ShowcaseTicketGroups({
                 variant="ghost"
                 onClick={() => setActiveGroupId(group.id)}
                 className={cn(
-                  "relative h-11 min-h-11 shrink-0 rounded-full px-6 text-xs font-black tracking-widest uppercase transition-colors duration-300 select-none",
+                  "relative h-11 min-h-11 shrink-0 rounded-full px-5 text-[11px] font-black tracking-[0.16em] uppercase transition-colors duration-300 select-none",
                   isActive
                     ? "text-primary-foreground"
-                    : "text-muted-foreground hover:text-foreground bg-muted/50 border-border border md:border-none md:bg-transparent",
+                    : "text-muted-foreground hover:text-foreground border border-white/70 bg-white/82 md:border-none md:bg-transparent",
                 )}
               >
                 {isActive && <div className="bg-primary absolute inset-0 rounded-full" />}
@@ -263,7 +263,7 @@ export function ShowcaseTicketGroups({
                 dict={dict}
               />
             ) : activeGroup.tiers.length >= 5 ? (
-              <Card className="border-border overflow-visible p-8">
+              <Card className="surface-card overflow-visible rounded-[2rem] p-8">
                 <TierGrid
                   prefix={prefix}
                   main={main}
@@ -274,7 +274,7 @@ export function ShowcaseTicketGroups({
                 />
               </Card>
             ) : (
-              <Card className="border-border overflow-visible p-8">
+              <Card className="surface-card overflow-visible rounded-[2rem] p-8">
                 <TierList
                   prefix={prefix}
                   main={main}
@@ -288,7 +288,7 @@ export function ShowcaseTicketGroups({
           </div>
 
           {/* Mobile: Accordion-style rows */}
-          <div className="block space-y-2 md:hidden">
+          <div className="block space-y-3 md:hidden">
             {activeGroup.tiers.map((tier: TicketTier) => {
               const label = (tier.label || "").toLowerCase();
               const isFeatured =
@@ -356,7 +356,7 @@ export function ShowcaseTicketGroups({
       {/* Desktop Sticky Summary Bar */}
       {totalItems > 0 && (
         <div className="animate-in slide-in-from-bottom fixed right-0 bottom-0 left-0 z-[999] hidden border-t duration-300 md:flex">
-          <div className="bg-background/80 border-border mx-auto flex w-full max-w-6xl items-center justify-between gap-6 border-x px-8 py-4 shadow-[0_-4px_30px_hsl(var(--primary)/0.08)] backdrop-blur-xl">
+          <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-6 border-x border-white/60 bg-white/72 px-8 py-4 shadow-[0_-4px_30px_hsl(var(--primary)/0.08)] backdrop-blur-xl">
             <div className="flex items-baseline gap-3">
               <span className="text-muted-foreground text-[9px] font-black tracking-widest uppercase">
                 {dict?.ticketing?.in_cart}
@@ -497,23 +497,28 @@ function MobileTicketAccordion({
   };
 
   return (
-    <div className="border-border/40 overflow-hidden border-b transition-[max-height,opacity] duration-300">
+    <div
+      className={cn(
+        "bg-card/94 border-border/50 overflow-hidden rounded-[1.45rem] border shadow-[0_10px_30px_rgba(15,23,42,0.05)] transition-[transform,box-shadow,border-color,max-height,opacity] duration-300",
+        isExpanded && "border-primary/18 shadow-[0_14px_34px_rgba(6,182,212,0.08)]",
+      )}
+    >
       {/* Collapsed row — gate price + % always visible (audit H3 / C1) */}
       <button
         type="button"
         onClick={onToggle}
         aria-expanded={isExpanded}
-        className="hover:bg-muted/10 active:bg-muted/20 flex min-h-14 w-full items-center justify-between gap-2 px-3 py-3 transition-colors"
+        className="hover:bg-muted/10 active:bg-muted/20 flex min-h-16 w-full items-center justify-between gap-3 px-4 py-3.5 text-left transition-colors"
       >
         <div className="flex min-w-0 flex-1 items-center gap-2 text-left">
           {tier.imageUrl && (
-            <div className="ring-border/50 relative aspect-[4/3] w-10 shrink-0 overflow-hidden rounded-xl ring-1">
+            <div className="ring-border/50 relative aspect-[4/3] w-12 shrink-0 overflow-hidden rounded-xl ring-1">
               <Image
                 src={tier.imageUrl}
                 alt={tier.label || tier.title}
                 fill
                 className="object-cover"
-                sizes="40px"
+                sizes="48px"
               />
               <div className="from-background/80 via-background/20 pointer-events-none absolute inset-0 bg-gradient-to-t to-transparent" />
             </div>
@@ -541,7 +546,7 @@ function MobileTicketAccordion({
             </div>
           </div>
         </div>
-        <div className="flex shrink-0 items-center gap-2">
+        <div className="flex shrink-0 items-center gap-2.5">
           <div className="flex flex-col items-end leading-none">
             {hasDiscount && tier.originalPrice && (
               <span className="text-muted-foreground text-[10px] font-bold tabular-nums line-through">
@@ -553,16 +558,18 @@ function MobileTicketAccordion({
               <span className="text-primary text-[9px] font-bold">RSD</span>
             </span>
           </div>
-          <Icon
-            name={isExpanded ? "expand_less" : "expand_more"}
-            className="text-muted-foreground text-[18px]"
-          />
+          <div className="bg-muted/70 flex h-8 w-8 items-center justify-center rounded-full">
+            <Icon
+              name={isExpanded ? "expand_less" : "expand_more"}
+              className="text-muted-foreground text-[18px]"
+            />
+          </div>
         </div>
       </button>
 
       {/* Expanded content */}
       {isExpanded && (
-        <div className="animate-fade-in px-3 pb-4">
+        <div className="animate-fade-in border-border/40 border-t px-4 pb-4">
           {loadingPrices ? (
             <div className="flex items-center justify-center py-8">
               <Icon name="refresh" className="text-primary size-5 animate-spin" />

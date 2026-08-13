@@ -3,19 +3,13 @@ import React from "react";
 export const GlobalAmbient = () => {
   return (
     <div className="pointer-events-none fixed inset-0 -z-50 overflow-hidden">
-      {/* 🌊 Deep Sea Base */}
       <div className="bg-background absolute inset-0" />
-
-      {/* 🧪 Kinetic Mesh Gradients (Aqua) - Using CSS Animations for zero JS overhead */}
-      <div className="bg-primary/10 animate-kinetic-1 absolute top-[-20%] left-[-20%] h-[80%] w-[80%] rounded-full blur-[150px]" />
-
-      <div className="bg-primary/10 animate-kinetic-2 absolute right-[-10%] bottom-[-10%] h-[70%] w-[70%] rounded-full blur-[120px]" />
-
-      {/* 🌫️ Subsurface Noise Scrim */}
-      <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-20 mix-blend-overlay brightness-100 contrast-125" />
-
-      {/* Dynamic Scrim based on scroll to fade the top/bottom */}
-      <div className="from-background to-background absolute inset-0 bg-gradient-to-b via-transparent opacity-80" />
+      <div className="absolute inset-x-0 top-0 h-[42vh] bg-[radial-gradient(circle_at_top,rgba(6,182,212,0.16),transparent_58%)]" />
+      <div className="animate-kinetic-1 bg-primary/12 absolute top-[-16%] left-[-10%] h-[42rem] w-[42rem] rounded-full blur-[150px]" />
+      <div className="animate-kinetic-2 absolute right-[-10%] bottom-[-6%] h-[34rem] w-[34rem] rounded-full bg-amber-300/18 blur-[130px]" />
+      <div className="animate-drift absolute top-[18%] right-[18%] h-48 w-48 rounded-full bg-sky-100/40 blur-[80px]" />
+      <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-25 mix-blend-soft-light brightness-110 contrast-125" />
+      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.18),transparent_22%,transparent_78%,rgba(255,255,255,0.2))]" />
     </div>
   );
 };

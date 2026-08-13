@@ -251,11 +251,11 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
     <div className="text-foreground selection:bg-primary/30 relative min-h-screen font-sans">
       {/* ✅ Structured Data */}
       <JsonLd data={facilitySchema} id={`facility-${facilitySlug}-schema`} />
-      <section className="relative flex h-[40vh] w-full flex-col justify-end overflow-hidden p-6 md:min-h-[calc(100dvh-120px)] md:p-12">
+      <section className="relative flex min-h-[72svh] w-full flex-col justify-end overflow-hidden px-4 pt-24 pb-8 sm:px-6 md:min-h-[calc(100dvh-120px)] md:p-12">
         <ShowcaseHero heroMedia={heroMedia} facility={facility} />
 
-        <div className="relative z-10 mx-auto mb-12 grid w-full max-w-7xl grid-cols-1 items-end gap-8 md:grid-cols-12">
-          <div className="space-y-6 md:col-span-8">
+        <div className="relative z-10 mx-auto grid w-full max-w-7xl grid-cols-1 items-end gap-6 md:mb-12 md:grid-cols-12 md:gap-8">
+          <div className="space-y-5 md:col-span-8 md:space-y-6">
             <HeroActionPill
               facility={{
                 id: facility.id,
@@ -275,26 +275,37 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
               isFavorited={isFavorited}
             />
 
-            <h1 className="text-primary-foreground py-2 text-4xl leading-tight font-black tracking-tighter italic drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)] md:text-7xl md:leading-[0.9]">
-              {(() => {
-                const words = facility.name.split(" ");
-                if (words.length === 1) {
-                  return <span className="text-splash">{words[0]}</span>;
-                }
-                const last = words.length - 1;
-                return words.map((word, i) => (
-                  <span key={i} className={i === last ? "text-splash" : ""}>
-                    {word}{" "}
-                  </span>
-                ));
-              })()}
-            </h1>
+            <div className="bg-background/10 max-w-3xl rounded-[2rem] border border-white/12 px-5 py-5 shadow-[0_18px_60px_rgba(7,24,39,0.26)] backdrop-blur-sm sm:px-6 sm:py-6 md:max-w-none md:border-0 md:bg-transparent md:px-0 md:py-0 md:shadow-none md:backdrop-blur-none">
+              <div className="text-primary-foreground/80 mb-3 text-[11px] font-black tracking-[0.2em] uppercase md:mb-4 md:text-xs">
+                {categoryLabel}
+              </div>
+              <h1 className="text-primary-foreground py-1 text-[2.15rem] leading-[0.95] font-black tracking-[-0.05em] italic drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)] sm:text-5xl md:py-2 md:text-7xl md:leading-[0.9]">
+                {(() => {
+                  const words = facility.name.split(" ");
+                  if (words.length === 1) {
+                    return <span className="text-splash">{words[0]}</span>;
+                  }
+                  const last = words.length - 1;
+                  return words.map((word, i) => (
+                    <span key={i} className={i === last ? "text-splash" : ""}>
+                      {word}{" "}
+                    </span>
+                  ));
+                })()}
+              </h1>
+              <p className="text-primary-foreground/80 mt-3 max-w-2xl text-sm leading-relaxed font-medium md:mt-5 md:text-base">
+                {facility.streetName} {facility.streetNumber}, {facility.postalCode} {facility.city}
+              </p>
+            </div>
           </div>
         </div>
       </section>
 
-      <main className="relative z-20 mx-auto -mt-16 max-w-7xl [scroll-padding-top:8rem] space-y-12 px-6 pb-24 sm:space-y-32 sm:pb-48 md:-mt-24 md:px-12">
-        <div id="deals" className="scroll-mt-32 space-y-8 sm:space-y-12 md:pt-12">
+      <main className="relative z-20 mx-auto -mt-6 max-w-7xl [scroll-padding-top:8rem] space-y-12 px-4 pb-24 sm:-mt-8 sm:space-y-32 sm:px-6 sm:pb-48 md:-mt-24 md:px-12">
+        <div
+          id="deals"
+          className="bg-background/96 border-border/40 scroll-mt-32 space-y-8 rounded-[2rem] border px-4 py-6 shadow-[0_18px_50px_rgba(15,23,42,0.08)] backdrop-blur-sm sm:space-y-12 sm:px-6 sm:py-8 md:rounded-[2.5rem] md:border-0 md:bg-transparent md:px-0 md:py-0 md:pt-12 md:shadow-none md:backdrop-blur-none"
+        >
           <div className="mb-8 flex flex-col items-center space-y-4 text-center sm:mb-16">
             <div className="brand-divider mb-2 w-16" />
             <h2 className="text-foreground text-2xl leading-none font-black tracking-tighter uppercase italic md:text-5xl">

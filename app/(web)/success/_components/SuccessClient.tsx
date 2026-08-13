@@ -301,7 +301,7 @@ export function SuccessClient({
               className="animate-fade-in-up"
               style={{ animationDelay: `${0.2 + index * 0.1}s` }}
             >
-              <Card className="group border-border/5 bg-card/40 hover:border-primary/30 flex flex-col overflow-hidden p-0 transition-colors duration-500 md:flex-row">
+              <Card className="surface-card group hover:border-primary/30 flex flex-col overflow-hidden rounded-[2rem] border-white/70 p-0 transition-colors duration-500 md:flex-row">
                 {/* QR Code Wing */}
                 <div className="bg-background relative flex min-w-0 items-center justify-center p-6 sm:min-w-[240px] sm:p-10">
                   <div className="from-primary/5 pointer-events-none absolute inset-0 bg-gradient-to-br to-transparent" />
@@ -338,7 +338,7 @@ export function SuccessClient({
                     </h3>
                   </div>
 
-                  <div className="border-border/5 relative z-10 space-y-4 border-t pt-4">
+                  <div className="relative z-10 space-y-4 border-t border-white/40 pt-4">
                     <div className="group/item flex items-start gap-3">
                       <div className="bg-muted/5 text-muted-foreground group-hover/item:text-primary rounded-lg p-2 transition-colors">
                         <Icon name="location_on" className="text-[16px]" />
@@ -410,7 +410,7 @@ export function SuccessClient({
                 <Button
                   variant="outline"
                   size="lg"
-                  className="bg-muted/5 text-foreground hover:bg-muted/10 border-border/10 h-12 w-full rounded-full border px-6 text-sm sm:h-14 sm:px-10"
+                  className="text-foreground h-12 w-full rounded-full border border-white/70 bg-white/72 px-6 text-sm hover:bg-white sm:h-14 sm:px-10"
                 >
                   <Icon name="receipt" className="mr-2 text-[18px] sm:mr-3 sm:text-[20px]" />
                   {dict.actions.view_order || "Detalji porudžbine"}
@@ -424,7 +424,7 @@ export function SuccessClient({
               <Button
                 variant="outline"
                 size="lg"
-                className="bg-muted/5 text-foreground hover:bg-muted/10 border-border/10 h-11 w-full rounded-full border px-5 text-xs sm:h-12 sm:w-auto sm:px-8 sm:text-sm"
+                className="text-foreground h-11 w-full rounded-full border border-white/70 bg-white/72 px-5 text-xs hover:bg-white sm:h-12 sm:w-auto sm:px-8 sm:text-sm"
               >
                 <Icon name="arrow_back" className="mr-2 text-[16px]" />
                 {dict.actions.continue}
@@ -435,7 +435,7 @@ export function SuccessClient({
               onClick={() => window.print()}
               size="lg"
               variant="outline"
-              className="no-print bg-muted/5 text-foreground hover:bg-muted/10 border-border/10 h-11 w-full rounded-full border px-5 text-xs sm:h-12 sm:w-auto sm:px-8 sm:text-sm"
+              className="no-print text-foreground h-11 w-full rounded-full border border-white/70 bg-white/72 px-5 text-xs hover:bg-white sm:h-12 sm:w-auto sm:px-8 sm:text-sm"
             >
               <Icon name="download" className="mr-2 text-[16px]" />
               {dict.actions.download}
@@ -446,7 +446,7 @@ export function SuccessClient({
               disabled={isPending}
               size="lg"
               variant="outline"
-              className="bg-muted/5 text-foreground hover:bg-muted/10 border-border/10 h-11 w-full rounded-full border px-5 text-xs sm:h-12 sm:w-auto sm:px-8 sm:text-sm"
+              className="text-foreground h-11 w-full rounded-full border border-white/70 bg-white/72 px-5 text-xs hover:bg-white sm:h-12 sm:w-auto sm:px-8 sm:text-sm"
             >
               <Icon
                 name={

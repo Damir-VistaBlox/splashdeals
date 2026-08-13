@@ -2,72 +2,66 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
-/* Splashdeals Aquastream Theme Tokens — Brand-Aligned Light Theme */
-/* Matches the teal + amber palette from the SplashDeals logo */
 :root {
-  --background: oklch(1 0 0); /* Pure white — matches logo bg */
-  --foreground: oklch(0.13 0 0); /* Near black for high contrast */
+  --background: oklch(0.985 0.007 95);
+  --foreground: oklch(0.2 0.02 236);
 
-  --card: oklch(0.995 0 0); /* Near white */
-  --card-foreground: oklch(0.13 0 0);
+  --card: oklch(0.995 0.005 95);
+  --card-foreground: oklch(0.2 0.02 236);
 
-  --popover: oklch(0.995 0 0);
-  --popover-foreground: oklch(0.13 0 0);
+  --popover: oklch(0.995 0.005 95);
+  --popover-foreground: oklch(0.2 0.02 236);
 
-  /* 🌊 Aqua/Cyan (Hue 210) — matches the glossy teal logo text */
-  --primary: oklch(0.58 0.18 210);
+  --primary: oklch(0.63 0.16 220);
   --primary-foreground: oklch(1 0 0);
 
-  /* 🍊 Warm Amber (Hue 45) — matches the orange logo splashes */
-  --secondary: oklch(0.68 0.16 55);
-  --secondary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.78 0.09 88);
+  --secondary-foreground: oklch(0.22 0.02 236);
 
-  /* Warm-tinted neutrals — amber undertone instead of cold gray */
-  --muted: oklch(0.955 0.01 55);
-  --muted-foreground: oklch(0.47 0.02 55);
+  --muted: oklch(0.95 0.012 95);
+  --muted-foreground: oklch(0.48 0.03 230);
 
-  /* 🔶 Amber accent — splash energy */
-  --accent: oklch(0.65 0.18 50);
-  --accent-foreground: oklch(1 0 0);
+  --accent: oklch(0.82 0.09 70);
+  --accent-foreground: oklch(0.24 0.03 236);
 
   --destructive: oklch(0.6 0.18 25);
   --destructive-foreground: oklch(1 0 0);
 
-  --border: oklch(0.88 0.01 55); /* Warm light border */
-  --input: oklch(0.88 0.01 55);
-  --ring: oklch(0.58 0.18 210); /* Matches primary */
+  --border: oklch(0.89 0.014 95);
+  --input: oklch(0.89 0.014 95);
+  --ring: oklch(0.63 0.16 220);
 
-  /* Sidebar */
-  --sidebar: oklch(0.995 0 0);
+  --sidebar: oklch(0.995 0.005 95);
   --sidebar-foreground: oklch(0.18 0 0);
-  --sidebar-primary: oklch(0.58 0.18 210);
+  --sidebar-primary: oklch(0.63 0.16 220);
   --sidebar-primary-foreground: oklch(1 0 0);
-  --sidebar-accent: oklch(0.94 0.02 55);
-  --sidebar-accent-foreground: oklch(0.13 0 0);
-  --sidebar-border: oklch(0.88 0.01 55);
-  --sidebar-ring: oklch(0.58 0.18 210);
+  --sidebar-accent: oklch(0.95 0.012 95);
+  --sidebar-accent-foreground: oklch(0.2 0.02 236);
+  --sidebar-border: oklch(0.89 0.014 95);
+  --sidebar-ring: oklch(0.63 0.16 220);
 
-  /* Chart Colors — Splash Palette (NO PURPLE) */
-  --chart-1: oklch(0.58 0.18 210); /* Teal */
-  --chart-2: oklch(0.65 0.18 45); /* Amber */
-  --chart-3: oklch(0.52 0.12 230); /* Slate Blue */
-  --chart-4: oklch(0.72 0.18 190); /* Sky */
-  --chart-5: oklch(0.48 0.1 200); /* Deep Azure */
+  --chart-1: oklch(0.63 0.16 220);
+  --chart-2: oklch(0.72 0.14 70);
+  --chart-3: oklch(0.55 0.1 230);
+  --chart-4: oklch(0.8 0.11 190);
+  --chart-5: oklch(0.52 0.08 205);
 
-  --radius: 0.75rem;
+  --radius: 0.9rem;
 
-  /* Glass & Utilities */
-  --glass-bg: rgba(255, 255, 255, 0.8);
-  --glass-border: rgba(0, 0, 0, 0.06);
-  --navy-deep: #f8fafc;
-  --navy-muted: #f1f5f9;
-  --splash-gradient-end: #f59e0b; /* Amber — logo splash color */
-  --text-splash-mid: #fbbf24; /* Warm amber mid-tone */
+  --glass-bg: rgba(255, 255, 255, 0.72);
+  --glass-border: rgba(16, 57, 96, 0.08);
+  --navy-deep: #f6fbff;
+  --navy-muted: #edf6fb;
+  --splash-gradient-end: #f59e0b;
+  --text-splash-mid: #fbbf24;
+  --surface-hero: linear-gradient(180deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.96));
+  --surface-panel: rgba(255, 255, 255, 0.74);
+  --shadow-soft: 0 20px 60px rgba(18, 59, 96, 0.08);
+  --shadow-card: 0 18px 40px rgba(8, 47, 73, 0.1);
 
-  /* AquastreamUI Theme Tokens */
-  --color-primary: #06b6d4;
-  --color-primary-dark: #0891b2;
-  --color-secondary: #f59e0b;
+  --color-primary: #0ea5c6;
+  --color-primary-dark: #0b7da0;
+  --color-secondary: #e7b34b;
   --color-accent: #f59e0b;
 }
 
@@ -79,11 +73,9 @@
   --popover: oklch(0.16 0.01 260);
   --popover-foreground: oklch(0.97 0 0);
 
-  /* 🌊 Brighter teal for dark mode */
   --primary: oklch(0.65 0.18 210);
   --primary-foreground: oklch(0.13 0.01 260);
 
-  /* 🍊 Warm amber pops on dark bg */
   --secondary: oklch(0.7 0.18 50);
   --secondary-foreground: oklch(0.13 0.01 260);
 
@@ -100,7 +92,6 @@
   --input: oklch(0.22 0.01 260);
   --ring: oklch(0.65 0.18 210);
 
-  /* Sidebar Dark */
   --sidebar: oklch(0.11 0.01 260);
   --sidebar-foreground: oklch(0.97 0 0);
   --sidebar-primary: oklch(0.65 0.18 210);
@@ -109,20 +100,22 @@
   --sidebar-accent-foreground: oklch(0.97 0 0);
   --sidebar-border: oklch(0.16 0.01 260 / 0.5);
 
-  /* Charts Dark */
   --chart-1: oklch(0.65 0.18 210);
   --chart-2: oklch(0.7 0.2 45);
   --chart-3: oklch(0.55 0.12 230);
   --chart-4: oklch(0.6 0.18 190);
   --chart-5: oklch(0.5 0.1 200);
 
-  /* Dark mode glass */
-  --glass-bg: rgba(15, 23, 42, 0.85);
-  --glass-border: rgba(255, 255, 255, 0.15);
+  --glass-bg: rgba(15, 23, 42, 0.76);
+  --glass-border: rgba(255, 255, 255, 0.14);
   --navy-deep: #020617;
   --navy-muted: #0f172a;
-  --splash-gradient-end: #f59e0b; /* Amber even in dark mode */
+  --splash-gradient-end: #f59e0b;
   --text-splash-mid: #fbbf24;
+  --surface-hero: linear-gradient(180deg, rgba(15, 23, 42, 0.48), rgba(15, 23, 42, 0.9));
+  --surface-panel: rgba(15, 23, 42, 0.72);
+  --shadow-soft: 0 22px 64px rgba(2, 8, 23, 0.34);
+  --shadow-card: 0 18px 44px rgba(2, 8, 23, 0.36);
 }
 
 @theme inline {
@@ -143,7 +136,7 @@
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--color-accent);
   --color-accent-foreground: var(--accent-foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-app-sans);
   --font-mono:
     ui-monospace, SFMono-Regular, Roboto Mono, Menlo, Monaco, Consolas, "Liberation Mono",
     "Courier New", monospace;
@@ -158,6 +151,10 @@
   --animate-shimmer: shimmer 2s infinite;
   --animate-kinetic-1: kinetic-1 30s linear infinite;
   --animate-kinetic-2: kinetic-2 25s linear infinite;
+  --animate-drift: drift 18s ease-in-out infinite;
+  --animate-rise-in: rise-in 700ms cubic-bezier(0.21, 1, 0.32, 1) both;
+  --animate-fade-up: fade-up 700ms cubic-bezier(0.21, 1, 0.32, 1) both;
+  --animate-marquee: marquee 18s linear infinite;
 
   @keyframes logo-shimmer {
     0% {
@@ -208,28 +205,85 @@
       transform: translate(20px, 120px) scale(1.1);
     }
   }
+  @keyframes drift {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+    50% {
+      transform: translate3d(0, -12px, 0) scale(1.02);
+    }
+  }
+  @keyframes rise-in {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 32px, 0) scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+  }
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 16px, 0);
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground font-sans;
+    background-image:
+      radial-gradient(
+        circle at top left,
+        color-mix(in srgb, var(--color-primary) 10%, transparent) 0,
+        transparent 32%
+      ),
+      radial-gradient(
+        circle at top right,
+        color-mix(in srgb, var(--color-secondary) 18%, transparent) 0,
+        transparent 26%
+      ),
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, white 76%, transparent),
+        var(--background) 36%,
+        color-mix(in srgb, var(--navy-muted) 34%, var(--background)) 100%
+      );
+    background-attachment: fixed;
   }
 }
 
 body {
-  background: var(--background);
   color: var(--foreground);
   font-family:
     var(--font-sans),
     system-ui,
     -apple-system,
     sans-serif;
+  font-kerning: normal;
+  text-rendering: optimizeLegibility;
+  min-height: 100vh;
 }
 
-/* Mobile UX: enforce pointer cursor on all interactive elements */
 a,
 button,
 [role="button"],
@@ -241,141 +295,82 @@ label {
   cursor: pointer;
 }
 
-/* Glass UI Utilities */
 .glass-frost {
   background: var(--glass-bg);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--glass-border);
-  box-shadow: 0 4px 32px 0 rgba(0, 0, 0, 0.37);
+  box-shadow: var(--shadow-soft);
 }
 
 .splash-gradient {
+  display: inline-block;
   background: linear-gradient(
     135deg,
     var(--color-primary) 0%,
     var(--color-primary-dark) 50%,
     var(--splash-gradient-end) 100%
   );
-}
-
-.text-splash {
-  color: var(--color-primary);
-  background: linear-gradient(
-    135deg,
-    var(--color-primary) 0%,
-    var(--text-splash-mid) 50%,
-    var(--color-primary) 100%
-  );
-  -webkit-background-clip: text;
   background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
   -webkit-text-fill-color: transparent;
+}
+
+.public-panel {
+  background: var(--surface-panel);
+  border: 1px solid color-mix(in srgb, var(--border) 78%, white 22%);
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.section-shell {
   position: relative;
-  filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.4));
 }
 
-/* Scrollbar Utilities */
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-.no-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-.custom-scrollbar::-webkit-scrollbar {
-  height: 4px;
-}
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 10px;
-}
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: var(--color-primary);
-  border-radius: 10px;
-  box-shadow: 0 0 10px var(--color-primary);
-}
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: var(--color-accent);
+.section-shell::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 2rem;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.36), rgba(255, 255, 255, 0.06)),
+    var(--surface-hero);
+  border: 1px solid color-mix(in srgb, var(--border) 72%, white 28%);
+  box-shadow: var(--shadow-soft);
+  pointer-events: none;
 }
 
-/* Mobile Bottom Navigation: safe-area bottom inset */
-.safe-area-bottom {
-  padding-bottom: env(safe-area-inset-bottom, 0px);
+.surface-card {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.44), rgba(255, 255, 255, 0.14)), var(--card);
+  border: 1px solid color-mix(in srgb, var(--border) 82%, white 18%);
+  box-shadow: var(--shadow-card);
 }
 
-/* Mobile Glassmorphism Utility */
-.mobile-glass {
-  @apply bg-background/80 border-border border backdrop-blur-xl;
+.animated-border {
+  position: relative;
+  overflow: hidden;
 }
 
-/* 🎨 Brand Utilities — Teal + Amber Splash Palette */
-
-/* Brand card with thicker teal-tinted border */
-.brand-card {
-  @apply border-primary/10 rounded-2xl border-2 shadow-sm;
-}
-
-/* Brand accent left border (amber) */
-.brand-accent-left {
-  border-left: 3px solid var(--color-secondary);
-}
-
-/* Brand accent left border (teal) */
-.brand-accent-left-teal {
-  border-left: 3px solid var(--color-primary);
-}
-
-/* Section divider — teal to amber gradient line */
-.brand-divider {
-  @apply h-px w-full;
+.animated-border::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
   background: linear-gradient(
-    90deg,
-    var(--color-primary) 0%,
-    var(--color-secondary) 50%,
-    transparent 100%
+    120deg,
+    rgba(6, 182, 212, 0.08),
+    rgba(6, 182, 212, 0.22),
+    rgba(245, 158, 11, 0.18),
+    rgba(255, 255, 255, 0.22)
   );
-}
-
-/* Subtle amber ambient background */
-.bg-brand-amber-subtle {
-  background: linear-gradient(180deg, rgba(245, 158, 11, 0.03) 0%, transparent 100%);
-}
-
-/* Subtle teal ambient background */
-.bg-brand-teal-subtle {
-  background: linear-gradient(180deg, rgba(6, 182, 212, 0.03) 0%, transparent 100%);
-}
-
-/* Teal glow on hover for interactive cards */
-.hover-glow-teal {
-  @apply transition-all duration-300;
-}
-.hover-glow-teal:hover {
-  box-shadow: 0 0 20px rgba(6, 182, 212, 0.08);
-  @apply border-primary/25;
-}
-
-/* Success page ticket print styles */
-@media print {
-  header,
-  footer,
-  nav,
-  button,
-  .no-print {
-    display: none !important;
-  }
-  body {
-    background: white !important;
-    color: black !important;
-  }
-  .container {
-    max-width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-  }
-  .issued-ticket {
-    break-inside: avoid;
-    page-break-inside: avoid;
-  }
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
 }

@@ -19,8 +19,8 @@ export function HomeQuickFilters({ dict }: { dict: HomeDict }) {
           href={item.href}
           className={
             item.mobile
-              ? "text-muted-foreground hover:text-foreground hover:bg-muted/40 inline-flex h-12 min-h-12 items-center justify-center rounded-full px-4 text-[11px] font-bold tracking-wide uppercase"
-              : "text-muted-foreground hover:text-foreground hover:bg-muted/40 hidden h-12 min-h-12 items-center justify-center rounded-full px-4 text-[11px] font-bold tracking-wide uppercase md:inline-flex"
+              ? "text-muted-foreground hover:text-foreground hover:bg-muted/55 inline-flex h-10 min-h-10 items-center justify-center rounded-full border border-white/60 bg-white/52 px-4 text-[10px] font-bold tracking-[0.1em] uppercase transition-colors"
+              : "text-muted-foreground hover:text-foreground hover:bg-muted/55 hidden h-10 min-h-10 items-center justify-center rounded-full border border-white/60 bg-white/52 px-4 text-[10px] font-bold tracking-[0.1em] uppercase transition-colors md:inline-flex"
           }
         >
           {item.label}

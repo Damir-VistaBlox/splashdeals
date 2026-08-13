@@ -134,8 +134,9 @@ export function ShowcaseHero({ heroMedia, facility }: ShowcaseHeroProps) {
   return (
     <div className="bg-background absolute inset-0 z-0">
       {renderMedia()}
-      <div className="from-background via-background/20 absolute inset-0 bg-gradient-to-t to-transparent" />
-      <div className="splash-gradient pointer-events-none absolute inset-x-0 bottom-0 h-[20%] opacity-20 blur-3xl" />
+      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(7,24,39,0.18),rgba(7,24,39,0.08)_28%,rgba(7,24,39,0.82)_100%)]" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[24%] bg-[radial-gradient(circle_at_bottom,rgba(6,182,212,0.28),transparent_62%)] blur-3xl" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-[linear-gradient(180deg,rgba(255,255,255,0.16),transparent)]" />
     </div>
   );
 }
@@ -169,9 +170,9 @@ export function WeatherBadge({ weather }: { weather: CurrentWeather | null }) {
   const desc = getWeatherDescriptor(weather.weathercode);
 
   return (
-    <div className="glass-frost border-border flex items-center gap-3 rounded-full px-4 py-2 shadow-xl">
+    <div className="glass-frost flex items-center gap-3 rounded-full border-white/25 px-4 py-2 shadow-xl">
       <Icon name={desc.icon} className="text-primary text-[20px]" />
-      <span className="text-primary-foreground text-sm font-black whitespace-nowrap">
+      <span className="text-foreground text-sm font-black whitespace-nowrap">
         {Math.round(weather.temperature)}°C
       </span>
       <div className="bg-border hidden h-4 w-px md:block" />

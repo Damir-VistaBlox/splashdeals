@@ -107,7 +107,7 @@ export function CartItemList({
         return (
           <Card
             key={item.id}
-            className="bg-muted/20 border-border relative flex flex-col gap-3 p-3 sm:gap-4 sm:p-6"
+            className="surface-card relative flex flex-col gap-3 rounded-[1.75rem] p-3 sm:gap-4 sm:p-6"
           >
             <div className="flex min-w-0 items-start gap-3">
               {item.imageUrl && (
@@ -147,7 +147,7 @@ export function CartItemList({
             </div>
 
             <div className="flex items-center justify-between gap-3">
-              <div className="border-border bg-muted/40 flex items-center overflow-hidden rounded-xl border">
+              <div className="flex items-center overflow-hidden rounded-xl border border-white/70 bg-white/74">
                 <Button
                   type="button"
                   variant="ghost"

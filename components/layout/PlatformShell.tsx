@@ -45,18 +45,13 @@ export function PlatformShell({
       </a>
       <GlobalAmbient />
       {showStructuredData ? <NavigationStructuredData /> : null}
-      {/* Stacking: Header z-999 · Breadcrumb z-100 · BottomNav z-998 · sticky CTAs z-999 above nav */}
       <Header dict={dict} />
       {showBreadcrumb ? <BreadcrumbBar facilityMap={facilityMap} /> : null}
-
-      {/*
-        Bottom padding clears BottomNav h-16 + iOS safe-area (nav owns safe-area padding itself).
-        Without env(safe-area), notched phones clip footer / last content under the home indicator.
-      */}
       <main
         id="main-content"
-        className="flex-grow pt-16 pb-[calc(4rem+env(safe-area-inset-bottom,0px))] sm:pb-0"
+        className="relative flex-grow pt-[4.75rem] pb-[calc(5rem+env(safe-area-inset-bottom,0px))] sm:pt-20 sm:pb-0"
       >
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-[linear-gradient(180deg,rgba(255,255,255,0.45),transparent)]" />
         <React.Suspense
           fallback={
             <div className="bg-muted flex flex-1 animate-pulse items-center justify-center p-20" />

@@ -6,7 +6,6 @@ import { Logo } from "./Logo";
 import { ThemeToggle } from "./ThemeToggle";
 import { CartButton } from "./CartButton";
 import { AccountButton } from "./AccountButton";
-import { SearchBox } from "@/app/(web)/_components/SearchBox";
 import type { Dict } from "@/lib/types";
 
 interface DesktopTopNavProps {
@@ -33,15 +32,16 @@ export function DesktopTopNav({
   dict,
 }: DesktopTopNavProps) {
   return (
-    <div className="flex h-16 w-full items-center">
-      <nav className="relative mx-auto flex w-full max-w-7xl items-center justify-between">
-        {/* Left — MegaMenu (left-placed menus) */}
-        <div className="flex flex-1 justify-start">
+    <div className="w-full px-3 sm:px-4">
+      <nav
+        aria-label={dict?.mega_menu?.main_nav_aria || "Glavna navigacija"}
+        className="mx-auto grid h-[4.4rem] w-full grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-3 xl:gap-4"
+      >
+        <div className="flex min-w-0 items-center justify-start overflow-hidden">
           <MegaMenu side="left" />
         </div>
 
-        {/* Center — Logo */}
-        <div className="absolute left-1/2 z-10 -translate-x-1/2">
+        <div className="flex items-center justify-center">
           <Logo
             isTabActive={isTabActive}
             isReducedMotion={isReducedMotion}
@@ -51,11 +51,7 @@ export function DesktopTopNav({
           />
         </div>
 
-        {/* Right — SearchBox + MegaMenu (right-placed menus) + controls */}
-        <div className="flex flex-1 items-center justify-end gap-1.5 md:gap-3">
-          <div className="hidden md:block">
-            <SearchBox dict={dict as Record<string, any>} />
-          </div>
+        <div className="flex min-w-0 items-center justify-end gap-1.5 overflow-hidden md:gap-2">
           <MegaMenu side="right" />
           <AccountButton dict={dict} />
           <ThemeToggle dict={dict} />

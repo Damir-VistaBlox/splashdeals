@@ -14,6 +14,10 @@ const withBundleAnalyzer: (config: NextConfig) => NextConfig =
  * Optimized for AquastreamUI Experience.
  */
 const nextConfig: NextConfig = withBundleAnalyzer({
+  turbopack: {
+    root: __dirname,
+  },
+
   images: {
     remotePatterns: [
       {

@@ -10,7 +10,10 @@ export function HomeHowItWorks({ dict }: { dict: HomeDict }) {
   ];
 
   return (
-    <section className="border-border mx-auto max-w-7xl border-t px-6 py-10 sm:py-20 md:px-12">
+    <section
+      id="how-it-works"
+      className="border-border mx-auto max-w-7xl scroll-mt-28 border-t px-6 py-10 max-md:scroll-mt-36 sm:py-20 md:px-12"
+    >
       <div className="mb-8 text-center sm:mb-14">
         <h2 className="mb-3 text-[clamp(1.75rem,6vw,3.5rem)] leading-[0.95] font-black tracking-tighter uppercase italic">
           {dict.steps_title_base}

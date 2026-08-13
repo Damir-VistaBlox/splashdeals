@@ -106,16 +106,11 @@ export function BottomNav({ dict }: { dict?: Dict | null }) {
 
   return (
     <nav
-      className="border-primary/15 bg-background/98 safe-area-bottom fixed inset-x-0 bottom-0 z-[998] border-t backdrop-blur-[40px] transition-transform duration-300 ease-in-out motion-reduce:transition-none md:hidden"
+      className="safe-area-bottom fixed inset-x-0 bottom-0 z-[998] px-3 pb-2 transition-transform duration-300 ease-in-out motion-reduce:transition-none md:hidden"
       style={{ transform: isVisible ? "translateY(0)" : "translateY(100%)" }}
       aria-label={dict?.layout?.mobile_nav_aria || "Mobilna navigacija"}
     >
-      {/* Teal brand hairline */}
-      <div
-        aria-hidden
-        className="from-primary/0 via-primary/40 to-primary/0 pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r"
-      />
-      <div className="mx-auto flex h-16 max-w-lg items-center justify-around gap-0.5 px-2">
+      <div className="public-panel mx-auto flex h-17 max-w-lg items-center justify-around gap-0.5 rounded-[1.75rem] px-2">
         {NAV_ITEMS.map((item) => {
           const active =
             item.kind === "account"
@@ -133,17 +128,16 @@ export function BottomNav({ dict }: { dict?: Dict | null }) {
               href={item.href}
               className={`relative flex min-h-12 min-w-0 flex-1 flex-col items-center justify-center gap-0.5 rounded-2xl px-1.5 py-1.5 transition-colors duration-200 motion-reduce:transition-none ${
                 active
-                  ? "bg-primary/10 text-primary"
-                  : "text-muted-foreground/65 hover:text-muted-foreground hover:bg-muted/40"
+                  ? "bg-primary/12 text-primary shadow-[inset_0_1px_0_rgba(255,255,255,0.6)]"
+                  : "text-muted-foreground/65 hover:text-muted-foreground hover:bg-white/45"
               } `}
               aria-label={cartAria}
               aria-current={active ? "page" : undefined}
             >
-              {/* Active top indicator (brand) */}
               {active && (
                 <span
                   aria-hidden
-                  className="bg-primary absolute top-0 left-1/2 h-0.5 w-6 -translate-x-1/2 rounded-full"
+                  className="bg-primary absolute top-0 left-1/2 h-0.5 w-7 -translate-x-1/2 rounded-full"
                 />
               )}
               <div className="relative">

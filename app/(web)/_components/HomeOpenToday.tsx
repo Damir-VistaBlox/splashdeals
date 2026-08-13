@@ -9,9 +9,9 @@ export function HomeOpenToday({ dict, deals }: { dict: HomeDict; deals: HomeDeal
   return (
     <section
       id="ops-open"
-      className="border-border mx-auto hidden max-w-7xl scroll-mt-28 border-t px-6 py-12 max-md:scroll-mt-36 md:block md:px-12"
+      className="border-border mx-auto max-w-7xl scroll-mt-28 border-t px-3 py-10 max-md:scroll-mt-36 sm:px-6 sm:py-12 md:px-12"
     >
-      <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+      <div className="mb-6 flex flex-wrap items-end justify-between gap-4 sm:mb-8">
         <div>
           <h2 className="mb-1 text-3xl font-black tracking-tighter uppercase italic sm:text-4xl">
             {dict.ops_title}
@@ -32,7 +32,7 @@ export function HomeOpenToday({ dict, deals }: { dict: HomeDict; deals: HomeDeal
       {deals.length === 0 ? (
         <p className="text-muted-foreground text-sm">{dict.ops_empty}</p>
       ) : (
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 max-md:[&>*:nth-child(n+3)]:hidden">
           {deals.map((deal) => (
             <HomeDealCard key={deal.id} deal={deal} openTodayLabel={dict.ops_open_badge} />
           ))}

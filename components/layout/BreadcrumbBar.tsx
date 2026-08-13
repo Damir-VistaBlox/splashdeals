@@ -186,12 +186,12 @@ export function BreadcrumbBar({ facilityMap = {} }: { facilityMap?: FacilityMap 
   if (!pathname || pathname === "/") return null;
 
   return (
-    <div className="bg-background/98 border-border/40 sticky top-16 z-[100] w-full border-b backdrop-blur-[40px]">
-      <div className="mx-auto flex min-h-11 w-full max-w-7xl items-center gap-0 px-4 md:h-10 md:min-h-10 md:px-12">
+    <div className="sticky top-[4.9rem] z-[100] px-3 pt-2 sm:top-[5.35rem] sm:px-6 md:px-8">
+      <div className="public-panel mx-auto flex min-h-12 w-full max-w-7xl items-center gap-0 rounded-[1.4rem] px-4 md:min-h-11 md:px-6">
         {backHref && (
           <Link
             href={backHref}
-            className="text-muted-foreground hover:text-foreground border-border/40 mr-2 flex size-11 shrink-0 items-center justify-center border-r pr-2 transition-colors md:mr-3 md:pr-3"
+            className="text-muted-foreground hover:text-foreground border-border/50 mr-2 flex size-11 shrink-0 items-center justify-center border-r pr-2 transition-colors md:mr-3 md:pr-3"
             aria-label={dict?.breadcrumb?.back_aria || "Nazad"}
           >
             <Icon name="arrow_back" className="text-[18px]" />
