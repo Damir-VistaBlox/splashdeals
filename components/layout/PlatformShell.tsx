@@ -49,7 +49,7 @@ export function PlatformShell({
       {showBreadcrumb ? <BreadcrumbBar facilityMap={facilityMap} /> : null}
       <main
         id="main-content"
-        className="relative flex-grow pt-[4.75rem] pb-[calc(5rem+env(safe-area-inset-bottom,0px))] sm:pt-20 sm:pb-0"
+        className="relative flex-grow pt-[4.55rem] pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] sm:pt-20 sm:pb-0"
       >
         <div className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-[linear-gradient(180deg,rgba(255,255,255,0.45),transparent)]" />
         <React.Suspense
