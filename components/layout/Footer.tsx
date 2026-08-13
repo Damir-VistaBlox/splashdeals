@@ -102,7 +102,7 @@ export function Footer({ dict: dictProp }: { dict?: Dict | null } = {}) {
 
   return (
     <footer className="relative mt-auto overflow-hidden px-3 pt-5 pb-[calc(4.75rem+env(safe-area-inset-bottom,0px))] sm:px-6 sm:pt-16 md:px-8 md:pb-12">
-      <div className="mobile-app-surface relative mx-auto max-w-md overflow-hidden rounded-[1.75rem] px-4 py-4 md:hidden">
+      <div className="surface-glass relative mx-auto max-w-md overflow-hidden rounded-[1.75rem] px-4 py-4 md:hidden">
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-sky-300/70 to-transparent" />
         <div className="relative z-10 space-y-4">
           <div className="flex items-center justify-between gap-3">
@@ -137,14 +137,14 @@ export function Footer({ dict: dictProp }: { dict?: Dict | null } = {}) {
               <Link
                 key={`mobile-${item.href}`}
                 href={item.href}
-                className="text-foreground flex min-h-10 items-center rounded-2xl bg-white/66 px-3 text-[10px] font-black tracking-[0.08em] uppercase transition-colors hover:bg-white"
+                className="surface-subtle text-foreground flex min-h-10 items-center rounded-2xl px-3 text-[10px] font-black tracking-[0.08em] uppercase transition-colors hover:bg-white/58"
               >
                 {item.name}
               </Link>
             ))}
           </div>
 
-          <div className="flex items-center justify-between gap-3 rounded-2xl bg-white/58 px-4 py-3">
+          <div className="surface-subtle flex items-center justify-between gap-3 rounded-2xl px-4 py-3">
             <div>
               <p className="text-[10px] font-black tracking-[0.18em] text-slate-500 uppercase">
                 Kontakt
@@ -163,7 +163,7 @@ export function Footer({ dict: dictProp }: { dict?: Dict | null } = {}) {
                   href={item.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-muted-foreground flex h-10 w-10 items-center justify-center rounded-2xl bg-white/70"
+                  className="surface-subtle text-muted-foreground flex h-10 w-10 items-center justify-center rounded-2xl"
                   aria-label={footerLabel(item.labelKey, item.fallback)}
                 >
                   <div className="h-4.5 w-4.5">{item.icon}</div>
@@ -178,7 +178,7 @@ export function Footer({ dict: dictProp }: { dict?: Dict | null } = {}) {
                 <Link
                   key={`mobile-legal-${item.href}`}
                   href={item.href}
-                  className="text-muted-foreground rounded-full bg-white/72 px-3 py-2 text-[10px] font-black tracking-[0.12em] uppercase transition-colors hover:text-slate-700"
+                  className="surface-chip text-muted-foreground rounded-full px-3 py-2 text-[10px] font-black tracking-[0.12em] uppercase transition-colors hover:bg-white/56 hover:text-slate-700"
                 >
                   {item.name}
                 </Link>

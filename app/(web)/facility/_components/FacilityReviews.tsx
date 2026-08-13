@@ -95,15 +95,15 @@ export function FacilityReviews({ facilityId, initialReviews, dict }: FacilityRe
       </div>
 
       {reviews.length === 0 && (
-        <Card className="mobile-app-surface rounded-[1.6rem] border-0 p-5 text-center">
-          <div className="mx-auto flex max-w-xs flex-col items-center gap-2">
-            <div className="bg-primary/10 flex size-12 items-center justify-center rounded-full">
+        <Card variant="glass" className="rounded-[1.6rem] p-4 text-center">
+          <div className="mx-auto flex max-w-xs flex-col items-center gap-1.5">
+            <div className="bg-primary/10 flex size-10 items-center justify-center rounded-full">
               <Icon name="reviews" className="text-primary size-6" />
             </div>
-            <p className="text-foreground text-sm font-semibold">
+            <p className="text-foreground text-[13px] font-semibold">
               Budite prvi koji će ostaviti recenziju.
             </p>
-            <p className="text-muted-foreground text-xs leading-relaxed">
+            <p className="text-muted-foreground text-[11px] leading-relaxed">
               Vaš utisak pomaže drugim posetiocima da lakše procene iskustvo.
             </p>
           </div>
@@ -112,7 +112,10 @@ export function FacilityReviews({ facilityId, initialReviews, dict }: FacilityRe
 
       {/* Rating summary */}
       {reviews.length > 0 && (
-        <Card className="mobile-app-surface flex flex-col gap-4 rounded-[1.6rem] border-0 p-4 sm:flex-row sm:items-center">
+        <Card
+          variant="glass"
+          className="flex flex-col gap-4 rounded-[1.6rem] p-4 sm:flex-row sm:items-center"
+        >
           <div className="flex flex-col items-center gap-1">
             <span className="text-foreground text-3xl font-black">{avgRating.toFixed(1)}</span>
             <div className="flex gap-0.5">
@@ -224,13 +227,13 @@ export function FacilityReviews({ facilityId, initialReviews, dict }: FacilityRe
           </Button>
         </form>
       ) : (
-        <Card className="mobile-app-surface rounded-[1.6rem] border-0 p-4 text-center">
-          <p className="text-muted-foreground text-xs font-medium">{t.login_prompt}</p>
+        <Card variant="glass" className="rounded-[1.6rem] p-4 text-center">
+          <p className="text-muted-foreground text-[11px] font-medium">{t.login_prompt}</p>
           <Button
             asChild
             variant="default"
             size="sm"
-            className="mt-3 h-11 min-h-11 px-6 text-xs font-bold"
+            className="mt-2.5 h-11 min-h-11 px-6 text-xs font-bold"
           >
             <Link href={buildPrijavaUrl(pathname || "/")}>{t.login_link}</Link>
           </Button>
@@ -243,7 +246,7 @@ export function FacilityReviews({ facilityId, initialReviews, dict }: FacilityRe
           {reviews.map((review) => (
             <Card
               key={review.id}
-              className="mobile-app-surface space-y-2 rounded-[1.45rem] border-0 p-4"
+              className="space-y-2 rounded-[1.45rem] border border-white/45 bg-white/42 p-4 shadow-[0_12px_28px_rgba(15,23,42,0.05)] backdrop-blur-sm"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">

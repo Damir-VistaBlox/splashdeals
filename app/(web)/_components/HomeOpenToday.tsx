@@ -9,7 +9,7 @@ export function HomeOpenToday({ dict, deals }: { dict: HomeDict; deals: HomeDeal
   return (
     <section
       id="ops-open"
-      className="border-border mx-auto max-w-7xl scroll-mt-28 border-t px-3 py-10 max-md:scroll-mt-36 sm:px-6 sm:py-12 md:px-12"
+      className="border-border mx-auto hidden max-w-7xl scroll-mt-28 border-t px-3 py-10 max-md:scroll-mt-36 sm:px-6 sm:py-12 md:block md:px-12"
     >
       <div className="mb-6 flex flex-wrap items-end justify-between gap-4 sm:mb-8">
         <div>

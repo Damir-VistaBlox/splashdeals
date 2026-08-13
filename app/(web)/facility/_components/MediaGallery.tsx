@@ -66,7 +66,7 @@ export function MediaGallery({ media, dict }: MediaGalleryProps) {
           <button
             key={m.id}
             onClick={() => setSelectedIdx(i)}
-            className="group mobile-app-surface animate-fade-in-up relative overflow-hidden rounded-2xl border-0 md:rounded-[2.5rem]"
+            className="group surface-subtle animate-fade-in-up relative overflow-hidden rounded-2xl md:rounded-[2.5rem]"
             style={{ animationDelay: `${i * 0.05}s`, animationFillMode: "both" }}
             aria-label={`${dict?.media_gallery?.expand_view} ${i + 1}`}
           >

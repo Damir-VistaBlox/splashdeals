@@ -342,7 +342,13 @@ label {
   pointer-events: none;
 }
 
-.mobile-app-surface {
+.public-shell {
+  --mobile-header-offset: 8rem;
+  --mobile-main-offset: 8.85rem;
+}
+
+.mobile-app-surface,
+.surface-glass {
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.44), rgba(255, 255, 255, 0.16)),
     rgba(255, 255, 255, 0.74);
@@ -350,6 +356,23 @@ label {
   box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
   backdrop-filter: blur(22px);
   -webkit-backdrop-filter: blur(22px);
+}
+
+.surface-subtle {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.62), rgba(255, 255, 255, 0.4)),
+    rgba(255, 255, 255, 0.46);
+  border: 1px solid color-mix(in srgb, var(--border) 72%, white 28%);
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.05);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.surface-chip {
+  background: rgba(255, 255, 255, 0.42);
+  border: 1px solid color-mix(in srgb, var(--border) 68%, white 32%);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .surface-card {
