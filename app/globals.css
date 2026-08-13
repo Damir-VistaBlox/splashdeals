@@ -136,7 +136,7 @@
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--color-accent);
   --color-accent-foreground: var(--accent-foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-app-sans);
   --font-mono:
     ui-monospace, SFMono-Regular, Roboto Mono, Menlo, Monaco, Consolas, "Liberation Mono",
     "Courier New", monospace;
@@ -279,6 +279,8 @@ body {
     system-ui,
     -apple-system,
     sans-serif;
+  font-kerning: normal;
+  text-rendering: optimizeLegibility;
   min-height: 100vh;
 }
 
@@ -302,12 +304,17 @@ label {
 }
 
 .splash-gradient {
+  display: inline-block;
   background: linear-gradient(
     135deg,
     var(--color-primary) 0%,
     var(--color-primary-dark) 50%,
     var(--splash-gradient-end) 100%
   );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
 }
 
 .public-panel {

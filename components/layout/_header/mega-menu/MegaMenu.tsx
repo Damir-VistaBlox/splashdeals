@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState, useEffect, useMemo, useRef } from "react";
 import {
   NavigationMenu,
@@ -43,6 +44,18 @@ const POPULAR_CITY_SLUGS = [
   "vrnjacka-banja",
   "subotica",
 ];
+
+function getPrimaryMenuHref(menu: NavigationMenuData): string | null {
+  for (const section of menu.sections) {
+    for (const item of section.items) {
+      if (item.href && item.href !== "#") {
+        return item.href;
+      }
+    }
+  }
+
+  return null;
+}
 
 async function loadNavigationData(dict: Dict | null): Promise<{
   menus: NavigationMenuData[];
@@ -137,6 +150,10 @@ export function MegaMenu({ side = "left" }: { side?: "left" | "right" }) {
   const retryLabel = dict?.mega_menu?.retry || "Pokušaj ponovo";
   const retryAria = dict?.mega_menu?.retry_aria || "Pokušaj ponovo";
 
+  if (filteredMenus.length === 0 && side === "right") {
+    return null;
+  }
+
   if (loading) {
     return (
       <nav aria-label={mainNavAria}>
@@ -178,10 +195,33 @@ export function MegaMenu({ side = "left" }: { side?: "left" | "right" }) {
           ) : (
             filteredMenus.map((menu) => (
               <NavigationMenuItem key={menu.id}>
-                <NavigationMenuTrigger className="data-[state=open]:text-primary h-11 min-h-11 gap-1.5 rounded-xl px-3 py-1.5 text-xs font-bold tracking-wider uppercase transition-colors">
-                  <Icon name={menu.icon} className="text-primary/70 size-4" aria-hidden="true" />
-                  {menu.label}
-                </NavigationMenuTrigger>
+                {getPrimaryMenuHref(menu) ? (
+                  <div className="flex items-center rounded-xl border border-transparent bg-transparent">
+                    <Link
+                      href={getPrimaryMenuHref(menu)!}
+                      className="hover:text-primary focus-visible:ring-ring/50 inline-flex h-11 min-h-11 items-center gap-1.5 rounded-l-xl px-3 py-1.5 text-xs font-bold tracking-wider uppercase transition-colors focus-visible:ring-3 focus-visible:outline-none"
+                      title={menu.label}
+                    >
+                      <Icon
+                        name={menu.icon}
+                        className="text-primary/70 size-4"
+                        aria-hidden="true"
+                      />
+                      {menu.label}
+                    </Link>
+                    <NavigationMenuTrigger
+                      aria-label={`${menu.label} podmeni`}
+                      className="data-[state=open]:text-primary h-11 min-h-11 rounded-l-none rounded-r-xl px-2.5 py-1.5 text-xs font-bold tracking-wider uppercase transition-colors"
+                    >
+                      <span className="sr-only">{menu.label}</span>
+                    </NavigationMenuTrigger>
+                  </div>
+                ) : (
+                  <NavigationMenuTrigger className="data-[state=open]:text-primary h-11 min-h-11 gap-1.5 rounded-xl px-3 py-1.5 text-xs font-bold tracking-wider uppercase transition-colors">
+                    <Icon name={menu.icon} className="text-primary/70 size-4" aria-hidden="true" />
+                    {menu.label}
+                  </NavigationMenuTrigger>
+                )}
                 <NavigationMenuContent>
                   <div className="w-[min(900px,calc(100vw-2rem))] max-w-[900px] min-w-0 p-4 sm:p-6 md:min-w-[min(700px,calc(100vw-4rem))]">
                     <div className="grid grid-cols-1 gap-6 md:grid-cols-[2fr_1fr_1fr]">

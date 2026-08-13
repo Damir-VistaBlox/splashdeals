@@ -1,14 +1,13 @@
 import type { Metadata, Viewport } from "next";
-import { Geist } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { alternates } from "@/lib/seo";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-  weight: "variable",
-  display: "optional",
+const appSans = Inter({
+  variable: "--font-app-sans",
+  subsets: ["latin", "latin-ext"],
+  display: "swap",
 });
 
 export const viewport: Viewport = {
@@ -61,7 +60,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="sr" suppressHydrationWarning data-scroll-behavior="smooth">
+    <html lang="sr" className="light" suppressHydrationWarning data-scroll-behavior="smooth">
       <head>
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="mobile-web-app-capable" content="yes" />
@@ -74,7 +73,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body
-        className={`${geistSans.variable} selection:bg-primary/20 bg-background scroll-smooth antialiased`}
+        className={`${appSans.variable} selection:bg-primary/20 bg-background scroll-smooth antialiased`}
         style={{
           // Bottom inset is owned by fixed chrome (BottomNav / sticky CTAs),
           // not body — avoids double home-indicator gap under the nav.

@@ -6,7 +6,6 @@ import { Logo } from "./Logo";
 import { ThemeToggle } from "./ThemeToggle";
 import { CartButton } from "./CartButton";
 import { AccountButton } from "./AccountButton";
-import { SearchBox } from "@/app/(web)/_components/SearchBox";
 import type { Dict } from "@/lib/types";
 
 interface DesktopTopNavProps {
@@ -34,12 +33,15 @@ export function DesktopTopNav({
 }: DesktopTopNavProps) {
   return (
     <div className="w-full px-3 sm:px-4">
-      <nav className="mx-auto grid h-[4.25rem] w-full grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-3">
+      <nav
+        aria-label={dict?.mega_menu?.main_nav_aria || "Glavna navigacija"}
+        className="mx-auto grid h-[4.4rem] w-full grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-3 xl:gap-4"
+      >
         <div className="flex min-w-0 items-center justify-start overflow-hidden">
           <MegaMenu side="left" />
         </div>
 
-        <div className="flex items-center justify-center px-2">
+        <div className="flex items-center justify-center">
           <Logo
             isTabActive={isTabActive}
             isReducedMotion={isReducedMotion}
@@ -50,9 +52,6 @@ export function DesktopTopNav({
         </div>
 
         <div className="flex min-w-0 items-center justify-end gap-1.5 overflow-hidden md:gap-2">
-          <div className="hidden lg:block lg:w-[14rem] xl:w-[18rem]">
-            <SearchBox dict={dict as Record<string, any>} />
-          </div>
           <MegaMenu side="right" />
           <AccountButton dict={dict} />
           <ThemeToggle dict={dict} />

@@ -121,10 +121,10 @@ export function MobileUnifiedControlPill({
 
   return (
     <div className="mx-auto w-full max-w-md">
-      <div className="mobile-glass border-primary/10 relative flex h-16 w-full items-center justify-between rounded-full px-4 shadow-2xl select-none">
+      <div className="mobile-glass relative flex min-h-[4.5rem] w-full items-center justify-between rounded-[1.75rem] border-white/14 px-3 py-2 shadow-[0_18px_46px_rgba(7,24,39,0.22)] select-none">
         {/* ⏰ Segment 1: Operating Hours */}
         <div
-          className="flex flex-[1.3] items-center justify-center gap-1.5 px-2"
+          className="flex flex-[1.3] items-center justify-center gap-2 px-2"
           aria-label={
             todayHours
               ? todayHours.isClosed
@@ -134,15 +134,15 @@ export function MobileUnifiedControlPill({
           }
         >
           <div className="relative shrink-0">
-            <Icon name="schedule" className="text-muted-foreground text-[22px]" />
+            <Icon name="schedule" className="text-muted-foreground text-[20px]" />
             {isOpen === true && (
               <span className="bg-primary absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full shadow-[0_0_6px_hsl(var(--primary)/0.6)]" />
             )}
           </div>
-          <div className="flex flex-col items-start -space-y-0.5 leading-tight">
+          <div className="flex flex-col items-start leading-tight">
             {todayHours ? (
               todayHours.isClosed ? (
-                <span className="text-muted-foreground text-xs font-bold tracking-tight">
+                <span className="text-muted-foreground text-[11px] font-bold tracking-tight">
                   Zatvoreno
                 </span>
               ) : (
@@ -151,12 +151,12 @@ export function MobileUnifiedControlPill({
                     className={
                       isOpen
                         ? "text-primary text-sm font-black tracking-tight"
-                        : "text-muted-foreground text-xs font-bold tracking-tight"
+                        : "text-muted-foreground text-[11px] font-bold tracking-tight"
                     }
                   >
                     {isOpen ? "Otvoreno" : "Zatvoreno"}
                   </span>
-                  <span className="text-muted-foreground text-[10px] leading-none font-bold tracking-tight">
+                  <span className="text-muted-foreground text-[10px] leading-none font-bold tracking-tight opacity-80">
                     {formatTime24h(todayHours.openTime)}–{formatTime24h(todayHours.closeTime)}
                   </span>
                 </>
@@ -168,13 +168,13 @@ export function MobileUnifiedControlPill({
         </div>
 
         {/* Separator */}
-        <div className="bg-border/30 h-6 w-px shrink-0 self-center" />
+        <div className="bg-border/30 h-8 w-px shrink-0 self-center" />
 
         {/* 🧭 Segment 2: Navigation */}
         <Button
           variant="ghost"
           onClick={handleNavigation}
-          className="text-foreground hover:text-primary group flex h-full flex-1 origin-center items-center justify-center gap-1.5 px-2 transition-colors active:scale-90"
+          className="text-foreground hover:text-primary group flex min-h-[3.25rem] flex-1 origin-center items-center justify-center gap-2 rounded-[1.1rem] px-2 transition-colors active:scale-[0.98]"
           aria-label={
             distance !== null
               ? `Udaljenost ${distance.toFixed(0)} km. Dodirni za otvaranje mape.`
@@ -183,14 +183,14 @@ export function MobileUnifiedControlPill({
         >
           <Icon
             name="location_on"
-            className="text-muted-foreground group-hover:text-primary shrink-0 text-[22px] transition-colors"
+            className="text-muted-foreground group-hover:text-primary shrink-0 text-[20px] transition-colors"
           />
           {distance !== null ? (
             <span className="font-sans text-sm font-black tracking-tight">
               {distance.toFixed(0)} km
             </span>
           ) : (
-            <span className="text-muted-foreground/80 group-hover:text-primary text-[9px] font-black tracking-wider uppercase">
+            <span className="text-muted-foreground/80 group-hover:text-primary text-[10px] font-black tracking-[0.16em] uppercase">
               {geoError ? "? km" : "Ruta"}
             </span>
           )}

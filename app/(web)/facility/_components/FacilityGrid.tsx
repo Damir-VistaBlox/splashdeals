@@ -152,9 +152,9 @@ export async function FacilityGrid({
   const favoritedIds = await getFavoritedFacilityIds(serializedFacilities.map((f) => f.id));
 
   return (
-    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+    <ul className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
       {serializedFacilities.map((facility, idx) => (
-        <div key={facility.id} className="transition-[opacity,transform] duration-500">
+        <li key={facility.id} className="list-none transition-[opacity,transform] duration-500">
           <FacilityCard
             facility={facility}
             dict={dict}
@@ -162,8 +162,8 @@ export async function FacilityGrid({
             isPriority={idx < 10}
             isFavorited={favoritedIds.has(facility.id)}
           />
-        </div>
+        </li>
       ))}
-    </div>
+    </ul>
   );
 }

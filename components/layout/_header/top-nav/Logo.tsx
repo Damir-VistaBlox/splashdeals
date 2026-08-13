@@ -27,23 +27,20 @@ export function Logo({ isTabActive, isReducedMotion, isHovered, setIsHovered, di
       aria-label={dict?.brand?.logo_aria ?? "Splashdeals početna"}
     >
       <div className="absolute inset-0 rounded-full bg-white/52 opacity-0 blur-xl transition-opacity duration-300 group-hover:opacity-100" />
-      <div className="relative z-10 flex items-center gap-3">
+      <div className="relative z-10 flex items-center gap-2.5">
         <Image
           src="/logo-splashdeals.webp"
           alt={dict?.brand?.logo_alt ?? "SplashDeals - digitalne ulaznice za vodene parkove Srbija"}
           width={331}
           height={112}
           className={cn(
-            "h-11 w-auto object-contain sm:h-12",
+            "h-10 w-auto object-contain sm:h-11",
             "transition-[transform,filter] duration-300",
             isHovered && "scale-[1.03] brightness-110",
             isReducedMotion && "transition-none",
           )}
           priority
         />
-        <span className="hidden rounded-full border border-sky-200/80 bg-white/72 px-2.5 py-1 text-[10px] font-black tracking-[0.22em] text-sky-700 uppercase shadow-sm lg:inline-flex">
-          V1 Live
-        </span>
       </div>
     </Link>
   );
