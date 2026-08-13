@@ -25,19 +25,19 @@ export default async function CustomersManagementPage({
 
   const stats = [
     {
-      label: "Ukupno kupaca",
+      label: "Ukupno naloga",
       value: counts.total,
       color: "text-foreground",
       glow: "border-border bg-muted/10",
     },
     {
-      label: "Sa aktivnim kartama",
+      label: "Aktivne karte",
       value: counts.withActiveTickets,
       color: "text-primary",
       glow: "border-primary/10 bg-primary/[0.02]",
     },
     {
-      label: "Sa transakcijama",
+      label: "Sa prometom",
       value: counts.withTransactions,
       color: "text-amber-400",
       glow: "border-amber-500/10 bg-amber-500/[0.02]",
@@ -47,7 +47,7 @@ export default async function CustomersManagementPage({
   return (
     <AdminPageShell
       title="Kupci"
-      subtitle="Pregledajte naloge kupaca, aktivne karte i istoriju transakcija iz jednog operativnog prikaza."
+      subtitle="Operativni pregled baze kupaca, njihove aktivnosti kupovine i aktivnih ulaznica iz jednog administrativnog toka."
       stats={stats}
       statsGridCols="md:grid-cols-3 lg:grid-cols-3"
     >

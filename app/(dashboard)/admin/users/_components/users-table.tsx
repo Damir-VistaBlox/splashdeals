@@ -56,6 +56,8 @@ export function UsersTable({ initialUsers, totalCount, currentPage, pageSize }: 
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState<string | null>(null);
   const router = useRouter();
+  const verifiedCount = users.filter((user) => user.emailVerified).length;
+  const pendingCount = users.length - verifiedCount;
 
   const handleRoleUpdate = async (userId: string, role: UserRole) => {
     const result = await updateUserRoleAction(userId, role);
@@ -91,7 +93,42 @@ export function UsersTable({ initialUsers, totalCount, currentPage, pageSize }: 
 
   return (
     <div className="space-y-4">
-      <div className="border-border/50 bg-muted/50 overflow-hidden rounded-xl border backdrop-blur-sm">
+      <div className="border-border/60 bg-card/95 overflow-hidden rounded-[28px] border shadow-sm backdrop-blur-sm">
+        <div className="border-border/50 bg-background/70 grid gap-3 border-b px-5 py-4 md:grid-cols-3">
+          <div>
+            <div className="text-muted-foreground text-[9px] font-black tracking-[0.18em] uppercase">
+              Aktivni prikaz
+            </div>
+            <div className="text-foreground mt-1 text-sm font-black uppercase">
+              Administratorski pristup
+            </div>
+            <div className="text-muted-foreground mt-1 text-xs">
+              Upravljanje ulogama, pristupom i verifikacijom internih naloga.
+            </div>
+          </div>
+          <div className="border-border/50 bg-muted/20 rounded-2xl border px-4 py-3">
+            <div className="text-muted-foreground text-[9px] font-black tracking-[0.18em] uppercase">
+              Potvrđeni nalozi
+            </div>
+            <div className="mt-1 flex items-center gap-2">
+              <span className="text-foreground text-xl font-black">{verifiedCount}</span>
+              <span className="text-[10px] font-black tracking-[0.18em] text-emerald-500 uppercase">
+                Aktivno
+              </span>
+            </div>
+          </div>
+          <div className="border-border/50 bg-muted/20 rounded-2xl border px-4 py-3">
+            <div className="text-muted-foreground text-[9px] font-black tracking-[0.18em] uppercase">
+              Nalozi na čekanju
+            </div>
+            <div className="mt-1 flex items-center gap-2">
+              <span className="text-foreground text-xl font-black">{pendingCount}</span>
+              <span className="text-[10px] font-black tracking-[0.18em] text-amber-500 uppercase">
+                Pregled
+              </span>
+            </div>
+          </div>
+        </div>
         <Table>
           <TableHeader className="bg-muted/10">
             <TableRow className="border-border/50 hover:bg-transparent">
@@ -175,7 +212,11 @@ export function UsersTable({ initialUsers, totalCount, currentPage, pageSize }: 
                 <TableCell className="px-6 text-right">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" className="hover:bg-muted/30 h-8 w-8 p-0">
+                      <Button
+                        variant="ghost"
+                        className="hover:bg-muted/30 h-8 w-8 rounded-full p-0"
+                        aria-label={`Opcije za ${user.name || user.email}`}
+                      >
                         <Icon name="more_horiz" className="text-muted-foreground text-[16px]" />
                       </Button>
                     </DropdownMenuTrigger>
@@ -233,26 +274,28 @@ export function UsersTable({ initialUsers, totalCount, currentPage, pageSize }: 
         </Table>
       </div>
 
-      <div className="flex items-center justify-between px-2">
+      <div className="flex flex-col gap-3 px-2 sm:flex-row sm:items-center sm:justify-between">
         <div className="text-muted-foreground text-[10px] font-black tracking-widest uppercase">
-          {currentPage} / {totalPages || 1} • {totalCount} administratora
+          Strana {currentPage} od {totalPages || 1} • {totalCount} administratora ukupno
         </div>
         <div className="flex items-center space-x-2">
           <Button
             variant="outline"
             size="sm"
-            className="bg-background/40 border-border/50 h-8 w-8 p-0"
+            className="bg-background/40 border-border/50 h-9 w-9 rounded-full p-0"
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage <= 1}
+            aria-label="Prethodna strana administratora"
           >
             <Icon name="keyboard_arrow_left" className="text-[16px]" />
           </Button>
           <Button
             variant="outline"
             size="sm"
-            className="bg-background/40 border-border/50 h-8 w-8 p-0"
+            className="bg-background/40 border-border/50 h-9 w-9 rounded-full p-0"
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={currentPage >= totalPages}
+            aria-label="Sledeća strana administratora"
           >
             <Icon name="keyboard_arrow_right" className="text-[16px]" />
           </Button>

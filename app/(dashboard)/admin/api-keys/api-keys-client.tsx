@@ -46,6 +46,11 @@ export function ApiKeysClient({ initialKeys }: { initialKeys: ApiKey[] }) {
   const [hasCopied, setHasCopied] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [keyToDelete, setKeyToDelete] = useState<string | null>(null);
+  const activeKeyCount = keys.filter(
+    (key) => !key.expiresAt || new Date(key.expiresAt) > new Date(),
+  ).length;
+  const usedKeyCount = keys.filter((key) => Boolean(key.lastUsedAt)).length;
+  const freshKeyCount = keys.length - usedKeyCount;
 
   const { execute: handleCreate, isPending: isCreating } = useAction(
     (name: string) => createApiKeyAction(name),
@@ -83,16 +88,49 @@ export function ApiKeysClient({ initialKeys }: { initialKeys: ApiKey[] }) {
 
   return (
     <div className="mx-auto max-w-6xl space-y-6 p-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-foreground text-3xl font-black tracking-tight uppercase">
-            API ključevi
-          </h1>
-          <p className="text-muted-foreground mt-1 font-mono text-sm uppercase opacity-70">
-            Upravljajte sistemskim pristupom za agente, integracije i automatizovane tokove
-          </p>
-        </div>
+      <div className="border-border/60 bg-card/95 relative overflow-hidden rounded-[30px] border p-5 shadow-sm md:p-6">
+        <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-1/3 bg-[radial-gradient(circle_at_top_right,rgba(6,182,212,0.16),transparent_60%)] lg:block" />
+        <div className="relative z-10 flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
+          <div className="space-y-3">
+            <div className="text-muted-foreground flex items-center gap-2 text-[10px] font-black tracking-[0.22em] uppercase">
+              <span className="bg-primary size-2 rounded-full" />
+              Bezbednost i pristup
+            </div>
+            <div>
+              <h1 className="text-foreground text-3xl font-black tracking-tight uppercase">
+                API ključevi
+              </h1>
+              <p className="text-muted-foreground mt-1 max-w-2xl text-sm leading-6">
+                Upravljajte sistemskim pristupom za agente, integracije i automatizovane tokove iz
+                jednog bezbednosnog pregleda.
+              </p>
+            </div>
+          </div>
 
+          <div className="grid gap-3 sm:grid-cols-3 xl:min-w-[460px]">
+            <div className="border-border/60 bg-background/75 rounded-2xl border px-4 py-3">
+              <div className="text-muted-foreground text-[9px] font-black tracking-[0.18em] uppercase">
+                Aktivni ključevi
+              </div>
+              <div className="text-foreground mt-1 text-2xl font-black">{activeKeyCount}</div>
+            </div>
+            <div className="border-border/60 bg-background/75 rounded-2xl border px-4 py-3">
+              <div className="text-muted-foreground text-[9px] font-black tracking-[0.18em] uppercase">
+                Korišćeni
+              </div>
+              <div className="text-foreground mt-1 text-2xl font-black">{usedKeyCount}</div>
+            </div>
+            <div className="border-border/60 bg-background/75 rounded-2xl border px-4 py-3">
+              <div className="text-muted-foreground text-[9px] font-black tracking-[0.18em] uppercase">
+                Nekorišćeni
+              </div>
+              <div className="text-foreground mt-1 text-2xl font-black">{freshKeyCount}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex items-center justify-end">
         <Dialog
           onOpenChange={(open) => {
             if (!open) {
@@ -102,7 +140,7 @@ export function ApiKeysClient({ initialKeys }: { initialKeys: ApiKey[] }) {
           }}
         >
           <DialogTrigger asChild>
-            <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-black tracking-tight uppercase">
+            <Button className="bg-primary hover:bg-primary/90 text-primary-foreground h-11 rounded-2xl px-5 font-black tracking-tight uppercase shadow-lg">
               <Icon name="add" className="mr-2 text-[16px]" />
               Novi ključ
             </Button>
@@ -192,14 +230,14 @@ export function ApiKeysClient({ initialKeys }: { initialKeys: ApiKey[] }) {
         </Dialog>
       </div>
 
-      <Card className="bg-background/40 border-border/50 overflow-hidden shadow-2xl backdrop-blur-xl">
+      <Card className="bg-card/95 border-border/60 overflow-hidden rounded-[30px] shadow-sm backdrop-blur-xl">
         <CardHeader className="border-border/50 border-b">
           <CardTitle className="flex items-center gap-2 text-lg font-black tracking-tight uppercase">
             <Icon name="key" className="text-primary text-[20px]" />
             Aktivni API ključevi
           </CardTitle>
-          <CardDescription className="font-mono text-xs uppercase opacity-50">
-            Ključevi koji trenutno imaju pristup REST backend-u
+          <CardDescription className="text-muted-foreground text-xs uppercase opacity-70">
+            Registrovani ključevi sa pristupom internim servisima i automatizacijama
           </CardDescription>
         </CardHeader>
         <CardContent className="p-0">
@@ -247,12 +285,21 @@ export function ApiKeysClient({ initialKeys }: { initialKeys: ApiKey[] }) {
                       </code>
                     </TableCell>
                     <TableCell>
-                      <Badge
-                        variant="outline"
-                        className="border-emerald-500/30 bg-emerald-500/5 text-[9px] font-black tracking-tighter text-emerald-500 uppercase"
-                      >
-                        Aktivan
-                      </Badge>
+                      {key.expiresAt && new Date(key.expiresAt) <= new Date() ? (
+                        <Badge
+                          variant="outline"
+                          className="border-red-500/30 bg-red-500/5 text-[9px] font-black tracking-tighter text-red-500 uppercase"
+                        >
+                          Istekao
+                        </Badge>
+                      ) : (
+                        <Badge
+                          variant="outline"
+                          className="border-emerald-500/30 bg-emerald-500/5 text-[9px] font-black tracking-tighter text-emerald-500 uppercase"
+                        >
+                          Aktivan
+                        </Badge>
+                      )}
                     </TableCell>
                     <TableCell className="font-mono text-[10px] opacity-60">
                       {key.lastUsedAt ? format(new Date(key.lastUsedAt), "MMM d, HH:mm") : "Nikad"}
@@ -265,6 +312,7 @@ export function ApiKeysClient({ initialKeys }: { initialKeys: ApiKey[] }) {
                         variant="ghost"
                         size="sm"
                         className="text-red-400 opacity-0 transition-all group-hover:opacity-100 hover:bg-red-400/10 hover:text-red-300"
+                        aria-label={`Povuci ključ ${key.name}`}
                         onClick={() => {
                           setKeyToDelete(key.id);
                           setIsDeleteDialogOpen(true);

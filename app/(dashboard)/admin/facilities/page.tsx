@@ -46,7 +46,7 @@ export default async function FacilitiesDirectoryPage({
 
   const stats = [
     {
-      label: "Ukupno",
+      label: "Ukupan registar",
       value: counts.total,
       color: "text-foreground",
       glow: "border-border bg-muted/10",
@@ -85,7 +85,7 @@ export default async function FacilitiesDirectoryPage({
   return (
     <AdminPageShell
       title="Objekti"
-      subtitle="Upravljajte objektima, dodajte nove lokacije i pratite globalni status."
+      subtitle="Glavni operativni registar objekata, njihovih statusa i spremnosti za prodaju, sadržaj i administrativne izmene."
       cta={{ label: "Novi objekat", href: "/admin/facilities/new", icon: "add" }}
       stats={stats}
       statsGridCols="md:grid-cols-2 lg:grid-cols-5"
