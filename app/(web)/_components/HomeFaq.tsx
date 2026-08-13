@@ -29,7 +29,7 @@ export function HomeFaq({ dict }: { dict: HomeDict }) {
         type="single"
         collapsible
         defaultValue="faq-0"
-        className="w-full rounded-[1.4rem] border border-white/60 bg-[linear-gradient(180deg,rgba(255,255,255,0.6),rgba(255,255,255,0.38))] px-4 py-2 shadow-[0_14px_32px_rgba(15,23,42,0.06)] backdrop-blur-lg"
+        className="surface-glass w-full rounded-[1.4rem] px-4 py-2"
       >
         {FAQ_KEYS.map(([q, a], i) => (
           <AccordionItem key={q} value={`faq-${i}`}>

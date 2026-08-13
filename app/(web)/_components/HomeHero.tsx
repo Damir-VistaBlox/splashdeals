@@ -2,12 +2,18 @@ import { Icon } from "@/components/ui/Icon";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { HomeCategoryRail } from "./HomeCategoryRail";
-import { HomeQuickFilters } from "./HomeQuickFilters";
+import { CATEGORIES, type CategorySlug } from "@/lib/routing/categories";
 
 type HomeDict = Record<string, string>;
 
+const HERO_CATEGORY_SLUGS: CategorySlug[] = ["akva-parkovi", "banje", "bazeni", "wellness-i-spa"];
+
 export function HomeHero({ dict }: { dict: HomeDict }) {
+  const heroQuickLinks = [
+    { href: "#savings", label: dict.filter_discount, tone: "subtle" as const },
+    { href: "#inventory", label: dict.inventory_cta, tone: "subtle" as const },
+  ];
+
   return (
     <div className="relative z-0 w-full overflow-hidden pb-6 sm:pb-20">
       <section className="relative mx-auto max-w-7xl px-3 pt-1 sm:px-6 sm:pt-10 md:px-8">
@@ -71,9 +77,6 @@ export function HomeHero({ dict }: { dict: HomeDict }) {
                   <span className="text-primary text-[10px] font-black tracking-[0.18em] uppercase">
                     Kreni odmah
                   </span>
-                  <p className="text-foreground mt-1 max-w-[13rem] text-[15px] leading-tight font-black text-balance sm:max-w-none sm:text-base">
-                    Izaberi pravac i uskoči u kupovinu.
-                  </p>
                 </div>
                 <Link
                   href="/akva-parkovi"
@@ -82,14 +85,46 @@ export function HomeHero({ dict }: { dict: HomeDict }) {
                   Sve ponude
                 </Link>
               </div>
-              <HomeCategoryRail ariaLabel={dict.categories_aria} />
-              <div className="mx-auto mt-4 h-px w-full max-w-4xl bg-gradient-to-r from-transparent via-slate-200/90 to-transparent sm:mt-6" />
-              <div className="mt-3 flex flex-col items-center gap-2.5 sm:mt-5">
-                <span className="text-muted-foreground text-[10px] font-black tracking-[0.16em] uppercase">
-                  Najbrži put do prave ponude
-                </span>
-                <HomeQuickFilters dict={dict} />
-              </div>
+              <nav
+                aria-label={dict.categories_aria || "Kategorije i brzi filteri"}
+                className="mx-auto w-full max-w-4xl"
+              >
+                <ul className="flex flex-wrap items-center justify-center gap-x-2 gap-y-2.5">
+                  {HERO_CATEGORY_SLUGS.map((slug, index) => (
+                    <li
+                      key={slug}
+                      className={
+                        index % 3 === 1 ? "translate-y-1" : index % 3 === 2 ? "-translate-y-1" : ""
+                      }
+                    >
+                      <Link
+                        href={`/${slug}`}
+                        className="bg-secondary text-secondary-foreground hover:bg-primary hover:text-primary-foreground inline-flex h-11 min-h-11 items-center justify-center rounded-full px-4 text-[11px] font-black tracking-[0.1em] uppercase shadow-[0_10px_24px_rgba(231,179,75,0.16)] transition-all duration-150 hover:-translate-y-0.5 sm:px-5 sm:text-[10px]"
+                      >
+                        {CATEGORIES[slug].name}
+                      </Link>
+                    </li>
+                  ))}
+
+                  {heroQuickLinks.map((item, index) => (
+                    <li
+                      key={item.href}
+                      className={
+                        index % 2 === 0
+                          ? "-translate-y-0.5 sm:translate-y-0"
+                          : "translate-y-0.5 sm:translate-y-0"
+                      }
+                    >
+                      <Link
+                        href={item.href}
+                        className="text-muted-foreground hover:text-foreground hover:bg-muted/55 inline-flex h-10 min-h-10 items-center justify-center rounded-full border border-white/60 bg-white/52 px-4 text-[10px] font-bold tracking-[0.1em] uppercase transition-colors"
+                      >
+                        {item.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
             </div>
           </div>
         </div>

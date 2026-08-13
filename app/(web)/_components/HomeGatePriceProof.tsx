@@ -34,7 +34,7 @@ export function HomeGatePriceProof({ dict, deal }: { dict: HomeDict; deal: HomeD
           </div>
 
           <div className="grid grid-cols-3 gap-2 sm:gap-4">
-            <div className="rounded-[1rem] border border-white/45 bg-white/42 p-3 text-center backdrop-blur-sm">
+            <div className="surface-subtle rounded-[1rem] p-3 text-center">
               <p className="text-muted-foreground mb-1 text-[11px] font-bold tracking-wider uppercase">
                 {dict.gate_gate_label}
               </p>
@@ -43,7 +43,7 @@ export function HomeGatePriceProof({ dict, deal }: { dict: HomeDict; deal: HomeD
               </p>
               <p className="text-muted-foreground text-[11px]">RSD</p>
             </div>
-            <div className="border-primary/25 rounded-[1rem] border bg-white/52 p-3 text-center backdrop-blur-sm">
+            <div className="surface-glass border-primary/20 rounded-[1rem] p-3 text-center">
               <p className="text-primary mb-1 text-[11px] font-bold tracking-wider uppercase">
                 {dict.gate_deal_label}
               </p>
@@ -52,7 +52,7 @@ export function HomeGatePriceProof({ dict, deal }: { dict: HomeDict; deal: HomeD
               </p>
               <p className="text-muted-foreground text-[11px]">RSD</p>
             </div>
-            <div className="rounded-[1rem] border border-amber-500/25 bg-amber-500/12 p-3 text-center backdrop-blur-sm">
+            <div className="rounded-[1rem] border border-amber-500/20 bg-amber-500/10 p-3 text-center">
               <p className="mb-1 text-[11px] font-bold tracking-wider text-amber-700 uppercase dark:text-amber-400">
                 {dict.gate_save_label}
               </p>
