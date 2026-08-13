@@ -36,13 +36,13 @@ const STARS = [1, 2, 3, 4, 5];
 export function FacilityReviews({ facilityId, initialReviews, dict }: FacilityReviewsProps) {
   const router = useRouter();
   const pathname = usePathname();
-  const [reviews] = React.useState<Review[]>(initialReviews);
   const [rating, setRating] = React.useState(0);
   const [hoverRating, setHoverRating] = React.useState(0);
   const [title, setTitle] = React.useState("");
   const [content, setContent] = React.useState("");
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const t = (dict?.reviews || {}) as Record<string, string>;
+  const reviews = initialReviews;
 
   const { data: session } = authClient.useSession();
 
@@ -94,9 +94,25 @@ export function FacilityReviews({ facilityId, initialReviews, dict }: FacilityRe
         )}
       </div>
 
+      {reviews.length === 0 && (
+        <Card className="border-border/50 bg-muted/20 rounded-[1.6rem] p-5 text-center">
+          <div className="mx-auto flex max-w-xs flex-col items-center gap-2">
+            <div className="bg-primary/10 flex size-12 items-center justify-center rounded-full">
+              <Icon name="reviews" className="text-primary size-6" />
+            </div>
+            <p className="text-foreground text-sm font-semibold">
+              Budite prvi koji će ostaviti recenziju.
+            </p>
+            <p className="text-muted-foreground text-xs leading-relaxed">
+              Vaš utisak pomaže drugim posetiocima da lakše procene iskustvo.
+            </p>
+          </div>
+        </Card>
+      )}
+
       {/* Rating summary */}
       {reviews.length > 0 && (
-        <Card className="border-border/50 bg-muted/20 flex flex-col gap-4 p-4 sm:flex-row sm:items-center">
+        <Card className="border-border/50 bg-muted/20 flex flex-col gap-4 rounded-[1.6rem] p-4 sm:flex-row sm:items-center">
           <div className="flex flex-col items-center gap-1">
             <span className="text-foreground text-3xl font-black">{avgRating.toFixed(1)}</span>
             <div className="flex gap-0.5">
@@ -208,7 +224,7 @@ export function FacilityReviews({ facilityId, initialReviews, dict }: FacilityRe
           </Button>
         </form>
       ) : (
-        <Card className="border-border/50 bg-muted/20 p-4 text-center">
+        <Card className="border-border/50 bg-muted/20 rounded-[1.6rem] p-4 text-center">
           <p className="text-muted-foreground text-xs font-medium">{t.login_prompt}</p>
           <Button
             asChild
@@ -225,7 +241,10 @@ export function FacilityReviews({ facilityId, initialReviews, dict }: FacilityRe
       {reviews.length > 0 && (
         <div className="space-y-3">
           {reviews.map((review) => (
-            <Card key={review.id} className="border-border/50 bg-muted/10 space-y-2 p-4">
+            <Card
+              key={review.id}
+              className="border-border/50 bg-muted/10 space-y-2 rounded-[1.45rem] p-4"
+            >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Avatar className="bg-muted-foreground/10 flex h-6 w-6 items-center justify-center">

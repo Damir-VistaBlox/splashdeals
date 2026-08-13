@@ -91,7 +91,7 @@ export function buildAttractionSchema(
     ...(facility.publicPhone ? { telephone: facility.publicPhone } : {}),
     isAccessibleForFree: false,
     publicAccess: true,
-    availableLanguage: ["sr-Latn", "sr"],
+    availableLanguage: ["sr-Latn-RS", "sr-RS", "sr"],
     address: {
       "@type": "PostalAddress",
       streetAddress: `${facility.streetName} ${facility.streetNumber}`.trim(),
@@ -115,6 +115,133 @@ export function buildAttractionSchema(
       : {}),
     ...(map ? { hasMap: map } : {}),
     ...(operatingHours.length > 0 ? { openingHoursSpecification: operatingHours } : {}),
+  };
+}
+
+// ── Schema: Platform Organization / Website / WebPage ─────────────
+
+export function buildPlatformOrganizationSchema() {
+  const site = resolveSiteUrl();
+
+  return {
+    "@type": "Organization",
+    "@id": `${site}/#organization`,
+    name: "SplashDeals",
+    url: site,
+    logo: absoluteUrl("/logo-splashdeals.webp", site),
+    sameAs: [
+      "https://www.facebook.com/splashdeals.rs/",
+      "https://www.instagram.com/splashdeals",
+      "https://x.com/splashdeals",
+    ],
+    contactPoint: [
+      {
+        "@type": "ContactPoint",
+        email: "hq@splashdeals.rs",
+        contactType: "customer service",
+        availableLanguage: ["sr", "sr-Latn"],
+      },
+    ],
+  };
+}
+
+export function buildWebsiteSchema() {
+  const site = resolveSiteUrl();
+
+  return {
+    "@type": "WebSite",
+    "@id": `${site}/#website`,
+    url: site,
+    name: "SplashDeals",
+    publisher: { "@id": `${site}/#organization` },
+    inLanguage: "sr-Latn-RS",
+  };
+}
+
+export function buildWebPageSchema(params: {
+  facility: FacilitySchemaInput;
+  facilitySlug: string;
+  categorySlug: string;
+  categoryLabel: string;
+  heroImage: string;
+  hasProduct: boolean;
+  hasFaq: boolean;
+}) {
+  const { facility, facilitySlug, categorySlug, categoryLabel, heroImage, hasProduct, hasFaq } =
+    params;
+  const site = resolveSiteUrl();
+  const pageUrl = `${site}/${facilitySlug}`;
+  const categoryUrl = `${site}/${categorySlug}`;
+  const pageDescription =
+    facility.description?.slice(0, 300) ||
+    `Digitalne ulaznice, cene i detalji za ${facility.name}${facility.city ? ` u ${facility.city}` : ""}.`;
+
+  return {
+    "@type": "ItemPage",
+    "@id": `${pageUrl}#webpage`,
+    url: pageUrl,
+    name: `${facility.name} | SplashDeals`,
+    description: pageDescription,
+    keywords: [facility.name, categoryLabel, facility.city].filter(Boolean).join(", "),
+    inLanguage: "sr-Latn-RS",
+    isPartOf: { "@id": `${site}/#website` },
+    about: { "@id": `${pageUrl}#attraction` },
+    breadcrumb: { "@id": `${pageUrl}#breadcrumb` },
+    primaryImageOfPage: {
+      "@type": "ImageObject",
+      "@id": `${pageUrl}#primaryimage`,
+      url: absoluteUrl(heroImage, site),
+      contentUrl: absoluteUrl(heroImage, site),
+      caption: facility.name,
+    },
+    publisher: { "@id": `${site}/#organization` },
+    mainEntity: { "@id": hasProduct ? `${pageUrl}#product` : `${pageUrl}#attraction` },
+    mainContentOfPage: {
+      "@type": "WebPageElement",
+      cssSelector: "#facility-main",
+    },
+    hasPart: [
+      {
+        "@type": "WebPageElement",
+        "@id": `${pageUrl}#deals-section`,
+        name: "Ulaznice i paketi",
+        url: `${pageUrl}#deals`,
+        cssSelector: "#deals",
+      },
+      {
+        "@type": "WebPageElement",
+        "@id": `${pageUrl}#overview-section`,
+        name: "Pregled destinacije",
+        url: `${pageUrl}#overview`,
+        cssSelector: "#overview",
+      },
+      ...(hasFaq
+        ? [
+            {
+              "@type": "WebPageElement",
+              "@id": `${pageUrl}#faq-section`,
+              name: "Često postavljena pitanja",
+              url: `${pageUrl}#faq`,
+              cssSelector: "#faq",
+            },
+          ]
+        : []),
+      {
+        "@type": "WebPageElement",
+        "@id": `${pageUrl}#reviews-section`,
+        name: "Recenzije posetilaca",
+        url: `${pageUrl}#reviews`,
+        cssSelector: "#reviews",
+      },
+      {
+        "@type": "WebPageElement",
+        "@id": `${pageUrl}#gallery-section`,
+        name: "Galerija sadržaja",
+        url: `${pageUrl}#gallery`,
+        cssSelector: "#gallery",
+      },
+    ],
+    significantLink: [`${pageUrl}#deals`, `${categoryUrl}`, ...(hasFaq ? [`${pageUrl}#faq`] : [])],
   };
 }
 
@@ -312,39 +439,6 @@ export function buildReviewSchema(
       },
       ...(r.comment ? { reviewBody: r.comment } : {}),
     })),
-  };
-}
-
-// ── Schema: HowTo ──────────────────────────────────────────────────
-
-export function buildHowToSchema(facility: FacilitySchemaInput, facilitySlug: string) {
-  const site = resolveSiteUrl();
-  return {
-    "@type": "HowTo",
-    "@id": `${site}/${facilitySlug}#howto`,
-    name: `Kako kupiti ulaznicu za ${facility.name}`,
-    description: `Tri koraka do digitalne ulaznice za ${facility.name} na Splashdeals.`,
-    step: [
-      {
-        "@type": "HowToStep",
-        position: 1,
-        name: "Izaberite kartu",
-        text: `Na stranici ${facility.name} izaberite tip i termin ulaznice.`,
-        url: `${site}/${facilitySlug}#deals`,
-      },
-      {
-        "@type": "HowToStep",
-        position: 2,
-        name: "Platite online",
-        text: "Dodajte u korpu i završite sigurnu online kupovinu.",
-      },
-      {
-        "@type": "HowToStep",
-        position: 3,
-        name: "Skenirajte na ulazu",
-        text: "Digitalna karta stiže odmah — pokažite telefon na ulazu.",
-      },
-    ],
   };
 }
 
@@ -604,6 +698,7 @@ export function buildFacilitySchema(params: BuildFacilitySchemaParams) {
 
   const videoThumbnail: string =
     (heroMedia?.thumbnailUrl as string | undefined) ?? videoThumbnailFallback;
+  const heroPhotoUrl = pickHeroPhotoUrl(facility.media) || videoThumbnailFallback;
 
   const DAY_NAMES = [
     "Sunday",
@@ -661,6 +756,17 @@ export function buildFacilitySchema(params: BuildFacilitySchemaParams) {
   return {
     "@context": "https://schema.org",
     "@graph": [
+      buildPlatformOrganizationSchema(),
+      buildWebsiteSchema(),
+      buildWebPageSchema({
+        facility,
+        facilitySlug,
+        categorySlug: resolvedCategorySlug,
+        categoryLabel,
+        heroImage: heroPhotoUrl,
+        hasProduct: !!productNode,
+        hasFaq: !!faqs?.length,
+      }),
       buildAttractionSchema(facility, facilitySlug, operatingHours, prLabel),
       buildBusinessSchema(facility, facilitySlug, !!aggregateOffer, prLabel),
       productNode,
@@ -672,7 +778,6 @@ export function buildFacilitySchema(params: BuildFacilitySchemaParams) {
         categoryLabel || getCategoryLabel(facility.category),
       ),
       buildFaqSchema(facilitySlug, faqs),
-      buildHowToSchema(facility, facilitySlug),
       itemList,
     ].filter(Boolean),
   };

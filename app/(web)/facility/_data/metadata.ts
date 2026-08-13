@@ -290,13 +290,34 @@ export async function buildFacilityMetadata(
   const canonicalUrl = absoluteUrl(`/${facilitySlug}`, siteUrl);
   const ogImage = absoluteUrl(`/api/og/facility/${facilitySlug}`, siteUrl);
   const heroPhoto = pickHeroPhotoUrl(facility.media);
+  const keywords = [
+    facility.name,
+    `${facility.name} ulaznice`,
+    `${categoryLabel} Srbija`,
+    facility.city ? `${facility.name} ${facility.city}` : null,
+    facility.city ? `${categoryLabel} ${facility.city}` : null,
+    "digitalne ulaznice",
+    "SplashDeals",
+  ].filter(Boolean) as string[];
 
   return {
     title,
     description: finalDescription,
+    keywords,
+    category: categoryLabel,
     robots: indexable
-      ? { index: true, follow: true }
-      : { index: false, follow: false, nocache: true },
+      ? {
+          index: true,
+          follow: true,
+          googleBot: {
+            index: true,
+            follow: true,
+            "max-image-preview": "large",
+            "max-snippet": -1,
+            "max-video-preview": -1,
+          },
+        }
+      : { index: false, follow: false, nocache: true, googleBot: { index: false, follow: false } },
     alternates: {
       canonical: canonicalUrl,
       languages: {

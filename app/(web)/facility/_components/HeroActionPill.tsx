@@ -44,6 +44,11 @@ export function HeroActionPill({
   weather,
   isFavorited = false,
 }: HeroActionPillProps) {
+  const parsedLat =
+    facility.lat !== null && facility.lat !== undefined ? Number(facility.lat) : null;
+  const parsedLng =
+    facility.lng !== null && facility.lng !== undefined ? Number(facility.lng) : null;
+
   return (
     <>
       {/* 📱 MOBILE SHARE + FAVORITE ROW — equal 44px targets */}
@@ -78,7 +83,7 @@ export function HeroActionPill({
       <div className="hidden flex-wrap items-center gap-2 md:flex">
         <Link
           href={`/${categorySlug}`}
-          className="border-border text-muted-foreground bg-muted/20 hover:bg-muted/30 flex h-11 min-h-11 items-center gap-2 rounded-full border px-4 text-xs font-black tracking-widest uppercase backdrop-blur-xl transition-colors"
+          className="text-primary-foreground/78 hover:text-primary-foreground flex h-10 min-h-10 items-center gap-2 rounded-full border border-white/12 bg-white/8 px-4 text-[11px] font-black tracking-[0.16em] uppercase backdrop-blur-md transition-colors hover:bg-white/12"
         >
           <Icon name="arrow_back" className="text-[12px]" /> Nazad
         </Link>
@@ -87,31 +92,35 @@ export function HeroActionPill({
           facilitySlug={facilitySlug}
           isFavorited={isFavorited}
           variant="default"
-          className="bg-background/80 border-border relative top-0 left-0 shadow-sm backdrop-blur-xl"
+          className="bg-background/72 relative top-0 left-0 border-white/12 shadow-sm backdrop-blur-md"
         />
         <ShareButton
           title={facility.name}
           url={`${process.env.NEXT_PUBLIC_SITE_URL || ""}/${facilitySlug}`}
         />
-        {weather && <WeatherBadge weather={weather} />}
       </div>
 
       {/* 🏙️ HERO INFO ROW */}
-      <div className="text-muted-foreground flex w-full flex-wrap items-center gap-4 pb-2 font-bold sm:gap-6 sm:pb-4">
-        <div className="bg-muted/50 border-border hidden items-center gap-2 rounded-2xl border px-5 py-2.5 backdrop-blur-md md:flex">
+      <div className="text-muted-foreground flex w-full flex-wrap items-center gap-3 pb-2 font-bold sm:gap-6 sm:pb-4">
+        <div className="text-primary-foreground/74 hidden items-center gap-2 rounded-full border border-white/10 bg-white/7 px-4 py-2 backdrop-blur-md md:flex">
           <Icon name="location_on" className="text-primary text-[16px]" />
-          <span className="text-sm font-medium tracking-tight opacity-80">
+          <span className="text-[13px] font-medium tracking-tight">
             {facility.streetName} {facility.streetNumber}, {facility.postalCode} {facility.city}
           </span>
         </div>
         <div className="hidden md:block">
           <CurrentOperationalStatus hours={facility.hours} />
         </div>
-        <div className="hidden md:block">
-          {facility.lat && facility.lng && (
+        {weather && (
+          <div className="hidden md:block">
+            <WeatherBadge weather={weather} />
+          </div>
+        )}
+        <div className="hidden lg:block">
+          {parsedLat !== null && parsedLng !== null && (
             <DistanceCalculator
-              destLat={Number(facility.lat)}
-              destLng={Number(facility.lng)}
+              destLat={parsedLat}
+              destLng={parsedLng}
               facilityName={facility.name}
             />
           )}
@@ -119,8 +128,8 @@ export function HeroActionPill({
         <div className="block w-full pt-2 md:hidden">
           <MobileUnifiedControlPill
             hours={facility.hours}
-            destLat={Number(facility.lat)}
-            destLng={Number(facility.lng)}
+            destLat={parsedLat}
+            destLng={parsedLng}
           />
         </div>
       </div>

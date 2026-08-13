@@ -12,20 +12,23 @@ export function HomeQuickFilters({ dict }: { dict: HomeDict }) {
   ];
 
   return (
-    <div className="flex flex-wrap items-center justify-center gap-2">
-      {items.map((item) => (
-        <Link
-          key={item.href}
-          href={item.href}
-          className={
-            item.mobile
-              ? "text-muted-foreground hover:text-foreground hover:bg-muted/55 inline-flex h-10 min-h-10 items-center justify-center rounded-full border border-white/60 bg-white/52 px-4 text-[10px] font-bold tracking-[0.1em] uppercase transition-colors"
-              : "text-muted-foreground hover:text-foreground hover:bg-muted/55 hidden h-10 min-h-10 items-center justify-center rounded-full border border-white/60 bg-white/52 px-4 text-[10px] font-bold tracking-[0.1em] uppercase transition-colors md:inline-flex"
-          }
-        >
-          {item.label}
-        </Link>
-      ))}
-    </div>
+    <nav aria-label="Brzi filteri" className="w-full">
+      <ul className="flex flex-wrap items-center justify-center gap-2">
+        {items.map((item) => (
+          <li key={item.href}>
+            <Link
+              href={item.href}
+              className={
+                item.mobile
+                  ? "text-muted-foreground hover:text-foreground hover:bg-muted/55 inline-flex h-10 min-h-10 items-center justify-center rounded-full border border-white/60 bg-white/52 px-4 text-[10px] font-bold tracking-[0.1em] uppercase transition-colors"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted/55 hidden h-10 min-h-10 items-center justify-center rounded-full border border-white/60 bg-white/52 px-4 text-[10px] font-bold tracking-[0.1em] uppercase transition-colors md:inline-flex"
+              }
+            >
+              {item.label}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </nav>
   );
 }

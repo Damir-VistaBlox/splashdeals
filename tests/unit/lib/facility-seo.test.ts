@@ -144,6 +144,31 @@ describe("buildFacilitySchema offer expansion", () => {
     });
 
     const graph = schema["@graph"] as Record<string, unknown>[];
+    const organization = graph.find((n) => n["@type"] === "Organization");
+    expect(organization).toBeTruthy();
+
+    const website = graph.find((n) => n["@type"] === "WebSite");
+    expect(website).toBeTruthy();
+    expect((website as { inLanguage: string }).inLanguage).toBe("sr-Latn-RS");
+
+    const webpage = graph.find((n) => n["@type"] === "ItemPage") as {
+      inLanguage: string;
+      mainEntity: { "@id": string };
+      breadcrumb: { "@id": string };
+      mainContentOfPage: { cssSelector: string };
+      hasPart: Array<{ cssSelector: string; url: string }>;
+    };
+    expect(webpage.inLanguage).toBe("sr-Latn-RS");
+    expect(webpage.mainEntity["@id"]).toContain("#product");
+    expect(webpage.breadcrumb["@id"]).toContain("#breadcrumb");
+    expect(webpage.mainContentOfPage.cssSelector).toBe("#facility-main");
+    expect(webpage.hasPart.map((part) => part.cssSelector)).toEqual(
+      expect.arrayContaining(["#deals", "#overview", "#faq", "#reviews", "#gallery"]),
+    );
+    expect(webpage.hasPart.map((part) => part.url)).toContain(
+      "https://www.splashdeals.rs/test-park#deals",
+    );
+
     const product = graph.find((n) => n["@type"] === "Product") as {
       name: string;
       offers: { lowPrice: number; highPrice: number; offerCount: number; offers: unknown[] };
@@ -173,7 +198,7 @@ describe("buildFacilitySchema offer expansion", () => {
     expect(faq).toBeTruthy();
 
     const howto = graph.find((n) => n["@type"] === "HowTo");
-    expect(howto).toBeTruthy();
+    expect(howto).toBeFalsy();
 
     // Discount priceSpec on first offer
     const offers = product.offers.offers as {

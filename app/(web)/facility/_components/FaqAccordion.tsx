@@ -42,7 +42,7 @@ const CATEGORY_LABELS: Record<FAQCategory, string> = {
 
 const CATEGORY_ORDER: FAQCategory[] = ["ulaznice", "boravak", "pravila", "lokacija"];
 
-const INITIAL_VISIBLE = 4;
+const INITIAL_VISIBLE = 3;
 
 function groupByCategory(faqs: FAQItem[]): Array<{ category: FAQCategory; items: FAQItem[] }> {
   const groups = new Map<FAQCategory, FAQItem[]>();
@@ -98,10 +98,15 @@ export function FaqAccordion({ faqs }: Props) {
   if (!faqs.length) return null;
 
   return (
-    <section className="space-y-6">
-      <h2 className="text-foreground text-2xl font-black tracking-tighter uppercase italic md:text-4xl">
-        Često postavljena pitanja
-      </h2>
+    <section className="space-y-5">
+      <div className="space-y-2">
+        <h2 className="text-foreground text-[1.55rem] leading-[0.95] font-black tracking-tighter uppercase italic md:text-4xl">
+          Često postavljena pitanja
+        </h2>
+        <p className="text-muted-foreground text-sm leading-relaxed">
+          Kratki odgovori na najvažnija pitanja pre kupovine i dolaska.
+        </p>
+      </div>
 
       {/* Subtle search input */}
       <div className="relative">
@@ -115,7 +120,7 @@ export function FaqAccordion({ faqs }: Props) {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           aria-label="Pretraži pitanja"
-          className="border-border/60 bg-card/80 h-11 pl-10 text-base md:text-sm"
+          className="border-border/60 bg-card/85 h-11 rounded-2xl pl-10 text-base md:text-sm"
         />
       </div>
 
@@ -149,7 +154,7 @@ export function FaqAccordion({ faqs }: Props) {
                     key={faq.id}
                     value={faq.id}
                     className={cn(
-                      "border-border bg-card brand-accent-left rounded-xl border px-4 sm:px-6",
+                      "border-border/55 bg-card/92 brand-accent-left rounded-[1.1rem] border px-4 shadow-[0_8px_20px_rgba(15,23,42,0.03)] sm:px-6",
                       !hasActiveSearch && globalIndex >= INITIAL_VISIBLE && "hidden md:block",
                       !hasActiveSearch &&
                         globalIndex >= INITIAL_VISIBLE &&
@@ -158,10 +163,10 @@ export function FaqAccordion({ faqs }: Props) {
                     )}
                     ref={(el) => setItemRef(faq.id, el)}
                   >
-                    <AccordionTrigger className="text-foreground py-4 text-left font-medium hover:no-underline">
+                    <AccordionTrigger className="text-foreground py-4 text-left text-sm leading-relaxed font-semibold hover:no-underline">
                       {faq.question}
                     </AccordionTrigger>
-                    <AccordionContent className="text-muted-foreground pb-4 whitespace-pre-wrap">
+                    <AccordionContent className="text-muted-foreground pb-4 text-sm leading-relaxed whitespace-pre-wrap">
                       {faq.answer}
                     </AccordionContent>
                   </AccordionItem>
@@ -177,7 +182,7 @@ export function FaqAccordion({ faqs }: Props) {
           <Button
             variant="outline"
             onClick={() => setShowAllMobile(true)}
-            className="text-primary border-primary/20 h-11 min-h-11 px-4 text-sm font-bold"
+            className="text-primary border-primary/20 h-11 min-h-11 rounded-full px-4 text-sm font-bold"
           >
             Prikaži još {remaining} pitanja
           </Button>

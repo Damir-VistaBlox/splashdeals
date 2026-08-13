@@ -2,8 +2,6 @@
 
 import { MegaMenu } from "../mega-menu/MegaMenu";
 import { Logo } from "./Logo";
-
-import { ThemeToggle } from "./ThemeToggle";
 import { CartButton } from "./CartButton";
 import { AccountButton } from "./AccountButton";
 import type { Dict } from "@/lib/types";
@@ -54,7 +52,6 @@ export function DesktopTopNav({
         <div className="flex min-w-0 items-center justify-end gap-1.5 overflow-hidden md:gap-2">
           <MegaMenu side="right" />
           <AccountButton dict={dict} />
-          <ThemeToggle dict={dict} />
           <CartButton
             isOnline={isOnline}
             mounted={mounted}

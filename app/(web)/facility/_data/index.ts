@@ -23,12 +23,14 @@ export {
   getCategoryLabel,
   SITE_URL,
   buildFacilitySchema,
+  buildPlatformOrganizationSchema,
+  buildWebsiteSchema,
+  buildWebPageSchema,
   buildAttractionSchema,
   buildBusinessSchema,
   buildProductSchema,
   buildBreadcrumbSchema,
   buildFaqSchema,
-  buildHowToSchema,
 } from "./schemas";
 export type {
   FacilitySchemaInput,

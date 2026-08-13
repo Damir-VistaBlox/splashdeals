@@ -13,6 +13,18 @@ interface ShowcaseHeroProps {
   };
 }
 
+function getInitialAllowHDMedia() {
+  if (typeof navigator === "undefined" || !("connection" in navigator)) return true;
+
+  const conn = (
+    navigator as unknown as { connection?: { saveData?: boolean; effectiveType?: string } }
+  ).connection;
+
+  if (!conn) return true;
+
+  return !(conn.saveData || conn.effectiveType === "2g" || conn.effectiveType === "slow-2g");
+}
+
 /**
  * 🏔️ ShowcaseHero Island (Client)
  * Saturates native Browser APIs to pause rendering loops on tab-blur
@@ -20,22 +32,11 @@ interface ShowcaseHeroProps {
  */
 export function ShowcaseHero({ heroMedia, facility }: ShowcaseHeroProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [allowHDMedia, setAllowHDMedia] = useState(true);
+  const [allowHDMedia] = useState(() =>
+    typeof window === "undefined" ? false : getInitialAllowHDMedia(),
+  );
 
   useEffect(() => {
-    // 📡 Network Information API: Defer HD loading on constrained data connections
-    if (typeof navigator !== "undefined" && "connection" in navigator) {
-      const conn = (
-        navigator as unknown as { connection?: { saveData?: boolean; effectiveType?: string } }
-      ).connection;
-      if (
-        conn &&
-        (conn.saveData || conn.effectiveType === "2g" || conn.effectiveType === "slow-2g")
-      ) {
-        Promise.resolve().then(() => setAllowHDMedia(false));
-      }
-    }
-
     // 👁️ Page Visibility API: Pause JS-Physics/Media pipelines when tab loses focus
     const handleVisibility = () => {
       if (!videoRef.current) return;

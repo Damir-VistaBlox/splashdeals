@@ -34,13 +34,13 @@ export function MediaGallery({ media, dict }: MediaGalleryProps) {
   if (!galleryMedia.length) return null;
 
   return (
-    <section id="gallery" className="space-y-12">
-      <div className="mx-auto max-w-2xl space-y-4 text-center">
+    <section id="gallery" className="space-y-8 md:space-y-12">
+      <div className="mx-auto max-w-2xl space-y-3 text-center md:space-y-4">
         <div className="text-primary flex items-center justify-center gap-3 text-xs font-extrabold tracking-widest uppercase">
           <Icon name="photo_camera" className="text-[16px]" />
           {dict?.media_gallery?.eyebrow || "Galerija"}
         </div>
-        <h2 className="text-primary-foreground text-3xl leading-none font-black tracking-tighter uppercase italic md:text-5xl">
+        <h2 className="text-foreground md:text-primary-foreground text-3xl leading-none font-black tracking-tighter uppercase italic md:text-5xl">
           {(() => {
             const fullTitle = dict?.media_gallery?.title || "Doživite Atmosferu";
             const words = fullTitle.split(" ");
@@ -55,18 +55,18 @@ export function MediaGallery({ media, dict }: MediaGalleryProps) {
             return fullTitle;
           })()}
         </h2>
-        <p className="text-muted-foreground font-medium">
+        <p className="text-muted-foreground text-sm leading-relaxed font-medium md:text-base">
           {dict?.media_gallery?.description ||
             "Uronite u atmosferu naše destinacije kroz objektiv naših posetilaca."}
         </p>
       </div>
 
-      <div className="mx-auto grid max-w-6xl auto-rows-[180px] grid-cols-2 gap-2 sm:gap-4 md:auto-rows-[250px] md:grid-cols-4">
+      <div className="mx-auto grid max-w-6xl auto-rows-[160px] grid-cols-2 gap-2 sm:gap-4 md:auto-rows-[230px] md:grid-cols-4">
         {galleryMedia.map((m: FacilityMedia, i: number) => (
           <button
             key={m.id}
             onClick={() => setSelectedIdx(i)}
-            className="group border-border animate-fade-in-up bg-muted/5 relative overflow-hidden rounded-2xl border md:rounded-[2.5rem]"
+            className="group border-border animate-fade-in-up bg-muted/5 relative overflow-hidden rounded-2xl border shadow-[0_14px_34px_rgba(15,23,42,0.04)] md:rounded-[2.5rem]"
             style={{ animationDelay: `${i * 0.05}s`, animationFillMode: "both" }}
             aria-label={`${dict?.media_gallery?.expand_view} ${i + 1}`}
           >
@@ -101,7 +101,7 @@ export function MediaGallery({ media, dict }: MediaGalleryProps) {
                 priority={i < 2}
               />
             )}
-            <div className="from-background/90 absolute inset-0 flex flex-col justify-end bg-gradient-to-t via-transparent to-transparent p-3 opacity-100 transition-opacity duration-500 sm:p-8 sm:opacity-0 sm:group-hover:opacity-100">
+            <div className="from-background/92 absolute inset-0 flex flex-col justify-end bg-gradient-to-t via-transparent to-transparent p-3 opacity-100 transition-opacity duration-500 sm:p-8 sm:opacity-0 sm:group-hover:opacity-100">
               <div className="space-y-1 transition-transform duration-500 sm:translate-y-4 sm:space-y-2 sm:group-hover:translate-y-0">
                 <p className="text-primary-foreground line-clamp-2 text-xs font-bold sm:text-lg">
                   {m.caption || dict?.media_gallery?.fallback_caption || "Letnji Užitak"}

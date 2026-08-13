@@ -209,14 +209,14 @@ export function ShowcaseTicketGroups({
 
   const activeGroup = groups.find((g) => g.id === activeGroupId) || groups[0];
   // Extra bottom padding when sticky mini-cart is visible above BottomNav
-  const shellPad = totalItems > 0 ? "pb-44 md:pb-0" : "pb-24 md:pb-0";
+  const shellPad = totalItems > 0 ? "pb-44 md:pb-0" : "pb-20 md:pb-0";
 
   return (
-    <div className={cn("mx-auto w-full max-w-6xl space-y-8", shellPad)}>
+    <div className={cn("mx-auto w-full max-w-6xl space-y-6", shellPad)}>
       {/* Scrollable glass pill tabs container */}
-      <div className="relative mb-6 w-full md:mb-8">
+      <div className="relative mb-4 w-full md:mb-8">
         <div className="from-background via-background/70 pointer-events-none absolute top-0 right-0 bottom-0 z-10 w-12 bg-gradient-to-l to-transparent lg:hidden" />
-        <div className="bg-background/88 border-border/40 no-scrollbar -mx-1 flex gap-2 overflow-x-auto scroll-smooth rounded-[1.35rem] border px-3 py-3 shadow-[0_12px_30px_rgba(15,23,42,0.06)] backdrop-blur-sm lg:mx-0 lg:flex-wrap lg:justify-center lg:overflow-visible lg:rounded-full lg:border-white/70 lg:bg-white/62 lg:px-1 lg:py-1 lg:backdrop-blur-md">
+        <div className="bg-background/88 border-border/40 no-scrollbar -mx-1 flex gap-2 overflow-x-auto scroll-smooth rounded-[1.2rem] border px-2.5 py-2.5 shadow-[0_12px_30px_rgba(15,23,42,0.06)] backdrop-blur-sm lg:mx-0 lg:flex-wrap lg:justify-center lg:overflow-visible lg:rounded-full lg:border-white/70 lg:bg-white/62 lg:px-1 lg:py-1 lg:backdrop-blur-md">
           {groups.map((group) => {
             const isActive = group.id === activeGroupId;
             return (
@@ -225,7 +225,7 @@ export function ShowcaseTicketGroups({
                 variant="ghost"
                 onClick={() => setActiveGroupId(group.id)}
                 className={cn(
-                  "relative h-11 min-h-11 shrink-0 rounded-full px-5 text-[11px] font-black tracking-[0.16em] uppercase transition-colors duration-300 select-none",
+                  "relative h-10 min-h-10 shrink-0 rounded-full px-4 text-[10px] font-black tracking-[0.14em] uppercase transition-colors duration-300 select-none",
                   isActive
                     ? "text-primary-foreground"
                     : "text-muted-foreground hover:text-foreground border border-white/70 bg-white/82 md:border-none md:bg-transparent",
@@ -242,8 +242,8 @@ export function ShowcaseTicketGroups({
       {activeGroup && (
         <div key={activeGroupId} className="w-full space-y-6">
           {activeGroup.description && (
-            <div className="px-2 md:hidden">
-              <p className="text-muted-foreground text-sm font-medium italic">
+            <div className="px-1 md:hidden">
+              <p className="bg-muted/35 border-border/40 text-muted-foreground rounded-2xl border px-3.5 py-3 text-sm leading-relaxed font-medium italic">
                 {activeGroup.description}
               </p>
             </div>
@@ -288,7 +288,7 @@ export function ShowcaseTicketGroups({
           </div>
 
           {/* Mobile: Accordion-style rows */}
-          <div className="block space-y-3 md:hidden">
+          <div className="block space-y-2.5 md:hidden">
             {activeGroup.tiers.map((tier: TicketTier) => {
               const label = (tier.label || "").toLowerCase();
               const isFeatured =
@@ -499,7 +499,7 @@ function MobileTicketAccordion({
   return (
     <div
       className={cn(
-        "bg-card/94 border-border/50 overflow-hidden rounded-[1.45rem] border shadow-[0_10px_30px_rgba(15,23,42,0.05)] transition-[transform,box-shadow,border-color,max-height,opacity] duration-300",
+        "bg-card/95 border-border/50 overflow-hidden rounded-[1.45rem] border shadow-[0_10px_26px_rgba(15,23,42,0.05)] transition-[transform,box-shadow,border-color,max-height,opacity] duration-300",
         isExpanded && "border-primary/18 shadow-[0_14px_34px_rgba(6,182,212,0.08)]",
       )}
     >
@@ -508,7 +508,7 @@ function MobileTicketAccordion({
         type="button"
         onClick={onToggle}
         aria-expanded={isExpanded}
-        className="hover:bg-muted/10 active:bg-muted/20 flex min-h-16 w-full items-center justify-between gap-3 px-4 py-3.5 text-left transition-colors"
+        className="hover:bg-muted/10 active:bg-muted/20 flex min-h-16 w-full items-center justify-between gap-3 px-4 py-3 text-left transition-colors"
       >
         <div className="flex min-w-0 flex-1 items-center gap-2 text-left">
           {tier.imageUrl && (
@@ -527,9 +527,9 @@ function MobileTicketAccordion({
             <span className="text-foreground block truncate text-sm font-bold tracking-tight">
               {tier.label || tier.title}
             </span>
-            <div className="mt-0.5 flex flex-wrap items-center gap-1.5">
+            <div className="mt-1 flex flex-wrap items-center gap-1.5">
               {hasDiscount && (
-                <span className="bg-secondary text-secondary-foreground inline-flex h-5 min-w-5 shrink-0 items-center justify-center rounded-full px-1 text-[9px] leading-none font-black shadow-sm">
+                <span className="bg-secondary text-secondary-foreground inline-flex h-5 min-w-5 shrink-0 items-center justify-center rounded-full px-1.5 text-[9px] leading-none font-black shadow-sm">
                   −{discountPercent}%
                 </span>
               )}
@@ -546,7 +546,7 @@ function MobileTicketAccordion({
             </div>
           </div>
         </div>
-        <div className="flex shrink-0 items-center gap-2.5">
+        <div className="flex shrink-0 items-center gap-2">
           <div className="flex flex-col items-end leading-none">
             {hasDiscount && tier.originalPrice && (
               <span className="text-muted-foreground text-[10px] font-bold tabular-nums line-through">
@@ -579,10 +579,10 @@ function MobileTicketAccordion({
               {"Nema dostupnih varijanti."}
             </p>
           ) : (
-            <div className="space-y-3">
+            <div className="space-y-3.5 pt-3">
               {/* Variation options */}
-              <div className="divide-border/40 divide-y">
-                <span className="text-muted-foreground block pb-1.5 text-[9px] font-black tracking-widest uppercase">
+              <div className="space-y-2">
+                <span className="text-muted-foreground block pb-0.5 text-[9px] font-black tracking-widest uppercase">
                   Izaberite varijantu
                 </span>
                 {activeProduct.prices.map((p) => {
@@ -603,8 +603,10 @@ function MobileTicketAccordion({
                       key={p.id}
                       type="button"
                       onClick={() => setSelectedPrice(p.id)}
-                      className={`flex min-h-11 w-full items-center justify-between py-2.5 text-left transition-colors ${
-                        isSel ? "bg-primary/[0.02]" : "hover:bg-muted/10 active:bg-muted/20"
+                      className={`border-border/45 flex min-h-11 w-full items-center justify-between rounded-[1.1rem] border px-3 py-3 text-left transition-colors ${
+                        isSel
+                          ? "border-primary/30 bg-primary/[0.04] shadow-[0_8px_22px_rgba(6,182,212,0.08)]"
+                          : "hover:bg-muted/10 active:bg-muted/20"
                       }`}
                     >
                       <div className="flex min-w-0 flex-1 items-center gap-2">
@@ -647,7 +649,7 @@ function MobileTicketAccordion({
               </div>
 
               {/* Quantity + Total + CTA */}
-              <div className="flex items-center justify-between pt-2">
+              <div className="bg-muted/30 border-border/40 flex items-center justify-between rounded-[1.2rem] border px-3 py-2.5">
                 <span className="text-muted-foreground text-[9px] font-black tracking-widest uppercase">
                   {"Količina"}
                 </span>
@@ -685,7 +687,7 @@ function MobileTicketAccordion({
               </div>
 
               {activePrice && (
-                <div className="flex items-center justify-between">
+                <div className="bg-background/75 border-border/40 flex items-center justify-between rounded-[1.2rem] border px-3 py-3">
                   <span className="text-muted-foreground text-xs font-bold tracking-widest uppercase">
                     Ukupno
                   </span>
@@ -699,7 +701,7 @@ function MobileTicketAccordion({
                 onClick={handleAdd}
                 disabled={isAdding || isAdded || !activePrice}
                 className={cn(
-                  "flex h-12 w-full items-center justify-center gap-2 rounded-2xl border text-xs font-black tracking-widest uppercase transition-colors duration-300",
+                  "flex h-12 w-full items-center justify-center gap-2 rounded-2xl border text-xs font-black tracking-[0.14em] uppercase transition-colors duration-300",
                   isAdded && "border-primary/30 bg-primary/10 text-primary",
                   isAdding && "border-primary/10 bg-primary/5 text-primary cursor-not-allowed",
                   !isAdded &&
