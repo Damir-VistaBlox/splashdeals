@@ -216,7 +216,7 @@ export function ShowcaseTicketGroups({
       {/* Scrollable glass pill tabs container */}
       <div className="relative mb-3 w-full md:mb-8">
         <div className="from-background via-background/70 pointer-events-none absolute top-0 right-0 bottom-0 z-10 w-12 bg-gradient-to-l to-transparent lg:hidden" />
-        <div className="mobile-app-surface no-scrollbar -mx-1 flex gap-2 overflow-x-auto scroll-smooth rounded-[1.2rem] px-2.5 py-2.5 lg:mx-0 lg:flex-wrap lg:justify-center lg:overflow-visible lg:rounded-full lg:border-white/70 lg:bg-white/62 lg:px-1 lg:py-1 lg:backdrop-blur-md">
+        <div className="no-scrollbar -mx-1 flex gap-2 overflow-x-auto scroll-smooth rounded-[1.2rem] border border-white/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.68),rgba(255,255,255,0.44))] px-2.5 py-2.5 shadow-[0_12px_30px_rgba(15,23,42,0.06)] backdrop-blur-xl lg:mx-0 lg:flex-wrap lg:justify-center lg:overflow-visible lg:rounded-full lg:border-white/70 lg:bg-white/62 lg:px-1 lg:py-1 lg:backdrop-blur-md">
           {groups.map((group) => {
             const isActive = group.id === activeGroupId;
             return (
@@ -243,7 +243,7 @@ export function ShowcaseTicketGroups({
         <div key={activeGroupId} className="w-full space-y-6">
           {activeGroup.description && (
             <div className="px-1 md:hidden">
-              <p className="mobile-app-surface text-muted-foreground rounded-[1.25rem] px-3.5 py-3 text-sm leading-relaxed font-medium italic">
+              <p className="surface-subtle text-muted-foreground rounded-[1.25rem] px-3.5 py-3 text-sm leading-relaxed font-medium italic">
                 {activeGroup.description}
               </p>
             </div>
@@ -323,7 +323,7 @@ export function ShowcaseTicketGroups({
       {/* Mobile Sticky Drawer */}
       {totalItems > 0 && (
         <div className="animate-in slide-in-from-bottom fixed right-3 bottom-[calc(5rem+env(safe-area-inset-bottom,0px))] left-3 z-[999] duration-300 md:hidden">
-          <div className="mobile-app-surface flex items-center justify-between gap-4 rounded-[1.45rem] p-3">
+          <div className="surface-glass flex items-center justify-between gap-4 rounded-[1.45rem] p-3">
             <div className="space-y-0.5">
               <span className="text-muted-foreground text-[9px] font-black tracking-widest uppercase">
                 {dict?.ticketing?.cart_label}

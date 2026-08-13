@@ -3,10 +3,10 @@ import Link from "next/link";
 type HomeDict = Record<string, string>;
 
 export function HomeQuickFilters({ dict }: { dict: HomeDict }) {
-  // Mobile: keep two high-intent filters only; desktop shows all four.
+  // Mobile: keep two high-intent filters inside the primary conversion path.
   const items = [
     { href: "#savings", label: dict.filter_discount, mobile: true },
-    { href: "#ops-open", label: dict.filter_open_today, mobile: true },
+    { href: "#inventory", label: dict.inventory_cta, mobile: true },
     { href: "#intent", label: dict.filter_family, mobile: false },
     { href: "#regions", label: dict.region_title, mobile: false },
   ];

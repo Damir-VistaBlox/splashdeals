@@ -520,19 +520,19 @@ export function CartClient({
         </h1>
         {items.length > 0 && (
           <div className="mt-3 grid grid-cols-3 gap-2 sm:hidden">
-            <div className="mobile-app-surface rounded-2xl border-0 px-3 py-2 text-center">
+            <div className="rounded-2xl border border-white/45 bg-white/42 px-3 py-2 text-center backdrop-blur-sm">
               <p className="text-foreground text-[10px] font-black tracking-[0.14em] uppercase">
                 1
               </p>
               <p className="text-muted-foreground mt-1 text-[11px] font-medium">Pregled</p>
             </div>
-            <div className="mobile-app-surface rounded-2xl border-0 px-3 py-2 text-center">
+            <div className="rounded-2xl border border-white/45 bg-white/42 px-3 py-2 text-center backdrop-blur-sm">
               <p className="text-foreground text-[10px] font-black tracking-[0.14em] uppercase">
                 2
               </p>
               <p className="text-muted-foreground mt-1 text-[11px] font-medium">Naplata</p>
             </div>
-            <div className="mobile-app-surface rounded-2xl border-0 px-3 py-2 text-center">
+            <div className="rounded-2xl border border-white/45 bg-white/42 px-3 py-2 text-center backdrop-blur-sm">
               <p className="text-foreground text-[10px] font-black tracking-[0.14em] uppercase">
                 3
               </p>
@@ -574,7 +574,7 @@ export function CartClient({
 
       {items.length === 0 ? (
         <div className="flex flex-col items-center justify-center pt-8 sm:pt-20">
-          <div className="mobile-app-surface flex h-18 w-18 items-center justify-center rounded-full border-0 sm:h-24 sm:w-24">
+          <div className="flex h-18 w-18 items-center justify-center rounded-full border border-white/45 bg-white/42 shadow-[0_14px_28px_rgba(15,23,42,0.06)] backdrop-blur-sm sm:h-24 sm:w-24">
             <Icon
               name="shopping_bag"
               className="text-muted-foreground/30 text-[36px] sm:text-[40px]"
@@ -583,13 +583,13 @@ export function CartClient({
           <p className="text-muted-foreground mt-4 max-w-xs text-center text-[13px] font-medium sm:mt-6 sm:text-sm">
             {cartDict?.empty_description}
           </p>
-          <div className="mt-4 grid w-full max-w-sm grid-cols-2 gap-2.5">
-            <Link href="/akva-parkovi">
+          <div className="mt-4 grid w-full max-w-sm gap-2.5 min-[380px]:grid-cols-2">
+            <Link href="/akva-parkovi" className="block">
               <Button className="min-h-11 w-full rounded-full px-4 text-[11px] font-black tracking-[0.14em] uppercase">
                 {cartDict?.browse}
               </Button>
             </Link>
-            <Link href="/how-it-works">
+            <Link href="/how-it-works" className="block">
               <Button
                 variant="outline"
                 className="min-h-11 w-full rounded-full px-4 text-[11px] font-black tracking-[0.14em] uppercase"
@@ -635,7 +635,7 @@ export function CartClient({
 
       {items.length > 0 && (
         <div className="pointer-events-auto fixed inset-x-0 bottom-[calc(4rem+env(safe-area-inset-bottom,0px))] z-[999] px-3 md:hidden">
-          <div className="mobile-app-surface mx-auto flex max-w-md items-center gap-3 rounded-[1.5rem] px-3.5 py-3">
+          <div className="surface-glass mx-auto flex max-w-md items-center gap-3 rounded-[1.5rem] px-3.5 py-3">
             <div className="min-w-0 flex-1">
               <p className="text-muted-foreground text-[9px] font-black tracking-[0.18em] uppercase">
                 {cartDict?.total_label || cartDict?.total}
