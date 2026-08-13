@@ -196,6 +196,11 @@ export function FacilitiesTableToolbar<TData>({
           </Button>
         </div>
       </div>
+
+      <div className="text-muted-foreground flex items-center gap-2 px-1 text-[10px] font-bold tracking-[0.16em] uppercase">
+        <Icon name="tune" className="text-primary text-[14px]" />
+        Operativni prikaz registra
+      </div>
     </div>
   );
 }
