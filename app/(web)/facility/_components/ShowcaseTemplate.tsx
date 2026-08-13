@@ -285,11 +285,11 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
     <div className="text-foreground selection:bg-primary/30 relative min-h-screen font-sans">
       {/* ✅ Structured Data */}
       <JsonLd data={facilitySchema} id={`facility-${facilitySlug}-schema`} />
-      <section className="relative flex min-h-[72svh] w-full flex-col justify-end overflow-hidden px-4 pt-24 pb-8 sm:px-6 md:min-h-[calc(92dvh-120px)] md:px-12 md:pt-18 md:pb-14">
+      <section className="relative flex min-h-[62svh] w-full flex-col justify-end overflow-hidden px-4 pt-18 pb-5 sm:px-6 md:min-h-[calc(92dvh-120px)] md:px-12 md:pt-18 md:pb-14">
         <ShowcaseHero heroMedia={heroMedia} facility={facility} />
 
-        <div className="relative z-10 mx-auto grid w-full max-w-7xl grid-cols-1 items-end gap-6 md:mb-10 md:grid-cols-12 md:gap-12">
-          <div className="space-y-5 md:col-span-8 md:space-y-6">
+        <div className="relative z-10 mx-auto grid w-full max-w-7xl grid-cols-1 items-end gap-4 md:mb-10 md:grid-cols-12 md:gap-12">
+          <div className="space-y-3.5 md:col-span-8 md:space-y-6">
             <HeroActionPill
               facility={{
                 id: facility.id,
@@ -309,11 +309,11 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
               isFavorited={isFavorited}
             />
 
-            <div className="bg-background/10 md:bg-background/6 max-w-3xl rounded-[2rem] border border-white/12 px-5 py-5 shadow-[0_18px_60px_rgba(7,24,39,0.26)] backdrop-blur-sm sm:px-6 sm:py-6 md:max-w-[54rem] md:rounded-[2.5rem] md:border-white/8 md:px-8 md:py-7 md:shadow-[0_20px_70px_rgba(7,24,39,0.2)]">
-              <div className="text-primary-foreground/80 mb-3 text-[11px] font-black tracking-[0.2em] uppercase md:mb-4 md:text-xs">
+            <div className="bg-background/10 md:bg-background/6 max-w-3xl rounded-[1.6rem] border border-white/12 px-4 py-4 shadow-[0_18px_60px_rgba(7,24,39,0.26)] backdrop-blur-sm sm:px-6 sm:py-6 md:max-w-[54rem] md:rounded-[2.5rem] md:border-white/8 md:px-8 md:py-7 md:shadow-[0_20px_70px_rgba(7,24,39,0.2)]">
+              <div className="text-primary-foreground/80 mb-2 text-[10px] font-black tracking-[0.2em] uppercase md:mb-4 md:text-xs">
                 {categoryLabel}
               </div>
-              <h1 className="text-primary-foreground py-1 text-[2.15rem] leading-[0.95] font-black tracking-[-0.05em] italic drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)] sm:text-5xl md:py-1 md:text-[5.2rem] md:leading-[0.9]">
+              <h1 className="text-primary-foreground py-0.5 text-[1.95rem] leading-[0.94] font-black tracking-[-0.05em] italic drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)] sm:text-5xl md:py-1 md:text-[5.2rem] md:leading-[0.9]">
                 {(() => {
                   const words = facility.name.split(" ");
                   if (words.length === 1) {
@@ -327,10 +327,10 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
                   ));
                 })()}
               </h1>
-              <p className="text-primary-foreground/84 mt-3 max-w-2xl text-sm leading-relaxed font-medium md:mt-5 md:text-[1.02rem]">
+              <p className="text-primary-foreground/84 mt-2 max-w-[17rem] text-[13px] leading-relaxed font-medium sm:max-w-2xl md:mt-5 md:text-[1.02rem]">
                 {facility.streetName} {facility.streetNumber}, {facility.postalCode} {facility.city}
               </p>
-              <div className="mt-5 hidden items-center gap-3 md:flex">
+              <div className="mt-4 hidden items-center gap-3 md:flex">
                 <a
                   href="#deals"
                   className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex min-h-12 items-center gap-2 rounded-full px-6 text-xs font-black tracking-[0.16em] uppercase shadow-[0_18px_40px_rgba(6,182,212,0.26)] transition-colors"
@@ -385,25 +385,25 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
 
       <main
         id="facility-main"
-        className="relative z-20 mx-auto -mt-6 max-w-7xl [scroll-padding-top:8rem] space-y-10 px-4 pb-24 sm:-mt-8 sm:space-y-32 sm:px-6 sm:pb-48 md:-mt-24 md:px-12"
+        className="relative z-20 mx-auto -mt-4 max-w-7xl [scroll-padding-top:8rem] space-y-8 px-4 pb-20 sm:-mt-8 sm:space-y-32 sm:px-6 sm:pb-48 md:-mt-24 md:px-12"
       >
         <section
           id="deals"
           aria-labelledby="facility-deals-heading"
-          className="bg-background/97 border-border/40 scroll-mt-32 space-y-6 rounded-[2rem] border px-4 py-5 shadow-[0_18px_50px_rgba(15,23,42,0.08)] backdrop-blur-sm sm:space-y-12 sm:px-6 sm:py-8 md:rounded-[2.75rem] md:border md:border-white/60 md:bg-white/64 md:px-8 md:py-8 md:pt-10 md:shadow-[0_20px_60px_rgba(15,23,42,0.08)] md:backdrop-blur-xl"
+          className="bg-background/97 border-border/40 scroll-mt-32 space-y-5 rounded-[1.6rem] border px-4 py-4 shadow-[0_18px_50px_rgba(15,23,42,0.08)] backdrop-blur-sm sm:space-y-12 sm:px-6 sm:py-8 md:rounded-[2.75rem] md:border md:border-white/60 md:bg-white/64 md:px-8 md:py-8 md:pt-10 md:shadow-[0_20px_60px_rgba(15,23,42,0.08)] md:backdrop-blur-xl"
         >
-          <div className="mb-4 flex flex-col items-center space-y-3 text-center sm:mb-16 md:mb-10">
+          <div className="mb-3 flex flex-col items-center space-y-2.5 text-center sm:mb-16 md:mb-10">
             <div className="brand-divider mb-1 w-14" />
             <span className="text-primary text-[11px] font-black tracking-[0.2em] uppercase">
               Ulaznice i paketi
             </span>
             <h2
               id="facility-deals-heading"
-              className="text-foreground text-[1.75rem] leading-[0.92] font-black tracking-tighter uppercase italic md:text-5xl"
+              className="text-foreground text-[1.55rem] leading-[0.92] font-black tracking-tighter uppercase italic md:text-5xl"
             >
               {dict.facilities.ticket_prices}
             </h2>
-            <p className="text-muted-foreground max-w-2xl text-sm leading-relaxed md:text-base">
+            <p className="text-muted-foreground max-w-[18rem] text-[13px] leading-relaxed sm:max-w-2xl md:text-base">
               Uporedite najvažnije opcije za posetu Petrolandu i izaberite kartu koja najbolje
               odgovara terminu, uzrastu i planu boravka.
             </p>

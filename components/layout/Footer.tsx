@@ -48,6 +48,20 @@ const SOCIAL_LINKS = [
   },
 ];
 
+const QUICK_ACCESS_FALLBACKS = [
+  { name: "Početna", href: "/" },
+  { name: "Istraži", href: "/akva-parkovi" },
+  { name: "Kako Funkcioniše", href: "/how-it-works" },
+  { name: "Centar za Podršku", href: "/support" },
+];
+
+const LEGAL_FALLBACKS = [
+  { name: "Uslovi Usluge", href: "/terms" },
+  { name: "Privatnost", href: "/privacy" },
+  { name: "Politika Kolačića", href: "/cookies" },
+  { name: "Centar za Pomoć", href: "/support" },
+];
+
 export function Footer({ dict: dictProp }: { dict?: Dict | null } = {}) {
   const [clientDict, setClientDict] = React.useState<Dict | null>(null);
 
@@ -61,10 +75,123 @@ export function Footer({ dict: dictProp }: { dict?: Dict | null } = {}) {
     const footer = dict?.footer as Record<string, string> | undefined;
     return footer?.[key] || fallback;
   };
+  const quickAccessItems = [
+    {
+      name: dict?.nav?.home || QUICK_ACCESS_FALLBACKS[0].name,
+      href: QUICK_ACCESS_FALLBACKS[0].href,
+    },
+    {
+      name: dict?.nav?.explore || dict?.nav?.waterparks || QUICK_ACCESS_FALLBACKS[1].name,
+      href: QUICK_ACCESS_FALLBACKS[1].href,
+    },
+    {
+      name: dict?.footer?.how_it_works || QUICK_ACCESS_FALLBACKS[2].name,
+      href: QUICK_ACCESS_FALLBACKS[2].href,
+    },
+    {
+      name: dict?.footer?.support_center || QUICK_ACCESS_FALLBACKS[3].name,
+      href: QUICK_ACCESS_FALLBACKS[3].href,
+    },
+  ];
+  const legalItems = [
+    { name: dict?.footer?.terms || LEGAL_FALLBACKS[0].name, href: LEGAL_FALLBACKS[0].href },
+    { name: dict?.footer?.privacy || LEGAL_FALLBACKS[1].name, href: LEGAL_FALLBACKS[1].href },
+    { name: dict?.footer?.cookie_policy || LEGAL_FALLBACKS[2].name, href: LEGAL_FALLBACKS[2].href },
+    { name: dict?.footer?.help_center || LEGAL_FALLBACKS[3].name, href: LEGAL_FALLBACKS[3].href },
+  ];
 
   return (
-    <footer className="relative mt-auto overflow-hidden px-3 pt-10 pb-[calc(5rem+env(safe-area-inset-bottom,0px))] sm:px-6 sm:pt-16 md:px-8 md:pb-12">
-      <div className="public-panel relative mx-auto max-w-7xl overflow-hidden rounded-[2rem] px-6 py-10 sm:px-8 sm:py-12">
+    <footer className="relative mt-auto overflow-hidden px-3 pt-6 pb-[calc(4.75rem+env(safe-area-inset-bottom,0px))] sm:px-6 sm:pt-16 md:px-8 md:pb-12">
+      <div className="public-panel relative mx-auto max-w-4xl overflow-hidden rounded-[1.75rem] px-4 py-5 md:hidden">
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-sky-300/70 to-transparent" />
+        <div className="relative z-10 space-y-5">
+          <div className="flex items-center justify-between gap-3">
+            <Link
+              href="/"
+              aria-label={dict?.brand?.logo_aria ?? "Splashdeals početna"}
+              className="rounded-full bg-white/82 px-3 py-2 shadow-sm"
+            >
+              <Image
+                src="/logo-splashdeals.webp"
+                alt={
+                  dict?.brand?.logo_alt ??
+                  "SplashDeals - digitalne ulaznice za vodene parkove Srbija"
+                }
+                width={180}
+                height={60}
+                className="h-8 w-auto object-contain"
+              />
+            </Link>
+            <span className="rounded-full border border-sky-200/80 bg-white/75 px-3 py-1 text-[10px] font-black tracking-[0.18em] text-sky-700 uppercase">
+              Digitalne karte
+            </span>
+          </div>
+
+          <p className="text-muted-foreground text-[13px] leading-5 font-medium">
+            {dict?.footer?.desc ||
+              "Digitalne ulaznice za akva parkove u Srbiji, bez čekanja i bez traženja karata po inboxu."}
+          </p>
+
+          <div className="grid grid-cols-2 gap-2.5">
+            {quickAccessItems.slice(0, 4).map((item) => (
+              <Link
+                key={`mobile-${item.href}`}
+                href={item.href}
+                className="text-foreground border-border/60 flex min-h-11 items-center rounded-2xl border bg-white/70 px-3 text-[11px] font-black tracking-[0.08em] uppercase transition-colors hover:border-sky-200 hover:bg-white"
+              >
+                {item.name}
+              </Link>
+            ))}
+          </div>
+
+          <div className="flex items-center justify-between gap-3 rounded-2xl border border-white/60 bg-white/58 px-4 py-3">
+            <div>
+              <p className="text-[10px] font-black tracking-[0.18em] text-slate-500 uppercase">
+                Kontakt
+              </p>
+              <span
+                className="text-sm font-bold text-slate-700"
+                dangerouslySetInnerHTML={{
+                  __html: "<!--email_off-->hq@splashdeals.rs<!--/email_off-->",
+                }}
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              {SOCIAL_LINKS.slice(0, 2).map((item) => (
+                <Link
+                  key={`mobile-social-${item.href}`}
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="border-border text-muted-foreground flex h-10 w-10 items-center justify-center rounded-2xl border bg-white/70"
+                  aria-label={footerLabel(item.labelKey, item.fallback)}
+                >
+                  <div className="h-4.5 w-4.5">{item.icon}</div>
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex flex-wrap gap-2">
+            {legalItems.slice(0, 3).map((item) => (
+              <Link
+                key={`mobile-legal-${item.href}`}
+                href={item.href}
+                className="text-muted-foreground rounded-full border border-white/70 bg-white/72 px-3 py-2 text-[10px] font-black tracking-[0.12em] uppercase transition-colors hover:text-slate-700"
+              >
+                {item.name}
+              </Link>
+            ))}
+          </div>
+
+          <p className="text-muted-foreground text-center text-[10px] font-bold tracking-[0.14em] uppercase">
+            {dict?.footer?.copyright ||
+              `© ${new Date().getFullYear()} Splashdeals Marketplace. Sva prava zadržana.`}
+          </p>
+        </div>
+      </div>
+
+      <div className="public-panel relative mx-auto hidden max-w-7xl overflow-hidden rounded-[2rem] px-6 py-10 sm:px-8 sm:py-12 md:block">
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-sky-300/70 to-transparent" />
         <div className="pointer-events-none absolute -top-16 right-0 h-48 w-48 rounded-full bg-sky-200/35 blur-[90px]" />
         <div className="pointer-events-none absolute -bottom-12 left-8 h-40 w-40 rounded-full bg-amber-200/35 blur-[80px]" />
@@ -149,25 +276,12 @@ export function Footer({ dict: dictProp }: { dict?: Dict | null } = {}) {
 
           <FooterColumn
             title={dict?.footer?.quick_access || "Brzi Pristup"}
-            items={[
-              { name: dict?.nav?.home || "Početna", href: "/" },
-              {
-                name: dict?.nav?.explore || dict?.nav?.waterparks || "Istraži",
-                href: "/akva-parkovi",
-              },
-              { name: dict?.footer?.how_it_works || "Kako Funkcioniše", href: "/how-it-works" },
-              { name: dict?.footer?.support_center || "Centar za Podršku", href: "/support" },
-            ]}
+            items={quickAccessItems}
           />
 
           <FooterColumn
             title={dict?.footer?.support_legal || "Podrška i Pravne Informacije"}
-            items={[
-              { name: dict?.footer?.terms || "Uslovi Usluge", href: "/terms" },
-              { name: dict?.footer?.privacy || "Privatnost", href: "/privacy" },
-              { name: dict?.footer?.cookie_policy || "Politika Kolačića", href: "/cookies" },
-              { name: dict?.footer?.help_center || "Centar za Pomoć", href: "/support" },
-            ]}
+            items={legalItems}
           />
 
           <div className="space-y-6">

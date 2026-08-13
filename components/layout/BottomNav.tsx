@@ -110,62 +110,64 @@ export function BottomNav({ dict }: { dict?: Dict | null }) {
       style={{ transform: isVisible ? "translateY(0)" : "translateY(100%)" }}
       aria-label={dict?.layout?.mobile_nav_aria || "Mobilna navigacija"}
     >
-      <div className="public-panel mx-auto flex h-17 max-w-lg items-center justify-around gap-0.5 rounded-[1.75rem] px-2">
-        {NAV_ITEMS.map((item) => {
-          const active =
-            item.kind === "account"
-              ? isAccountBottomNavActive(pathname)
-              : isBottomNavActive(pathname, item.href);
+      <div className="mx-auto max-w-md rounded-[1.6rem] border border-white/70 bg-white/86 p-1.5 shadow-[0_-10px_28px_rgba(15,23,42,0.08)] backdrop-blur-xl">
+        <div className="flex h-15 items-center justify-around gap-1 rounded-[1.2rem] bg-white/45 px-1">
+          {NAV_ITEMS.map((item) => {
+            const active =
+              item.kind === "account"
+                ? isAccountBottomNavActive(pathname)
+                : isBottomNavActive(pathname, item.href);
 
-          const cartAria =
-            item.kind === "cart" && totalItems > 0
-              ? `${item.label}, ${totalItems > 99 ? "99+" : totalItems} stavki`
-              : item.label;
+            const cartAria =
+              item.kind === "cart" && totalItems > 0
+                ? `${item.label}, ${totalItems > 99 ? "99+" : totalItems} stavki`
+                : item.label;
 
-          return (
-            <Link
-              key={`${item.kind}-${item.href}`}
-              href={item.href}
-              className={`relative flex min-h-12 min-w-0 flex-1 flex-col items-center justify-center gap-0.5 rounded-2xl px-1.5 py-1.5 transition-colors duration-200 motion-reduce:transition-none ${
-                active
-                  ? "bg-primary/12 text-primary shadow-[inset_0_1px_0_rgba(255,255,255,0.6)]"
-                  : "text-muted-foreground/65 hover:text-muted-foreground hover:bg-white/45"
-              } `}
-              aria-label={cartAria}
-              aria-current={active ? "page" : undefined}
-            >
-              {active && (
-                <span
-                  aria-hidden
-                  className="bg-primary absolute top-0 left-1/2 h-0.5 w-7 -translate-x-1/2 rounded-full"
-                />
-              )}
-              <div className="relative">
-                {item.kind === "cart" && totalItems > 0 && (
-                  <span
-                    className="bg-primary text-primary-foreground shadow-primary/30 absolute -top-2 -right-2 flex h-[18px] min-w-[18px] items-center justify-center rounded-full px-1 text-[10px] leading-none font-black shadow-lg"
-                    aria-hidden
-                  >
-                    {totalItems > 99 ? "99+" : totalItems}
-                  </span>
-                )}
-                <Icon
-                  name={item.icon}
-                  className={`text-[22px] transition-colors duration-200 motion-reduce:transition-none ${
-                    active ? "text-primary" : ""
-                  }`}
-                />
-              </div>
-              <span
-                className={`max-w-full truncate text-[10px] leading-none font-black tracking-[0.06em] uppercase transition-colors duration-200 motion-reduce:transition-none ${
-                  active ? "text-primary" : ""
-                }`}
+            return (
+              <Link
+                key={`${item.kind}-${item.href}`}
+                href={item.href}
+                className={`relative flex min-h-11 min-w-0 flex-1 flex-col items-center justify-center gap-0.5 rounded-[1rem] px-1 py-1.5 transition-all duration-200 motion-reduce:transition-none ${
+                  active
+                    ? "bg-primary/[0.08] text-primary shadow-[inset_0_1px_0_rgba(255,255,255,0.72)]"
+                    : "text-muted-foreground/70 hover:text-muted-foreground hover:bg-white/55"
+                } `}
+                aria-label={cartAria}
+                aria-current={active ? "page" : undefined}
               >
-                {item.label}
-              </span>
-            </Link>
-          );
-        })}
+                {active && (
+                  <span
+                    aria-hidden
+                    className="bg-primary absolute top-1 left-1/2 h-1 w-6 -translate-x-1/2 rounded-full opacity-90"
+                  />
+                )}
+                <div className="relative">
+                  {item.kind === "cart" && totalItems > 0 && (
+                    <span
+                      className="bg-primary text-primary-foreground shadow-primary/30 absolute -top-2 -right-2 flex h-[18px] min-w-[18px] items-center justify-center rounded-full px-1 text-[10px] leading-none font-black shadow-lg"
+                      aria-hidden
+                    >
+                      {totalItems > 99 ? "99+" : totalItems}
+                    </span>
+                  )}
+                  <Icon
+                    name={item.icon}
+                    className={`text-[22px] transition-colors duration-200 motion-reduce:transition-none ${
+                      active ? "text-primary" : "text-slate-500"
+                    }`}
+                  />
+                </div>
+                <span
+                  className={`max-w-full truncate text-[9px] leading-none font-black tracking-[0.1em] uppercase transition-colors duration-200 motion-reduce:transition-none ${
+                    active ? "text-primary" : "text-slate-500"
+                  }`}
+                >
+                  {item.label}
+                </span>
+              </Link>
+            );
+          })}
+        </div>
       </div>
     </nav>
   );
