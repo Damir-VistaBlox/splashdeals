@@ -64,6 +64,13 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
   const selectedCategory = categories.find((c) => c.id === selectedCategoryId) ?? null;
   const selectedProduct =
     selectedCategory?.products.find((p) => p.id === selectedProductId) ?? null;
+  const totalProducts = categories.reduce((sum, category) => sum + category.products.length, 0);
+  const totalPrices = categories.reduce(
+    (sum, category) =>
+      sum +
+      category.products.reduce((productSum, product) => productSum + product.prices.length, 0),
+    0,
+  );
 
   const handleAddCategory = async () => {
     if (!newCatTitle.trim() || pending) return;
@@ -295,352 +302,385 @@ export function TicketManagementV2({ facilityId, initialCategories }: Props) {
   };
 
   return (
-    <div className="flex min-h-0 flex-1 overflow-hidden">
-      <TicketCategoryRail
-        categories={categories}
-        selectedCategoryId={selectedCategoryId}
-        showNewCat={showNewCat}
-        newCatTitle={newCatTitle}
-        editingCatId={editingCatId}
-        editCatTitle={editCatTitle}
-        dropTargetId={dropTargetId}
-        pending={pending}
-        onSelect={(id) => {
-          setSelectedCategoryId(id);
-          setSelectedProductId(null);
-        }}
-        onToggleNew={() => setShowNewCat((v) => !v)}
-        onNewTitleChange={setNewCatTitle}
-        onAddCategory={handleAddCategory}
-        onStartEdit={(cat) => {
-          setEditingCatId(cat.id);
-          setEditCatTitle(cat.title);
-        }}
-        onEditTitleChange={setEditCatTitle}
-        onSaveEdit={handleSaveCategory}
-        onCancelEdit={() => {
-          setEditingCatId(null);
-          setEditCatTitle("");
-        }}
-        onDelete={(id, title) => setDeleteCategoryTarget({ id, title })}
-        onDragOverCategory={setDropTargetId}
-        onDropProduct={(categoryId, productId) => {
-          const fromCat = categories.find((c) => c.products.some((p) => p.id === productId));
-          if (fromCat) void handleMoveProduct(productId, fromCat.id, categoryId);
-        }}
-      />
+    <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-hidden">
+      <section className="border-border/60 bg-card/95 grid gap-3 rounded-[28px] border p-4 shadow-sm md:grid-cols-2 xl:grid-cols-4">
+        <div className="border-border/50 bg-background/60 rounded-2xl border px-4 py-3">
+          <div className="text-muted-foreground text-[9px] font-black tracking-[0.18em] uppercase">
+            Aktivna kategorija
+          </div>
+          <div className="text-foreground mt-1 text-sm font-black uppercase">
+            {selectedCategory?.title || "Nije izabrana"}
+          </div>
+        </div>
+        <div className="border-border/50 bg-background/60 rounded-2xl border px-4 py-3">
+          <div className="text-muted-foreground text-[9px] font-black tracking-[0.18em] uppercase">
+            Aktivni tip
+          </div>
+          <div className="text-foreground mt-1 text-sm font-black uppercase">
+            {selectedProduct?.title || "Nije izabran"}
+          </div>
+        </div>
+        <div className="border-border/50 bg-background/60 rounded-2xl border px-4 py-3">
+          <div className="text-muted-foreground text-[9px] font-black tracking-[0.18em] uppercase">
+            Ukupno tipova
+          </div>
+          <div className="text-foreground mt-1 text-2xl font-black">{totalProducts}</div>
+        </div>
+        <div className="border-border/50 bg-background/60 rounded-2xl border px-4 py-3">
+          <div className="text-muted-foreground text-[9px] font-black tracking-[0.18em] uppercase">
+            Ukupno cena
+          </div>
+          <div className="text-foreground mt-1 text-2xl font-black">{totalPrices}</div>
+        </div>
+      </section>
 
-      {/* ─── Product Panel ──────────────────────────── */}
-      <div
-        className={cn(
-          "lg:border-border/50 lg:flex lg:w-64 lg:shrink-0 lg:flex-col lg:border-r",
-          "flex",
-        )}
-      >
-        <div className="border-border/50 border-b p-3">
-          <div className="mb-2 flex items-center justify-between">
+      <div className="flex min-h-0 flex-1 overflow-hidden">
+        <TicketCategoryRail
+          categories={categories}
+          selectedCategoryId={selectedCategoryId}
+          showNewCat={showNewCat}
+          newCatTitle={newCatTitle}
+          editingCatId={editingCatId}
+          editCatTitle={editCatTitle}
+          dropTargetId={dropTargetId}
+          pending={pending}
+          onSelect={(id) => {
+            setSelectedCategoryId(id);
+            setSelectedProductId(null);
+          }}
+          onToggleNew={() => setShowNewCat((v) => !v)}
+          onNewTitleChange={setNewCatTitle}
+          onAddCategory={handleAddCategory}
+          onStartEdit={(cat) => {
+            setEditingCatId(cat.id);
+            setEditCatTitle(cat.title);
+          }}
+          onEditTitleChange={setEditCatTitle}
+          onSaveEdit={handleSaveCategory}
+          onCancelEdit={() => {
+            setEditingCatId(null);
+            setEditCatTitle("");
+          }}
+          onDelete={(id, title) => setDeleteCategoryTarget({ id, title })}
+          onDragOverCategory={setDropTargetId}
+          onDropProduct={(categoryId, productId) => {
+            const fromCat = categories.find((c) => c.products.some((p) => p.id === productId));
+            if (fromCat) void handleMoveProduct(productId, fromCat.id, categoryId);
+          }}
+        />
+
+        {/* ─── Product Panel ──────────────────────────── */}
+        <div
+          className={cn(
+            "lg:border-border/50 lg:flex lg:w-64 lg:shrink-0 lg:flex-col lg:border-r",
+            "flex",
+          )}
+        >
+          <div className="border-border/50 border-b p-3">
+            <div className="mb-2 flex items-center justify-between">
+              <span className="text-muted-foreground text-[10px] font-black tracking-widest uppercase">
+                {selectedCategory ? `${selectedCategory.title} → Tipovi` : "Tipovi"}
+              </span>
+              {selectedCategory && (
+                <Button
+                  onClick={() => setShowNewProd(!showNewProd)}
+                  variant="ghost"
+                  size="icon"
+                  className="h-6 w-6 rounded-lg"
+                  aria-label={showNewProd ? "Zatvori novi tip" : "Dodaj tip"}
+                  disabled={pending}
+                >
+                  <Icon name="add" className="text-[14px]" />
+                </Button>
+              )}
+            </div>
+            {showNewProd && selectedCategory && (
+              <div className="flex gap-1">
+                <Input
+                  value={newProdTitle}
+                  onChange={(e) => setNewProdTitle(e.target.value)}
+                  placeholder="Naziv tipa..."
+                  className="h-8 flex-1 rounded-lg text-xs"
+                  onKeyDown={(e) => e.key === "Enter" && handleAddProduct()}
+                  disabled={pending}
+                />
+                <Button
+                  size="sm"
+                  className="h-8 px-2 text-[10px]"
+                  onClick={handleAddProduct}
+                  disabled={pending}
+                >
+                  Dodaj
+                </Button>
+              </div>
+            )}
+          </div>
+          <div className="flex-1 space-y-2 overflow-y-auto p-2">
+            {!selectedCategory && (
+              <p className="text-muted-foreground p-3 text-center text-xs">Izaberite kategoriju</p>
+            )}
+            {selectedCategory?.products.map((prod) => (
+              <div
+                key={prod.id}
+                draggable
+                onDragStart={(e) => {
+                  e.dataTransfer.setData("text/product-id", prod.id);
+                  e.dataTransfer.effectAllowed = "move";
+                }}
+                className={cn(
+                  "cursor-grab rounded-xl border p-3 transition-colors active:cursor-grabbing",
+                  selectedProductId === prod.id
+                    ? "bg-primary/5 border-primary/30"
+                    : "bg-muted/5 border-border hover:border-primary/20",
+                )}
+                onClick={() => setSelectedProductId(prod.id)}
+              >
+                <div className="mb-1 flex items-center justify-between gap-1">
+                  {editingProductId === prod.id ? (
+                    <Input
+                      value={editProductTitle}
+                      onChange={(e) => setEditProductTitle(e.target.value)}
+                      onKeyDown={(e) => {
+                        e.stopPropagation();
+                        if (e.key === "Enter") handleSaveProduct();
+                        if (e.key === "Escape") {
+                          setEditingProductId(null);
+                          setEditProductTitle("");
+                        }
+                      }}
+                      onBlur={handleSaveProduct}
+                      className="h-7 flex-1 rounded text-sm font-bold"
+                      autoFocus
+                      onClick={(e) => e.stopPropagation()}
+                    />
+                  ) : (
+                    <span className="text-foreground text-sm font-bold">{prod.title}</span>
+                  )}
+                  <div className="flex shrink-0 items-center gap-0.5">
+                    <Button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setEditingProductId(prod.id);
+                        setEditProductTitle(prod.title);
+                      }}
+                      variant="ghost"
+                      size="icon"
+                      className="h-5 w-5 rounded"
+                      aria-label={`Izmeni tip ${prod.title}`}
+                    >
+                      <Icon name="edit" className="text-[10px]" />
+                    </Button>
+                    <Button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setDeleteProductTarget({ id: prod.id, title: prod.title });
+                      }}
+                      variant="ghost"
+                      size="icon"
+                      className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 h-5 w-5 rounded"
+                      aria-label={`Obriši tip ${prod.title}`}
+                    >
+                      <Icon name="close" className="text-[10px]" />
+                    </Button>
+                  </div>
+                </div>
+                {prod.imageUrl && (
+                  <div className="relative -mx-1 mb-2 h-24">
+                    <NextImage
+                      src={prod.imageUrl}
+                      alt={prod.title}
+                      fill
+                      className="border-border/50 rounded-lg border object-cover"
+                      sizes="(max-width: 768px) 100vw, 200px"
+                    />
+                  </div>
+                )}
+                <div className="flex flex-wrap gap-1">
+                  {prod.requiresPhoto && (
+                    <span className="text-warning bg-warning/10 rounded px-1.5 py-0.5 text-[8px] font-bold">
+                      Foto
+                    </span>
+                  )}
+                  {prod.requiresIdentity && (
+                    <span className="text-warning bg-warning/10 rounded px-1.5 py-0.5 text-[8px] font-bold">
+                      ID
+                    </span>
+                  )}
+                  <span className="text-muted-foreground text-[8px] font-bold">
+                    min:{prod.minPeople}
+                  </span>
+                  {prod.maxPeople && (
+                    <span className="text-muted-foreground text-[8px] font-bold">
+                      max:{prod.maxPeople}
+                    </span>
+                  )}
+                </div>
+                <div className="text-muted-foreground mt-1 text-[10px]">
+                  {prod.prices.length} cena/e
+                </div>
+              </div>
+            ))}
+            {selectedCategory && selectedCategory.products.length === 0 && !showNewProd && (
+              <p className="text-muted-foreground p-3 text-center text-xs">
+                Nema tipova. Dodajte prvi [+]
+              </p>
+            )}
+          </div>
+        </div>
+
+        {/* ─── Price Panel ────────────────────────────── */}
+        <div className={cn("lg:flex lg:min-w-0 lg:flex-1 lg:flex-col", "flex")}>
+          <div className="border-border/50 flex items-center justify-between border-b p-3">
             <span className="text-muted-foreground text-[10px] font-black tracking-widest uppercase">
-              {selectedCategory ? `${selectedCategory.title} → Tipovi` : "Tipovi"}
+              {selectedProduct ? `${selectedProduct.title} → Cene` : "Cene"}
             </span>
-            {selectedCategory && (
+            {selectedProduct && (
               <Button
-                onClick={() => setShowNewProd(!showNewProd)}
-                variant="ghost"
-                size="icon"
-                className="h-6 w-6 rounded-lg"
-                aria-label={showNewProd ? "Zatvori novi tip" : "Dodaj tip"}
+                onClick={() => handleAddPrice(selectedProduct.id)}
+                variant="outline"
+                size="sm"
+                className="h-7 gap-1 rounded-lg px-3 text-[10px] font-bold"
+                aria-label={`Dodaj cenu za ${selectedProduct.title}`}
                 disabled={pending}
               >
-                <Icon name="add" className="text-[14px]" />
+                <Icon name="add" className="text-[12px]" /> Varijacija
               </Button>
             )}
           </div>
-          {showNewProd && selectedCategory && (
-            <div className="flex gap-1">
-              <Input
-                value={newProdTitle}
-                onChange={(e) => setNewProdTitle(e.target.value)}
-                placeholder="Naziv tipa..."
-                className="h-8 flex-1 rounded-lg text-xs"
-                onKeyDown={(e) => e.key === "Enter" && handleAddProduct()}
-                disabled={pending}
-              />
-              <Button
-                size="sm"
-                className="h-8 px-2 text-[10px]"
-                onClick={handleAddProduct}
-                disabled={pending}
-              >
-                Dodaj
-              </Button>
-            </div>
-          )}
-        </div>
-        <div className="flex-1 space-y-2 overflow-y-auto p-2">
-          {!selectedCategory && (
-            <p className="text-muted-foreground p-3 text-center text-xs">Izaberite kategoriju</p>
-          )}
-          {selectedCategory?.products.map((prod) => (
-            <div
-              key={prod.id}
-              draggable
-              onDragStart={(e) => {
-                e.dataTransfer.setData("text/product-id", prod.id);
-                e.dataTransfer.effectAllowed = "move";
-              }}
-              className={cn(
-                "cursor-grab rounded-xl border p-3 transition-colors active:cursor-grabbing",
-                selectedProductId === prod.id
-                  ? "bg-primary/5 border-primary/30"
-                  : "bg-muted/5 border-border hover:border-primary/20",
-              )}
-              onClick={() => setSelectedProductId(prod.id)}
-            >
-              <div className="mb-1 flex items-center justify-between gap-1">
-                {editingProductId === prod.id ? (
-                  <Input
-                    value={editProductTitle}
-                    onChange={(e) => setEditProductTitle(e.target.value)}
-                    onKeyDown={(e) => {
-                      e.stopPropagation();
-                      if (e.key === "Enter") handleSaveProduct();
-                      if (e.key === "Escape") {
-                        setEditingProductId(null);
-                        setEditProductTitle("");
-                      }
-                    }}
-                    onBlur={handleSaveProduct}
-                    className="h-7 flex-1 rounded text-sm font-bold"
-                    autoFocus
-                    onClick={(e) => e.stopPropagation()}
-                  />
-                ) : (
-                  <span className="text-foreground text-sm font-bold">{prod.title}</span>
-                )}
-                <div className="flex shrink-0 items-center gap-0.5">
-                  <Button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setEditingProductId(prod.id);
-                      setEditProductTitle(prod.title);
-                    }}
-                    variant="ghost"
-                    size="icon"
-                    className="h-5 w-5 rounded"
-                    aria-label={`Izmeni tip ${prod.title}`}
-                  >
-                    <Icon name="edit" className="text-[10px]" />
-                  </Button>
-                  <Button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setDeleteProductTarget({ id: prod.id, title: prod.title });
-                    }}
-                    variant="ghost"
-                    size="icon"
-                    className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 h-5 w-5 rounded"
-                    aria-label={`Obriši tip ${prod.title}`}
-                  >
-                    <Icon name="close" className="text-[10px]" />
-                  </Button>
-                </div>
-              </div>
-              {prod.imageUrl && (
-                <div className="relative -mx-1 mb-2 h-24">
-                  <NextImage
-                    src={prod.imageUrl}
-                    alt={prod.title}
-                    fill
-                    className="border-border/50 rounded-lg border object-cover"
-                    sizes="(max-width: 768px) 100vw, 200px"
-                  />
-                </div>
-              )}
-              <div className="flex flex-wrap gap-1">
-                {prod.requiresPhoto && (
-                  <span className="text-warning bg-warning/10 rounded px-1.5 py-0.5 text-[8px] font-bold">
-                    Foto
-                  </span>
-                )}
-                {prod.requiresIdentity && (
-                  <span className="text-warning bg-warning/10 rounded px-1.5 py-0.5 text-[8px] font-bold">
-                    ID
-                  </span>
-                )}
-                <span className="text-muted-foreground text-[8px] font-bold">
-                  min:{prod.minPeople}
-                </span>
-                {prod.maxPeople && (
-                  <span className="text-muted-foreground text-[8px] font-bold">
-                    max:{prod.maxPeople}
-                  </span>
-                )}
-              </div>
-              <div className="text-muted-foreground mt-1 text-[10px]">
-                {prod.prices.length} cena/e
-              </div>
-            </div>
-          ))}
-          {selectedCategory && selectedCategory.products.length === 0 && !showNewProd && (
-            <p className="text-muted-foreground p-3 text-center text-xs">
-              Nema tipova. Dodajte prvi [+]
-            </p>
-          )}
-        </div>
-      </div>
-
-      {/* ─── Price Panel ────────────────────────────── */}
-      <div className={cn("lg:flex lg:min-w-0 lg:flex-1 lg:flex-col", "flex")}>
-        <div className="border-border/50 flex items-center justify-between border-b p-3">
-          <span className="text-muted-foreground text-[10px] font-black tracking-widest uppercase">
-            {selectedProduct ? `${selectedProduct.title} → Cene` : "Cene"}
-          </span>
           {selectedProduct && (
-            <Button
-              onClick={() => handleAddPrice(selectedProduct.id)}
-              variant="outline"
-              size="sm"
-              className="h-7 gap-1 rounded-lg px-3 text-[10px] font-bold"
-              aria-label={`Dodaj cenu za ${selectedProduct.title}`}
-              disabled={pending}
-            >
-              <Icon name="add" className="text-[12px]" /> Varijacija
-            </Button>
+            <ProductImageSection
+              key={selectedProduct.imageUrl ?? `empty-${selectedProduct.id}`}
+              productId={selectedProduct.id}
+              facilityId={facilityId}
+              imageUrl={selectedProduct.imageUrl}
+              productTitle={selectedProduct.title}
+              onImageChange={(url: string | null) => {
+                setCategories((prev) =>
+                  prev.map((c) => ({
+                    ...c,
+                    products: c.products.map((p) =>
+                      p.id === selectedProduct.id ? { ...p, imageUrl: url } : p,
+                    ),
+                  })),
+                );
+              }}
+            />
           )}
+          <div className="flex-1 overflow-y-auto p-4">
+            {!selectedProduct && (
+              <p className="text-muted-foreground p-8 text-center text-sm">
+                Izaberite kategoriju i tip da biste videli cene
+              </p>
+            )}
+            {selectedProduct && selectedProduct.prices.length === 0 && (
+              <div className="text-muted-foreground flex h-full flex-col items-center justify-center gap-3">
+                <Icon name="confirmation_number" className="text-[32px] opacity-30" />
+                <p className="text-sm">Nema cena za {selectedProduct.title}</p>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="flex items-center gap-1 text-xs"
+                  onClick={() => handleAddPrice(selectedProduct.id)}
+                  disabled={pending}
+                >
+                  <Icon name="add" className="text-[12px]" /> Dodaj prvu cenu
+                </Button>
+              </div>
+            )}
+            {selectedProduct && selectedProduct.prices.length > 0 && (
+              <div className="grid gap-3">
+                {selectedProduct.prices.map((price) => (
+                  <PriceCard
+                    key={price.id}
+                    price={price}
+                    product={selectedProduct}
+                    facilityId={facilityId}
+                    onDeleted={() => {
+                      setCategories((prev) =>
+                        prev.map((c) => ({
+                          ...c,
+                          products: c.products.map((p) =>
+                            p.id === selectedProduct.id
+                              ? { ...p, prices: p.prices.filter((pr) => pr.id !== price.id) }
+                              : p,
+                          ),
+                        })),
+                      );
+                    }}
+                    onSaved={(next) => {
+                      setCategories((prev) =>
+                        prev.map((c) => ({
+                          ...c,
+                          products: c.products.map((p) =>
+                            p.id === selectedProduct.id
+                              ? {
+                                  ...p,
+                                  prices: p.prices.map((pr) =>
+                                    pr.id === next.id ? { ...pr, ...next } : pr,
+                                  ),
+                                }
+                              : p,
+                          ),
+                        })),
+                      );
+                    }}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
         </div>
-        {selectedProduct && (
-          <ProductImageSection
-            key={selectedProduct.imageUrl ?? `empty-${selectedProduct.id}`}
-            productId={selectedProduct.id}
-            facilityId={facilityId}
-            imageUrl={selectedProduct.imageUrl}
-            productTitle={selectedProduct.title}
-            onImageChange={(url: string | null) => {
-              setCategories((prev) =>
-                prev.map((c) => ({
-                  ...c,
-                  products: c.products.map((p) =>
-                    p.id === selectedProduct.id ? { ...p, imageUrl: url } : p,
-                  ),
-                })),
-              );
-            }}
-          />
-        )}
-        <div className="flex-1 overflow-y-auto p-4">
-          {!selectedProduct && (
-            <p className="text-muted-foreground p-8 text-center text-sm">
-              Izaberite kategoriju i tip da biste videli cene
-            </p>
-          )}
-          {selectedProduct && selectedProduct.prices.length === 0 && (
-            <div className="text-muted-foreground flex h-full flex-col items-center justify-center gap-3">
-              <Icon name="confirmation_number" className="text-[32px] opacity-30" />
-              <p className="text-sm">Nema cena za {selectedProduct.title}</p>
-              <Button
-                size="sm"
-                variant="outline"
-                className="flex items-center gap-1 text-xs"
-                onClick={() => handleAddPrice(selectedProduct.id)}
-                disabled={pending}
+
+        <AlertDialog
+          open={deleteCategoryTarget !== null}
+          onOpenChange={(open) => !open && setDeleteCategoryTarget(null)}
+        >
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Obriši kategoriju</AlertDialogTitle>
+              <AlertDialogDescription>
+                Da li ste sigurni da želite da obrišete kategoriju &quot;
+                {deleteCategoryTarget?.title}
+                &quot;? Ova radnja je nepovratna.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Otkaži</AlertDialogCancel>
+              <AlertDialogAction
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                onClick={confirmDeleteCategory}
               >
-                <Icon name="add" className="text-[12px]" /> Dodaj prvu cenu
-              </Button>
-            </div>
-          )}
-          {selectedProduct && selectedProduct.prices.length > 0 && (
-            <div className="grid gap-3">
-              {selectedProduct.prices.map((price) => (
-                <PriceCard
-                  key={price.id}
-                  price={price}
-                  product={selectedProduct}
-                  facilityId={facilityId}
-                  onDeleted={() => {
-                    setCategories((prev) =>
-                      prev.map((c) => ({
-                        ...c,
-                        products: c.products.map((p) =>
-                          p.id === selectedProduct.id
-                            ? { ...p, prices: p.prices.filter((pr) => pr.id !== price.id) }
-                            : p,
-                        ),
-                      })),
-                    );
-                  }}
-                  onSaved={(next) => {
-                    setCategories((prev) =>
-                      prev.map((c) => ({
-                        ...c,
-                        products: c.products.map((p) =>
-                          p.id === selectedProduct.id
-                            ? {
-                                ...p,
-                                prices: p.prices.map((pr) =>
-                                  pr.id === next.id ? { ...pr, ...next } : pr,
-                                ),
-                              }
-                            : p,
-                        ),
-                      })),
-                    );
-                  }}
-                />
-              ))}
-            </div>
-          )}
-        </div>
+                Obriši
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
+        <AlertDialog
+          open={deleteProductTarget !== null}
+          onOpenChange={(open) => !open && setDeleteProductTarget(null)}
+        >
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Obriši tip</AlertDialogTitle>
+              <AlertDialogDescription>
+                Da li ste sigurni da želite da obrišete tip &quot;
+                {deleteProductTarget?.title}
+                &quot;? Ova radnja je nepovratna.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Otkaži</AlertDialogCancel>
+              <AlertDialogAction
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                onClick={confirmDeleteProduct}
+              >
+                Obriši
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
-
-      <AlertDialog
-        open={deleteCategoryTarget !== null}
-        onOpenChange={(open) => !open && setDeleteCategoryTarget(null)}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Obriši kategoriju</AlertDialogTitle>
-            <AlertDialogDescription>
-              Da li ste sigurni da želite da obrišete kategoriju &quot;
-              {deleteCategoryTarget?.title}
-              &quot;? Ova radnja je nepovratna.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Otkaži</AlertDialogCancel>
-            <AlertDialogAction
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-              onClick={confirmDeleteCategory}
-            >
-              Obriši
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
-      <AlertDialog
-        open={deleteProductTarget !== null}
-        onOpenChange={(open) => !open && setDeleteProductTarget(null)}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Obriši tip</AlertDialogTitle>
-            <AlertDialogDescription>
-              Da li ste sigurni da želite da obrišete tip &quot;
-              {deleteProductTarget?.title}
-              &quot;? Ova radnja je nepovratna.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Otkaži</AlertDialogCancel>
-            <AlertDialogAction
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-              onClick={confirmDeleteProduct}
-            >
-              Obriši
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </div>
   );
 }

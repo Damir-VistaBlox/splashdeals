@@ -203,6 +203,9 @@ export function FacilityProfileForm({
   }
 
   const publicPreviewUrl = buildPublicFacilityPath(facility.slug);
+  const activeClosures = facility.closures.filter(
+    (closure) => new Date(closure.endDate) >= new Date(),
+  );
 
   return (
     <Form {...form}>
@@ -254,6 +257,41 @@ export function FacilityProfileForm({
             </Button>
           </div>
         </header>
+
+        <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          <div className="border-border/60 bg-card/95 rounded-[24px] border p-4 shadow-sm">
+            <div className="text-muted-foreground text-[9px] font-black tracking-[0.18em] uppercase">
+              Javni URL
+            </div>
+            <div className="text-primary mt-2 font-mono text-[11px] break-all">
+              splashdeals.rs{publicPreviewUrl}
+            </div>
+          </div>
+          <div className="border-border/60 bg-card/95 rounded-[24px] border p-4 shadow-sm">
+            <div className="text-muted-foreground text-[9px] font-black tracking-[0.18em] uppercase">
+              Radno vreme
+            </div>
+            <div className="text-foreground mt-2 text-sm font-black uppercase">
+              {facility.hours.length} dnevnih unosa
+            </div>
+          </div>
+          <div className="border-border/60 bg-card/95 rounded-[24px] border p-4 shadow-sm">
+            <div className="text-muted-foreground text-[9px] font-black tracking-[0.18em] uppercase">
+              Aktivna zatvaranja
+            </div>
+            <div className="text-foreground mt-2 text-sm font-black uppercase">
+              {activeClosures.length}
+            </div>
+          </div>
+          <div className="border-border/60 bg-card/95 rounded-[24px] border p-4 shadow-sm">
+            <div className="text-muted-foreground text-[9px] font-black tracking-[0.18em] uppercase">
+              Kontakt stanje
+            </div>
+            <div className="text-foreground mt-2 text-sm font-black uppercase">
+              {facility.publicEmail || facility.publicPhone ? "Spremno" : "Dopuniti"}
+            </div>
+          </div>
+        </section>
 
         {/* 🏛️ CRM Data Grid */}
         <div className="grid grid-cols-1 gap-6 pb-32 xl:grid-cols-12">

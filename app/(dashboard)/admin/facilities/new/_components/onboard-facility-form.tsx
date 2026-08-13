@@ -4,7 +4,7 @@ import { Icon } from "@/components/ui/Icon";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { createFacilityAction } from "@/app/(server)/actions/facilities";
@@ -89,6 +89,12 @@ export function OnboardFacilityForm() {
     }
   }
 
+  const currentSlug = useWatch({ control: form.control, name: "slug" });
+  const currentName = useWatch({ control: form.control, name: "name" });
+  const currentCity = useWatch({ control: form.control, name: "city" });
+  const currentStatus = useWatch({ control: form.control, name: "status" });
+  const currentCategory = useWatch({ control: form.control, name: "category" });
+
   return (
     <Form {...form}>
       <form
@@ -102,7 +108,7 @@ export function OnboardFacilityForm() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1.65fr_0.95fr]">
           <div className="space-y-6 lg:col-span-2">
             <IdentitySection
               isSlugLocked={isSlugLocked}
@@ -116,10 +122,72 @@ export function OnboardFacilityForm() {
           <div className="space-y-6">
             <ConfigurationSection />
 
+            <div className="border-border/60 bg-card/95 rounded-[28px] border p-5 shadow-sm">
+              <div className="mb-4 flex items-center gap-2">
+                <div className="bg-primary/10 text-primary flex size-10 items-center justify-center rounded-2xl">
+                  <Icon name="preview" className="text-[18px]" />
+                </div>
+                <div>
+                  <div className="text-foreground text-sm font-black uppercase">Pregled unosa</div>
+                  <div className="text-muted-foreground text-[11px]">
+                    Brza provera pre kreiranja objekta
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <div className="border-border/50 bg-background/60 rounded-2xl border px-4 py-3">
+                  <div className="text-muted-foreground text-[9px] font-black tracking-[0.18em] uppercase">
+                    Naziv
+                  </div>
+                  <div className="text-foreground mt-1 text-sm font-black uppercase">
+                    {currentName?.trim() || "Još nije unet"}
+                  </div>
+                </div>
+
+                <div className="border-border/50 bg-background/60 rounded-2xl border px-4 py-3">
+                  <div className="text-muted-foreground text-[9px] font-black tracking-[0.18em] uppercase">
+                    Javna putanja
+                  </div>
+                  <div className="text-primary mt-1 font-mono text-[11px] break-all">
+                    splashdeals.rs/{currentSlug?.trim() || "slug-objekta"}
+                  </div>
+                </div>
+
+                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
+                  <div className="border-border/50 bg-background/60 rounded-2xl border px-4 py-3">
+                    <div className="text-muted-foreground text-[9px] font-black tracking-[0.18em] uppercase">
+                      Kategorija
+                    </div>
+                    <div className="text-foreground mt-1 text-sm font-black uppercase">
+                      {currentCategory || "Nije izabrana"}
+                    </div>
+                  </div>
+                  <div className="border-border/50 bg-background/60 rounded-2xl border px-4 py-3">
+                    <div className="text-muted-foreground text-[9px] font-black tracking-[0.18em] uppercase">
+                      Status
+                    </div>
+                    <div className="text-foreground mt-1 text-sm font-black uppercase">
+                      {currentStatus === "ACTIVE" ? "Aktivan" : "Nacrt"}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="border-border/50 bg-background/60 rounded-2xl border px-4 py-3">
+                  <div className="text-muted-foreground text-[9px] font-black tracking-[0.18em] uppercase">
+                    Lokacija
+                  </div>
+                  <div className="text-foreground mt-1 text-sm font-black uppercase">
+                    {currentCity?.trim() || "Grad još nije unet"}
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <Button
               type="submit"
               size="lg"
-              className="hover:bg-muted bg-foreground text-background shadow-foreground/5 h-14 w-full rounded-xl text-base font-bold shadow-xl transition-colors hover:scale-[1.01] active:scale-[0.99]"
+              className="hover:bg-muted bg-foreground text-background shadow-foreground/5 h-14 w-full rounded-2xl text-base font-bold shadow-xl transition-colors hover:scale-[1.01] active:scale-[0.99]"
               disabled={isSubmitting}
             >
               {isSubmitting ? (

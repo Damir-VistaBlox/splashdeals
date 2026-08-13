@@ -30,22 +30,52 @@ export default async function TicketsPageV2({
   if (!facility) return notFound();
 
   const hierarchy = await getTicketHierarchy(facilityId);
+  const productCount = hierarchy.reduce((sum, category) => sum + category.products.length, 0);
+  const priceCount = hierarchy.reduce(
+    (sum, category) =>
+      sum +
+      category.products.reduce((productSum, product) => productSum + product.prices.length, 0),
+    0,
+  );
 
   return (
     <div className="animate-in fade-in slide-in-from-right-4 flex h-full flex-col gap-6 duration-500">
-      <div className="border-border/50 bg-background/60 flex shrink-0 items-center justify-between rounded-2xl border px-6 py-5 backdrop-blur-md">
-        <div>
-          <h1 className="text-foreground text-2xl font-black tracking-tight">
-            Upravljanje ulaznicama
-          </h1>
-          <p className="text-muted-foreground mt-1 text-sm">
-            {facility.name} — kategorije, tipovi i cenovni nivoi za javnu prodaju
-          </p>
-        </div>
-        <div className="border-primary/20 bg-primary/10 rounded-full border px-4 py-1.5">
-          <span className="text-primary text-[10px] font-black tracking-widest uppercase">
-            Prodajni katalog
-          </span>
+      <div className="border-border/60 bg-card/95 relative overflow-hidden rounded-[30px] border px-6 py-5 shadow-sm backdrop-blur-md">
+        <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-1/3 bg-[radial-gradient(circle_at_top_right,rgba(20,184,166,0.14),transparent_60%)] lg:block" />
+        <div className="relative z-10 flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
+          <div>
+            <div className="text-muted-foreground flex items-center gap-2 text-[10px] font-black tracking-[0.22em] uppercase">
+              <span className="size-2 rounded-full bg-teal-500" />
+              Prodajni katalog
+            </div>
+            <h1 className="text-foreground mt-2 text-2xl font-black tracking-tight uppercase">
+              Upravljanje ulaznicama
+            </h1>
+            <p className="text-muted-foreground mt-1 text-sm leading-6">
+              {facility.name} — kategorije, tipovi i cenovni nivoi za javnu prodaju i operativno
+              upravljanje ponudom.
+            </p>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-3 xl:min-w-[460px]">
+            <div className="border-border/60 bg-background/75 rounded-2xl border px-4 py-3">
+              <div className="text-muted-foreground text-[9px] font-black tracking-[0.18em] uppercase">
+                Kategorije
+              </div>
+              <div className="text-foreground mt-1 text-2xl font-black">{hierarchy.length}</div>
+            </div>
+            <div className="border-border/60 bg-background/75 rounded-2xl border px-4 py-3">
+              <div className="text-muted-foreground text-[9px] font-black tracking-[0.18em] uppercase">
+                Tipovi
+              </div>
+              <div className="text-foreground mt-1 text-2xl font-black">{productCount}</div>
+            </div>
+            <div className="border-border/60 bg-background/75 rounded-2xl border px-4 py-3">
+              <div className="text-muted-foreground text-[9px] font-black tracking-[0.18em] uppercase">
+                Cene
+              </div>
+              <div className="text-foreground mt-1 text-2xl font-black">{priceCount}</div>
+            </div>
+          </div>
         </div>
       </div>
 
