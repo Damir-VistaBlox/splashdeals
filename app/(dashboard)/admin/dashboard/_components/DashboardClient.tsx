@@ -2,6 +2,7 @@
 import { Icon } from "@/components/ui/Icon";
 
 import * as React from "react";
+import Link from "next/link";
 import { ChartAreaInteractive } from "@/app/(dashboard)/admin/_common/chart-area-interactive";
 import { SectionCards } from "@/components/shared/section-cards";
 
@@ -27,6 +28,33 @@ export function DashboardClient({
   stats: DashboardStats;
   recentActivity?: RecentActivity[];
 }) {
+  const quickActions = [
+    {
+      href: "/admin/facilities",
+      label: "Objekti",
+      detail: "Pregled registra i statusa",
+      icon: "store",
+    },
+    {
+      href: "/admin/facilities/new",
+      label: "Dodaj objekat",
+      detail: "Pokreni onboarding novog partnera",
+      icon: "add_business",
+    },
+    {
+      href: "/admin/media",
+      label: "Mediji",
+      detail: "Upravljaj slikama i video materijalom",
+      icon: "photo_library",
+    },
+    {
+      href: "/admin/cms/posts",
+      label: "CMS",
+      detail: "Objave, strane i kampanje",
+      icon: "article",
+    },
+  ];
+
   return (
     <div
       className="bg-background flex flex-1 flex-col p-4 md:p-6"
@@ -37,6 +65,34 @@ export function DashboardClient({
 
         <SectionCards stats={stats} />
 
+        <section
+          className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4"
+          aria-label="Brze administrativne akcije"
+        >
+          {quickActions.map((action) => (
+            <Link
+              key={action.href}
+              href={action.href}
+              className="border-border/50 bg-muted/10 hover:border-primary/25 hover:bg-background group rounded-xl border p-4 transition-colors"
+            >
+              <div className="mb-3 flex items-center gap-3">
+                <div className="bg-primary/10 text-primary flex size-10 items-center justify-center rounded-xl">
+                  <Icon name={action.icon} className="size-4" />
+                </div>
+                <div className="min-w-0">
+                  <div className="text-foreground text-sm font-black uppercase">{action.label}</div>
+                  <div className="text-muted-foreground text-[11px] font-medium">
+                    {action.detail}
+                  </div>
+                </div>
+              </div>
+              <div className="text-primary text-[10px] font-black tracking-[0.18em] uppercase">
+                Otvori sekciju
+              </div>
+            </Link>
+          ))}
+        </section>
+
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-4">
           <div className="lg:col-span-3">
             <ChartAreaInteractive />
@@ -46,12 +102,12 @@ export function DashboardClient({
             <div className="mb-6 flex items-center justify-between">
               <div className="text-muted-foreground flex items-center gap-2 text-[10px] font-bold tracking-widest uppercase">
                 <Icon name="monitor_heart" className="text-primary size-3.5" />
-                Puls aktivnosti
+                Skorašnje transakcije
               </div>
               <div className="bg-primary/10 border-primary/20 flex items-center gap-1.5 rounded-full border px-2 py-0.5">
                 <div className="bg-primary h-1 w-1 animate-pulse rounded-full" />
                 <span className="text-primary text-[9px] font-black tracking-tight uppercase">
-                  Uživo
+                  Aktivno
                 </span>
               </div>
             </div>
@@ -94,10 +150,10 @@ export function DashboardClient({
                   </div>
                   <div className="space-y-1">
                     <h3 className="text-muted-foreground text-[10px] font-black tracking-[0.2em] uppercase">
-                      Tok miruje
+                      Nema novih događaja
                     </h3>
                     <p className="text-muted-foreground/80 text-[9px] leading-relaxed font-bold uppercase">
-                      Nema transakcija u poslednjem satu.
+                      Nije zabeležena nova prodaja u poslednjem satu.
                     </p>
                   </div>
                 </div>
@@ -112,13 +168,13 @@ export function DashboardClient({
                 <span className="text-muted-foreground text-[9px] font-bold uppercase">
                   Gateway
                 </span>
-                <span className="font-mono text-[9px] text-emerald-400 uppercase">Na mreži</span>
+                <span className="font-mono text-[9px] text-emerald-400 uppercase">Operativan</span>
               </div>
               <div className="bg-muted/10 border-border/50 flex items-center justify-between rounded-md border p-2">
                 <span className="text-muted-foreground text-[9px] font-bold uppercase">
                   Okruženje
                 </span>
-                <span className="text-primary font-mono text-[9px] uppercase">SD-2026-BETA</span>
+                <span className="text-primary font-mono text-[9px] uppercase">SD-ADMIN</span>
               </div>
             </div>
           </div>
@@ -128,10 +184,10 @@ export function DashboardClient({
           <Icon name="database" className="text-muted-foreground/40 size-6" />
           <div className="space-y-1">
             <h3 className="text-muted-foreground text-[10px] font-black tracking-[0.2em] uppercase">
-              Operativni red
+              Operativno stanje
             </h3>
             <p className="text-muted-foreground/80 text-[10px] font-bold uppercase">
-              Stvarni operativni pogon sinhronizovan je sa primarnim čvorom.
+              Administrativni prikaz je sinhronizovan sa primarnim čvorom.
             </p>
           </div>
           <div className="mt-2 flex items-center gap-2">

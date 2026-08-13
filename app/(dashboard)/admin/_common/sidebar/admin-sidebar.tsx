@@ -78,6 +78,8 @@ function SidebarNavItems({ userRole }: { userRole?: string | null }) {
   const currentFacilityId = facilityMatch ? facilityMatch[1] : null;
   const isOnFacilityNew = pathname === "/admin/facilities/new";
   const isInsideFacility = !!currentFacilityId && currentFacilityId !== "new" && !isOnFacilityNew;
+  const facilityOverviewHref = currentFacilityId ? `/admin/facilities/${currentFacilityId}` : null;
+  const facilityRegistryHref = "/admin/facilities";
 
   return (
     <>
@@ -94,7 +96,7 @@ function SidebarNavItems({ userRole }: { userRole?: string | null }) {
         const isActive =
           checkUrl === "/admin" ? pathname === "/admin" : pathname.startsWith(checkUrl);
 
-        const isFacilityManagement = item.title === "Facilities Registry";
+        const isFacilityManagement = item.url === facilityRegistryHref;
 
         const isGroupOpen = initialized
           ? (openGroups[item.title] ?? (isActive || isInsideFacility))
@@ -134,59 +136,50 @@ function SidebarNavItems({ userRole }: { userRole?: string | null }) {
                           <SearchForm />
                         </SidebarMenuItem>
                         {isInsideFacility && (
-                          <>
-                            <SidebarMenuItem>
-                              <div className="bg-sidebar-accent border-sidebar-border mx-2 flex items-center gap-2 rounded-md border px-2 py-1.5">
-                                <Icon name="business" className="text-primary size-3 shrink-0" />
-                                <span className="text-primary/80 truncate text-xs font-bold">
-                                  {currentFacilityId?.split("-")[0]}
-                                </span>
+                          <SidebarMenuItem className="px-2 pb-1">
+                            <div className="bg-sidebar-accent/55 border-sidebar-border space-y-3 rounded-xl border px-3 py-3">
+                              <div className="space-y-1">
+                                <div className="text-sidebar-foreground/55 text-[10px] font-black tracking-[0.18em] uppercase">
+                                  Trenutni objekat
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <div className="bg-primary/10 text-primary flex size-7 shrink-0 items-center justify-center rounded-lg">
+                                    <Icon name="business" className="size-3.5" />
+                                  </div>
+                                  <div className="min-w-0">
+                                    <div className="text-sidebar-foreground truncate text-xs font-black uppercase">
+                                      Aktivna sesija
+                                    </div>
+                                    <div className="text-sidebar-foreground/50 truncate font-mono text-[10px] uppercase">
+                                      {currentFacilityId?.split("-")[0]}
+                                    </div>
+                                  </div>
+                                </div>
                               </div>
-                            </SidebarMenuItem>
-                            <SidebarMenuItem>
-                              <SidebarMenuButton asChild isActive={pathname.endsWith("/tickets")}>
-                                <Link href={`/admin/facilities/${currentFacilityId}/tickets`}>
-                                  <Icon name="confirmation_number" className="size-3.5" />
-                                  Tickets
-                                </Link>
-                              </SidebarMenuButton>
-                            </SidebarMenuItem>
-                            <SidebarMenuItem>
-                              <SidebarMenuButton asChild isActive={pathname.endsWith("/profile")}>
-                                <Link href={`/admin/facilities/${currentFacilityId}/profile`}>
-                                  <Icon name="settings" className="size-3.5" />
-                                  Profile
-                                </Link>
-                              </SidebarMenuButton>
-                            </SidebarMenuItem>
-                            <SidebarMenuItem>
-                              <SidebarMenuButton
-                                asChild
-                                isActive={pathname.endsWith("/operations")}
-                              >
-                                <Link href={`/admin/facilities/${currentFacilityId}/operations`}>
-                                  <Icon name="schedule" className="size-3.5" />
-                                  Operations
-                                </Link>
-                              </SidebarMenuButton>
-                            </SidebarMenuItem>
-                            <SidebarMenuItem>
-                              <SidebarMenuButton asChild isActive={pathname.endsWith("/amenities")}>
-                                <Link href={`/admin/facilities/${currentFacilityId}/amenities`}>
-                                  <Icon name="auto_awesome" className="size-3.5" />
-                                  Amenities
-                                </Link>
-                              </SidebarMenuButton>
-                            </SidebarMenuItem>
-                            <SidebarMenuItem>
-                              <SidebarMenuButton asChild isActive={pathname.endsWith("/media")}>
-                                <Link href={`/admin/facilities/${currentFacilityId}/media`}>
-                                  <Icon name="photo_library" className="size-3.5" />
-                                  Media
-                                </Link>
-                              </SidebarMenuButton>
-                            </SidebarMenuItem>
-                          </>
+                              <div className="grid gap-1.5">
+                                {facilityOverviewHref ? (
+                                  <SidebarMenuButton
+                                    asChild
+                                    isActive={pathname === facilityOverviewHref}
+                                  >
+                                    <Link href={facilityOverviewHref}>
+                                      <Icon name="dashboard" className="size-3.5" />
+                                      Pregled objekta
+                                    </Link>
+                                  </SidebarMenuButton>
+                                ) : null}
+                                <SidebarMenuButton
+                                  asChild
+                                  isActive={pathname === facilityRegistryHref}
+                                >
+                                  <Link href={facilityRegistryHref}>
+                                    <Icon name="list" className="size-3.5" />
+                                    Nazad na registar
+                                  </Link>
+                                </SidebarMenuButton>
+                              </div>
+                            </div>
+                          </SidebarMenuItem>
                         )}
                       </>
                     )}
@@ -360,7 +353,7 @@ export function AdminSidebar({ user, ...props }: AdminSidebarProps) {
                 userRole === "SUPER_ADMIN" ? "bg-primary" : "bg-primary/60",
               )}
             />
-            {userRole === "SUPER_ADMIN" ? "Mode: Master" : "Mode: Operator"}
+            {userRole === "SUPER_ADMIN" ? "Rezim: Admin" : "Rezim: Operater"}
           </div>
           <span className="text-sidebar-foreground/40">SD-RSA-{BUILD_YEAR}</span>
         </div>

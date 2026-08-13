@@ -68,7 +68,7 @@ export function FacilitiesTableToolbar<TData>({
             className="text-muted-foreground absolute top-1/2 left-3 -translate-y-1/2 text-[14px]"
           />
           <Input
-            placeholder="Pretraži registar..."
+            placeholder="Pretraži naziv, grad ili slug..."
             value={search}
             onChange={(event) => onSearchChange(event.target.value)}
             aria-label="Pretraži objekte"
@@ -98,7 +98,7 @@ export function FacilitiesTableToolbar<TData>({
             className="bg-primary/10 border-primary/20 text-primary h-9 px-2.5 text-[9px] font-black"
             title="Broj rezultata"
           >
-            {totalCount} rez.
+            {totalCount} objekata
           </Badge>
 
           <Select value={String(pageSize)} onValueChange={(v) => onPageSizeChange(Number(v))}>
@@ -148,7 +148,7 @@ export function FacilitiesTableToolbar<TData>({
               className="h-9 text-[10px] font-bold uppercase"
               onClick={onResetFilters}
             >
-              Resetuj
+              Očisti filtere
             </Button>
           )}
 
@@ -176,6 +176,11 @@ export function FacilitiesTableToolbar<TData>({
             <Link href="/admin/facilities/cities">Gradovi</Link>
           </Button>
         </div>
+      </div>
+
+      <div className="text-muted-foreground flex items-center gap-2 px-1 text-[10px] font-bold tracking-[0.16em] uppercase">
+        <Icon name="tune" className="text-primary text-[14px]" />
+        Operativni prikaz registra
       </div>
     </div>
   );

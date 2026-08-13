@@ -351,7 +351,10 @@ export function DataTable({
                     <p className="text-xs font-bold tracking-wide uppercase">
                       Nema pronađenih objekata
                     </p>
-                    <p className="text-[10px]">Podesite pretragu ili filter statusa.</p>
+                    <p className="max-w-sm text-[10px] leading-relaxed">
+                      Proverite termin pretrage, status filter ili otvorite unos novog objekta ako
+                      registar još nije popunjen.
+                    </p>
                     {hasActiveFilters ? (
                       <Button
                         type="button"
@@ -360,7 +363,7 @@ export function DataTable({
                         onClick={handleResetFilters}
                         className="text-primary h-auto p-0 text-[10px] font-bold tracking-wide uppercase"
                       >
-                        Resetuj filtere
+                        Očisti filtere
                       </Button>
                     ) : (
                       <Button asChild variant="outline" size="sm" className="mt-1 h-8 text-[10px]">

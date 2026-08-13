@@ -35,8 +35,12 @@ export function FacilitiesTablePagination({
 
   return (
     <div className="flex flex-wrap items-center justify-between gap-3">
-      <div className="text-muted-foreground text-[10px] font-black tracking-widest uppercase">
-        {currentPage} / {totalPages || 1} • {totalCount} ukupno
+      <div className="text-muted-foreground flex items-center gap-2 text-[10px] font-black tracking-widest uppercase">
+        <span>
+          Strana {currentPage} / {totalPages || 1}
+        </span>
+        <span className="bg-border/70 h-3.5 w-px" />
+        <span>{totalCount} ukupno</span>
       </div>
       <div className="flex items-center gap-1">
         <Button
