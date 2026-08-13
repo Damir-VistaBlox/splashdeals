@@ -500,7 +500,7 @@ export function CartClient({
   }
 
   return (
-    <div className="mx-auto min-h-[50vh] max-w-7xl px-3 pt-4 pb-[calc(9rem+env(safe-area-inset-bottom,0px))] sm:px-12 sm:pt-12 sm:pb-32">
+    <div className="mx-auto min-h-[50vh] max-w-7xl px-3 pt-4 pb-[calc(9.5rem+env(safe-area-inset-bottom,0px))] sm:px-12 sm:pt-12 sm:pb-32">
       <GuestCartConflictModal
         open={Boolean(conflict)}
         guestFacilityName={conflict?.guestFacilityName || ""}
@@ -518,6 +518,28 @@ export function CartClient({
         <h1 className="text-foreground text-[1.75rem] leading-none font-black tracking-tighter sm:text-5xl">
           {headingCount}
         </h1>
+        {items.length > 0 && (
+          <div className="mt-3 grid grid-cols-3 gap-2 sm:hidden">
+            <div className="rounded-2xl border border-white/45 bg-white/42 px-3 py-2 text-center backdrop-blur-sm">
+              <p className="text-foreground text-[10px] font-black tracking-[0.14em] uppercase">
+                1
+              </p>
+              <p className="text-muted-foreground mt-1 text-[11px] font-medium">Pregled</p>
+            </div>
+            <div className="rounded-2xl border border-white/45 bg-white/42 px-3 py-2 text-center backdrop-blur-sm">
+              <p className="text-foreground text-[10px] font-black tracking-[0.14em] uppercase">
+                2
+              </p>
+              <p className="text-muted-foreground mt-1 text-[11px] font-medium">Naplata</p>
+            </div>
+            <div className="rounded-2xl border border-white/45 bg-white/42 px-3 py-2 text-center backdrop-blur-sm">
+              <p className="text-foreground text-[10px] font-black tracking-[0.14em] uppercase">
+                3
+              </p>
+              <p className="text-muted-foreground mt-1 text-[11px] font-medium">Karte mejlom</p>
+            </div>
+          </div>
+        )}
         {items.length === 0 && cartDict?.empty_subtitle && (
           <p className="text-muted-foreground mt-2 max-w-[19rem] text-[13px] font-medium sm:max-w-none sm:text-sm">
             {cartDict.empty_subtitle}
@@ -552,7 +574,7 @@ export function CartClient({
 
       {items.length === 0 ? (
         <div className="flex flex-col items-center justify-center pt-8 sm:pt-20">
-          <div className="bg-muted/20 flex h-18 w-18 items-center justify-center rounded-full sm:h-24 sm:w-24">
+          <div className="flex h-18 w-18 items-center justify-center rounded-full border border-white/45 bg-white/42 shadow-[0_14px_28px_rgba(15,23,42,0.06)] backdrop-blur-sm sm:h-24 sm:w-24">
             <Icon
               name="shopping_bag"
               className="text-muted-foreground/30 text-[36px] sm:text-[40px]"
@@ -561,11 +583,21 @@ export function CartClient({
           <p className="text-muted-foreground mt-4 max-w-xs text-center text-[13px] font-medium sm:mt-6 sm:text-sm">
             {cartDict?.empty_description}
           </p>
-          <Link href="/akva-parkovi">
-            <Button variant="ghost" className="mt-3.5 min-h-11 rounded-full px-4">
-              {cartDict?.browse}
-            </Button>
-          </Link>
+          <div className="mt-4 grid w-full max-w-sm gap-2.5 min-[380px]:grid-cols-2">
+            <Link href="/akva-parkovi" className="block">
+              <Button className="min-h-11 w-full rounded-full px-4 text-[11px] font-black tracking-[0.14em] uppercase">
+                {cartDict?.browse}
+              </Button>
+            </Link>
+            <Link href="/how-it-works" className="block">
+              <Button
+                variant="outline"
+                className="min-h-11 w-full rounded-full px-4 text-[11px] font-black tracking-[0.14em] uppercase"
+              >
+                Kako radi
+              </Button>
+            </Link>
+          </div>
         </div>
       ) : (
         <div className="grid gap-4 sm:gap-6 lg:grid-cols-3 lg:gap-8">
@@ -603,7 +635,7 @@ export function CartClient({
 
       {items.length > 0 && (
         <div className="pointer-events-auto fixed inset-x-0 bottom-[calc(4rem+env(safe-area-inset-bottom,0px))] z-[999] px-3 md:hidden">
-          <div className="mx-auto flex max-w-md items-center gap-3 rounded-[1.5rem] border border-white/70 bg-white/92 px-3.5 py-3 shadow-[0_-10px_30px_rgba(15,23,42,0.08)] backdrop-blur-[30px]">
+          <div className="surface-glass mx-auto flex max-w-md items-center gap-3 rounded-[1.5rem] px-3.5 py-3">
             <div className="min-w-0 flex-1">
               <p className="text-muted-foreground text-[9px] font-black tracking-[0.18em] uppercase">
                 {cartDict?.total_label || cartDict?.total}
@@ -612,6 +644,9 @@ export function CartClient({
                 {new Intl.NumberFormat("sr-RS").format(total)}{" "}
                 <span className="text-primary text-xs">{currency}</span>
               </p>
+              <p className="text-muted-foreground mt-1 text-[10px] font-medium">
+                {items.length} stavki spremno za naplatu
+              </p>
             </div>
             {locked ? (
               <Button
@@ -619,7 +654,7 @@ export function CartClient({
                 variant="outline"
                 disabled={isCancellingCheckout}
                 onClick={() => void handleCancelCheckout()}
-                className="h-11 min-h-11 min-w-[8.75rem] shrink-0 touch-manipulation rounded-[1.1rem] px-4 text-[13px] font-bold"
+                className="h-11 min-h-11 min-w-[8.75rem] shrink-0 touch-manipulation rounded-[1.1rem] px-4 text-[12px] font-black"
               >
                 {isCancellingCheckout
                   ? cartDict?.cancel_checkout_processing
@@ -629,7 +664,7 @@ export function CartClient({
               <Button
                 onClick={handleStartCheckout}
                 disabled={isCheckingOut}
-                className="h-11 min-h-11 min-w-[8.75rem] shrink-0 touch-manipulation rounded-[1.1rem] px-4 text-[13px] font-bold"
+                className="h-11 min-h-11 min-w-[8.75rem] shrink-0 touch-manipulation rounded-[1.1rem] px-4 text-[12px] font-black shadow-[0_14px_28px_rgba(6,182,212,0.22)]"
               >
                 {isCheckingOut
                   ? cartDict?.processing

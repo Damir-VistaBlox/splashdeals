@@ -16,6 +16,7 @@ interface MobileUnifiedControlPillProps {
   hours: HoursSubset[];
   destLat?: number | null;
   destLng?: number | null;
+  surfaceless?: boolean;
 }
 
 function deriveTodayInfo(hours: HoursSubset[]) {
@@ -43,6 +44,7 @@ export function MobileUnifiedControlPill({
   hours = [],
   destLat,
   destLng,
+  surfaceless = false,
 }: MobileUnifiedControlPillProps) {
   const [geoState, setGeoState] = useState<{ distance: number | null; failed: boolean }>({
     distance: null,
@@ -129,7 +131,11 @@ export function MobileUnifiedControlPill({
 
   return (
     <div className="mx-auto w-full max-w-md">
-      <div className="mobile-glass relative flex min-h-[4.5rem] w-full items-center justify-between rounded-[1.75rem] border-white/14 px-3 py-2 shadow-[0_18px_46px_rgba(7,24,39,0.22)] select-none">
+      <div
+        className={`relative flex min-h-[4.25rem] w-full items-center justify-between rounded-[1.45rem] px-3 py-2 select-none ${
+          surfaceless ? "" : "surface-glass"
+        }`}
+      >
         {/* ⏰ Segment 1: Operating Hours */}
         <div
           className="flex flex-[1.3] items-center justify-center gap-2 px-2"
@@ -183,7 +189,7 @@ export function MobileUnifiedControlPill({
           variant="ghost"
           onClick={handleNavigation}
           disabled={!hasDirections}
-          className="text-foreground hover:text-primary group flex min-h-[3.25rem] flex-1 origin-center items-center justify-center gap-2 rounded-[1.1rem] px-2 transition-colors active:scale-[0.98]"
+          className="text-foreground hover:text-primary group flex min-h-[3rem] flex-1 origin-center items-center justify-center gap-2 rounded-[1rem] px-2 transition-colors active:scale-[0.98]"
           aria-label={
             !hasDirections
               ? "Lokacija nije dostupna"

@@ -36,7 +36,7 @@ export function PlatformShell({
   showStructuredData?: boolean;
 }) {
   return (
-    <div className="flex min-h-screen flex-col overflow-x-hidden font-sans">
+    <div className="public-shell flex min-h-screen flex-col overflow-x-hidden font-sans">
       <a
         href="#main-content"
         className="focus:bg-primary focus:text-primary-foreground sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[9999] focus:rounded-xl focus:px-4 focus:py-3 focus:text-xs focus:font-black focus:tracking-widest focus:uppercase focus:shadow-lg focus:outline-none"
@@ -49,9 +49,9 @@ export function PlatformShell({
       {showBreadcrumb ? <BreadcrumbBar facilityMap={facilityMap} /> : null}
       <main
         id="main-content"
-        className="relative flex-grow pt-[4.55rem] pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] sm:pt-20 sm:pb-0"
+        className="relative flex-grow pt-[var(--mobile-main-offset)] pb-[calc(5.6rem+env(safe-area-inset-bottom,0px))] sm:pt-20 sm:pb-0"
       >
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-[linear-gradient(180deg,rgba(255,255,255,0.45),transparent)]" />
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-36 bg-[linear-gradient(180deg,rgba(255,255,255,0.5),transparent)]" />
         <React.Suspense
           fallback={
             <div className="bg-muted flex flex-1 animate-pulse items-center justify-center p-20" />

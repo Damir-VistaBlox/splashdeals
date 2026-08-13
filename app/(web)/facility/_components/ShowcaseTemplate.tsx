@@ -285,11 +285,11 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
     <div className="text-foreground selection:bg-primary/30 relative min-h-screen font-sans">
       {/* ✅ Structured Data */}
       <JsonLd data={facilitySchema} id={`facility-${facilitySlug}-schema`} />
-      <section className="relative flex min-h-[62svh] w-full flex-col justify-end overflow-hidden px-4 pt-18 pb-5 sm:px-6 md:min-h-[calc(92dvh-120px)] md:px-12 md:pt-18 md:pb-14">
+      <section className="relative flex min-h-[64svh] w-full flex-col justify-end overflow-hidden px-3 pt-18 pb-4 sm:px-6 md:min-h-[calc(92dvh-120px)] md:px-12 md:pt-18 md:pb-14">
         <ShowcaseHero heroMedia={heroMedia} facility={facility} />
 
-        <div className="relative z-10 mx-auto grid w-full max-w-7xl grid-cols-1 items-end gap-4 md:mb-10 md:grid-cols-12 md:gap-12">
-          <div className="space-y-3.5 md:col-span-8 md:space-y-6">
+        <div className="relative z-10 mx-auto grid w-full max-w-7xl grid-cols-1 items-end gap-3 md:mb-10 md:grid-cols-12 md:gap-12">
+          <div className="space-y-3 md:col-span-8 md:space-y-6">
             <HeroActionPill
               facility={{
                 id: facility.id,
@@ -309,8 +309,8 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
               isFavorited={isFavorited}
             />
 
-            <div className="bg-background/10 md:bg-background/6 max-w-3xl rounded-[1.6rem] border border-white/12 px-4 py-4 shadow-[0_18px_60px_rgba(7,24,39,0.26)] backdrop-blur-sm sm:px-6 sm:py-6 md:max-w-[54rem] md:rounded-[2.5rem] md:border-white/8 md:px-8 md:py-7 md:shadow-[0_20px_70px_rgba(7,24,39,0.2)]">
-              <div className="text-primary-foreground/80 mb-2 text-[10px] font-black tracking-[0.2em] uppercase md:mb-4 md:text-xs">
+            <div className="bg-background/14 md:bg-background/6 max-w-3xl rounded-[1.6rem] border border-white/14 px-4 py-3.5 shadow-[0_18px_60px_rgba(7,24,39,0.26)] backdrop-blur-md sm:px-6 sm:py-6 md:max-w-[54rem] md:rounded-[2.5rem] md:border-white/8 md:px-8 md:py-7 md:shadow-[0_20px_70px_rgba(7,24,39,0.2)]">
+              <div className="text-primary-foreground/80 mb-1.5 text-[10px] font-black tracking-[0.2em] uppercase md:mb-4 md:text-xs">
                 {categoryLabel}
               </div>
               <h1 className="text-primary-foreground py-0.5 text-[1.95rem] leading-[0.94] font-black tracking-[-0.05em] italic drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)] sm:text-5xl md:py-1 md:text-[5.2rem] md:leading-[0.9]">
@@ -327,9 +327,26 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
                   ));
                 })()}
               </h1>
-              <p className="text-primary-foreground/84 mt-2 max-w-[17rem] text-[13px] leading-relaxed font-medium sm:max-w-2xl md:mt-5 md:text-[1.02rem]">
+              <p className="text-primary-foreground/84 mt-1.5 max-w-[17rem] text-[12px] leading-relaxed font-medium sm:max-w-2xl md:mt-5 md:text-[1.02rem]">
                 {facility.streetName} {facility.streetNumber}, {facility.postalCode} {facility.city}
               </p>
+              <div className="mt-2 flex flex-wrap items-center gap-2 md:hidden">
+                <span className="rounded-full border border-white/16 bg-white/10 px-3 py-2 text-[10px] font-black tracking-[0.14em] text-white uppercase backdrop-blur-md">
+                  {ticketCount} ponuda
+                </span>
+                {facility.city ? (
+                  <span className="rounded-full border border-white/16 bg-white/10 px-3 py-2 text-[10px] font-black tracking-[0.14em] text-white uppercase backdrop-blur-md">
+                    {facility.city}
+                  </span>
+                ) : null}
+              </div>
+              <a
+                href="#deals"
+                className="bg-primary text-primary-foreground hover:bg-primary/90 mt-3 inline-flex min-h-11 items-center gap-2 rounded-full px-5 text-[11px] font-black tracking-[0.14em] uppercase shadow-[0_16px_34px_rgba(6,182,212,0.24)] transition-colors md:hidden"
+              >
+                <Icon name="confirmation_number" className="text-[14px]" />
+                {dict.facilities?.view_prices}
+              </a>
               <div className="mt-4 hidden items-center gap-3 md:flex">
                 <a
                   href="#deals"
@@ -385,14 +402,14 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
 
       <main
         id="facility-main"
-        className="relative z-20 mx-auto -mt-4 max-w-7xl [scroll-padding-top:8rem] space-y-8 px-4 pb-20 sm:-mt-8 sm:space-y-32 sm:px-6 sm:pb-48 md:-mt-24 md:px-12"
+        className="relative z-20 mx-auto -mt-4 max-w-7xl [scroll-padding-top:8rem] space-y-8 px-3 pb-20 sm:-mt-8 sm:space-y-32 sm:px-6 sm:pb-48 md:-mt-24 md:px-12"
       >
         <section
           id="deals"
           aria-labelledby="facility-deals-heading"
-          className="bg-background/97 border-border/40 scroll-mt-32 space-y-5 rounded-[1.6rem] border px-4 py-4 shadow-[0_18px_50px_rgba(15,23,42,0.08)] backdrop-blur-sm sm:space-y-12 sm:px-6 sm:py-8 md:rounded-[2.75rem] md:border md:border-white/60 md:bg-white/64 md:px-8 md:py-8 md:pt-10 md:shadow-[0_20px_60px_rgba(15,23,42,0.08)] md:backdrop-blur-xl"
+          className="mobile-app-surface scroll-mt-32 space-y-4 rounded-[1.6rem] px-4 py-4 sm:space-y-12 sm:px-6 sm:py-8 md:rounded-[2.75rem] md:bg-white/64 md:px-8 md:py-8 md:pt-10 md:backdrop-blur-xl"
         >
-          <div className="mb-3 flex flex-col items-center space-y-2.5 text-center sm:mb-16 md:mb-10">
+          <div className="mb-2 flex flex-col items-center space-y-2 text-center sm:mb-16 md:mb-10">
             <div className="brand-divider mb-1 w-14" />
             <span className="text-primary text-[11px] font-black tracking-[0.2em] uppercase">
               Ulaznice i paketi
@@ -403,27 +420,27 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
             >
               {dict.facilities.ticket_prices}
             </h2>
-            <p className="text-muted-foreground max-w-[18rem] text-[13px] leading-relaxed sm:max-w-2xl md:text-base">
+            <p className="text-muted-foreground hidden max-w-[18rem] text-[13px] leading-relaxed sm:max-w-2xl md:block md:text-base">
               Uporedite najvažnije opcije za posetu Petrolandu i izaberite kartu koja najbolje
               odgovara terminu, uzrastu i planu boravka.
             </p>
             <ul
-              className="grid w-full max-w-md grid-cols-3 gap-2 pt-1 md:hidden"
+              className="grid w-full max-w-md grid-cols-3 gap-2 pt-0.5 md:hidden"
               aria-label="Prednosti kupovine ulaznica"
             >
-              <li className="bg-muted/35 border-border/40 rounded-2xl border px-3 py-2 text-center">
+              <li className="rounded-2xl border border-white/45 bg-white/42 px-3 py-2 text-center backdrop-blur-sm">
                 <div className="text-foreground text-[10px] font-black tracking-[0.16em] uppercase">
                   Online
                 </div>
                 <div className="text-muted-foreground mt-1 text-[11px] font-medium">jasne cene</div>
               </li>
-              <li className="bg-muted/35 border-border/40 rounded-2xl border px-3 py-2 text-center">
+              <li className="rounded-2xl border border-white/45 bg-white/42 px-3 py-2 text-center backdrop-blur-sm">
                 <div className="text-foreground text-[10px] font-black tracking-[0.16em] uppercase">
                   Izbor
                 </div>
                 <div className="text-muted-foreground mt-1 text-[11px] font-medium">po terminu</div>
               </li>
-              <li className="bg-muted/35 border-border/40 rounded-2xl border px-3 py-2 text-center">
+              <li className="rounded-2xl border border-white/45 bg-white/42 px-3 py-2 text-center backdrop-blur-sm">
                 <div className="text-foreground text-[10px] font-black tracking-[0.16em] uppercase">
                   Kupovina
                 </div>
@@ -449,11 +466,14 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
         <section
           id="overview"
           aria-labelledby="facility-overview-heading"
-          className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12"
+          className="grid grid-cols-1 items-start gap-6 lg:grid-cols-12"
         >
           <div className="space-y-8 lg:col-span-8">
             {/* Main Text Card */}
-            <Card className="brand-card flex min-h-0 flex-col justify-center">
+            <Card
+              variant="glass"
+              className="brand-card flex min-h-0 flex-col justify-center rounded-[1.8rem]"
+            >
               <CardHeader className="gap-6 p-6 pb-0 sm:p-12 sm:pb-0 md:p-16 md:pb-0">
                 <div className="text-primary hidden items-center gap-3 text-xs font-black tracking-[0.2em] uppercase md:flex">
                   <Icon name="auto_awesome" aria-hidden="true" className="text-[16px]" />{" "}
@@ -468,7 +488,7 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
                   <span className="text-splash">{dict.facilities?.fun_unlocked_accent}</span>
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-6 p-6 sm:p-12 md:p-16">
+              <CardContent className="space-y-5 p-5 sm:p-12 md:p-16">
                 <p className="text-muted-foreground max-w-2xl text-sm leading-relaxed font-medium italic opacity-90 md:text-xl">
                   <span>{facility.description || dict.facilities?.default_description}</span>
                 </p>
