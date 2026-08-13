@@ -10,6 +10,7 @@ import { isBottomNavActive } from "@/lib/layout/bottom-nav-active";
 import { isBottomNavAlwaysVisible } from "@/lib/layout/bottom-nav-visibility";
 import { authClient } from "@/lib/auth-client";
 import type { Dict } from "@/lib/types";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const SCROLL_THRESHOLD = 10;
 
@@ -19,6 +20,14 @@ type BottomNavItem = {
   icon: string;
   kind: "path" | "account" | "cart";
 };
+
+function initials(name?: string | null, email?: string | null): string {
+  if (name?.trim()) {
+    const parts = name.trim().split(/\s+/);
+    return (parts[0][0] + (parts[1]?.[0] || "")).toUpperCase();
+  }
+  return (email?.[0] || "?").toUpperCase();
+}
 
 /**
  * 📱 BottomNav — Mobile-only bottom navigation (4 tabs).
@@ -82,10 +91,9 @@ export function BottomNav({ dict }: { dict?: Dict | null }) {
       kind: "path",
     },
     {
-      // SEO: indexable category hub — not noindex /search
-      label: dict?.nav?.explore || dict?.nav?.waterparks || "Istraži",
-      href: "/akva-parkovi",
-      icon: "explore",
+      label: dict?.nav?.search || "Pretraga",
+      href: "/search",
+      icon: "search",
       kind: "path",
     },
     {
@@ -95,9 +103,7 @@ export function BottomNav({ dict }: { dict?: Dict | null }) {
       kind: "cart",
     },
     {
-      label: isLoggedIn
-        ? dict?.nav?.account_mobile || dict?.nav?.account || "Nalog"
-        : dict?.nav?.login || "Prijava",
+      label: isLoggedIn ? dict?.nav?.account_mobile || "Profil" : dict?.nav?.login || "Prijava",
       href: isLoggedIn ? "/moje-karte" : "/prijava",
       icon: "person",
       kind: "account",
@@ -151,12 +157,51 @@ export function BottomNav({ dict }: { dict?: Dict | null }) {
                       {totalItems > 99 ? "99+" : totalItems}
                     </span>
                   )}
-                  <Icon
-                    name={item.icon}
-                    className={`text-[22px] transition-colors duration-200 motion-reduce:transition-none ${
-                      active ? "text-primary" : "text-slate-500"
-                    }`}
-                  />
+                  {item.kind === "account" ? (
+                    <div
+                      className={`flex h-9 w-9 items-center justify-center rounded-2xl border shadow-[0_10px_18px_rgba(15,23,42,0.08)] transition-colors duration-200 motion-reduce:transition-none ${
+                        active ? "border-primary/25 bg-primary/12" : "border-white/70 bg-white/74"
+                      }`}
+                    >
+                      {isLoggedIn ? (
+                        <Avatar className="size-7">
+                          {session?.user?.image ? (
+                            <AvatarImage src={session.user.image} alt="" />
+                          ) : null}
+                          <AvatarFallback className="text-[9px] font-bold">
+                            {initials(session?.user?.name, session?.user?.email)}
+                          </AvatarFallback>
+                        </Avatar>
+                      ) : (
+                        <Icon
+                          name={item.icon}
+                          className={`text-[19px] transition-colors duration-200 motion-reduce:transition-none ${
+                            active ? "text-primary" : "text-slate-700"
+                          }`}
+                        />
+                      )}
+                    </div>
+                  ) : item.href === "/search" ? (
+                    <div
+                      className={`flex h-9 w-9 items-center justify-center rounded-2xl border shadow-[0_10px_18px_rgba(15,23,42,0.08)] transition-colors duration-200 motion-reduce:transition-none ${
+                        active ? "border-primary/25 bg-primary/12" : "border-white/70 bg-white/74"
+                      }`}
+                    >
+                      <Icon
+                        name={item.icon}
+                        className={`text-[19px] transition-colors duration-200 motion-reduce:transition-none ${
+                          active ? "text-primary" : "text-slate-700"
+                        }`}
+                      />
+                    </div>
+                  ) : (
+                    <Icon
+                      name={item.icon}
+                      className={`text-[22px] transition-colors duration-200 motion-reduce:transition-none ${
+                        active ? "text-primary" : "text-slate-500"
+                      }`}
+                    />
+                  )}
                 </div>
                 <span
                   className={`max-w-full truncate text-[9px] leading-none font-black tracking-[0.1em] uppercase transition-colors duration-200 motion-reduce:transition-none ${
