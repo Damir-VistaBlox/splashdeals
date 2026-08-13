@@ -23,7 +23,7 @@ export function SearchBox({ dict }: { dict?: Record<string, any> }) {
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder={dict?.search?.short_placeholder || "Pretraži objekte, blog..."}
-        className="w-32 lg:w-48"
+        className="h-10 w-full rounded-full border-white/70 bg-white/78 pr-4 pl-4 text-sm shadow-sm"
       />
     </form>
   );
