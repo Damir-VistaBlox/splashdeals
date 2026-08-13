@@ -135,10 +135,10 @@ export function FacilityCard({
         title={`${facility.name} - ${facility.city}`}
       >
         <Card
-          className={`surface-card group animated-border hover:border-primary/30 relative flex h-[320px] flex-col justify-end overflow-hidden rounded-[2rem] border-white/70 transition-[transform,border-color,box-shadow] duration-500 hover:-translate-y-1 ${accent.glow} sm:h-[410px]`}
+          className={`surface-card group animated-border hover:border-primary/30 relative flex h-[286px] flex-col justify-end overflow-hidden rounded-[1.6rem] border-white/70 transition-[transform,border-color,box-shadow] duration-500 hover:-translate-y-1 ${accent.glow} sm:h-[410px] sm:rounded-[2rem]`}
         >
           {facility.logoUrl && (
-            <div className="absolute top-4 right-4 z-20 flex h-11 w-11 items-center justify-center overflow-hidden rounded-2xl border border-white/70 bg-white/78 p-2 shadow-lg backdrop-blur-md transition-transform duration-500 group-hover:scale-105 sm:top-5 sm:right-5 sm:h-13 sm:w-13">
+            <div className="absolute top-3 right-3 z-20 flex h-10 w-10 items-center justify-center overflow-hidden rounded-[1rem] border border-white/70 bg-white/78 p-2 shadow-lg backdrop-blur-md transition-transform duration-500 group-hover:scale-105 sm:top-5 sm:right-5 sm:h-13 sm:w-13 sm:rounded-2xl">
               <div className="relative h-full w-full">
                 <Image
                   src={facility.logoUrl}
@@ -170,16 +170,16 @@ export function FacilityCard({
             <div className="absolute inset-x-0 bottom-0 h-[58%] bg-[linear-gradient(180deg,rgba(255,255,255,0),rgba(7,29,44,0.15)_24%,rgba(7,29,44,0.58)_58%,rgba(7,29,44,0.92)_100%)]" />
           </div>
 
-          <div className="relative z-10 flex w-full flex-col gap-2 p-4 sm:p-5">
-            <div className="mb-1 flex flex-wrap items-center gap-2">
+          <div className="relative z-10 flex w-full flex-col gap-1.5 p-3.5 sm:gap-2 sm:p-5">
+            <div className="mb-0.5 flex flex-wrap items-center gap-1.5 sm:mb-1 sm:gap-2">
               <span
-                className={`inline-flex items-center gap-2 rounded-full border px-3 py-1 text-[10px] font-black tracking-[0.14em] uppercase backdrop-blur-md ${accent.chip}`}
+                className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[9px] font-black tracking-[0.12em] uppercase backdrop-blur-md sm:gap-2 sm:px-3 sm:text-[10px] sm:tracking-[0.14em] ${accent.chip}`}
               >
                 <Icon name="navigation" className="text-primary rotate-45 text-[12px]" />
                 {categoryLabel}
               </span>
               <span
-                className={`inline-flex items-center rounded-full px-2.5 py-1 text-[10px] font-bold tracking-[0.12em] uppercase backdrop-blur-sm ${accent.city}`}
+                className={`inline-flex items-center rounded-full px-2.5 py-1 text-[9px] font-bold tracking-[0.1em] uppercase backdrop-blur-sm sm:text-[10px] sm:tracking-[0.12em] ${accent.city}`}
               >
                 {facility.city}
               </span>
@@ -187,32 +187,34 @@ export function FacilityCard({
 
             <h3
               id={`facility-card-title-${facility.id}`}
-              className="text-[1.75rem] leading-[0.96] font-black tracking-[-0.05em] text-balance text-white transition-colors sm:text-[1.95rem]"
+              className="text-[1.45rem] leading-[0.96] font-black tracking-[-0.05em] text-balance text-white transition-colors sm:text-[1.95rem]"
               itemProp="name"
             >
               {facility.name}
             </h3>
 
-            <p className="line-clamp-2 max-w-[32ch] text-[15px] leading-relaxed font-medium text-white/82">
+            <p className="line-clamp-2 max-w-[30ch] text-[13px] leading-relaxed font-medium text-white/82 sm:max-w-[32ch] sm:text-[15px]">
               {descriptionText}
             </p>
 
-            <div className="flex flex-col gap-3 pt-1">
-              <address className="flex items-center gap-2 text-[11px] leading-tight font-semibold text-white/74 not-italic">
+            <div className="flex flex-col gap-2.5 pt-0.5 sm:gap-3 sm:pt-1">
+              <address className="flex items-center gap-2 text-[10px] leading-tight font-semibold text-white/74 not-italic sm:text-[11px]">
                 <Icon name="location_on" className="shrink-0 text-[14px] text-white/64" />
                 <span className="truncate" title={addressLine}>
                   {shortAddress}
                 </span>
               </address>
 
-              <div className="mt-1 flex items-end justify-between gap-3 border-t border-white/14 pt-4">
+              <div className="mt-0.5 flex items-end justify-between gap-2.5 border-t border-white/14 pt-3 sm:mt-1 sm:gap-3 sm:pt-4">
                 {facility.minPrice ? (
-                  <div className={`min-w-0 rounded-2xl bg-gradient-to-r ${accent.price} px-3 py-2`}>
-                    <div className="text-[10px] font-black tracking-[0.16em] text-white/62 uppercase">
+                  <div
+                    className={`min-w-0 rounded-[1.1rem] bg-gradient-to-r ${accent.price} px-2.5 py-2 sm:rounded-2xl sm:px-3`}
+                  >
+                    <div className="text-[9px] font-black tracking-[0.14em] text-white/62 uppercase sm:text-[10px] sm:tracking-[0.16em]">
                       {fromLabel}
                     </div>
                     <span
-                      className="mt-1 block text-[1.75rem] leading-none font-black tracking-[-0.04em] text-white"
+                      className="mt-1 block text-[1.45rem] leading-none font-black tracking-[-0.04em] text-white sm:text-[1.75rem]"
                       itemProp="price"
                     >
                       {facility.minPrice} RSD
@@ -222,7 +224,7 @@ export function FacilityCard({
                   <div />
                 )}
 
-                <div className="flex items-center gap-1.5 rounded-full border border-white/18 bg-white/10 px-4 py-2.5 text-[9px] font-black tracking-[0.14em] text-white uppercase shadow-lg backdrop-blur-md transition-all duration-300 group-hover:translate-x-1 group-hover:border-white/30 group-hover:bg-white/16">
+                <div className="flex items-center gap-1.5 rounded-full border border-white/18 bg-white/10 px-3.5 py-2 text-[8px] font-black tracking-[0.12em] text-white uppercase shadow-lg backdrop-blur-md transition-all duration-300 group-hover:translate-x-1 group-hover:border-white/30 group-hover:bg-white/16 sm:px-4 sm:py-2.5 sm:text-[9px] sm:tracking-[0.14em]">
                   <span>{detailLabel}</span>
                   <Icon
                     name="navigation"

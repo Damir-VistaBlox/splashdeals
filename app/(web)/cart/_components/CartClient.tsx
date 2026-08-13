@@ -492,15 +492,15 @@ export function CartClient({
 
   if (showSkeleton) {
     return (
-      <div className="mx-auto min-h-[50vh] max-w-7xl px-4 pt-8 pb-28 sm:px-12 sm:pt-12 sm:pb-32">
-        <div className="bg-muted/30 mb-6 h-8 w-40 animate-pulse rounded-lg" />
-        <div className="bg-muted/20 h-28 animate-pulse rounded-2xl" />
+      <div className="mx-auto min-h-[50vh] max-w-7xl px-4 pt-6 pb-24 sm:px-12 sm:pt-12 sm:pb-32">
+        <div className="bg-muted/30 mb-4 h-7 w-36 animate-pulse rounded-lg" />
+        <div className="bg-muted/20 h-24 animate-pulse rounded-[1.5rem]" />
       </div>
     );
   }
 
   return (
-    <div className="mx-auto min-h-[50vh] max-w-7xl px-3 pt-6 pb-[calc(10.5rem+env(safe-area-inset-bottom,0px))] sm:px-12 sm:pt-12 sm:pb-32">
+    <div className="mx-auto min-h-[50vh] max-w-7xl px-3 pt-4 pb-[calc(9rem+env(safe-area-inset-bottom,0px))] sm:px-12 sm:pt-12 sm:pb-32">
       <GuestCartConflictModal
         open={Boolean(conflict)}
         guestFacilityName={conflict?.guestFacilityName || ""}
@@ -511,15 +511,15 @@ export function CartClient({
         onDismiss={handleDismissConflict}
         dict={cartDict}
       />
-      <div className="mb-6 sm:mb-12">
-        <p className="text-muted-foreground mb-2 text-[10px] font-black tracking-[0.2em] uppercase sm:mb-3">
+      <div className="mb-5 sm:mb-12">
+        <p className="text-muted-foreground mb-1.5 text-[10px] font-black tracking-[0.2em] uppercase sm:mb-3">
           {cartDict?.title}
         </p>
-        <h1 className="text-foreground text-2xl leading-none font-black tracking-tighter sm:text-5xl">
+        <h1 className="text-foreground text-[1.75rem] leading-none font-black tracking-tighter sm:text-5xl">
           {headingCount}
         </h1>
         {items.length === 0 && cartDict?.empty_subtitle && (
-          <p className="text-muted-foreground mt-2 text-sm font-medium">
+          <p className="text-muted-foreground mt-2 max-w-[19rem] text-[13px] font-medium sm:max-w-none sm:text-sm">
             {cartDict.empty_subtitle}
           </p>
         )}
@@ -528,7 +528,7 @@ export function CartClient({
       {locked && (
         <div
           role="status"
-          className="border-warning/30 bg-warning/10 mb-6 rounded-2xl border p-4 sm:p-5"
+          className="border-warning/30 bg-warning/10 mb-5 rounded-[1.4rem] border p-3.5 sm:mb-6 sm:rounded-2xl sm:p-5"
         >
           <p className="text-warning text-sm font-black tracking-wide uppercase">
             {cartDict?.locked_title || "Plaćanje je u toku"}
@@ -551,24 +551,24 @@ export function CartClient({
       )}
 
       {items.length === 0 ? (
-        <div className="flex flex-col items-center justify-center pt-10 sm:pt-20">
-          <div className="bg-muted/20 flex h-20 w-20 items-center justify-center rounded-full sm:h-24 sm:w-24">
+        <div className="flex flex-col items-center justify-center pt-8 sm:pt-20">
+          <div className="bg-muted/20 flex h-18 w-18 items-center justify-center rounded-full sm:h-24 sm:w-24">
             <Icon
               name="shopping_bag"
               className="text-muted-foreground/30 text-[36px] sm:text-[40px]"
             />
           </div>
-          <p className="text-muted-foreground mt-5 max-w-xs text-center text-sm font-medium sm:mt-6">
+          <p className="text-muted-foreground mt-4 max-w-xs text-center text-[13px] font-medium sm:mt-6 sm:text-sm">
             {cartDict?.empty_description}
           </p>
           <Link href="/akva-parkovi">
-            <Button variant="ghost" className="mt-4 min-h-11 px-4">
+            <Button variant="ghost" className="mt-3.5 min-h-11 rounded-full px-4">
               {cartDict?.browse}
             </Button>
           </Link>
         </div>
       ) : (
-        <div className="grid gap-6 lg:grid-cols-3 lg:gap-8">
+        <div className="grid gap-4 sm:gap-6 lg:grid-cols-3 lg:gap-8">
           <div className="space-y-4 sm:space-y-6 lg:col-span-2">
             <CartItemList
               items={items}
@@ -602,13 +602,13 @@ export function CartClient({
       )}
 
       {items.length > 0 && (
-        <div className="border-border/50 bg-background/98 pointer-events-auto fixed inset-x-0 bottom-[calc(4rem+env(safe-area-inset-bottom,0px))] z-[999] border-t px-4 py-3 backdrop-blur-[40px] md:hidden">
-          <div className="mx-auto flex max-w-lg items-center gap-3">
+        <div className="pointer-events-auto fixed inset-x-0 bottom-[calc(4rem+env(safe-area-inset-bottom,0px))] z-[999] px-3 md:hidden">
+          <div className="mx-auto flex max-w-md items-center gap-3 rounded-[1.5rem] border border-white/70 bg-white/92 px-3.5 py-3 shadow-[0_-10px_30px_rgba(15,23,42,0.08)] backdrop-blur-[30px]">
             <div className="min-w-0 flex-1">
-              <p className="text-muted-foreground text-[10px] font-black tracking-widest uppercase">
+              <p className="text-muted-foreground text-[9px] font-black tracking-[0.18em] uppercase">
                 {cartDict?.total_label || cartDict?.total}
               </p>
-              <p className="text-foreground text-lg leading-none font-black tabular-nums">
+              <p className="text-foreground text-[1.1rem] leading-none font-black tabular-nums">
                 {new Intl.NumberFormat("sr-RS").format(total)}{" "}
                 <span className="text-primary text-xs">{currency}</span>
               </p>
@@ -619,7 +619,7 @@ export function CartClient({
                 variant="outline"
                 disabled={isCancellingCheckout}
                 onClick={() => void handleCancelCheckout()}
-                className="h-12 min-h-12 min-w-[9.5rem] shrink-0 touch-manipulation rounded-2xl px-5 text-sm font-bold"
+                className="h-11 min-h-11 min-w-[8.75rem] shrink-0 touch-manipulation rounded-[1.1rem] px-4 text-[13px] font-bold"
               >
                 {isCancellingCheckout
                   ? cartDict?.cancel_checkout_processing
@@ -629,7 +629,7 @@ export function CartClient({
               <Button
                 onClick={handleStartCheckout}
                 disabled={isCheckingOut}
-                className="h-12 min-h-12 min-w-[9.5rem] shrink-0 touch-manipulation rounded-2xl px-5 text-sm font-bold"
+                className="h-11 min-h-11 min-w-[8.75rem] shrink-0 touch-manipulation rounded-[1.1rem] px-4 text-[13px] font-bold"
               >
                 {isCheckingOut
                   ? cartDict?.processing
