@@ -60,7 +60,22 @@ export function FacilitiesTableToolbar<TData>({
   onResetFilters,
 }: FacilitiesTableToolbarProps<TData>) {
   return (
-    <div className="bg-background/40 border-border/50 flex flex-col items-stretch justify-between gap-3 rounded-xl border p-2 backdrop-blur-md xl:flex-row xl:items-center">
+    <div className="bg-card/95 border-border/60 flex flex-col items-stretch justify-between gap-4 rounded-[28px] border p-3 shadow-sm backdrop-blur-md">
+      <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
+        <div>
+          <div className="text-muted-foreground text-[9px] font-black tracking-[0.18em] uppercase">
+            Radni pogled registra
+          </div>
+          <div className="text-foreground mt-1 text-sm font-black uppercase">
+            Pretraga, statusi i prikaz kolona
+          </div>
+        </div>
+        <div className="text-muted-foreground flex items-center gap-2 px-1 text-[10px] font-bold tracking-[0.16em] uppercase">
+          <Icon name="tune" className="text-primary text-[14px]" />
+          Operativni prikaz registra
+        </div>
+      </div>
+
       <div className="flex flex-1 flex-col items-stretch gap-3 sm:flex-row sm:items-center">
         <div className="relative flex-1 sm:max-w-xs">
           <Icon
@@ -72,14 +87,14 @@ export function FacilitiesTableToolbar<TData>({
             value={search}
             onChange={(event) => onSearchChange(event.target.value)}
             aria-label="Pretraži objekte"
-            className="bg-background/40 border-border/50 focus-visible:ring-primary/30 placeholder:text-muted-foreground h-9 pl-9 text-xs font-semibold focus-visible:ring-1"
+            className="bg-background/40 border-border/50 focus-visible:ring-primary/30 placeholder:text-muted-foreground h-10 rounded-2xl pl-9 text-xs font-semibold focus-visible:ring-1"
           />
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
           <Select value={status || "all"} onValueChange={onStatusChange}>
             <SelectTrigger
-              className="bg-background/40 border-border/50 hover:bg-background/60 h-9 w-[160px] text-[10px] font-black tracking-wider uppercase transition-colors"
+              className="bg-background/40 border-border/50 hover:bg-background/60 h-10 w-[160px] rounded-2xl text-[10px] font-black tracking-wider uppercase transition-colors"
               aria-label="Filter statusa"
             >
               <SelectValue placeholder="Status objekta" />
@@ -95,7 +110,7 @@ export function FacilitiesTableToolbar<TData>({
 
           <Badge
             variant="outline"
-            className="bg-primary/10 border-primary/20 text-primary h-9 px-2.5 text-[9px] font-black"
+            className="bg-primary/10 border-primary/20 text-primary h-10 rounded-full px-3 text-[9px] font-black"
             title="Broj rezultata"
           >
             {totalCount} objekata
@@ -103,7 +118,7 @@ export function FacilitiesTableToolbar<TData>({
 
           <Select value={String(pageSize)} onValueChange={(v) => onPageSizeChange(Number(v))}>
             <SelectTrigger
-              className="bg-background/40 border-border/50 h-9 w-[100px] text-[10px] font-black tracking-wider uppercase"
+              className="bg-background/40 border-border/50 h-10 w-[100px] rounded-2xl text-[10px] font-black tracking-wider uppercase"
               aria-label="Broj po stranici"
             >
               <SelectValue />
@@ -117,7 +132,11 @@ export function FacilitiesTableToolbar<TData>({
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" className="h-9 text-[10px] font-bold uppercase">
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-10 rounded-full px-3 text-[10px] font-bold uppercase"
+              >
                 Kolone
               </Button>
             </DropdownMenuTrigger>
@@ -145,7 +164,7 @@ export function FacilitiesTableToolbar<TData>({
               type="button"
               variant="ghost"
               size="sm"
-              className="h-9 text-[10px] font-bold uppercase"
+              className="h-10 rounded-full px-3 text-[10px] font-bold uppercase"
               onClick={onResetFilters}
             >
               Očisti filtere
@@ -155,7 +174,7 @@ export function FacilitiesTableToolbar<TData>({
           <Button
             variant="ghost"
             size="icon"
-            className="text-muted-foreground hover:text-foreground hover:bg-muted/50 h-9 w-9 shrink-0 rounded-lg"
+            className="text-muted-foreground hover:text-foreground hover:bg-muted/50 h-10 w-10 shrink-0 rounded-full"
             onClick={onToggleDensity}
             title={density === "comfortable" ? "Kompaktan prikaz" : "Udoban prikaz"}
             aria-label={density === "comfortable" ? "Kompaktan prikaz" : "Udoban prikaz"}
@@ -171,7 +190,7 @@ export function FacilitiesTableToolbar<TData>({
             asChild
             variant="outline"
             size="sm"
-            className="h-9 text-[10px] font-bold uppercase"
+            className="h-10 rounded-full px-3 text-[10px] font-bold uppercase"
           >
             <Link href="/admin/facilities/cities">Gradovi</Link>
           </Button>

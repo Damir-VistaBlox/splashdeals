@@ -256,7 +256,7 @@ export function AdminSidebar({ user, ...props }: AdminSidebarProps) {
       });
     } catch (error: unknown) {
       console.error("Failed to sign out:", error instanceof Error ? error.message : error);
-      toast.error("Something went wrong. Please try again.");
+      toast.error("Došlo je do greške. Pokušajte ponovo.");
       setIsLoggingOut(false);
     }
   };
@@ -270,9 +270,9 @@ export function AdminSidebar({ user, ...props }: AdminSidebarProps) {
     : "AD";
   const userRoleDisplay =
     userRole === "SUPER_ADMIN"
-      ? "Super Admin"
+      ? "Super admin"
       : userRole === "FACILITY_STAFF"
-        ? "Facility Staff"
+        ? "Operater objekta"
         : "Administrator";
 
   return (
@@ -335,7 +335,7 @@ export function AdminSidebar({ user, ...props }: AdminSidebarProps) {
             onClick={handleLogout}
             disabled={isLoggingOut}
             className="text-sidebar-foreground/50 shrink-0 rounded-lg hover:bg-red-500/10 hover:text-red-400"
-            title="Sign Out"
+            title="Odjavi se"
           >
             {isLoggingOut ? (
               <Icon name="progress_activity" className="size-3 animate-spin" />

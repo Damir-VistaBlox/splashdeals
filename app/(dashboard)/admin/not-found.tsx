@@ -6,7 +6,7 @@ import { getDictionary } from "@/lib/dictionaries";
 
 export const metadata: Metadata = {
   title: "Stranica nije pronađena | Splashdeals Admin",
-  description: "This admin sector does not exist or has been relocated.",
+  description: "Tražena admin sekcija ne postoji ili je premeštena.",
 };
 
 export default async function AdminNotFound() {
@@ -28,7 +28,7 @@ export default async function AdminNotFound() {
 
       <p className="text-muted-foreground mb-8 max-w-md leading-relaxed font-medium">
         {t.not_found_description ||
-          "This admin sector does not exist or has been relocated. Check the navigation for available sections."}
+          "Tražena admin sekcija ne postoji ili je premeštena. Proverite navigaciju za dostupne sekcije."}
       </p>
 
       <Button

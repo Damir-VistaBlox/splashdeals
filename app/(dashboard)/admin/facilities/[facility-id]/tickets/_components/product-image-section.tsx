@@ -91,7 +91,7 @@ export function ProductImageSection({
         clientPayload: JSON.stringify({ facilityId, uploadType: "TICKET" }),
       });
 
-      if (!blob.url) throw new Error("Upload endpoint returned empty URL");
+      if (!blob.url) throw new Error("Otpremanje nije vratilo ispravan URL slike");
 
       const result = await setProductImageUrl(productId, blob.url);
       if (result.success && result.url) {
@@ -148,7 +148,7 @@ export function ProductImageSection({
         clientPayload: JSON.stringify({ facilityId, uploadType: "TICKET" }),
       });
 
-      if (!blob.url) throw new Error("Upload endpoint returned empty URL");
+      if (!blob.url) throw new Error("Otpremanje nije vratilo ispravan URL slike");
 
       const result = await setProductImageUrl(productId, blob.url);
       if (result.success && result.url) {

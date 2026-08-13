@@ -57,7 +57,7 @@ export function HomeDealCard({
         aria-label={`${deal.facility.name} — ${deal.title}`}
         title={`${deal.facility.name} - ${deal.title}`}
       />
-      <Card className="border-border hover:border-primary/30 bg-card/94 flex h-full flex-col overflow-hidden rounded-[1.5rem] border-white/70 transition-all duration-300 md:hover:-translate-y-1 md:hover:shadow-[0_22px_44px_rgba(18,59,96,0.12)]">
+      <Card className="border-border hover:border-primary/30 bg-card/94 flex h-full flex-col overflow-hidden rounded-[1.4rem] border-white/70 transition-all duration-300 md:hover:-translate-y-1 md:hover:shadow-[0_22px_44px_rgba(18,59,96,0.12)]">
         <div className="flex flex-col gap-0.5 px-3 pt-3 sm:gap-1 sm:px-4 sm:pt-4">
           <h3 className="text-foreground line-clamp-1 text-[11px] leading-tight font-black tracking-[0.06em] uppercase sm:text-xs">
             {deal.facility.name}
@@ -70,7 +70,7 @@ export function HomeDealCard({
           ) : null}
         </div>
 
-        <div className="bg-muted relative mx-3 mt-2.5 aspect-[1.24/1] w-[calc(100%-1.5rem)] overflow-hidden rounded-[1rem] sm:mx-4 sm:mt-3 sm:aspect-[4/3] sm:w-[calc(100%-2rem)] sm:rounded-[1.1rem]">
+        <div className="bg-muted relative mx-3 mt-2 aspect-[1.32/1] w-[calc(100%-1.5rem)] overflow-hidden rounded-[1rem] sm:mx-4 sm:mt-3 sm:aspect-[4/3] sm:w-[calc(100%-2rem)] sm:rounded-[1.1rem]">
           {deal.imageUrl ? (
             <Image
               src={deal.imageUrl}
@@ -119,19 +119,19 @@ export function HomeDealCard({
           ) : null}
         </div>
 
-        <div className="flex flex-grow flex-col px-3 pt-2.5 pb-3 sm:px-4 sm:pt-3 sm:pb-4">
+        <div className="flex flex-grow flex-col px-3 pt-2 pb-3 sm:px-4 sm:pt-3 sm:pb-4">
           <h4
             id={`home-deal-title-${deal.id}`}
-            className="group-hover:text-primary mb-1 text-[1rem] leading-tight font-black tracking-[-0.03em] transition-colors sm:text-[1.12rem]"
+            className="group-hover:text-primary mb-1 text-[0.95rem] leading-tight font-black tracking-[-0.03em] transition-colors sm:text-[1.12rem]"
             itemProp="name"
           >
             {deal.title}
           </h4>
-          <p className="text-muted-foreground mb-2.5 line-clamp-2 text-[12px] leading-relaxed font-medium sm:mb-3 sm:text-[13px]">
+          <p className="text-muted-foreground mb-2 line-clamp-2 text-[12px] leading-relaxed font-medium sm:mb-3 sm:text-[13px]">
             {deal.pitch}
           </p>
 
-          <div className="relative z-30 mt-auto flex items-end justify-between gap-2.5 border-t border-slate-200/80 pt-2.5 sm:gap-3 sm:pt-3">
+          <div className="relative z-30 mt-auto flex items-end justify-between gap-2 border-t border-slate-200/80 pt-2 sm:gap-3 sm:pt-3">
             <div className="from-primary/8 min-w-0 rounded-[1.1rem] bg-gradient-to-r to-transparent px-2.5 py-2">
               {hasDiscount ? (
                 <span className="text-muted-foreground/55 text-[11px] line-through">
@@ -141,7 +141,7 @@ export function HomeDealCard({
               <div className="flex items-baseline gap-1">
                 <data
                   value={deal.price}
-                  className="text-foreground text-[1.55rem] leading-none font-black tracking-[-0.05em] sm:text-[1.95rem]"
+                  className="text-foreground text-[1.42rem] leading-none font-black tracking-[-0.05em] sm:text-[1.95rem]"
                 >
                   {priceFormat.format(deal.price)}
                 </data>
@@ -153,7 +153,7 @@ export function HomeDealCard({
 
             {showAddToCart ? (
               <AddToCartButton
-                className="border-border bg-background/92 hover:bg-primary hover:text-primary-foreground min-h-11 min-w-11 rounded-[1.1rem] border shadow-sm sm:min-h-12 sm:min-w-12 sm:rounded-2xl"
+                className="border-border bg-background/92 hover:bg-primary hover:text-primary-foreground min-h-11 min-w-11 rounded-[1.05rem] border shadow-sm sm:min-h-12 sm:min-w-12 sm:rounded-2xl"
                 ticket={{
                   id: deal.id,
                   title: `${deal.facility.name} - ${deal.title}`,

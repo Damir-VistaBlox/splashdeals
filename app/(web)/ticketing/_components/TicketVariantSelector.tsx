@@ -64,7 +64,7 @@ function findBestDeal(prices: PriceOption[]): string | undefined {
 
 export function TicketVariantSelector({
   product,
-  facility,
+  facility: _facility,
   dict = {} as Record<string, string>,
 }: TicketVariantSelectorProps) {
   const priceFormat = useMemo(() => new Intl.NumberFormat("sr-RS"), []);

@@ -11,16 +11,23 @@ export function TableSkeleton({
 }) {
   return (
     <div className="space-y-4">
-      <div className="bg-background/40 border-border/50 flex flex-col items-stretch justify-between gap-3 rounded-xl border p-2 backdrop-blur-md lg:flex-row lg:items-center">
+      <div className="bg-card/95 border-border/60 space-y-4 rounded-[28px] border p-3 shadow-sm backdrop-blur-md">
+        <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
+          <div className="space-y-2">
+            <Skeleton className="bg-muted/30 h-3 w-24" />
+            <Skeleton className="bg-muted/30 h-4 w-48" />
+          </div>
+          <Skeleton className="bg-muted/30 h-4 w-40" />
+        </div>
         <div className="flex flex-1 flex-col items-stretch gap-3 sm:flex-row sm:items-center">
-          <Skeleton className="bg-muted/30 h-9 w-full sm:max-w-xs" />
+          <Skeleton className="bg-muted/30 h-10 w-full rounded-2xl sm:max-w-xs" />
           <div className="flex flex-wrap items-center gap-2">
-            <Skeleton className="bg-muted/30 h-9 w-[160px]" />
-            <Skeleton className="bg-muted/30 h-9 w-12" />
-            <Skeleton className="bg-muted/30 h-9 w-[100px]" />
-            <Skeleton className="bg-muted/30 h-9 w-20" />
-            <Skeleton className="bg-muted/30 h-9 w-9 rounded-lg" />
-            <Skeleton className="bg-muted/30 h-9 w-20" />
+            <Skeleton className="bg-muted/30 h-10 w-[160px] rounded-2xl" />
+            <Skeleton className="bg-muted/30 h-10 w-20 rounded-full" />
+            <Skeleton className="bg-muted/30 h-10 w-[100px] rounded-2xl" />
+            <Skeleton className="bg-muted/30 h-10 w-24 rounded-full" />
+            <Skeleton className="bg-muted/30 h-10 w-10 rounded-full" />
+            <Skeleton className="bg-muted/30 h-10 w-20 rounded-full" />
           </div>
         </div>
       </div>

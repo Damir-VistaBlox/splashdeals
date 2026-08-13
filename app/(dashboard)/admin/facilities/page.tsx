@@ -8,7 +8,7 @@ import { getFacilityCounts } from "@/app/(server)/lib/data/admin";
 
 export const metadata: Metadata = {
   title: "Objekti | Splashdeals Admin",
-  description: "Globalni direktorijum akva parkova i operativnih konfiguracija.",
+  description: "Centralni registar akva parkova, bazena i operativnih konfiguracija.",
 };
 
 /** Preserve non-status query params when metric cards filter by status (M8). */
@@ -46,7 +46,7 @@ export default async function FacilitiesDirectoryPage({
 
   const stats = [
     {
-      label: "Ukupno",
+      label: "Ukupan registar",
       value: counts.total,
       color: "text-foreground",
       glow: "border-border bg-muted/10",
@@ -85,7 +85,7 @@ export default async function FacilitiesDirectoryPage({
   return (
     <AdminPageShell
       title="Objekti"
-      subtitle="Upravljajte objektima, dodajte nove lokacije i pratite globalni status."
+      subtitle="Glavni operativni registar objekata, njihovih statusa i spremnosti za prodaju, sadržaj i administrativne izmene."
       cta={{ label: "Novi objekat", href: "/admin/facilities/new", icon: "add" }}
       stats={stats}
       statsGridCols="md:grid-cols-2 lg:grid-cols-5"

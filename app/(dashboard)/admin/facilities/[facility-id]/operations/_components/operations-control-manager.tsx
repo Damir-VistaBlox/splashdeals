@@ -44,10 +44,6 @@ function StandaloneOperationsTable({
   );
 }
 
-/**
- * 🕒 OperationsTable
- * Handles weekly availability patterns.
- */
 function OperationsTable({
   facilityId,
   initialHours,
@@ -83,7 +79,6 @@ function OperationsTableInner({
     name: "hours",
   });
 
-  // Warn user before leaving if form is dirty
   React.useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       if (isDirty) {
@@ -182,7 +177,7 @@ function OperationsTableInner({
             Nema konfigurisanog radnog vremena
           </p>
           <p className="text-muted-foreground/60 text-[10px]">
-            Kliknite „Dan“ da dodate radne dane i sate
+            Kliknite „Dan“ da dodate raspored rada i radne sate
           </p>
         </div>
       )}

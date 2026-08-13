@@ -5,7 +5,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Ograničen pristup | Splashdeals Admin",
-  description: "Your administrative clearance does not permit access to this sector.",
+  description: "Vaš administratorski nivo pristupa ne dozvoljava ulazak u ovu sekciju.",
 };
 
 export default function ForbiddenPage() {
@@ -23,8 +23,8 @@ export default function ForbiddenPage() {
       </h1>
 
       <p className="text-muted-foreground mb-8 max-w-md leading-relaxed font-medium">
-        Your current administrative clearance does not permit access to this sector. Please contact
-        a Super Admin if you believe this is an error.
+        Vaš trenutni administratorski nivo pristupa ne dozvoljava ulazak u ovu sekciju. Ako smatrate
+        da je ovo greška, obratite se super adminu.
       </p>
 
       <Button asChild variant="outline" size="lg" className="rounded-xl">

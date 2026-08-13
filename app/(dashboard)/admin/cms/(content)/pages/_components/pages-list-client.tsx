@@ -78,7 +78,7 @@ export function PagesListClient({
         setSelectedIds(new Set());
         router.refresh();
       } else {
-        toast.error(result.error || "Greška");
+        toast.error(result.error || "Označavanje strana nije uspelo");
       }
     },
     [router],
@@ -92,7 +92,7 @@ export function PagesListClient({
         setSelectedIds(new Set());
         router.refresh();
       } else {
-        toast.error(result.error || "Greška");
+        toast.error(result.error || "Ažuriranje statusa strana nije uspelo");
       }
     },
     [router],
@@ -107,7 +107,7 @@ export function PagesListClient({
         setSelectedIds(new Set());
         router.refresh();
       } else {
-        toast.error(result.error || "Greška");
+        toast.error(result.error || "Brisanje strana nije uspelo");
       }
     },
     [router],

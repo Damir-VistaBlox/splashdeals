@@ -65,7 +65,7 @@ export function InternalLinksPanel({ content }: InternalLinksPanelProps) {
         }),
       ]);
 
-      toast(`${facilityName} link kopiran. Zalepi ga u editor (Ctrl+V).`);
+      toast(`Link za ${facilityName} je kopiran. Nalepite ga u editor (Ctrl+V).`);
     }
   }, []);
 

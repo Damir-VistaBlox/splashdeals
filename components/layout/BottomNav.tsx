@@ -110,8 +110,9 @@ export function BottomNav({ dict }: { dict?: Dict | null }) {
       style={{ transform: isVisible ? "translateY(0)" : "translateY(100%)" }}
       aria-label={dict?.layout?.mobile_nav_aria || "Mobilna navigacija"}
     >
-      <div className="mx-auto max-w-md rounded-[1.6rem] border border-white/70 bg-white/86 p-1.5 shadow-[0_-10px_28px_rgba(15,23,42,0.08)] backdrop-blur-xl">
-        <div className="flex h-15 items-center justify-around gap-1 rounded-[1.2rem] bg-white/45 px-1">
+      <div className="relative mx-auto max-w-md rounded-[1.8rem] border border-white/75 bg-white/88 p-1.5 shadow-[0_-14px_34px_rgba(15,23,42,0.1)] backdrop-blur-xl">
+        <div className="pointer-events-none absolute inset-x-10 top-0 h-px bg-gradient-to-r from-transparent via-white/90 to-transparent" />
+        <div className="flex h-15 items-center justify-around gap-1 rounded-[1.35rem] bg-[linear-gradient(180deg,rgba(255,255,255,0.58),rgba(255,255,255,0.34))] px-1">
           {NAV_ITEMS.map((item) => {
             const active =
               item.kind === "account"

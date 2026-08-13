@@ -17,10 +17,6 @@ interface ProfileAndSEOProps {
   originalSlug: string;
 }
 
-/**
- * 👤 ProfileAndSEO
- * Consolidates slug, marketing narrative, and search engine optimization.
- */
 export function ProfileAndSEO({ facilityId, originalSlug }: ProfileAndSEOProps) {
   const { control, watch } = useFormContext<UpdateFacilityGovernanceValues>();
   const facilitySlug = watch("slug");
@@ -143,7 +139,7 @@ export function ProfileAndSEO({ facilityId, originalSlug }: ProfileAndSEOProps) 
               </FormLabel>
               <FormControl>
                 <Textarea
-                  placeholder="Opisite objekat..."
+                  placeholder="Opišite objekat..."
                   className="bg-background/40 border-border/50 text-foreground/80 focus-visible:ring-primary/50 min-h-[80px] text-sm leading-relaxed font-medium"
                   {...field}
                   value={field.value || ""}
@@ -155,7 +151,6 @@ export function ProfileAndSEO({ facilityId, originalSlug }: ProfileAndSEOProps) 
         />
       </Card>
 
-      {/* SEO Discovery Module */}
       <Card className="border-border/50 bg-background/40 space-y-4 p-4">
         <header className="flex items-center justify-between">
           <h3 className="text-primary text-[10px] font-black tracking-widest uppercase">
@@ -184,11 +179,11 @@ export function ProfileAndSEO({ facilityId, originalSlug }: ProfileAndSEOProps) 
             </span>
           </div>
           <h4 className="text-primary mb-1 line-clamp-1 text-sm font-bold">
-            {metaTitle || "Facility Title Placeholder"}
+            {metaTitle || "Naslov stranice objekta"}
           </h4>
           <p className="text-muted-foreground line-clamp-2 text-[11px] leading-tight">
             {metaDescription ||
-              "Enter a high-intent meta description to see how your facility will materialize across generative search architectures."}
+              "Unesite jasan meta opis kako biste videli kako će se objekat prikazivati u rezultatima pretrage."}
           </p>
         </div>
 
@@ -200,7 +195,7 @@ export function ProfileAndSEO({ facilityId, originalSlug }: ProfileAndSEOProps) 
               <FormItem>
                 <div className="mb-1 flex items-center justify-between">
                   <FormLabel className="text-[10px] font-black tracking-widest uppercase opacity-70">
-                    SEO Meta Title
+                    SEO meta naslov
                   </FormLabel>
                   <span
                     className={cn(
@@ -231,7 +226,7 @@ export function ProfileAndSEO({ facilityId, originalSlug }: ProfileAndSEOProps) 
               <FormItem>
                 <div className="mb-1 flex items-center justify-between">
                   <FormLabel className="text-[10px] font-black tracking-widest uppercase opacity-70">
-                    SEO Meta Description
+                    SEO meta opis
                   </FormLabel>
                   <span
                     className={cn(
@@ -265,15 +260,15 @@ export function ProfileAndSEO({ facilityId, originalSlug }: ProfileAndSEOProps) 
             <FormItem className="space-y-2">
               <div className="flex items-center justify-between">
                 <FormLabel className="text-[10px] font-black tracking-widest uppercase opacity-70">
-                  SEO Narrative Footer (GEO Content)
+                  SEO narativ za dno stranice
                 </FormLabel>
                 <div className="text-muted-foreground font-mono text-[9px] tracking-tighter uppercase">
-                  {seoArticle.length} Chars
+                  {seoArticle.length} karaktera
                 </div>
               </div>
               <FormControl>
                 <Textarea
-                  placeholder="Comprehensive overview for AI agents..."
+                  placeholder="Detaljan opis objekta za pretragu, SEO i informativni sadržaj..."
                   className="bg-background/40 border-border/50 text-foreground/80 focus-visible:ring-primary/50 min-h-[120px] font-mono text-sm leading-relaxed"
                   {...field}
                   value={field.value || ""}

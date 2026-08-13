@@ -7,6 +7,7 @@ import { CartViewer } from "./_components/CartViewer";
 
 export const metadata: Metadata = {
   title: "Pregled korpi | Splashdeals Admin",
+  description: "Pregled aktivnih i napuštenih korpi kupaca za podršku i operativne intervencije.",
 };
 
 export default async function AdminCartViewPage({
@@ -50,8 +51,7 @@ export default async function AdminCartViewPage({
   return (
     <AdminPageShell
       title="Pregled korpi"
-      subtitle="View active user carts and abandoned carts for support."
-      stats={[]}
+      subtitle="Pregled aktivnih i napuštenih korpi kako bi podrška mogla brzo da reaguje i pomogne kupcu."
     >
       <CartViewer initialUser={userData} initialCart={cartData} />
     </AdminPageShell>

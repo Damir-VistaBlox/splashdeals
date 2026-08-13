@@ -7,11 +7,11 @@ type HomeDict = Record<string, string>;
 
 export function HomeInventorySection({ dict, deals }: { dict: HomeDict; deals: HomeDeal[] }) {
   return (
-    <section id="inventory" className="scroll-mt-28 pb-10 max-md:scroll-mt-36 sm:pb-20">
+    <section id="inventory" className="scroll-mt-28 pb-8 max-md:scroll-mt-36 sm:pb-20">
       <div className="mx-auto max-w-7xl px-3 sm:px-6 md:px-8">
-        <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+        <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
           <div>
-            <h2 className="mb-2 text-3xl font-black tracking-[-0.06em] uppercase italic sm:text-4xl">
+            <h2 className="mb-1 text-[1.9rem] leading-none font-black tracking-[-0.06em] uppercase italic sm:text-4xl">
               {dict.offers_title}
             </h2>
             <p className="text-muted-foreground text-xs font-bold tracking-[0.2em] uppercase">
@@ -39,7 +39,7 @@ export function HomeInventorySection({ dict, deals }: { dict: HomeDict; deals: H
             </Button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 max-md:[&>*:nth-child(n+4)]:hidden">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 max-md:[&>*:nth-child(n+4)]:hidden">
             {deals.map((deal, i) => (
               <HomeDealCard
                 key={deal.id}

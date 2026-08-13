@@ -5,7 +5,7 @@ import { connection } from "next/server";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Redirect menadžer | CMS | Splashdeals",
+  title: "Menadžer preusmerenja | CMS | Splashdeals",
 };
 
 export default async function RedirectsPage() {
@@ -18,9 +18,9 @@ export default async function RedirectsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Redirect menadžer</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">Menadžer preusmerenja</h1>
         <p className="text-muted-foreground mt-1 text-sm">
-          Upravljaj 301/302 redirectima. Poređaj ih po source URL-u.
+          Upravljajte 301/302 preusmerenjima. Organizujte ih po izvornom URL-u.
         </p>
       </div>
 

@@ -4,4 +4,5 @@ export { AccountButton } from "./top-nav/AccountButton";
 export { CartButton } from "./top-nav/CartButton";
 export { OfflineIndicator } from "./top-nav/OfflineIndicator";
 export { DesktopTopNav } from "./top-nav/DesktopTopNav";
+export { MobileTopNav } from "./top-nav/MobileTopNav";
 export { useHeaderScroll } from "./hooks/useHeaderScroll";

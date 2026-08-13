@@ -357,7 +357,7 @@ function Toolbar({
             <ToolbarButton
               onClick={() => {}}
               icon="photo_library"
-              label={t.editor_media_library || "Media biblioteka"}
+              label={t.editor_media_library || "Medijska biblioteka"}
             />
           }
         />
