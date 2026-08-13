@@ -120,7 +120,7 @@ export function FaqAccordion({ faqs }: Props) {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           aria-label="Pretraži pitanja"
-          className="border-border/60 bg-card/85 h-11 rounded-2xl pl-10 text-base md:text-sm"
+          className="mobile-app-surface h-11 rounded-2xl border-0 pl-10 text-base md:text-sm"
         />
       </div>
 
@@ -154,7 +154,7 @@ export function FaqAccordion({ faqs }: Props) {
                     key={faq.id}
                     value={faq.id}
                     className={cn(
-                      "border-border/55 bg-card/92 brand-accent-left rounded-[1.1rem] border px-4 shadow-[0_8px_20px_rgba(15,23,42,0.03)] sm:px-6",
+                      "mobile-app-surface brand-accent-left rounded-[1.1rem] border-0 px-4 shadow-[0_8px_20px_rgba(15,23,42,0.03)] sm:px-6",
                       !hasActiveSearch && globalIndex >= INITIAL_VISIBLE && "hidden md:block",
                       !hasActiveSearch &&
                         globalIndex >= INITIAL_VISIBLE &&

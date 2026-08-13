@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useUIState } from "@/hooks/use-ui-state";
-import { useHeaderScroll, DesktopTopNav } from "./_header";
+import { useHeaderScroll, DesktopTopNav, MobileTopNav } from "./_header";
 import { useServerCart } from "@/hooks/use-server-cart";
 import type { Dict } from "@/lib/types";
 
@@ -23,17 +23,24 @@ export const Header = ({ dict }: HeaderProps) => {
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-[999] px-3 pt-2 transition-[padding] duration-500 sm:px-6 sm:pt-3 md:px-8 ${
+      className={`fixed inset-x-0 top-0 z-[999] px-3 pt-2 transition-[padding,transform] duration-500 sm:px-6 sm:pt-3 md:px-8 ${
         scrolled ? "sm:pt-2" : "sm:pt-3"
       }`}
     >
       <div
-        className={`mx-auto max-w-7xl rounded-[1.75rem] border transition-[background-color,border-color,box-shadow,backdrop-filter] duration-500 ${
+        className={`mx-auto max-w-7xl overflow-hidden rounded-[1.9rem] border transition-[background-color,border-color,box-shadow,backdrop-filter,transform] duration-500 ${
           scrolled
-            ? "public-panel border-white/65 shadow-[0_20px_60px_rgba(18,59,96,0.12)]"
-            : "border-white/55 bg-white/66 shadow-[0_18px_42px_rgba(18,59,96,0.08)] backdrop-blur-2xl"
+            ? "public-panel border-white/70 shadow-[0_22px_64px_rgba(18,59,96,0.14)] md:translate-y-0"
+            : "border-white/60 bg-white/70 shadow-[0_18px_42px_rgba(18,59,96,0.08)] backdrop-blur-2xl"
         }`}
       >
+        <MobileTopNav
+          isTabActive={isTabActive}
+          isReducedMotion={isReducedMotion}
+          isHovered={isHovered}
+          setIsHovered={setIsHovered}
+          dict={dict}
+        />
         <DesktopTopNav
           mounted={mounted}
           totalItems={totalItems}

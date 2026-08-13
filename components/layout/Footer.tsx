@@ -101,10 +101,10 @@ export function Footer({ dict: dictProp }: { dict?: Dict | null } = {}) {
   ];
 
   return (
-    <footer className="relative mt-auto overflow-hidden px-3 pt-6 pb-[calc(4.75rem+env(safe-area-inset-bottom,0px))] sm:px-6 sm:pt-16 md:px-8 md:pb-12">
-      <div className="public-panel relative mx-auto max-w-4xl overflow-hidden rounded-[1.75rem] px-4 py-5 md:hidden">
+    <footer className="relative mt-auto overflow-hidden px-3 pt-5 pb-[calc(4.75rem+env(safe-area-inset-bottom,0px))] sm:px-6 sm:pt-16 md:px-8 md:pb-12">
+      <div className="mobile-app-surface relative mx-auto max-w-md overflow-hidden rounded-[1.75rem] px-4 py-4 md:hidden">
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-sky-300/70 to-transparent" />
-        <div className="relative z-10 space-y-5">
+        <div className="relative z-10 space-y-4">
           <div className="flex items-center justify-between gap-3">
             <Link
               href="/"
@@ -127,24 +127,24 @@ export function Footer({ dict: dictProp }: { dict?: Dict | null } = {}) {
             </span>
           </div>
 
-          <p className="text-muted-foreground text-[13px] leading-5 font-medium">
+          <p className="text-muted-foreground text-[12px] leading-5 font-medium">
             {dict?.footer?.desc ||
               "Digitalne ulaznice za akva parkove u Srbiji, bez čekanja i bez traženja karata po inboxu."}
           </p>
 
-          <div className="grid grid-cols-2 gap-2.5">
+          <div className="grid grid-cols-2 gap-2">
             {quickAccessItems.slice(0, 4).map((item) => (
               <Link
                 key={`mobile-${item.href}`}
                 href={item.href}
-                className="text-foreground border-border/60 flex min-h-11 items-center rounded-2xl border bg-white/70 px-3 text-[11px] font-black tracking-[0.08em] uppercase transition-colors hover:border-sky-200 hover:bg-white"
+                className="text-foreground flex min-h-10 items-center rounded-2xl bg-white/66 px-3 text-[10px] font-black tracking-[0.08em] uppercase transition-colors hover:bg-white"
               >
                 {item.name}
               </Link>
             ))}
           </div>
 
-          <div className="flex items-center justify-between gap-3 rounded-2xl border border-white/60 bg-white/58 px-4 py-3">
+          <div className="flex items-center justify-between gap-3 rounded-2xl bg-white/58 px-4 py-3">
             <div>
               <p className="text-[10px] font-black tracking-[0.18em] text-slate-500 uppercase">
                 Kontakt
@@ -163,7 +163,7 @@ export function Footer({ dict: dictProp }: { dict?: Dict | null } = {}) {
                   href={item.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="border-border text-muted-foreground flex h-10 w-10 items-center justify-center rounded-2xl border bg-white/70"
+                  className="text-muted-foreground flex h-10 w-10 items-center justify-center rounded-2xl bg-white/70"
                   aria-label={footerLabel(item.labelKey, item.fallback)}
                 >
                   <div className="h-4.5 w-4.5">{item.icon}</div>
@@ -172,16 +172,24 @@ export function Footer({ dict: dictProp }: { dict?: Dict | null } = {}) {
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-2">
-            {legalItems.slice(0, 3).map((item) => (
-              <Link
-                key={`mobile-legal-${item.href}`}
-                href={item.href}
-                className="text-muted-foreground rounded-full border border-white/70 bg-white/72 px-3 py-2 text-[10px] font-black tracking-[0.12em] uppercase transition-colors hover:text-slate-700"
-              >
-                {item.name}
-              </Link>
-            ))}
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex flex-wrap gap-2">
+              {legalItems.slice(0, 2).map((item) => (
+                <Link
+                  key={`mobile-legal-${item.href}`}
+                  href={item.href}
+                  className="text-muted-foreground rounded-full bg-white/72 px-3 py-2 text-[10px] font-black tracking-[0.12em] uppercase transition-colors hover:text-slate-700"
+                >
+                  {item.name}
+                </Link>
+              ))}
+            </div>
+            <Link
+              href="/support"
+              className="text-primary text-[10px] font-black tracking-[0.14em] uppercase"
+            >
+              Podrška
+            </Link>
           </div>
 
           <p className="text-muted-foreground text-center text-[10px] font-bold tracking-[0.14em] uppercase">

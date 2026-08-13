@@ -52,29 +52,38 @@ export function HeroActionPill({
   return (
     <>
       {/* 📱 MOBILE SHARE + FAVORITE ROW — equal 44px targets */}
-      <div className="flex items-center justify-between gap-3 md:hidden">
-        <Link
-          href={`/${categorySlug}`}
-          className="bg-background/72 text-primary-foreground/92 inline-flex h-11 min-h-11 items-center gap-2 rounded-full border border-white/14 px-4 text-[11px] font-black tracking-[0.18em] uppercase shadow-[0_10px_28px_rgba(7,24,39,0.18)] backdrop-blur-xl transition-colors hover:bg-white/16"
-        >
-          <Icon name="arrow_back" className="text-[12px]" /> Nazad
-        </Link>
-        <div className="flex items-center gap-2">
-          {weather && (
-            <div className="hidden min-[360px]:block">
-              <WeatherBadge weather={weather} />
-            </div>
-          )}
-          <FavoriteButton
-            facilityId={facility.id}
-            facilitySlug={facilitySlug}
-            isFavorited={isFavorited}
-            variant="default"
-            className="bg-background/80 border-border relative top-0 left-0 shadow-sm backdrop-blur-xl"
-          />
-          <ShareButton
-            title={facility.name}
-            url={`${process.env.NEXT_PUBLIC_SITE_URL || ""}/${facilitySlug}`}
+      <div className="mobile-app-surface rounded-[1.35rem] p-2.5 md:hidden">
+        <div className="flex items-center justify-between gap-2">
+          <Link
+            href={`/${categorySlug}`}
+            className="text-foreground inline-flex h-11 min-h-11 items-center gap-2 rounded-full px-3.5 text-[11px] font-black tracking-[0.18em] uppercase transition-colors hover:bg-white/30"
+          >
+            <Icon name="arrow_back" className="text-[12px]" /> Nazad
+          </Link>
+          <div className="flex items-center gap-2">
+            {weather && (
+              <div className="hidden min-[360px]:block">
+                <WeatherBadge weather={weather} />
+              </div>
+            )}
+            <FavoriteButton
+              facilityId={facility.id}
+              facilitySlug={facilitySlug}
+              isFavorited={isFavorited}
+              variant="default"
+              className="bg-background/80 border-border relative top-0 left-0 shadow-sm backdrop-blur-xl"
+            />
+            <ShareButton
+              title={facility.name}
+              url={`${process.env.NEXT_PUBLIC_SITE_URL || ""}/${facilitySlug}`}
+            />
+          </div>
+        </div>
+        <div className="mt-2 border-t border-white/45 pt-2">
+          <MobileUnifiedControlPill
+            hours={facility.hours}
+            destLat={parsedLat}
+            destLng={parsedLng}
           />
         </div>
       </div>
@@ -124,13 +133,6 @@ export function HeroActionPill({
               facilityName={facility.name}
             />
           )}
-        </div>
-        <div className="block w-full pt-2 md:hidden">
-          <MobileUnifiedControlPill
-            hours={facility.hours}
-            destLat={parsedLat}
-            destLng={parsedLng}
-          />
         </div>
       </div>
     </>

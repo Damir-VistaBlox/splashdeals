@@ -30,7 +30,7 @@ export function DesktopTopNav({
   dict,
 }: DesktopTopNavProps) {
   return (
-    <div className="w-full px-3 sm:px-4">
+    <div className="hidden w-full px-3 sm:px-4 md:block">
       <nav
         aria-label={dict?.mega_menu?.main_nav_aria || "Glavna navigacija"}
         className="mx-auto grid h-[4.4rem] w-full grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-3 xl:gap-4"

@@ -107,11 +107,11 @@ export function CartItemList({
         return (
           <Card
             key={item.id}
-            className="surface-card relative flex flex-col gap-3 rounded-[1.75rem] p-3 sm:gap-4 sm:p-6"
+            className="mobile-app-surface sm:surface-card relative flex flex-col gap-3 rounded-[1.5rem] border-0 p-3 sm:gap-4 sm:p-6"
           >
             <div className="flex min-w-0 items-start gap-3">
               {item.imageUrl && (
-                <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-2xl sm:h-20 sm:w-20">
+                <div className="relative h-15 w-15 flex-shrink-0 overflow-hidden rounded-[1rem] sm:h-20 sm:w-20">
                   <Image
                     src={item.imageUrl}
                     alt={item.title}
@@ -122,10 +122,10 @@ export function CartItemList({
                 </div>
               )}
               <div className="min-w-0 flex-1 pr-1">
-                <p className="text-muted-foreground text-[10px] font-black tracking-widest uppercase">
+                <p className="text-muted-foreground text-[9px] font-black tracking-widest uppercase">
                   {item.category || cartDict?.default_category}
                 </p>
-                <h3 className="text-foreground mt-0.5 text-base leading-snug font-black tracking-tight sm:text-lg">
+                <h3 className="text-foreground mt-0.5 text-[15px] leading-snug font-black tracking-tight sm:text-lg">
                   {item.title}
                 </h3>
               </div>
@@ -140,14 +140,14 @@ export function CartItemList({
                 }}
                 disabled={mutating}
                 aria-label={cartDict?.remove || "Ukloni"}
-                className="text-muted-foreground hover:text-destructive h-11 w-11 shrink-0 rounded-xl"
+                className="text-muted-foreground hover:text-destructive h-10 w-10 shrink-0 rounded-xl"
               >
                 <Icon name="delete" className="text-[18px]" />
               </Button>
             </div>
 
             <div className="flex items-center justify-between gap-3">
-              <div className="flex items-center overflow-hidden rounded-xl border border-white/70 bg-white/74">
+              <div className="flex items-center overflow-hidden rounded-xl bg-white/74">
                 <Button
                   type="button"
                   variant="ghost"
@@ -155,11 +155,11 @@ export function CartItemList({
                   onClick={() => onQuantityChange(item.id, item.quantity - 1)}
                   disabled={mutating}
                   aria-label={atMin ? cartDict?.remove || "Ukloni" : cartDict?.decrease_qty}
-                  className="text-muted-foreground hover:text-foreground h-11 w-11 touch-manipulation rounded-none"
+                  className="text-muted-foreground hover:text-foreground h-10 w-10 touch-manipulation rounded-none"
                 >
                   <Icon name={atMin ? "delete" : "remove"} className="text-[16px]" />
                 </Button>
-                <span className="text-foreground w-10 text-center text-sm font-black tabular-nums">
+                <span className="text-foreground w-9 text-center text-sm font-black tabular-nums">
                   {item.quantity}
                 </span>
                 <Button
@@ -173,14 +173,14 @@ export function CartItemList({
                       Math.min(item.maxPeople ?? MAX_QUANTITY_PER_ITEM, MAX_QUANTITY_PER_ITEM)
                   }
                   aria-label={cartDict?.increase_qty}
-                  className="text-muted-foreground hover:text-foreground h-11 w-11 touch-manipulation rounded-none"
+                  className="text-muted-foreground hover:text-foreground h-10 w-10 touch-manipulation rounded-none"
                 >
                   <Icon name="add" className="text-[16px]" />
                 </Button>
               </div>
 
               <div className="text-right">
-                <div className="text-foreground text-base font-black tracking-tight tabular-nums sm:text-lg">
+                <div className="text-foreground text-[15px] font-black tracking-tight tabular-nums sm:text-lg">
                   {formatPrice(item.price * item.quantity)} {currency}
                 </div>
                 <Button
@@ -194,7 +194,7 @@ export function CartItemList({
                   }}
                   disabled={mutating}
                   aria-label={cartDict?.remove || "Ukloni"}
-                  className="text-muted-foreground hover:text-destructive mt-0.5 h-10 min-h-10 touch-manipulation px-2 text-[11px] font-black tracking-widest uppercase"
+                  className="text-muted-foreground hover:text-destructive mt-0.5 h-9 min-h-9 touch-manipulation px-2 text-[10px] font-black tracking-widest uppercase"
                 >
                   {cartDict?.remove || "Ukloni"}
                 </Button>

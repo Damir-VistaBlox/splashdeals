@@ -9,11 +9,11 @@ export function HomeBiggestSavings({ dict, deals }: { dict: HomeDict; deals: Hom
   return (
     <section
       id="savings"
-      className="mx-auto max-w-7xl scroll-mt-28 px-6 py-8 max-md:scroll-mt-36 sm:py-14 md:px-12"
+      className="mx-auto max-w-7xl scroll-mt-28 px-3 py-6 max-md:scroll-mt-36 sm:px-6 sm:py-14 md:px-8"
     >
-      <div className="mb-6 flex flex-wrap items-end justify-between gap-4 sm:mb-8">
+      <div className="mb-4 flex flex-wrap items-end justify-between gap-3 sm:mb-8">
         <div>
-          <h2 className="mb-1 text-3xl font-black tracking-tighter uppercase italic sm:text-4xl">
+          <h2 className="mb-1 text-[1.9rem] leading-none font-black tracking-tighter uppercase italic sm:text-4xl">
             {dict.savings_title}
           </h2>
           <p className="text-muted-foreground text-xs font-bold tracking-[0.15em] uppercase">
@@ -39,7 +39,7 @@ export function HomeBiggestSavings({ dict, deals }: { dict: HomeDict; deals: Hom
           </Button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 max-md:[&>*:nth-child(n+3)]:hidden">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 max-md:[&>*:nth-child(n+3)]:hidden">
           {deals.map((deal, i) => (
             <HomeDealCard
               key={deal.id}
