@@ -1,9 +1,7 @@
 import * as React from "react";
+import { BuyerSignalsLoader } from "@/components/analytics/BuyerSignalsLoader";
 import { getDictionary } from "@/lib/dictionaries";
 import { PlatformShell } from "@/components/layout/PlatformShell";
-import { GAScript } from "@/components/analytics/GoogleAnalytics";
-import { ClarityScript } from "@/components/analytics/MicrosoftClarity";
-import { WebVitals } from "@/app/(web)/_components/WebVitals";
 import { getFacilityMap } from "@/lib/layout/facility-map";
 
 /**
@@ -16,9 +14,7 @@ export default async function AccountRootLayout({ children }: { children: React.
 
   return (
     <>
-      <WebVitals />
-      <GAScript />
-      <ClarityScript />
+      <BuyerSignalsLoader />
       <PlatformShell dict={dict} facilityMap={facilityMap} showStructuredData={false}>
         {children}
       </PlatformShell>

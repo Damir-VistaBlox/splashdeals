@@ -2,9 +2,8 @@ import Image from "next/image";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { prisma } from "@/app/(server)/lib/prisma";
+import { canonicalUrl } from "@/lib/seo";
 import { sanitizeHtml } from "@/lib/sanitize";
-
-const SITE_URL = "https://www.splashdeals.rs";
 
 export async function getPublishedCmsPage(slug: string) {
   const now = new Date();
@@ -29,7 +28,7 @@ export async function buildCmsPageMetadata(slug: string): Promise<Metadata> {
   const metaTitle = page.metaTitle || `${page.title} | Splashdeals.rs`;
   const metaDescription = page.metaDescription || (page.excerpt || "").slice(0, 160);
   const ogImage = page.ogImage || page.coverImage || undefined;
-  const canonical = page.canonicalUrl || `${SITE_URL}/${page.slug}`;
+  const canonical = page.canonicalUrl || canonicalUrl(`/${page.slug}`);
   const robots =
     page.robotsDirective === "noindex"
       ? { index: false, follow: false }

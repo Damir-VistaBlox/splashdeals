@@ -8,6 +8,7 @@ import { BRAND_NAME, alternates, publicRobots, resolveSiteUrl } from "@/lib/seo"
 const appSans = localFont({
   variable: "--font-app-sans",
   display: "swap",
+  preload: false,
   src: [
     {
       path: "../public/fonts/Inter-Regular.woff2",
@@ -100,12 +101,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-title" content={BRAND_NAME} />
-        <link rel="preload" as="image" href="/noise.svg" />
-        <link
-          rel="preconnect"
-          href="https://f7t7eeiv4kcyjvws.public.blob.vercel-storage.com"
-          crossOrigin="anonymous"
-        />
       </head>
       <body
         className={`${appSans.variable} app-shell selection:bg-primary/20 bg-background scroll-smooth antialiased`}

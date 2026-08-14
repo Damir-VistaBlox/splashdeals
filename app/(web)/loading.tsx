@@ -1,4 +1,3 @@
-import { Icon } from "@/components/ui/Icon";
 import { Skeleton } from "@/components/ui/skeleton";
 
 /**
@@ -14,34 +13,26 @@ import { Skeleton } from "@/components/ui/skeleton";
 export default function WebLoading() {
   return (
     <div className="mobile-route-frame bg-background selection:bg-primary/30 relative overflow-hidden">
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-56 bg-[radial-gradient(circle_at_top,rgba(14,165,198,0.12),transparent_68%)]" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-[radial-gradient(circle_at_top,rgba(14,165,198,0.08),transparent_70%)]" />
 
-      <div className="relative mx-auto flex w-full max-w-7xl flex-col px-4 pt-8 sm:px-6 sm:pt-10 lg:px-8">
-        <div className="mb-8 flex flex-col items-center gap-3 text-center sm:mb-10">
-          <div className="bg-card/80 border-border shadow-soft flex h-16 w-16 items-center justify-center rounded-3xl border backdrop-blur-sm">
-            <Icon name="waves" className="text-primary text-[32px]" />
-          </div>
-          <div className="space-y-2">
-            <span className="text-primary/70 text-[10px] font-black tracking-[0.38em] uppercase">
-              Splashdeals
-            </span>
-            <p className="text-muted-foreground text-sm font-medium">
-              Pripremamo stranicu za mobilni prikaz.
-            </p>
-          </div>
-        </div>
+      <div
+        className="relative mx-auto flex w-full max-w-7xl flex-col px-4 pt-8 sm:px-6 sm:pt-10 lg:px-8"
+        role="status"
+        aria-live="polite"
+        aria-label="Učitavanje stranice"
+      >
+        <div className="sr-only">Učitavanje stranice</div>
 
         <main className="relative z-10 space-y-8 pb-8 sm:space-y-10 sm:pb-12">
-          <div className="space-y-5 text-center">
-            <Skeleton className="bg-muted border-border mx-auto h-9 w-40 rounded-full border shadow-inner sm:h-10 sm:w-52" />
+          <div className="space-y-4 text-center">
+            <Skeleton className="bg-muted/80 mx-auto h-8 w-32 rounded-full sm:h-9 sm:w-40" />
             <div className="space-y-3">
-              <Skeleton className="bg-muted mx-auto h-12 w-full max-w-[22rem] rounded-[1.75rem] sm:h-16 sm:max-w-3xl" />
-              <Skeleton className="bg-muted mx-auto h-12 w-[88%] max-w-[18rem] rounded-[1.75rem] sm:h-16 sm:max-w-2xl" />
+              <Skeleton className="bg-muted mx-auto h-11 w-full max-w-[22rem] rounded-[1.75rem] sm:h-16 sm:max-w-3xl" />
+              <Skeleton className="bg-muted mx-auto h-11 w-[82%] max-w-[16rem] rounded-[1.75rem] sm:h-16 sm:max-w-2xl" />
             </div>
-            <Skeleton className="bg-muted mx-auto h-4 w-56 rounded-lg sm:w-80" />
             <div className="flex flex-wrap justify-center gap-3 pt-1">
-              <Skeleton className="bg-muted h-12 w-36 rounded-2xl shadow-sm sm:w-40" />
-              <Skeleton className="bg-muted h-12 w-36 rounded-2xl shadow-sm sm:w-40" />
+              <Skeleton className="bg-muted h-11 w-32 rounded-2xl sm:w-36" />
+              <Skeleton className="bg-muted h-11 w-32 rounded-2xl sm:w-36" />
             </div>
           </div>
 

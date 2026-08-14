@@ -4,7 +4,6 @@ import * as React from "react";
 import Link from "next/link";
 import { Icon } from "@/components/ui/Icon";
 import { Logo } from "./Logo";
-import { Input } from "@/components/ui/input";
 import type { Dict } from "@/lib/types";
 
 interface MobileTopNavProps {
@@ -15,14 +14,6 @@ interface MobileTopNavProps {
   setIsHovered: (v: boolean) => void;
 }
 
-type SearchResult = {
-  id: string;
-  href: string;
-  type: "facility";
-  title: string;
-  subtitle: string | null;
-};
-
 export function MobileTopNav({
   dict,
   isTabActive,
@@ -30,40 +21,9 @@ export function MobileTopNav({
   isHovered,
   setIsHovered,
 }: MobileTopNavProps) {
-  const [query, setQuery] = React.useState("");
-  const [results, setResults] = React.useState<SearchResult[]>([]);
-  const [isLoading, setIsLoading] = React.useState(false);
-  const trimmedQuery = query.trim();
-  const canSearch = trimmedQuery.length >= 2;
-
-  React.useEffect(() => {
-    if (!canSearch) return;
-
-    const controller = new AbortController();
-    const timeout = window.setTimeout(async () => {
-      setIsLoading(true);
-      try {
-        const res = await fetch(`/api/search?q=${encodeURIComponent(trimmedQuery)}`, {
-          signal: controller.signal,
-        });
-        const data = (await res.json()) as SearchResult[];
-        setResults(Array.isArray(data) ? data : []);
-      } catch (error) {
-        if (!(error instanceof DOMException && error.name === "AbortError")) {
-          console.error(error);
-        }
-      } finally {
-        setIsLoading(false);
-      }
-    }, 220);
-
-    return () => {
-      controller.abort();
-      window.clearTimeout(timeout);
-    };
-  }, [canSearch, trimmedQuery]);
-
-  const visibleResults = canSearch ? results : [];
+  const searchLabel = dict.nav.search || "Pretraga";
+  const searchHint = dict.search?.short_placeholder || "Pretraži ponude";
+  const searchCta = dict.search?.submit_cta || searchLabel;
 
   return (
     <div className="md:hidden">
@@ -76,103 +36,26 @@ export function MobileTopNav({
           dict={dict}
           mobileCompact
         />
-        <div
-          className="relative min-w-0 flex-1"
-          role="search"
-          aria-label={dict.nav.search || "Pretraga"}
-        >
-          <label htmlFor="mobile-header-search" className="sr-only">
-            {dict.nav.search || "Pretraga"}
-          </label>
-          <div className="border-border/50 focus-within:border-primary/25 relative flex min-h-[3.1rem] items-center rounded-[1.2rem] border bg-white/88 px-3 shadow-[0_10px_22px_rgba(15,23,42,0.06)] backdrop-blur-md transition-colors focus-within:bg-white">
+        <div className="min-w-0 flex-1" role="search" aria-label={searchLabel}>
+          <Link
+            href="/search"
+            prefetch
+            className="border-border/50 focus-visible:ring-primary/30 group relative flex min-h-[3.1rem] items-center rounded-[1.2rem] border bg-white/88 px-3 shadow-[0_10px_22px_rgba(15,23,42,0.06)] backdrop-blur-md transition-[transform,border-color,background-color,box-shadow] duration-200 focus-visible:ring-2 focus-visible:outline-none active:scale-[0.99]"
+            aria-label={searchLabel}
+          >
             <span className="text-muted-foreground flex h-8 w-8 shrink-0 items-center justify-center">
               <Icon name="search" className="text-[17px]" />
             </span>
-            <Input
-              id="mobile-header-search"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Pretraži ponude"
-              enterKeyHint="search"
-              className="text-foreground placeholder:text-muted-foreground h-full min-h-[3.1rem] border-0 bg-transparent px-2 text-sm font-bold shadow-none focus-visible:ring-0"
-            />
-            {trimmedQuery ? (
-              <button
-                type="button"
-                onClick={() => setQuery("")}
-                aria-label="Obriši pretragu"
-                className="text-muted-foreground hover:text-foreground flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition-colors"
-              >
-                <Icon name="close" className="text-[16px]" />
-              </button>
-            ) : null}
-          </div>
-
-          {canSearch && (
-            <div className="border-border/50 absolute top-[calc(100%+0.45rem)] right-0 left-0 z-[1100] overflow-hidden rounded-[1.15rem] border bg-white/95 p-1.5 shadow-[0_18px_34px_rgba(15,23,42,0.12)] backdrop-blur-xl">
-              <div className="flex items-center justify-between gap-2 px-2.5 pt-2 pb-1.5">
-                <span className="text-primary text-[9px] font-black tracking-[0.18em] uppercase">
-                  Brzi rezultati
-                </span>
-                <Link
-                  href={`/search?q=${encodeURIComponent(trimmedQuery)}`}
-                  className="text-muted-foreground hover:text-foreground text-[9px] font-black tracking-[0.14em] uppercase transition-colors"
-                >
-                  Svi rezultati
-                </Link>
-              </div>
-              {isLoading ? (
-                <div className="flex min-h-18 items-center justify-center gap-2 px-3 py-4">
-                  <Icon
-                    name="progress_activity"
-                    className="text-primary animate-spin text-[18px]"
-                  />
-                  <span className="text-muted-foreground text-[10px] font-black tracking-[0.12em] uppercase">
-                    Pretraga...
-                  </span>
-                </div>
-              ) : visibleResults.length > 0 ? (
-                <div className="max-h-[min(55vh,22rem)] space-y-1 overflow-y-auto overscroll-contain pr-0.5">
-                  {visibleResults.map((result) => (
-                    <Link
-                      key={result.id}
-                      href={result.href}
-                      onClick={() => setQuery("")}
-                      className="hover:bg-muted/45 focus-visible:ring-primary flex items-center gap-3 rounded-[0.95rem] px-3 py-3 transition-colors focus-visible:ring-2 focus-visible:outline-none"
-                    >
-                      <span className="bg-primary/8 text-primary flex h-9 w-9 shrink-0 items-center justify-center rounded-[0.9rem]">
-                        <Icon name="location_on" className="text-[17px]" />
-                      </span>
-                      <span className="min-w-0 flex-1 text-left">
-                        <span className="text-foreground block truncate text-[13px] font-black tracking-tight">
-                          {result.title}
-                        </span>
-                        <span className="text-muted-foreground block truncate text-[10px] font-bold tracking-[0.08em] uppercase">
-                          {result.subtitle || "Destinacija"}
-                        </span>
-                      </span>
-                      <Icon
-                        name="arrow_forward"
-                        className="text-muted-foreground shrink-0 text-[15px]"
-                      />
-                    </Link>
-                  ))}
-                </div>
-              ) : (
-                <div className="px-3 py-4 text-center">
-                  <span className="text-muted-foreground block text-[10px] font-black tracking-[0.12em] uppercase">
-                    Nema brzih rezultata
-                  </span>
-                  <Link
-                    href={`/search?q=${encodeURIComponent(trimmedQuery)}`}
-                    className="text-primary mt-2 inline-flex text-[10px] font-black tracking-[0.12em] uppercase"
-                  >
-                    Otvori celu pretragu
-                  </Link>
-                </div>
-              )}
-            </div>
-          )}
+            <span className="min-w-0 flex-1 px-2">
+              <span className="text-foreground block truncate text-sm font-bold">{searchHint}</span>
+              <span className="text-muted-foreground block text-[10px] font-black tracking-[0.12em] uppercase">
+                Objekti, gradovi, ponude
+              </span>
+            </span>
+            <span className="bg-primary/8 text-primary group-active:bg-primary/12 inline-flex h-9 shrink-0 items-center rounded-full px-3 text-[10px] font-black tracking-[0.14em] uppercase transition-colors">
+              {searchCta}
+            </span>
+          </Link>
         </div>
       </div>
     </div>

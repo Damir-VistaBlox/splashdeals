@@ -1,19 +1,20 @@
 import { getNavigationMenus } from "@/app/(server)/lib/data/navigation";
 import { getDictionary } from "@/lib/dictionaries";
+import { absoluteUrl, resolveSiteUrl } from "@/lib/seo";
 
 export async function NavigationStructuredData() {
   const [menus, dict] = await Promise.all([getNavigationMenus(), getDictionary()]);
 
   if (menus.length === 0) return null;
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL!;
+  const siteUrl = resolveSiteUrl();
 
   // Build SiteNavigationElement items
   const navItems = menus.flatMap((menu) => {
     const items = menu.sections.flatMap((section) =>
       section.items.map((item) => ({
         name: item.label,
-        url: item.href || `${siteUrl}/`,
+        url: item.href ? absoluteUrl(item.href, siteUrl) : siteUrl,
         description: item.desc || undefined,
       })),
     );
@@ -21,7 +22,7 @@ export async function NavigationStructuredData() {
     return [
       {
         name: menu.label,
-        url: `${siteUrl}/`,
+        url: siteUrl,
         children: items,
       },
     ];

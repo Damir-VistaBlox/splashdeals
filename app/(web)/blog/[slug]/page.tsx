@@ -6,6 +6,7 @@ import Image from "next/image";
 import { Icon } from "@/components/ui/Icon";
 import type { Metadata } from "next";
 import { sanitizeHtml } from "@/lib/sanitize";
+import { canonicalUrl, resolveSiteUrl } from "@/lib/seo";
 
 interface BlogPostPageProps {
   params: Promise<{ slug: string }>;
@@ -22,7 +23,7 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
 
   const metaTitle = post.metaTitle || `${post.title} | Splashdeals.rs`;
   const metaDescription = post.metaDescription || (post.excerpt || "").slice(0, 160);
-  const siteUrl = "https://www.splashdeals.rs";
+  const siteUrl = resolveSiteUrl();
   const ogImage = post.ogImage || post.coverImage || undefined;
 
   return {
@@ -60,6 +61,7 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const { slug } = await params;
   const dict = await getDictionary();
+  const siteUrl = resolveSiteUrl();
 
   // Check for preview mode — allow viewing DRAFT content
   const post = await prisma.blogPost.findUnique({
@@ -282,11 +284,11 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             publisher: {
               "@type": "Organization",
               name: "Splashdeals.rs",
-              url: "https://www.splashdeals.rs",
+              url: siteUrl,
             },
             mainEntityOfPage: {
               "@type": "WebPage",
-              "@id": `https://www.splashdeals.rs/blog/${post.slug}`,
+              "@id": canonicalUrl(`/blog/${post.slug}`),
             },
           }),
         }}

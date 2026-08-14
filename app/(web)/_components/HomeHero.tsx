@@ -17,15 +17,12 @@ export function HomeHero({ dict }: { dict: HomeDict }) {
   const heroPillClassName =
     "bg-secondary text-secondary-foreground hover:bg-primary hover:text-primary-foreground inline-flex h-11 min-h-11 items-center justify-center rounded-full px-4 text-[11px] font-black tracking-[0.1em] uppercase shadow-[0_10px_24px_rgba(231,179,75,0.16)] transition-all duration-150 hover:-translate-y-0.5 sm:px-5 sm:text-[10px]";
   const mobilePillClassName =
-    "bg-secondary/92 text-secondary-foreground hover:bg-primary hover:text-primary-foreground inline-flex h-11 min-h-11 items-center justify-center rounded-full px-4 text-[10px] font-black tracking-[0.08em] uppercase shadow-[0_8px_18px_rgba(231,179,75,0.14)] transition-colors";
+    "bg-secondary text-secondary-foreground hover:bg-primary hover:text-primary-foreground inline-flex h-11 min-h-11 items-center justify-center rounded-full border border-amber-200/80 px-4 text-[10px] font-black tracking-[0.08em] uppercase transition-colors";
 
   return (
     <div className="relative z-0 w-full overflow-hidden pb-7 sm:pb-20">
       <section className="mx-auto max-w-7xl px-3 pt-1 sm:hidden">
-        <div className="section-shell overflow-hidden rounded-[1.9rem] px-4 pt-[5rem] pb-4">
-          <div className="pointer-events-none absolute top-5 left-1/2 h-28 w-28 -translate-x-1/2 rounded-full bg-sky-200/45 blur-[54px]" />
-          <div className="pointer-events-none absolute -right-10 bottom-12 h-28 w-28 rounded-full bg-cyan-300/20 blur-[58px]" />
-          <div className="pointer-events-none absolute inset-x-4 top-[4.35rem] h-px bg-gradient-to-r from-transparent via-white/70 to-transparent" />
+        <div className="hero-mobile-shell overflow-hidden rounded-[1.9rem] px-4 pt-[5rem] pb-4">
           <div className="relative z-10">
             <nav aria-label={dict.categories_aria || "Kategorije i brzi filteri"}>
               <ul className="no-scrollbar -mx-1 mb-3 flex snap-x snap-mandatory items-center gap-2 overflow-x-auto overscroll-x-contain px-1 pb-1 [-webkit-overflow-scrolling:touch]">
@@ -60,22 +57,20 @@ export function HomeHero({ dict }: { dict: HomeDict }) {
               Digitalne karte bez čekanja
             </p>
 
-            <h1 className="from-foreground to-foreground/72 mb-3 bg-gradient-to-b via-sky-950 bg-clip-text text-[2.7rem] leading-[0.86] font-black tracking-[-0.09em] text-transparent">
+            <h1 className="text-foreground mb-3 text-[2.7rem] leading-[0.86] font-black tracking-[-0.09em]">
               {dict.title_digital}
               <br />
-              <span className="splash-gradient bg-clip-text text-transparent italic">
-                {dict.title_splash}
-              </span>
+              <span className="text-primary-dark italic">{dict.title_splash}</span>
             </h1>
 
-            <p className="text-muted-foreground mb-4 max-w-[20rem] text-[0.98rem] leading-relaxed font-medium">
+            <p className="hero-lcp-copy mb-4 max-w-[18rem] text-[0.92rem] leading-[1.55] font-medium text-slate-700">
               {dict.subtitle}
             </p>
 
             <div className="mb-4 flex flex-col gap-2.5">
               <Button
                 asChild
-                className="group h-13 min-h-13 w-full rounded-full px-6 text-[15px] font-black shadow-[0_20px_38px_rgba(6,182,212,0.22)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_24px_42px_rgba(6,182,212,0.28)]"
+                className="group h-13 min-h-13 w-full rounded-full px-6 text-[15px] font-black shadow-[0_12px_24px_rgba(6,182,212,0.16)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_16px_30px_rgba(6,182,212,0.2)]"
               >
                 <Link
                   href="#inventory"
@@ -90,7 +85,7 @@ export function HomeHero({ dict }: { dict: HomeDict }) {
               </Button>
             </div>
 
-            <div className="surface-glass rounded-[1.45rem] p-3 shadow-[0_18px_34px_rgba(15,23,42,0.08)]">
+            <div className="hero-mobile-surface rounded-[1.45rem] p-3">
               <div className="mb-3 flex items-center justify-between gap-3">
                 <div>
                   <span className="text-primary block text-[10px] font-black tracking-[0.18em] uppercase">

@@ -113,6 +113,7 @@
     "jscpd": "^5.0.12",
     "jsdom": "^29.1.1",
     "knip": "^6.26.0",
+    "lighthouse": "^13.4.1",
     "lint-staged": "^17.0.8",
     "prettier": "3.9.4",
     "prettier-plugin-tailwindcss": "^0.8.0",

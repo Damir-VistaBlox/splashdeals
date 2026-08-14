@@ -4,19 +4,25 @@ import Link from "next/link";
 import Image from "next/image";
 import { Icon } from "@/components/ui/Icon";
 import type { Metadata } from "next";
+import { absoluteUrl, buildStaticPageMetadata, canonicalUrl } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "Blog | Splashdeals.rs",
-  description:
-    "Najnovije vesti, saveti i informacije o akva parkovima, bazenima i wellness centrima u Srbiji.",
-  alternates: { canonical: "https://www.splashdeals.rs/blog" },
+  ...buildStaticPageMetadata({
+    path: "/blog",
+    title: "Blog o akva parkovima, bazenima i wellness ponudama | SplashDeals",
+    description:
+      "Saveti, vodiči i novosti o akva parkovima, bazenima, banjama i wellness centrima u Srbiji. Otkrijte gde se isplati otići i kako kupiti digitalne ulaznice.",
+  }),
   other: {
-    "link:alternate": "https://www.splashdeals.rs/blog/feed.xml",
+    "link:alternate": canonicalUrl("/blog/feed.xml"),
   },
   openGraph: {
-    title: "Blog | Splashdeals.rs",
-    description: "Najnovije vesti o akva parkovima i bazenima u Srbiji.",
+    title: "Blog o akva parkovima, bazenima i wellness ponudama | SplashDeals",
+    description:
+      "Saveti, vodiči i novosti o akva parkovima, bazenima, banjama i wellness centrima u Srbiji.",
     type: "website",
+    url: canonicalUrl("/blog"),
+    images: [absoluteUrl("/og-image.png")],
   },
 };
 
@@ -174,7 +180,7 @@ export default async function BlogPage({
             "@context": "https://schema.org",
             "@type": "Blog",
             name: "Splashdeals.rs Blog",
-            url: "https://www.splashdeals.rs/blog",
+            url: canonicalUrl("/blog"),
             description: "Saveti, vodiči i novosti iz sveta akva parkova i bazena u Srbiji.",
           }),
         }}

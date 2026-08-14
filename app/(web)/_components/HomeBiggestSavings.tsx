@@ -59,18 +59,18 @@ export function HomeBiggestSavings({ dict, deals }: { dict: HomeDict; deals: Hom
             </span>
           </div>
           <div className="no-scrollbar -mx-3 flex snap-x snap-mandatory gap-3 overflow-x-auto px-3 pb-2 md:hidden">
-            {featuredDeals.map((deal, i) => (
+            {featuredDeals.map((deal) => (
               <div key={deal.id} className="w-[84vw] max-w-[21rem] min-w-[84vw] snap-start">
-                <HomeDealCard deal={deal} priority={i < 2} openTodayLabel={dict.open_today} />
+                <HomeDealCard deal={deal} priority={false} openTodayLabel={dict.open_today} />
               </div>
             ))}
           </div>
           <div className="hidden gap-4 md:grid md:grid-cols-2 lg:grid-cols-4">
-            {deals.map((deal, i) => (
+            {deals.map((deal) => (
               <HomeDealCard
                 key={deal.id}
                 deal={deal}
-                priority={i < 2}
+                priority={false}
                 openTodayLabel={dict.open_today}
               />
             ))}

@@ -3,11 +3,12 @@
 import Link from "next/link";
 import { Icon } from "@/components/ui/Icon";
 import { ShareButton } from "./ShareButton";
-import { WeatherBadge } from "./ShowcaseHero";
+import { WeatherBadge } from "./WeatherBadge";
 import { CurrentOperationalStatus } from "./OperationalPortal";
 import { DistanceCalculator } from "./DistanceCalculator";
 import { MobileUnifiedControlPill } from "./MobileUnifiedControlPill";
 import { FavoriteButton } from "@/components/shared/FavoriteButton";
+import { absoluteUrl } from "@/lib/seo";
 
 interface CurrentWeather {
   temperature: number;
@@ -44,6 +45,7 @@ export function HeroActionPill({
   weather,
   isFavorited = false,
 }: HeroActionPillProps) {
+  const shareUrl = absoluteUrl(`/${facilitySlug}`);
   const parsedLat =
     facility.lat !== null && facility.lat !== undefined ? Number(facility.lat) : null;
   const parsedLng =
@@ -73,10 +75,7 @@ export function HeroActionPill({
               variant="default"
               className="bg-background/80 border-border relative top-0 left-0 shadow-sm backdrop-blur-xl"
             />
-            <ShareButton
-              title={facility.name}
-              url={`${process.env.NEXT_PUBLIC_SITE_URL || ""}/${facilitySlug}`}
-            />
+            <ShareButton title={facility.name} url={shareUrl} />
           </div>
         </div>
         <div className="mt-2 border-t border-white/45 pt-2">
@@ -104,10 +103,7 @@ export function HeroActionPill({
           variant="default"
           className="bg-background/72 relative top-0 left-0 border-white/12 shadow-sm backdrop-blur-md"
         />
-        <ShareButton
-          title={facility.name}
-          url={`${process.env.NEXT_PUBLIC_SITE_URL || ""}/${facilitySlug}`}
-        />
+        <ShareButton title={facility.name} url={shareUrl} />
       </div>
 
       {/* 🏙️ HERO INFO ROW */}

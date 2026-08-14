@@ -2,7 +2,6 @@ import { Metadata } from "next";
 import Link from "next/link";
 import { getDictionary } from "@/lib/dictionaries";
 import { JsonLd } from "@/components/SEO/JsonLd";
-import { connection } from "next/server";
 import {
   getHomeBiggestSavings,
   getHomeBlogPosts,
@@ -35,6 +34,7 @@ interface PageProps {
   params: Promise<Record<string, never>>;
 }
 
+export const revalidate = 300;
 const HOME_SERP_TITLE = "Ulaznice za akva parkove, bazene i spa centre | SplashDeals";
 const HOME_SERP_DESCRIPTION =
   "Uporedite cene i kupite digitalne ulaznice za akva parkove, bazene, banje i wellness centre u Srbiji. Mobile-first kupovina, jasne cene i brza isporuka na SplashDeals.";
@@ -73,7 +73,6 @@ export default async function LandingPage({
 }: {
   params: Promise<Record<string, never>>;
 }) {
-  await connection();
   const dict = await getDictionary();
   const home = dict.home as Record<string, string>;
   const fallbackPitch = home.default_ticket_desc;

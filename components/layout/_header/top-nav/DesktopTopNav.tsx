@@ -4,13 +4,13 @@ import { MegaMenu } from "../mega-menu/MegaMenu";
 import { Logo } from "./Logo";
 import { CartButton } from "./CartButton";
 import { AccountButton } from "./AccountButton";
+import { useUIState } from "@/hooks/use-ui-state";
+import { useServerCart } from "@/hooks/use-server-cart";
 import type { Dict } from "@/lib/types";
 
 interface DesktopTopNavProps {
   mounted: boolean;
-  totalItems: number;
   isOnline: boolean;
-  openCart: () => void;
   isTabActive: boolean;
   isReducedMotion: boolean;
   isHovered: boolean;
@@ -20,15 +20,16 @@ interface DesktopTopNavProps {
 
 export function DesktopTopNav({
   mounted,
-  totalItems,
   isOnline,
-  openCart,
   isTabActive,
   isReducedMotion,
   isHovered,
   setIsHovered,
   dict,
 }: DesktopTopNavProps) {
+  const totalItems = useServerCart((state) => state.totalItems);
+  const openCart = useUIState((state) => state.openCart);
+
   return (
     <div className="hidden w-full px-3 sm:px-4 md:block">
       <nav
