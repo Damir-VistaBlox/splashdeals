@@ -26,9 +26,6 @@ export function HomeGatePriceProof({ dict, deal }: { dict: HomeDict; deal: HomeD
             <h2 className="text-[1.15rem] leading-tight font-black tracking-tight uppercase sm:text-[1.35rem]">
               {dict.gate_subtitle}
             </h2>
-            <p className="text-muted-foreground text-[12px] font-bold tracking-[0.12em] uppercase">
-              {dict.gate_title}
-            </p>
             <p className="text-foreground pt-0.5 text-[13px] font-bold">
               {deal.facility.name} · {deal.title}
               {deal.facility.city ? ` · ${deal.facility.city}` : ""}
