@@ -41,14 +41,13 @@ export function MobileTopNav({
             href="/search"
             prefetch
             className="border-border/50 focus-visible:ring-primary/30 group relative flex min-h-[3.1rem] items-center rounded-[1.2rem] border bg-white/88 px-3 shadow-[0_10px_22px_rgba(15,23,42,0.06)] backdrop-blur-md transition-[transform,border-color,background-color,box-shadow] duration-200 focus-visible:ring-2 focus-visible:outline-none active:scale-[0.99]"
-            aria-label={searchLabel}
           >
             <span className="text-muted-foreground flex h-8 w-8 shrink-0 items-center justify-center">
               <Icon name="search" className="text-[17px]" />
             </span>
             <span className="min-w-0 flex-1 px-2">
               <span className="text-foreground block truncate text-sm font-bold">{searchHint}</span>
-              <span className="text-muted-foreground block text-[10px] font-black tracking-[0.12em] uppercase">
+              <span className="text-muted-foreground block truncate text-[10px] font-black tracking-[0.12em] uppercase">
                 Objekti, gradovi, ponude
               </span>
             </span>

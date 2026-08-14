@@ -28,6 +28,7 @@ export default async function MojeRecenzijePage() {
     description:
       t.reviews_desc ?? "Uredite tekst, proverite status i pratite sve objavljene utiske.",
     noReviews: t.no_reviews ?? "Još uvek niste napisali nijednu recenziju.",
+    browseFacilities: t.browse_facilities ?? "Pogledaj ponudu",
     editReview: t.edit_review ?? "Izmeni",
     deleteReview: t.delete_review ?? "Obriši",
     save: t.save_profile ?? "Sačuvaj",
@@ -78,6 +79,7 @@ export default async function MojeRecenzijePage() {
           title_placeholder: labels.titlePlaceholder,
           content_placeholder: labels.contentPlaceholder,
           generic_error: labels.genericError,
+          browse_facilities: labels.browseFacilities,
         }}
       />
     </div>

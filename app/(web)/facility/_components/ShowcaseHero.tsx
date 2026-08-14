@@ -13,7 +13,11 @@ interface ShowcaseHeroProps {
 
 const HERO_IMAGE_SIZES =
   "(max-width: 420px) 100vw, (max-width: 768px) 100vw, (max-width: 1200px) 92vw, 1280px";
-const HERO_IMAGE_QUALITY = 48;
+// Next.js restricts `quality` to the `images.qualities` allowlist (default: [75] — see
+// next.config.ts, which doesn't override it). A custom value here (previously 48) throws
+// at request time and silently breaks the LCP hero image in production. Keep this at the
+// default-allowed quality unless next.config.ts is updated to allow more values.
+const HERO_IMAGE_QUALITY = 75;
 
 /**
  * SSR-first hero media.

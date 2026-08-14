@@ -1,6 +1,7 @@
 import { getDictionary } from "@/lib/dictionaries";
 import { isSafeCallbackPath } from "@/lib/auth/callback-url";
 import { SignInButtons } from "./_components/SignInButtons";
+import { Icon } from "@/components/ui/Icon";
 import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
@@ -63,21 +64,29 @@ export default async function PrijavaPage({
         {oauthError ? (
           <p
             role="alert"
-            className="border-destructive/30 bg-destructive/10 text-destructive rounded-xl border px-3 py-2 text-center text-sm font-medium"
+            className="border-destructive/30 bg-destructive/10 text-destructive flex items-center justify-center gap-2 rounded-xl border px-3 py-2.5 text-center text-sm font-medium"
           >
+            <Icon name="warning" className="size-4 shrink-0" />
             {oauthError}
           </p>
         ) : null}
 
         <SignInButtons dict={t} callbackUrl={callbackUrl} providers={providers} />
 
-        <div className="grid gap-2 rounded-[1.35rem] border border-white/70 bg-white/70 p-3 text-left">
+        <div className="space-y-2.5 rounded-[1.35rem] border border-white/70 bg-white/70 p-4 text-left">
           <p className="text-foreground text-xs font-black tracking-[0.18em] uppercase">
             Splashdeals account
           </p>
-          <p className="text-muted-foreground text-sm">{labels.benefitTickets}</p>
-          <p className="text-muted-foreground text-sm">{labels.benefitHistory}</p>
-          <p className="text-muted-foreground text-sm">{labels.benefitSupport}</p>
+          <ul className="space-y-2">
+            {[labels.benefitTickets, labels.benefitHistory, labels.benefitSupport].map(
+              (benefit) => (
+                <li key={benefit} className="text-muted-foreground flex items-start gap-2 text-sm">
+                  <Icon name="check_circle" className="text-primary mt-0.5 size-4 shrink-0" />
+                  <span className="leading-snug">{benefit}</span>
+                </li>
+              ),
+            )}
+          </ul>
         </div>
 
         <p className="text-muted-foreground text-center text-xs leading-relaxed">{labels.note}</p>

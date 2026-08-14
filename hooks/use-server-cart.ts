@@ -91,3 +91,8 @@ export const useServerCart = create<ServerCartState>((set, get) => ({
 export function useCartItemCount() {
   return useServerCart((state) => state.totalItems);
 }
+
+// TEMP-DEBUG-EXPOSE: removed after mobile QA screenshot pass.
+if (typeof window !== "undefined") {
+  (window as any).__cartStore = useServerCart;
+}

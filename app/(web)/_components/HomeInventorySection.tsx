@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { Icon } from "@/components/ui/Icon";
 import { HomeDealCard } from "./HomeDealCard";
 import type { HomeDeal } from "@/lib/home/deals";
 
@@ -11,6 +12,9 @@ export function HomeInventorySection({ dict, deals }: { dict: HomeDict; deals: H
       <div className="mx-auto max-w-7xl px-3 sm:px-6 md:px-8">
         <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
           <div className="max-w-2xl">
+            <p className="text-primary mb-1 text-[10px] font-black tracking-[0.2em] uppercase">
+              Izdvojene ponude
+            </p>
             <h2 className="mb-1 text-[1.9rem] leading-none font-black tracking-[-0.06em] uppercase italic sm:text-4xl">
               {dict.offers_title}
             </h2>
@@ -34,11 +38,14 @@ export function HomeInventorySection({ dict, deals }: { dict: HomeDict; deals: H
 
       <div className="mx-auto max-w-7xl px-3 sm:px-6 md:px-8">
         {deals.length === 0 ? (
-          <div className="public-panel flex flex-col items-center gap-4 rounded-[1.75rem] border-dashed px-6 py-16 text-center">
-            <p className="text-muted-foreground max-w-md text-sm">
+          <div className="public-panel flex flex-col items-center gap-3 rounded-[1.75rem] border-white/70 px-6 py-10 text-center sm:py-16">
+            <span className="bg-primary/10 text-primary flex h-12 w-12 items-center justify-center rounded-full">
+              <Icon name="waves" className="text-[22px]" />
+            </span>
+            <p className="text-muted-foreground max-w-md text-sm leading-relaxed">
               {dict.rail_empty || "Trenutno nema aktivnih ponuda sa slikom."}
             </p>
-            <Button asChild className="h-12 min-h-12 rounded-full px-6">
+            <Button asChild className="h-12 min-h-12 rounded-full bg-primary-dark px-6 hover:bg-primary-dark/90">
               <Link href="/akva-parkovi">{dict.inventory_cta}</Link>
             </Button>
           </div>

@@ -512,7 +512,7 @@ export function CartClient({
     <section
       id="cart-content"
       aria-labelledby="cart-page-title"
-      className="mx-auto min-h-[50vh] max-w-7xl px-3 pt-4 pb-[calc(9.5rem+env(safe-area-inset-bottom,0px))] sm:px-12 sm:pt-12 sm:pb-32"
+      className="mx-auto min-h-[50vh] max-w-7xl px-3 pt-4 pb-[calc(11rem+env(safe-area-inset-bottom,0px))] sm:px-12 sm:pt-12 sm:pb-32"
     >
       <GuestCartConflictModal
         open={Boolean(conflict)}
@@ -612,16 +612,16 @@ export function CartClient({
           <p className="text-muted-foreground mt-4 max-w-xs text-center text-[13px] font-medium sm:mt-6 sm:text-sm">
             {cartDict?.empty_description}
           </p>
-          <div className="mt-4 grid w-full max-w-sm gap-2.5 min-[380px]:grid-cols-2">
+          <div className="mt-5 grid w-full max-w-sm gap-2.5 min-[460px]:grid-cols-2">
             <Link href="/akva-parkovi" className="block">
-              <Button className="min-h-11 w-full rounded-full px-4 text-[11px] font-black tracking-[0.14em] uppercase">
+              <Button className="min-h-12 w-full rounded-full px-4 text-center text-[11px] leading-tight font-black tracking-[0.1em] whitespace-normal uppercase">
                 {cartDict?.browse}
               </Button>
             </Link>
             <Link href="/how-it-works" className="block">
               <Button
                 variant="outline"
-                className="min-h-11 w-full rounded-full px-4 text-[11px] font-black tracking-[0.14em] uppercase"
+                className="min-h-12 w-full rounded-full px-4 text-center text-[11px] leading-tight font-black tracking-[0.1em] whitespace-normal uppercase"
               >
                 {cartDict?.learn_how_it_works || "Kako radi"}
               </Button>
@@ -668,9 +668,14 @@ export function CartClient({
       {items.length > 0 && (
         <aside
           aria-label={cartDict?.quick_checkout_summary || "Brzi pregled naplate"}
-          className="pointer-events-auto fixed inset-x-0 bottom-[calc(4rem+env(safe-area-inset-bottom,0px))] z-[999] px-3 md:hidden"
+          className="pointer-events-auto fixed inset-x-0 bottom-[calc(5.5rem+env(safe-area-inset-bottom,0px))] z-[999] px-3 md:hidden"
         >
-          <div className="surface-glass mx-auto flex max-w-md items-center gap-3 rounded-[1.5rem] px-3.5 py-3">
+          <div
+            className="mx-auto flex max-w-md items-center gap-3 rounded-[1.5rem] border border-white/80 px-3.5 py-3 shadow-[0_18px_40px_rgba(15,23,42,0.16)] backdrop-blur-2xl"
+            style={{
+              background: "linear-gradient(180deg, rgba(255,255,255,0.97), rgba(255,255,255,0.94))",
+            }}
+          >
             <div className="min-w-0 flex-1">
               <p className="text-muted-foreground text-[9px] font-black tracking-[0.18em] uppercase">
                 {cartDict?.total_label || cartDict?.total}

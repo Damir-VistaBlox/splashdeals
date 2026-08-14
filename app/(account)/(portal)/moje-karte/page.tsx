@@ -75,24 +75,28 @@ export default async function MojeKartePage() {
             {session.user.name}
           </p>
         </div>
-        <Card className="border-border/70 from-background to-muted/40 grid gap-3 rounded-[1.75rem] bg-gradient-to-br p-4 shadow-[0_18px_48px_-36px_rgba(15,23,42,0.38)] sm:grid-cols-3 sm:p-5">
-          <div>
-            <p className="text-muted-foreground text-[11px] font-black tracking-[0.2em] uppercase">
+        <Card className="border-border/70 from-background to-muted/40 grid grid-cols-3 gap-2 rounded-[1.75rem] bg-gradient-to-br p-4 shadow-[0_18px_48px_-36px_rgba(15,23,42,0.38)] sm:gap-3 sm:p-5">
+          <div className="min-w-0">
+            <p className="text-muted-foreground text-[9px] leading-tight font-black tracking-[0.1em] uppercase sm:text-[11px] sm:tracking-[0.2em]">
               {labels.active}
             </p>
-            <p className="mt-1 text-2xl font-black tracking-tight">{activeTickets.length}</p>
+            <p className="mt-1 text-xl font-black tracking-tight sm:text-2xl">
+              {activeTickets.length}
+            </p>
           </div>
-          <div>
-            <p className="text-muted-foreground text-[11px] font-black tracking-[0.2em] uppercase">
+          <div className="min-w-0">
+            <p className="text-muted-foreground text-[9px] leading-tight font-black tracking-[0.1em] uppercase sm:text-[11px] sm:tracking-[0.2em]">
               {labels.expiring}
             </p>
-            <p className="mt-1 text-2xl font-black tracking-tight">{expiringSoonCount}</p>
+            <p className="mt-1 text-xl font-black tracking-tight sm:text-2xl">
+              {expiringSoonCount}
+            </p>
           </div>
-          <div>
-            <p className="text-muted-foreground text-[11px] font-black tracking-[0.2em] uppercase">
+          <div className="min-w-0">
+            <p className="text-muted-foreground text-[9px] leading-tight font-black tracking-[0.1em] uppercase sm:text-[11px] sm:tracking-[0.2em]">
               {labels.total}
             </p>
-            <p className="mt-1 text-2xl font-black tracking-tight">{tickets.length}</p>
+            <p className="mt-1 text-xl font-black tracking-tight sm:text-2xl">{tickets.length}</p>
           </div>
         </Card>
       </div>
@@ -143,7 +147,7 @@ export default async function MojeKartePage() {
                   </Badge>
                 </div>
                 <div className="flex flex-col gap-4 p-4">
-                  <div className="bg-background relative mx-auto aspect-square w-full max-w-[11rem] overflow-hidden rounded-[1.35rem] border p-2 shadow-sm">
+                  <div className="bg-background relative mx-auto aspect-square w-full max-w-[13rem] overflow-hidden rounded-[1.35rem] border p-2 shadow-sm">
                     {ticket.qrHash && (
                       <Image
                         src={`/api/qr/${ticket.qrHash}`}

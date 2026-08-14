@@ -162,19 +162,19 @@ export async function TicketGrid({ dict }: { dict: Record<string, any> }) {
             {/* Single overlay link covering the entire card */}
             <Link
               href={`/${ticket.facility.slug}#deals`}
-              className="focus-visible:ring-primary absolute inset-0 z-20 rounded-xl focus-visible:ring-2"
+              className="focus-visible:ring-primary absolute inset-0 z-20 rounded-[1.75rem] focus-visible:ring-2"
               aria-label={`${ticket.facility.name} — ${ticket.title}`}
             />
-            <Card className="group border-border hover:border-primary/30 hover:shadow-primary/5 flex h-full flex-col overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:shadow-xl">
+            <Card className="group border-border hover:border-primary/30 hover:shadow-primary/5 flex h-full flex-col overflow-hidden rounded-[1.75rem] transition-all duration-500 hover:-translate-y-2 hover:shadow-xl">
               {/* Facility name + city above image */}
               <div className="flex flex-col gap-0.5 px-3 pt-3 sm:px-4 sm:pt-4">
                 <h3 className="text-foreground line-clamp-1 text-[11px] leading-tight font-black tracking-tight uppercase sm:text-xs">
                   {ticket.facility.name}
                 </h3>
                 {ticket.facility.city && (
-                  <span className="text-muted-foreground flex items-center gap-1 text-[9px] font-bold">
-                    <Icon name="location_on" className="text-primary/70 text-[9px]" />
-                    {ticket.facility.city}
+                  <span className="text-muted-foreground flex min-w-0 items-center gap-1 text-[9px] font-bold">
+                    <Icon name="location_on" className="text-primary/70 shrink-0 text-[9px]" />
+                    <span className="truncate">{ticket.facility.city}</span>
                   </span>
                 )}
               </div>
@@ -228,7 +228,7 @@ export async function TicketGrid({ dict }: { dict: Record<string, any> }) {
               </div>
 
               <div className="flex flex-grow flex-col px-3 pt-2 pb-3 sm:px-4 sm:pb-4">
-                <h4 className="group-hover:text-primary mb-1 text-sm leading-tight font-black tracking-tight uppercase transition-colors">
+                <h4 className="group-hover:text-primary mb-1 line-clamp-2 text-sm leading-tight font-black tracking-tight uppercase transition-colors">
                   {ticket.title}
                 </h4>
 
@@ -287,7 +287,7 @@ export async function TicketGrid({ dict }: { dict: Record<string, any> }) {
           key={`filler-${i}`}
           className="pointer-events-none h-full opacity-40 grayscale transition-opacity duration-500 select-none"
         >
-          <Card className="border-border flex h-full flex-col overflow-hidden border-dashed opacity-50">
+          <Card className="border-border flex h-full flex-col overflow-hidden rounded-[1.75rem] border-dashed opacity-50">
             <div className="px-3 pt-3 sm:px-4 sm:pt-4">
               <div className="bg-muted mb-1 h-3 w-3/4 rounded-md" />
               <div className="bg-muted h-2 w-1/2 rounded-md" />

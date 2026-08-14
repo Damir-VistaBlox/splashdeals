@@ -24,35 +24,36 @@ export function CategoryOrbSkeleton() {
 
 /**
  * 🦴 FacilityCardSkeleton
- * Mirroring the Facility Card layout for zero-CLS streaming.
+ * Mirrors FacilityCard.tsx's real dimensions (min-h-[320px] → sm:h-[410px], rounded-[1.6rem]
+ * → sm:rounded-[2rem]) so streaming the real card in doesn't shift layout (CLS Zero).
  */
 export function FacilityCardSkeleton() {
   return (
-    <Card className="border-border group relative flex h-[400px] flex-col overflow-hidden">
+    <Card className="border-border group relative flex min-h-[320px] flex-col overflow-hidden rounded-[1.6rem] sm:h-[410px] sm:min-h-0 sm:rounded-[2rem]">
       {/* Ghost Background Image */}
       <div className="bg-muted absolute inset-0 transition-transform duration-1000 group-hover:scale-110" />
       <div className="from-background via-background/40 absolute inset-0 bg-gradient-to-t to-transparent" />
 
       {/* Content Skeleton */}
-      <div className="relative z-10 mt-auto p-10">
-        {/* Category tag */}
-        <div className="bg-primary/10 mb-4 h-2 w-20 animate-pulse rounded" />
+      <div className="relative z-10 mt-auto flex flex-col gap-2.5 p-3.5 sm:p-5">
+        {/* Category + city chips */}
+        <div className="flex gap-1.5">
+          <div className="bg-primary/10 h-6 w-20 animate-pulse rounded-full" />
+          <div className="bg-muted h-6 w-16 animate-pulse rounded-full" />
+        </div>
 
         {/* Title placeholder */}
-        <div className="bg-muted mb-6 h-8 w-3/4 animate-pulse rounded" />
+        <div className="bg-muted h-7 w-3/4 animate-pulse rounded-lg" />
 
-        <div className="flex items-center justify-between">
-          {/* Address ghost */}
-          <div className="flex items-center gap-2">
-            <div className="bg-muted h-3.5 w-3.5 rounded-full" />
-            <div className="bg-muted h-2 w-24 rounded" />
-          </div>
-
+        <div className="mt-1 flex items-end justify-between gap-2.5 border-t border-white/14 pt-3">
           {/* Price ghost */}
-          <div className="flex items-end gap-1">
-            <div className="bg-muted mb-1 h-2 w-6 rounded" />
-            <div className="bg-primary/10 h-6 w-16 rounded" />
+          <div className="flex flex-col gap-1.5">
+            <div className="bg-muted h-2 w-14 rounded" />
+            <div className="bg-primary/10 h-7 w-20 rounded" />
           </div>
+
+          {/* CTA pill ghost */}
+          <div className="bg-muted h-11 w-24 rounded-full" />
         </div>
       </div>
     </Card>

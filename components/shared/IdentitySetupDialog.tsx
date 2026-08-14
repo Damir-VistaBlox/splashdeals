@@ -157,6 +157,9 @@ export function IdentitySetupDialog({
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   autoFocus
+                  autoComplete="name"
+                  autoCapitalize="words"
+                  enterKeyHint="next"
                   aria-describedby="name-desc"
                 />
                 <p id="name-desc" className="text-muted-foreground text-xs italic">

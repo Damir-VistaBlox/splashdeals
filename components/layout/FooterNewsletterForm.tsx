@@ -9,9 +9,18 @@ import { cn } from "@/lib/utils";
 import type { Dict } from "@/lib/types";
 import { subscribeToNewsletter } from "@/app/(server)/lib/actions/newsletter";
 
-export function FooterNewsletterForm({ dict }: { dict: Dict | null }) {
+export function FooterNewsletterForm({
+  dict,
+  idSuffix = "",
+}: {
+  dict: Dict | null;
+  /** Disambiguates the input id when this form is mounted more than once in the DOM
+   *  at a given time (e.g. separate mobile/desktop footer layouts). */
+  idSuffix?: string;
+}) {
   const [state, formAction, isPending] = useActionState(subscribeToNewsletter, null);
   const [email, setEmail] = React.useState("");
+  const inputId = idSuffix ? `newsletter-email-${idSuffix}` : "newsletter-email";
 
   React.useEffect(() => {
     if (state?.success) {
@@ -21,13 +30,13 @@ export function FooterNewsletterForm({ dict }: { dict: Dict | null }) {
 
   return (
     <form action={formAction}>
-      <div className="flex gap-2">
+      <div className="flex flex-col gap-2 sm:flex-row">
         <div className="relative flex-1">
-          <label htmlFor="newsletter-email" className="sr-only">
+          <label htmlFor={inputId} className="sr-only">
             {dict?.footer?.newsletter_sr || "E-mail adresa za obaveštenja"}
           </label>
           <Input
-            id="newsletter-email"
+            id={inputId}
             name="email"
             type="email"
             autoComplete="email"
@@ -35,7 +44,7 @@ export function FooterNewsletterForm({ dict }: { dict: Dict | null }) {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder={dict?.footer?.email_placeholder || "Vaša E-mail adresa"}
-            className="h-11 border-white/70 bg-white/78 text-base md:text-xs"
+            className="h-11 w-full border-slate-200/90 bg-white/90 text-base shadow-sm md:text-xs"
           />
           <input type="hidden" name="source" value="footer" />
         </div>
@@ -43,8 +52,12 @@ export function FooterNewsletterForm({ dict }: { dict: Dict | null }) {
           type="submit"
           size="sm"
           disabled={isPending}
-          className="flex h-11 min-w-[90px] items-center justify-center rounded-xl px-6 text-xs font-black tracking-tighter uppercase shadow-sm transition-opacity disabled:opacity-50"
-          aria-label={dict?.footer?.newsletter_aria || "Pretplatite se na obaveštenja"}
+          className="flex h-11 w-full min-w-[90px] items-center justify-center rounded-xl px-6 text-xs font-black tracking-tighter uppercase shadow-sm transition-opacity disabled:opacity-50 sm:w-auto"
+          aria-label={
+            isPending || state?.success
+              ? dict?.footer?.newsletter_aria || "Pretplatite se na obaveštenja"
+              : undefined
+          }
         >
           {isPending ? (
             <Icon name="progress_activity" className="animate-spin text-[16px]" />

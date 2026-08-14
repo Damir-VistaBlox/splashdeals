@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Icon } from "@/components/ui/Icon";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 type SearchBoxProps = {
   dict?: Record<string, any>;
@@ -35,7 +36,7 @@ export function SearchBox({
   return (
     <form
       onSubmit={handleSubmit}
-      className={className || "relative"}
+      className={cn("relative", className)}
       role="search"
       aria-label={searchDict?.form_aria || searchDict?.heading || "Pretraga"}
     >

@@ -225,7 +225,7 @@ export function ShowcaseTicketGroups({
                 variant="ghost"
                 onClick={() => setActiveGroupId(group.id)}
                 className={cn(
-                  "relative h-10 min-h-10 shrink-0 rounded-full px-4 text-[10px] font-black tracking-[0.14em] uppercase transition-colors duration-300 select-none",
+                  "relative h-11 min-h-11 shrink-0 rounded-full px-4 text-[10px] font-black tracking-[0.14em] uppercase transition-colors duration-300 select-none",
                   isActive
                     ? "text-primary-foreground"
                     : "text-muted-foreground hover:text-foreground border border-white/70 bg-white/82 md:border-none md:bg-transparent",
@@ -323,7 +323,12 @@ export function ShowcaseTicketGroups({
       {/* Mobile Sticky Drawer */}
       {totalItems > 0 && (
         <div className="animate-in slide-in-from-bottom fixed right-3 bottom-[calc(5rem+env(safe-area-inset-bottom,0px))] left-3 z-[999] duration-300 md:hidden">
-          <div className="surface-glass flex items-center justify-between gap-4 rounded-[1.45rem] p-3">
+          <div
+            className="flex items-center justify-between gap-4 rounded-[1.45rem] border border-white/80 p-3 shadow-[0_18px_40px_rgba(15,23,42,0.16)] backdrop-blur-2xl"
+            style={{
+              background: "linear-gradient(180deg, rgba(255,255,255,0.97), rgba(255,255,255,0.94))",
+            }}
+          >
             <div className="space-y-0.5">
               <span className="text-muted-foreground text-[9px] font-black tracking-widest uppercase">
                 {dict?.ticketing?.cart_label}
