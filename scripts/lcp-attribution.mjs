@@ -150,6 +150,9 @@ for (const deviceInfo of deviceMatrix) {
 await browser.close();
 
 const reportPath = path.join(outputDir, "report.json");
-await fs.writeFile(reportPath, JSON.stringify({ targetUrl, generatedAt: new Date().toISOString(), results }, null, 2));
+await fs.writeFile(
+  reportPath,
+  JSON.stringify({ targetUrl, generatedAt: new Date().toISOString(), results }, null, 2),
+);
 
 console.log(JSON.stringify({ reportPath, results }, null, 2));

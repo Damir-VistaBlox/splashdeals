@@ -6,7 +6,9 @@ const outputPath = process.argv[4] || "/tmp/waited-screenshot.png";
 const waitMs = Number(process.argv[5] || 3000);
 
 if (!url) {
-  console.error("Usage: node scripts/waited-screenshot.mjs <url> [deviceName] [outputPath] [waitMs]");
+  console.error(
+    "Usage: node scripts/waited-screenshot.mjs <url> [deviceName] [outputPath] [waitMs]",
+  );
   process.exit(1);
 }
 
