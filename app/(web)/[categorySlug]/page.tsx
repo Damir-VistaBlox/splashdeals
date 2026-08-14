@@ -46,6 +46,7 @@ export async function generateStaticParams() {
 
 interface PageProps {
   params: Promise<{ categorySlug: string }>;
+  searchParams?: Promise<{ sort?: string }>;
 }
 
 /**
@@ -61,10 +62,11 @@ function detectLocale(slug: string): Locale {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { categorySlug } = await params;
+  const canonicalCategorySlug = resolveCategoryKey(categorySlug) || categorySlug;
   const locale = detectLocale(categorySlug);
 
   if (isKnownCategory(categorySlug.toLowerCase())) {
-    return await getDiscoveryMetadata(categorySlug);
+    return await getDiscoveryMetadata(canonicalCategorySlug);
   }
 
   let mode: "category" | "facility" | null = null;
@@ -95,7 +97,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   if (mode === "category") {
-    return await getDiscoveryMetadata(categorySlug);
+    return await getDiscoveryMetadata(canonicalCategorySlug);
   }
   if (mode === "facility" && facilityCategory) {
     return await buildFacilityMetadata(categorySlug, facilityCategory);
@@ -104,13 +106,18 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   notFound();
 }
 
-export default async function CategoryPage({ params }: PageProps) {
+export default async function CategoryPage({ params, searchParams }: PageProps) {
   const { categorySlug } = await params;
+  const canonicalCategorySlug = resolveCategoryKey(categorySlug) || categorySlug;
   const locale = detectLocale(categorySlug);
 
   if (isKnownCategory(categorySlug.toLowerCase())) {
-    const resolvedSlug = resolveCategoryKey(categorySlug) || categorySlug;
-    return <DiscoveryTemplate params={Promise.resolve({ categorySlug: resolvedSlug })} />;
+    return (
+      <DiscoveryTemplate
+        params={Promise.resolve({ categorySlug: canonicalCategorySlug })}
+        searchParams={searchParams}
+      />
+    );
   }
 
   let mode: "category" | "facility" | null = null;
@@ -143,7 +150,8 @@ export default async function CategoryPage({ params }: PageProps) {
   if (mode === "category") {
     return (
       <DiscoveryTemplate
-        params={Promise.resolve({ categorySlug: resolveCategoryKey(categorySlug) || categorySlug })}
+        params={Promise.resolve({ categorySlug: canonicalCategorySlug })}
+        searchParams={searchParams}
       />
     );
   }

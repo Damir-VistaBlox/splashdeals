@@ -14,6 +14,7 @@ import {
   stripBrandSuffix,
   toNumber,
 } from "./seo-utils";
+import { BRAND_NAME, pageMetadata, publicRobots } from "@/lib/seo";
 
 export type { FacilityWithIncludes };
 
@@ -243,8 +244,9 @@ export async function buildFacilityMetadata(
   const ticketCount = entryTickets.length || allTickets.length;
 
   const minPrice = getEntryMinPrice(facility);
-  const priceHint = minPrice != null ? ` Već od ${minPrice} RSD!` : "";
-  const ticketHint = ticketCount > 0 ? ` | ${ticketCount} vrsta ulaznica dostupno` : "";
+  const priceSnippet = minPrice != null ? `od ${minPrice} RSD` : null;
+  const priceHint = priceSnippet ? ` Već ${priceSnippet}.` : "";
+  const ticketHint = ticketCount > 0 ? ` ${ticketCount} vrsta ulaznica dostupno.` : "";
 
   const maxDiscount = calculateMaxDiscount(
     entryTickets.map((t) => ({
@@ -264,27 +266,33 @@ export async function buildFacilityMetadata(
       : "";
 
   const fallbackTitle =
-    maxDiscount > 0
-      ? `${localizedName}${cityPart} ulaznice — uštedi do ${maxDiscount}%`
-      : `${localizedName}${cityPart} ulaznice ${currentYear}`;
+    maxDiscount > 0 && priceSnippet
+      ? `${localizedName}${cityPart} | Cene ulaznica ${priceSnippet} | Ušteda do ${maxDiscount}%`
+      : priceSnippet
+        ? `${localizedName}${cityPart} | Cene ulaznica ${priceSnippet}`
+        : `${localizedName}${cityPart} | Ulaznice i cene ${currentYear}`;
 
   const rawTitle = facility.metaTitle || fallbackTitle;
-  const title = stripBrandSuffix(rawTitle);
+  const unbrandedTitle = stripBrandSuffix(rawTitle);
+  const title =
+    /splash\s?deals/i.test(unbrandedTitle) || unbrandedTitle.length > 58
+      ? unbrandedTitle
+      : `${unbrandedTitle} | ${BRAND_NAME}`;
 
   const seasonHint = ` Sezona ${currentYear}.`;
-  const fallbackDescription = `Kupi regularne ulaznice za ${facility.name}${facility.city ? ` u ${facility.city}` : ""}.${priceHint} Digitalna karta za ${categoryLabel.toLowerCase()} na Splashdeals.${seasonHint}`;
+  const fallbackDescription = `Digitalne ulaznice za ${facility.name}${facility.city ? ` u ${facility.city}` : ""}. ${categoryLabel} sa jasnim cenama, proverom dostupnosti i mobilnom kupovinom na ${BRAND_NAME}.${priceHint}${ticketHint}${seasonHint}`;
   const baseDescription =
     facility.metaDescription || facility.description?.slice(0, 140) || fallbackDescription;
 
   let finalDescription = baseDescription;
-  if (!/već od|vec od/i.test(finalDescription) && priceHint) {
+  if (!/već od|vec od|od \d+\s*rsd/i.test(finalDescription) && priceHint) {
     finalDescription = `${finalDescription}${priceHint}`;
   }
   if (!/vrsta ulaznica/i.test(finalDescription) && ticketHint) {
     finalDescription = `${finalDescription}${ticketHint}`;
   }
-  if (finalDescription.length > 300) {
-    finalDescription = `${finalDescription.slice(0, 297)}…`;
+  if (finalDescription.length > 185) {
+    finalDescription = `${finalDescription.slice(0, 182).trimEnd()}…`;
   }
 
   const canonicalUrl = absoluteUrl(`/${facilitySlug}`, siteUrl);
@@ -293,11 +301,13 @@ export async function buildFacilityMetadata(
   const keywords = [
     facility.name,
     `${facility.name} ulaznice`,
+    `${facility.name} cene ulaznica`,
     `${categoryLabel} Srbija`,
     facility.city ? `${facility.name} ${facility.city}` : null,
     facility.city ? `${categoryLabel} ${facility.city}` : null,
     "digitalne ulaznice",
-    "SplashDeals",
+    "kupi ulaznice online",
+    BRAND_NAME,
   ].filter(Boolean) as string[];
 
   return {
@@ -306,31 +316,14 @@ export async function buildFacilityMetadata(
     keywords,
     category: categoryLabel,
     robots: indexable
-      ? {
-          index: true,
-          follow: true,
-          googleBot: {
-            index: true,
-            follow: true,
-            "max-image-preview": "large",
-            "max-snippet": -1,
-            "max-video-preview": -1,
-          },
-        }
+      ? publicRobots()
       : { index: false, follow: false, nocache: true, googleBot: { index: false, follow: false } },
-    alternates: {
-      canonical: canonicalUrl,
-      languages: {
-        "sr-RS": canonicalUrl,
-        sr: canonicalUrl,
-        "x-default": canonicalUrl,
-      },
-    },
+    ...pageMetadata(`/${facilitySlug}`),
     openGraph: {
       title,
       description: finalDescription,
       url: canonicalUrl,
-      siteName: "SplashDeals",
+      siteName: BRAND_NAME,
       images: [
         {
           url: ogImage,

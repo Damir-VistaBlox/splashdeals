@@ -3,7 +3,7 @@ import type { NextRequest } from "next/server";
 import { isAccountProtectedPath } from "@/lib/auth/account-paths";
 
 /**
- * Buyer account auth middleware.
+ * Buyer account auth proxy.
  *
  * IMPORTANT: Next.js route groups like `(account)` are NOT part of the URL.
  * Matcher must use real paths: /moje-karte, /omiljeni, /nalog, …
@@ -23,7 +23,7 @@ export const config = {
   ],
 };
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Defense: only enforce on known protected account paths

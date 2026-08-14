@@ -1,6 +1,6 @@
 import "./globals.css";
 import { type ReactNode, Suspense } from "react";
-import { Inter } from "next/font/google";
+import localFont from "next/font/local";
 import { cn } from "@/lib/utils";
 import { auth } from "@/app/(server)/lib/auth";
 import { headers } from "next/headers";
@@ -8,10 +8,21 @@ import { redirect } from "next/navigation";
 import { connection } from "next/server";
 import type { Metadata } from "next";
 
-const appSans = Inter({
-  subsets: ["latin", "latin-ext"],
+const appSans = localFont({
   variable: "--font-app-sans",
   display: "swap",
+  src: [
+    {
+      path: "../../../public/fonts/Inter-Regular.woff2",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../../../public/fonts/Inter-Bold.woff2",
+      weight: "700",
+      style: "normal",
+    },
+  ],
 });
 
 export const metadata: Metadata = {

@@ -76,11 +76,15 @@ export function MobileTopNav({
           dict={dict}
           mobileCompact
         />
-        <div className="relative min-w-0 flex-1">
+        <div
+          className="relative min-w-0 flex-1"
+          role="search"
+          aria-label={dict.nav.search || "Pretraga"}
+        >
           <label htmlFor="mobile-header-search" className="sr-only">
             {dict.nav.search || "Pretraga"}
           </label>
-          <div className="border-border/50 relative flex min-h-[3rem] items-center rounded-[1.15rem] border bg-white/88 px-3 shadow-[0_10px_22px_rgba(15,23,42,0.06)] backdrop-blur-md">
+          <div className="border-border/50 focus-within:border-primary/25 relative flex min-h-[3.1rem] items-center rounded-[1.2rem] border bg-white/88 px-3 shadow-[0_10px_22px_rgba(15,23,42,0.06)] backdrop-blur-md transition-colors focus-within:bg-white">
             <span className="text-muted-foreground flex h-8 w-8 shrink-0 items-center justify-center">
               <Icon name="search" className="text-[17px]" />
             </span>
@@ -90,14 +94,14 @@ export function MobileTopNav({
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Pretraži ponude"
               enterKeyHint="search"
-              className="text-foreground placeholder:text-muted-foreground h-full min-h-[3rem] border-0 bg-transparent px-2 text-sm font-bold shadow-none focus-visible:ring-0"
+              className="text-foreground placeholder:text-muted-foreground h-full min-h-[3.1rem] border-0 bg-transparent px-2 text-sm font-bold shadow-none focus-visible:ring-0"
             />
             {trimmedQuery ? (
               <button
                 type="button"
                 onClick={() => setQuery("")}
                 aria-label="Obriši pretragu"
-                className="text-muted-foreground hover:text-foreground flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-colors"
+                className="text-muted-foreground hover:text-foreground flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition-colors"
               >
                 <Icon name="close" className="text-[16px]" />
               </button>
@@ -106,6 +110,17 @@ export function MobileTopNav({
 
           {canSearch && (
             <div className="border-border/50 absolute top-[calc(100%+0.45rem)] right-0 left-0 z-[1100] overflow-hidden rounded-[1.15rem] border bg-white/95 p-1.5 shadow-[0_18px_34px_rgba(15,23,42,0.12)] backdrop-blur-xl">
+              <div className="flex items-center justify-between gap-2 px-2.5 pt-2 pb-1.5">
+                <span className="text-primary text-[9px] font-black tracking-[0.18em] uppercase">
+                  Brzi rezultati
+                </span>
+                <Link
+                  href={`/search?q=${encodeURIComponent(trimmedQuery)}`}
+                  className="text-muted-foreground hover:text-foreground text-[9px] font-black tracking-[0.14em] uppercase transition-colors"
+                >
+                  Svi rezultati
+                </Link>
+              </div>
               {isLoading ? (
                 <div className="flex min-h-18 items-center justify-center gap-2 px-3 py-4">
                   <Icon
@@ -117,13 +132,13 @@ export function MobileTopNav({
                   </span>
                 </div>
               ) : visibleResults.length > 0 ? (
-                <div className="space-y-1">
+                <div className="max-h-[min(55vh,22rem)] space-y-1 overflow-y-auto overscroll-contain pr-0.5">
                   {visibleResults.map((result) => (
                     <Link
                       key={result.id}
                       href={result.href}
                       onClick={() => setQuery("")}
-                      className="hover:bg-muted/45 flex items-center gap-3 rounded-[0.95rem] px-3 py-3 transition-colors"
+                      className="hover:bg-muted/45 focus-visible:ring-primary flex items-center gap-3 rounded-[0.95rem] px-3 py-3 transition-colors focus-visible:ring-2 focus-visible:outline-none"
                     >
                       <span className="bg-primary/8 text-primary flex h-9 w-9 shrink-0 items-center justify-center rounded-[0.9rem]">
                         <Icon name="location_on" className="text-[17px]" />
@@ -145,9 +160,15 @@ export function MobileTopNav({
                 </div>
               ) : (
                 <div className="px-3 py-4 text-center">
-                  <span className="text-muted-foreground text-[10px] font-black tracking-[0.12em] uppercase">
-                    Nema rezultata
+                  <span className="text-muted-foreground block text-[10px] font-black tracking-[0.12em] uppercase">
+                    Nema brzih rezultata
                   </span>
+                  <Link
+                    href={`/search?q=${encodeURIComponent(trimmedQuery)}`}
+                    className="text-primary mt-2 inline-flex text-[10px] font-black tracking-[0.12em] uppercase"
+                  >
+                    Otvori celu pretragu
+                  </Link>
                 </div>
               )}
             </div>

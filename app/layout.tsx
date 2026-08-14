@@ -1,17 +1,30 @@
+import type { CSSProperties } from "react";
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
-import { alternates } from "@/lib/seo";
+import { BRAND_NAME, alternates, publicRobots, resolveSiteUrl } from "@/lib/seo";
 
-const appSans = Inter({
+const appSans = localFont({
   variable: "--font-app-sans",
-  subsets: ["latin", "latin-ext"],
   display: "swap",
+  src: [
+    {
+      path: "../public/fonts/Inter-Regular.woff2",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/Inter-Bold.woff2",
+      weight: "700",
+      style: "normal",
+    },
+  ],
 });
 
 export const viewport: Viewport = {
   themeColor: "#ffffff",
+  colorScheme: "light",
   width: "device-width",
   initialScale: 1,
   // Safe-area for notched phones (BottomNav / fixed chrome)
@@ -20,25 +33,42 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.splashdeals.rs"),
+  metadataBase: new URL(resolveSiteUrl()),
   title: {
-    template: "%s | Splashdeals",
-    default: "Splashdeals | Najbolji Akva Parkovi i Bazeni u Srbiji",
+    template: `%s | ${BRAND_NAME}`,
+    default: "Digitalne ulaznice za akva parkove, bazene i spa centre u Srbiji",
   },
   description:
-    "Preskočite redove i uskočite u zabavu. Kupite digitalne karte za Petroland i druge najbolje akva parkove u Srbiji instant.",
+    "Uporedite cene i kupite digitalne ulaznice za akva parkove, bazene, banje i wellness centre u Srbiji. Mobile-first kupovina, jasne cene i brza isporuka na telefonu.",
+  applicationName: BRAND_NAME,
+  keywords: [
+    "digitalne ulaznice",
+    "akva parkovi Srbija",
+    "bazeni Srbija",
+    "banje Srbija",
+    "wellness spa Srbija",
+    "ulaznice online",
+  ],
   alternates: {
-    canonical: "https://www.splashdeals.rs",
+    canonical: resolveSiteUrl(),
     languages: alternates("/"),
   },
+  robots: publicRobots(),
   openGraph: {
+    title: "Digitalne ulaznice za akva parkove, bazene i spa centre u Srbiji",
+    description:
+      "Kupovina ulaznica prilagođena telefonu: jasne cene, provereni objekti i brza digitalna isporuka za vodene i wellness destinacije u Srbiji.",
+    url: resolveSiteUrl(),
     images: ["/og-image.png"],
     type: "website",
-    siteName: "Splashdeals",
+    siteName: BRAND_NAME,
     locale: "sr_RS",
   },
   twitter: {
     card: "summary_large_image",
+    title: "Digitalne ulaznice za akva parkove, bazene i spa centre u Srbiji",
+    description:
+      "Uporedite cene i kupite ulaznice za akva parkove, bazene, banje i wellness centre u Srbiji uz mobile-first kupovinu.",
     images: ["/og-image.png"],
   },
   icons: {
@@ -54,7 +84,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "Splashdeals",
+    title: BRAND_NAME,
   },
 };
 
@@ -69,7 +99,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-title" content="Splashdeals" />
+        <meta name="apple-mobile-web-app-title" content={BRAND_NAME} />
         <link rel="preload" as="image" href="/noise.svg" />
         <link
           rel="preconnect"
@@ -78,14 +108,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body
-        className={`${appSans.variable} selection:bg-primary/20 bg-background scroll-smooth antialiased`}
-        style={{
-          // Bottom inset is owned by fixed chrome (BottomNav / sticky CTAs),
-          // not body — avoids double home-indicator gap under the nav.
-          paddingTop: "env(safe-area-inset-top)",
-          paddingLeft: "env(safe-area-inset-left)",
-          paddingRight: "env(safe-area-inset-right)",
-        }}
+        className={`${appSans.variable} app-shell selection:bg-primary/20 bg-background scroll-smooth antialiased`}
+        style={
+          {
+            "--safe-area-top": "env(safe-area-inset-top)",
+            "--safe-area-right": "env(safe-area-inset-right)",
+            "--safe-area-bottom": "env(safe-area-inset-bottom)",
+            "--safe-area-left": "env(safe-area-inset-left)",
+          } as CSSProperties
+        }
       >
         <ThemeProvider>{children}</ThemeProvider>
       </body>

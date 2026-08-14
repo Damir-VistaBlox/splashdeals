@@ -2,9 +2,11 @@ import "server-only";
 import { PrismaClient } from "@prisma/client";
 import { PrismaNeon } from "@prisma/adapter-neon";
 
-// Polyfill WebSocket in Node.js for Neon serverless adapter
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-globalThis.WebSocket = require("ws");
+// Prefer Node's native WebSocket on modern runtimes and fall back to ws only when needed.
+if (typeof globalThis.WebSocket === "undefined") {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  globalThis.WebSocket = require("ws");
+}
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;

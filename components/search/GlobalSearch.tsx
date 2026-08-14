@@ -8,6 +8,14 @@ import { Button } from "@/components/ui/button";
 import { getClientDictionary } from "@/lib/client-dictionaries";
 import type { Dict } from "@/lib/types";
 
+type SearchResult = {
+  id: string;
+  href: string;
+  title: string;
+  subtitle?: string | null;
+  type?: string;
+};
+
 /**
  * 🔍 Global Search Command Palette
  * High-performance search interface designed for Parallel/Intercepting routing.
@@ -17,22 +25,42 @@ export function GlobalSearch() {
   const searchParams = useSearchParams();
   const q = searchParams ? searchParams.get("q") || "" : "";
 
-  const [prevQ, setPrevQ] = React.useState(q);
-  const [query, setQuery] = React.useState(q);
-  const [results, setResults] = React.useState<Dict[]>([]);
+  const [query, setQuery] = React.useState(() => q);
+  const [results, setResults] = React.useState<SearchResult[]>([]);
   const [isLoading, setIsLoading] = React.useState(false);
   const [dict, setDict] = React.useState<Dict | null>(null);
+  const trimmedQuery = query.trim();
+  const hasEnoughChars = trimmedQuery.length >= 2;
+  const searchDict = dict?.search;
+  const recentChips: string[] = searchDict?.recent_chips || [
+    "Petroland",
+    "Beograd",
+    "Porodične Akcije",
+  ];
 
   React.useEffect(() => {
     getClientDictionary().then(setDict);
   }, []);
 
-  if (q !== prevQ) {
-    setPrevQ(q);
-    setQuery(q);
-  }
+  React.useEffect(() => {
+    const timer = window.setTimeout(() => {
+      setQuery(q);
+    }, 0);
 
-  const visibleResults = query.length >= 2 ? results : [];
+    return () => window.clearTimeout(timer);
+  }, [q]);
+
+  React.useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        router.back();
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [router]);
+
+  const visibleResults = hasEnoughChars ? results : [];
 
   // Close search and go back
   const handleClose = () => router.back();
@@ -44,14 +72,13 @@ export function GlobalSearch() {
     [router],
   );
 
-  // Simulate search logic (will connect to API later)
   React.useEffect(() => {
-    if (query.length < 2) return;
+    if (!hasEnoughChars) return;
 
     const delay = setTimeout(async () => {
       setIsLoading(true);
       try {
-        const res = await fetch(`/api/search?q=${query}`);
+        const res = await fetch(`/api/search?q=${encodeURIComponent(trimmedQuery)}`);
         const data = await res.json();
         setResults(data);
       } catch (e) {
@@ -62,7 +89,16 @@ export function GlobalSearch() {
     }, 300);
 
     return () => clearTimeout(delay);
-  }, [query]);
+  }, [hasEnoughChars, trimmedQuery]);
+
+  const handleSubmit = React.useCallback(
+    (event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+      if (!hasEnoughChars) return;
+      router.push(`/search?q=${encodeURIComponent(trimmedQuery)}`);
+    },
+    [hasEnoughChars, router, trimmedQuery],
+  );
 
   return (
     <div className="fixed inset-0 z-[2000] flex items-stretch justify-center md:items-start md:px-4 md:pt-[10vh]">
@@ -78,10 +114,10 @@ export function GlobalSearch() {
           <div className="mb-3 flex items-center justify-between gap-3 md:mb-4">
             <div className="min-w-0">
               <p className="text-primary text-[10px] font-black tracking-[0.18em] uppercase">
-                {dict?.search?.heading || "Pretraga"}
+                {searchDict?.heading || "Pretraga"}
               </p>
               <p className="text-muted-foreground mt-1 text-xs font-medium md:text-slate-400">
-                {dict?.search?.placeholder || "Pretražite akva parkove, gradove ili akcije..."}
+                {searchDict?.placeholder || "Pretražite akva parkove, gradove ili akcije..."}
               </p>
             </div>
             <Button
@@ -94,26 +130,54 @@ export function GlobalSearch() {
             </Button>
           </div>
 
-          <div className="surface-glass relative rounded-[1.45rem] md:rounded-[1.35rem] md:border-white/10 md:bg-white/5">
-            <Icon
-              name="search"
-              className="text-primary absolute top-1/2 left-4 -translate-y-1/2 text-[20px] md:text-cyan-500"
-            />
-            <label htmlFor="global-search" className="sr-only">
-              {(dict as Dict)?.search?.sr_label || "Pretražite akva parkove, gradove ili akcije"}
-            </label>
-            <Input
-              id="global-search"
-              autoFocus
-              placeholder={
-                dict?.search?.placeholder || "Pretražite akva parkove, gradove ili akcije..."
-              }
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              enterKeyHint="search"
-              className="text-foreground placeholder:text-muted-foreground h-14 w-full border-0 bg-transparent pr-4 pl-13 text-base font-bold focus-visible:ring-0 md:text-lg md:text-white md:placeholder:text-slate-500"
-            />
-          </div>
+          <form onSubmit={handleSubmit} className="space-y-2">
+            <div className="surface-glass relative rounded-[1.45rem] md:rounded-[1.35rem] md:border-white/10 md:bg-white/5">
+              <Icon
+                name="search"
+                className="text-primary absolute top-1/2 left-4 -translate-y-1/2 text-[20px] md:text-cyan-500"
+              />
+              <label htmlFor="global-search" className="sr-only">
+                {searchDict?.sr_label || "Pretražite akva parkove, gradove ili akcije"}
+              </label>
+              <Input
+                id="global-search"
+                autoFocus
+                placeholder={
+                  searchDict?.placeholder || "Pretražite akva parkove, gradove ili akcije..."
+                }
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                enterKeyHint="search"
+                className="text-foreground placeholder:text-muted-foreground h-14 w-full border-0 bg-transparent pr-24 pl-13 text-base font-bold focus-visible:ring-0 md:text-lg md:text-white md:placeholder:text-slate-500"
+              />
+              <Button
+                type="submit"
+                size="sm"
+                disabled={!hasEnoughChars}
+                className="absolute top-1/2 right-2 h-10 min-w-20 -translate-y-1/2 rounded-full px-3 text-[10px] font-black tracking-[0.14em] uppercase"
+              >
+                {searchDict?.submit_cta || "Otvori"}
+              </Button>
+            </div>
+            <div className="flex items-center justify-between gap-3 px-1">
+              <p className="text-muted-foreground text-[10px] font-black tracking-[0.14em] uppercase md:text-slate-500">
+                {hasEnoughChars
+                  ? (searchDict?.fast_results_count || "{count} brzih rezultata").replace(
+                      "{count}",
+                      String(visibleResults.length),
+                    )
+                  : searchDict?.min_chars_live || "Unesite bar 2 slova za rezultate"}
+              </p>
+              {hasEnoughChars ? (
+                <button
+                  type="submit"
+                  className="text-primary text-[10px] font-black tracking-[0.14em] uppercase"
+                >
+                  {searchDict?.open_full_results || "Prikaži celu stranu"}
+                </button>
+              ) : null}
+            </div>
+          </form>
         </div>
 
         <div className="custom-scrollbar flex-1 overflow-y-auto px-3 py-3 md:max-h-[60vh] md:p-4">
@@ -124,26 +188,36 @@ export function GlobalSearch() {
                 className="text-primary animate-spin text-[32px] md:text-cyan-500"
               />
               <span className="text-muted-foreground text-[10px] font-black tracking-widest uppercase md:text-slate-500">
-                {dict?.search?.searching || "Pretražujemo Srpske Vode..."}
+                {searchDict?.searching || "Pretražujemo Srpske Vode..."}
               </span>
             </div>
-          ) : query.length === 0 ? (
-            <div className="space-y-3 px-2 py-6 text-center md:p-8">
+          ) : trimmedQuery.length === 0 ? (
+            <div className="space-y-4 px-2 py-6 text-center md:p-8">
               <p className="text-muted-foreground text-xs font-bold tracking-widest uppercase md:text-slate-400">
-                {dict?.search?.recent_searches || "Nedavne Pretrage"}
+                {searchDict?.recent_searches || "Brzi Predlozi"}
               </p>
-              <div className="flex flex-wrap justify-center gap-2 pt-2 md:pt-4">
-                {(dict?.search?.recent_chips || ["Petroland", "Beograd", "Porodične Akcije"]).map(
-                  (s: string) => (
-                    <button
-                      key={s}
-                      onClick={() => setQuery(s)}
-                      className="text-foreground hover:text-foreground min-h-11 rounded-full border border-white/70 bg-white/76 px-4 py-3 text-[10px] font-black uppercase shadow-sm transition-all hover:bg-white md:border-white/5 md:bg-white/5 md:text-white md:hover:bg-cyan-500 md:hover:text-slate-950"
-                    >
-                      {s}
-                    </button>
-                  ),
-                )}
+              <div
+                aria-label={searchDict?.quick_rail_label || "Brze teme za pretragu"}
+                className="no-scrollbar -mx-2 flex snap-x snap-mandatory gap-2 overflow-x-auto px-2 pt-1 md:mx-0 md:flex-wrap md:justify-center md:overflow-visible md:px-0 md:pt-4"
+              >
+                {recentChips.map((s: string) => (
+                  <button
+                    key={s}
+                    onClick={() => setQuery(s)}
+                    className="text-foreground hover:text-foreground min-h-11 shrink-0 snap-start rounded-full border border-white/70 bg-white/76 px-4 py-3 text-[10px] font-black uppercase shadow-sm transition-all hover:bg-white md:border-white/5 md:bg-white/5 md:text-white md:hover:bg-cyan-500 md:hover:text-slate-950"
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
+              <div className="surface-glass rounded-[1.35rem] px-4 py-4 text-left md:border-white/5 md:bg-white/5">
+                <p className="text-[10px] font-black tracking-[0.14em] uppercase">
+                  {searchDict?.recent_hint_title || "Najbrži put"}
+                </p>
+                <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
+                  {searchDict?.recent_hint_body ||
+                    "Probajte ime objekta, grad ili kategoriju. Primeri: Petroland, Novi Sad, wellness."}
+                </p>
               </div>
             </div>
           ) : visibleResults.length > 0 ? (
@@ -152,7 +226,7 @@ export function GlobalSearch() {
                 <button
                   key={result.id}
                   onClick={() => handleResultSelect(result.href)}
-                  className="surface-glass group flex w-full items-center justify-between rounded-[1.35rem] p-4 text-left transition-colors md:border-white/5 md:bg-white/5 md:hover:bg-white/8"
+                  className="surface-glass group flex min-h-16 w-full items-center justify-between rounded-[1.35rem] p-4 text-left transition-colors md:border-white/5 md:bg-white/5 md:hover:bg-white/8"
                 >
                   <div className="flex items-center gap-4">
                     <div className="bg-primary/10 flex h-11 w-11 items-center justify-center rounded-xl transition-colors md:bg-slate-800 md:group-hover:bg-cyan-500/20">
@@ -168,12 +242,12 @@ export function GlobalSearch() {
                         />
                       )}
                     </div>
-                    <div className="text-left">
-                      <div className="text-foreground text-sm font-black tracking-tight uppercase transition-colors md:text-white md:group-hover:text-cyan-400">
+                    <div className="min-w-0 text-left">
+                      <div className="text-foreground line-clamp-1 text-sm font-black tracking-tight uppercase transition-colors md:text-white md:group-hover:text-cyan-400">
                         {result.title}
                       </div>
-                      <div className="text-muted-foreground text-[10px] font-bold tracking-widest uppercase md:text-slate-500">
-                        {result.subtitle}
+                      <div className="text-muted-foreground line-clamp-1 text-[10px] font-bold tracking-widest uppercase md:text-slate-500">
+                        {result.subtitle || searchDict?.open_result || "Otvori rezultat"}
                       </div>
                     </div>
                   </div>
@@ -184,11 +258,27 @@ export function GlobalSearch() {
                 </button>
               ))}
             </div>
-          ) : (
+          ) : !hasEnoughChars ? (
             <div className="py-20 text-center">
               <p className="text-muted-foreground text-xs font-black tracking-widest uppercase md:text-slate-500">
-                {dict?.search?.no_results || "Nema pronađenih iskustava"}
+                {(
+                  searchDict?.min_chars_remaining || "Unesite još najmanje {count} slovo(a)"
+                ).replace("{count}", String(2 - trimmedQuery.length))}
               </p>
+            </div>
+          ) : (
+            <div className="space-y-4 py-20 text-center">
+              <p className="text-muted-foreground text-xs font-black tracking-widest uppercase md:text-slate-500">
+                {searchDict?.no_results || "Nema pronađenih iskustava"}
+              </p>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => router.push(`/search?q=${encodeURIComponent(trimmedQuery)}`)}
+                className="h-11 rounded-full px-5 text-[10px] font-black tracking-[0.14em] uppercase"
+              >
+                {searchDict?.open_full_results || "Pogledaj celu pretragu"}
+              </Button>
             </div>
           )}
         </div>
@@ -200,7 +290,7 @@ export function GlobalSearch() {
                 ESC
               </kbd>
               <span className="text-muted-foreground text-[9px] font-bold tracking-widest uppercase md:text-slate-600">
-                {dict?.search?.to_close || "za zatvaranje"}
+                {searchDict?.to_close || "za zatvaranje"}
               </span>
             </div>
             <div className="hidden items-center gap-1.5 md:flex">
@@ -208,12 +298,12 @@ export function GlobalSearch() {
                 ↵
               </kbd>
               <span className="text-[9px] font-bold tracking-widest text-slate-600 uppercase">
-                {dict?.search?.to_select || "za odabir"}
+                {searchDict?.to_select || "za odabir"}
               </span>
             </div>
           </div>
           <span className="text-primary/60 text-[9px] font-black tracking-[0.2em] uppercase md:text-cyan-500/50">
-            {dict?.search?.brand_tag || "Splash Otkrivanje v2.0"}
+            {searchDict?.brand_tag || "Splash Otkrivanje v2.0"}
           </span>
         </div>
       </section>

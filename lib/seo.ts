@@ -1,9 +1,13 @@
+import type { Metadata } from "next";
+
 /**
  * Shared SEO helpers — site origin, hreflang, robots indexability, path policy.
  * Single source of truth for public absolute URLs (forced www for splashdeals.rs).
  */
 
 const DEFAULT_SITE_URL = "https://www.splashdeals.rs";
+export const BRAND_NAME = "Splashdeals";
+export const DEFAULT_OG_IMAGE = "/og-image.png";
 
 /**
  * English hreflang is gated until /en/* routes are production-ready.
@@ -46,6 +50,34 @@ export function absoluteUrl(pathOrUrl: string, siteUrl = resolveSiteUrl()): stri
   if (pathOrUrl.startsWith("//")) return `https:${pathOrUrl}`;
   const path = pathOrUrl.startsWith("/") ? pathOrUrl : `/${pathOrUrl}`;
   return `${siteUrl}${path}`;
+}
+
+export function normalizePublicPath(pathOrUrl: string): string {
+  const raw = pathOrUrl.trim();
+  if (!raw || raw === "/") return "";
+
+  let pathname = raw;
+  if (/^https?:\/\//i.test(raw)) {
+    try {
+      pathname = new URL(raw).pathname;
+    } catch {
+      pathname = raw;
+    }
+  }
+
+  pathname = pathname.startsWith("/") ? pathname : `/${pathname}`;
+  pathname = pathname.replace(/\/{2,}/g, "/");
+
+  if (pathname.length > 1 && pathname.endsWith("/")) {
+    pathname = pathname.slice(0, -1);
+  }
+
+  return pathname === "/" ? "" : pathname;
+}
+
+export function canonicalUrl(pathOrUrl: string, siteUrl = resolveSiteUrl()): string {
+  const path = normalizePublicPath(pathOrUrl);
+  return path ? `${siteUrl}${path}` : siteUrl;
 }
 
 /**
@@ -123,7 +155,8 @@ export function isRobotsIndexable(directive?: string | null): boolean {
  */
 export function alternates(path: string): Record<string, string> {
   const site = resolveSiteUrl();
-  const clean = path.replace(/^\//, "").replace(/\/$/, "");
+  const cleanPath = normalizePublicPath(path);
+  const clean = cleanPath.replace(/^\//, "");
   const sr = clean ? `${site}/${clean}` : site;
 
   const languages: Record<string, string> = {
@@ -139,13 +172,78 @@ export function alternates(path: string): Record<string, string> {
 }
 
 export function pageMetadata(path: string) {
-  const site = resolveSiteUrl();
-  const clean = path.replace(/^\//, "").replace(/\/$/, "");
   return {
     alternates: {
-      canonical: clean ? `${site}/${clean}` : site,
+      canonical: canonicalUrl(path),
       languages: alternates(path),
     },
+  };
+}
+
+export function publicRobots(): Metadata["robots"] {
+  return {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  };
+}
+
+export function buildStaticPageMetadata(input: {
+  path: string;
+  title: string;
+  description: string;
+  keywords?: string[];
+}) {
+  const site = resolveSiteUrl();
+  const url = canonicalUrl(input.path, site);
+  const ogImage = absoluteUrl(DEFAULT_OG_IMAGE, site);
+
+  return {
+    ...pageMetadata(input.path),
+    title: input.title,
+    description: input.description,
+    ...(input.keywords?.length ? { keywords: input.keywords } : {}),
+    robots: publicRobots(),
+    openGraph: {
+      title: input.title,
+      description: input.description,
+      url,
+      images: [ogImage],
+      locale: "sr_RS",
+      type: "website" as const,
+      siteName: BRAND_NAME,
+    },
+    twitter: {
+      card: "summary_large_image" as const,
+      title: input.title,
+      description: input.description,
+      images: [ogImage],
+    },
+  };
+}
+
+export function buildBreadcrumbSchema(
+  items: Array<{ name: string; path?: string }>,
+  pagePath: string,
+) {
+  const site = resolveSiteUrl();
+  const pageUrl = canonicalUrl(pagePath, site);
+
+  return {
+    "@type": "BreadcrumbList",
+    "@id": `${pageUrl}#breadcrumb`,
+    itemListElement: items.map((item, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: item.name,
+      item: canonicalUrl(item.path ?? pagePath, site),
+    })),
   };
 }
 

@@ -15,6 +15,9 @@ export function HomeHowItWorks({ dict }: { dict: HomeDict }) {
       className="border-border mx-auto max-w-7xl scroll-mt-28 border-t px-3 py-8 max-md:scroll-mt-36 sm:px-6 sm:py-20 md:px-8"
     >
       <div className="mb-6 text-center sm:mb-14">
+        <p className="text-primary mb-2 text-[10px] font-black tracking-[0.2em] uppercase">
+          Od telefona do ulaza
+        </p>
         <h2 className="mb-2 text-[clamp(1.65rem,6vw,3.5rem)] leading-[0.95] font-black tracking-tighter uppercase italic">
           {dict.steps_title_base}
           <span className="text-primary">{dict.steps_title_highlight}</span>
@@ -24,26 +27,26 @@ export function HomeHowItWorks({ dict }: { dict: HomeDict }) {
         </p>
       </div>
 
-      <ol className="grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-10">
+      <ol className="grid grid-cols-1 gap-3 md:grid-cols-3 md:gap-10">
         {steps.map((item) => (
           <li
             key={item.step}
-            className="surface-subtle relative flex items-start gap-4 rounded-[1.35rem] p-4 text-left md:block md:border-0 md:bg-transparent md:p-0 md:text-left md:shadow-none md:backdrop-blur-none"
+            className="surface-glass relative flex items-start gap-4 rounded-[1.55rem] border border-white/70 p-4 text-left shadow-[0_18px_30px_rgba(15,23,42,0.06)] md:block md:border-0 md:bg-transparent md:p-0 md:text-left md:shadow-none md:backdrop-blur-none"
           >
             <span className="text-primary/15 pointer-events-none absolute -top-4 left-0 hidden text-6xl font-black select-none md:block">
               {item.step}
             </span>
-            <div className="bg-primary/10 flex h-12 w-12 shrink-0 items-center justify-center rounded-xl md:relative md:z-10 md:mx-0 md:mt-6 md:mb-5">
+            <div className="bg-primary/10 flex h-13 w-13 shrink-0 items-center justify-center rounded-[1rem] md:relative md:z-10 md:mx-0 md:mt-6 md:mb-5">
               <Icon name={item.icon} className="text-primary text-[24px]" />
             </div>
             <div className="relative z-10 min-w-0 md:pt-0">
-              <p className="text-primary mb-0.5 text-[11px] font-black tracking-widest uppercase md:hidden">
+              <p className="text-primary bg-primary/10 mb-1 inline-flex rounded-full px-2.5 py-1 text-[10px] font-black tracking-[0.14em] uppercase md:hidden">
                 Korak {item.step}
               </p>
-              <h3 className="mb-1 text-lg font-black tracking-tight uppercase italic sm:text-xl">
+              <h3 className="mb-1 text-[1.05rem] leading-tight font-black tracking-tight uppercase italic sm:text-xl">
                 {item.title}
               </h3>
-              <p className="text-muted-foreground text-sm leading-relaxed">{item.desc}</p>
+              <p className="text-muted-foreground text-[14px] leading-relaxed">{item.desc}</p>
             </div>
           </li>
         ))}

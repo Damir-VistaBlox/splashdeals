@@ -36,7 +36,20 @@ export function PlatformShell({
   showStructuredData?: boolean;
 }) {
   return (
-    <div className="public-shell flex min-h-screen flex-col overflow-x-hidden font-sans">
+    <div
+      className="public-shell flex min-h-screen flex-col overflow-x-hidden font-sans"
+      style={
+        {
+          "--mobile-header-offset": "calc(4.75rem + env(safe-area-inset-top, 0px))",
+          "--mobile-breadcrumb-offset": "calc(4.75rem + env(safe-area-inset-top, 0px))",
+          "--mobile-breadcrumb-height": "3.5rem",
+          "--mobile-account-nav-offset":
+            "calc(4.75rem + env(safe-area-inset-top, 0px) + 3.5rem + 0.4rem)",
+          "--mobile-main-offset": "calc(8.25rem + env(safe-area-inset-top, 0px))",
+          "--mobile-bottom-nav-offset": "calc(5.75rem + env(safe-area-inset-bottom, 0px))",
+        } as React.CSSProperties
+      }
+    >
       <a
         href="#main-content"
         className="focus:bg-primary focus:text-primary-foreground sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[9999] focus:rounded-xl focus:px-4 focus:py-3 focus:text-xs focus:font-black focus:tracking-widest focus:uppercase focus:shadow-lg focus:outline-none"
@@ -46,10 +59,10 @@ export function PlatformShell({
       <GlobalAmbient />
       {showStructuredData ? <NavigationStructuredData /> : null}
       <Header dict={dict} />
-      {showBreadcrumb ? <BreadcrumbBar facilityMap={facilityMap} /> : null}
+      {showBreadcrumb ? <BreadcrumbBar dict={dict} facilityMap={facilityMap} /> : null}
       <main
         id="main-content"
-        className="relative flex-grow pt-[var(--mobile-main-offset)] pb-[calc(5.6rem+env(safe-area-inset-bottom,0px))] sm:pt-20 sm:pb-0"
+        className="relative flex-grow pt-[var(--mobile-main-offset)] pb-[var(--mobile-bottom-nav-offset)] sm:pt-20 sm:pb-0"
       >
         <div className="pointer-events-none absolute inset-x-0 top-0 h-36 bg-[linear-gradient(180deg,rgba(255,255,255,0.5),transparent)]" />
         <React.Suspense

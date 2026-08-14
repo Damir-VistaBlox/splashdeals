@@ -60,41 +60,63 @@ export function AccountPortalNav({
     <>
       {/* Mobile chips — sticky under header+breadcrumb, scrollable, not fixed bottom */}
       <nav
-        className="border-border/40 bg-background/95 sticky top-[6.5rem] z-[90] -mx-4 mb-4 border-b px-3 py-2 backdrop-blur-md sm:px-4 lg:hidden"
+        className="border-border/60 bg-background/95 sticky top-[calc(var(--mobile-header-offset)+0.4rem)] z-[90] -mx-4 mb-4 border-b px-3 py-2 shadow-[0_12px_28px_-24px_rgba(15,23,42,0.45)] backdrop-blur-md sm:px-4 lg:hidden"
         aria-label={title}
       >
-        <div className="no-scrollbar flex items-center gap-1.5 overflow-x-auto overscroll-x-contain pb-0.5 [-webkit-overflow-scrolling:touch]">
-          {links.map((link) => {
-            const active = isActive(pathname, link.href);
-            const chipLabel = link.mobileLabel || link.label;
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                aria-current={active ? "page" : undefined}
-                className={cn(
-                  "inline-flex h-11 min-h-11 shrink-0 items-center gap-1 rounded-full border px-2.5 text-[10px] font-bold tracking-wide whitespace-nowrap uppercase transition-colors sm:gap-1.5 sm:px-3 sm:text-[11px]",
-                  active
-                    ? "border-primary/40 bg-primary/10 text-primary"
-                    : "border-border text-muted-foreground hover:text-foreground hover:bg-muted/40",
-                )}
-              >
-                <Icon name={link.icon} className="size-3.5 sm:size-4" />
-                {chipLabel}
-              </Link>
-            );
-          })}
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            className="text-muted-foreground h-11 min-h-11 shrink-0 px-2.5 text-[10px] font-bold tracking-wide uppercase sm:px-3 sm:text-[11px]"
-            onClick={handleLogout}
-            disabled={isPending}
-          >
-            <Icon name="logout" className="size-3.5 sm:size-4" />
-            {logoutLabel}
-          </Button>
+        <div className="mb-2 flex items-center justify-between gap-3 px-1">
+          <p className="text-foreground text-[11px] font-black tracking-[0.24em] uppercase">
+            {title}
+          </p>
+          <span className="text-muted-foreground rounded-full bg-white/70 px-2.5 py-1 text-[10px] font-semibold shadow-[inset_0_1px_0_rgba(255,255,255,0.48)]">
+            {links.find((link) => isActive(pathname, link.href))?.label}
+          </span>
+        </div>
+        <div className="relative">
+          <div
+            aria-hidden
+            className="from-background via-background/88 pointer-events-none absolute inset-y-0 left-0 z-[1] w-4 bg-gradient-to-r to-transparent"
+          />
+          <div
+            aria-hidden
+            className="from-background via-background/88 pointer-events-none absolute inset-y-0 right-0 z-[1] w-4 bg-gradient-to-l to-transparent"
+          />
+          <div className="no-scrollbar flex snap-x snap-mandatory items-center gap-1.5 overflow-x-auto overscroll-x-contain pr-0.5 pb-0.5 pl-0.5 [-webkit-overflow-scrolling:touch]">
+            {links.map((link) => {
+              const active = isActive(pathname, link.href);
+              const chipLabel = link.mobileLabel || link.label;
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  aria-current={active ? "page" : undefined}
+                  className={cn(
+                    "inline-flex h-11 min-h-11 shrink-0 snap-start items-center gap-1 rounded-full border px-2.5 text-[10px] font-bold tracking-wide whitespace-nowrap uppercase transition-colors sm:gap-1.5 sm:px-3 sm:text-[11px]",
+                    active
+                      ? "border-primary/40 bg-primary/10 text-primary shadow-[inset_0_0_0_1px_rgba(255,255,255,0.2)]"
+                      : "border-border bg-background text-muted-foreground hover:bg-muted/40 hover:text-foreground",
+                  )}
+                >
+                  <Icon name={link.icon} className="size-3.5 sm:size-4" />
+                  {chipLabel}
+                </Link>
+              );
+            })}
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="text-muted-foreground h-11 min-h-11 shrink-0 snap-start rounded-full border border-transparent px-2.5 text-[10px] font-bold tracking-wide uppercase sm:px-3 sm:text-[11px]"
+              onClick={handleLogout}
+              disabled={isPending}
+              aria-busy={isPending}
+            >
+              <Icon
+                name={isPending ? "progress_activity" : "logout"}
+                className={cn("size-3.5 sm:size-4", isPending && "animate-spin")}
+              />
+              {isPending ? "..." : logoutLabel}
+            </Button>
+          </div>
         </div>
       </nav>
 
@@ -130,9 +152,13 @@ export function AccountPortalNav({
             className="text-muted-foreground mt-2 h-11 w-full justify-start gap-3 px-3"
             onClick={handleLogout}
             disabled={isPending}
+            aria-busy={isPending}
           >
-            <Icon name="logout" className="size-[18px]" />
-            {logoutLabel}
+            <Icon
+              name={isPending ? "progress_activity" : "logout"}
+              className={cn("size-[18px]", isPending && "animate-spin")}
+            />
+            {isPending ? "Odjava..." : logoutLabel}
           </Button>
         </nav>
       </aside>

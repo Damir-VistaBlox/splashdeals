@@ -33,9 +33,13 @@ export function MyReviewsClient({
     cancel: string;
     rating: string;
     pending: string;
+    published: string;
     view_facility: string;
     deleted: string;
     saved: string;
+    title_placeholder: string;
+    content_placeholder: string;
+    generic_error: string;
   };
 }) {
   const [reviews, setReviews] = useState(initial);
@@ -46,7 +50,7 @@ export function MyReviewsClient({
 
   if (reviews.length === 0) {
     return (
-      <Card className="border-border flex flex-col items-center gap-4 p-8 text-center sm:p-12">
+      <Card className="border-border flex flex-col items-center gap-4 rounded-[1.75rem] p-8 text-center sm:p-12">
         <Icon name="star" className="text-muted-foreground size-10 sm:size-12" />
         <p className="text-muted-foreground text-sm font-medium">{labels.no_reviews}</p>
       </Card>
@@ -56,14 +60,22 @@ export function MyReviewsClient({
   return (
     <div className="space-y-3">
       {reviews.map((review) => (
-        <Card key={review.id} className="border-border space-y-3 p-4">
+        <Card
+          key={review.id}
+          className="border-border from-background to-muted/20 space-y-4 rounded-[1.6rem] bg-gradient-to-br p-4 shadow-[0_18px_46px_-38px_rgba(15,23,42,0.35)]"
+        >
           <div className="flex items-start justify-between gap-4">
-            <Link
-              href={`/${review.facility.slug}`}
-              className="hover:text-primary text-sm font-bold transition-colors"
-            >
-              {review.facility.name}
-            </Link>
+            <div className="space-y-1">
+              <Link
+                href={`/${review.facility.slug}`}
+                className="hover:text-primary text-sm font-bold transition-colors"
+              >
+                {review.facility.name}
+              </Link>
+              <p className="text-muted-foreground text-[10px] font-black tracking-[0.18em] uppercase">
+                {review.isApproved ? labels.published : labels.pending}
+              </p>
+            </div>
             <div className="flex shrink-0 gap-0.5" aria-label={`${labels.rating} ${review.rating}`}>
               {[1, 2, 3, 4, 5].map((star) => (
                 <Icon
@@ -105,18 +117,20 @@ export function MyReviewsClient({
                 value={draft.title}
                 onChange={(e) => setDraft((d) => ({ ...d, title: e.target.value }))}
                 maxLength={200}
-                className="h-11"
+                className="h-11 rounded-2xl"
+                placeholder={labels.title_placeholder}
               />
               <Textarea
                 value={draft.content}
                 onChange={(e) => setDraft((d) => ({ ...d, content: e.target.value }))}
                 maxLength={2000}
-                className="min-h-[80px]"
+                className="min-h-[108px] rounded-2xl"
+                placeholder={labels.content_placeholder}
               />
               <div className="flex flex-wrap gap-2">
                 <Button
                   type="button"
-                  className="h-11 min-h-11"
+                  className="h-11 min-h-11 rounded-full"
                   disabled={isPending}
                   onClick={() => {
                     startTransition(async () => {
@@ -127,7 +141,7 @@ export function MyReviewsClient({
                         draft.content,
                       );
                       if (!result.success) {
-                        toast.error(result.error || "Greška");
+                        toast.error(result.error || labels.generic_error);
                         return;
                       }
                       toast.success(labels.saved);
@@ -141,7 +155,7 @@ export function MyReviewsClient({
                 <Button
                   type="button"
                   variant="outline"
-                  className="h-11 min-h-11"
+                  className="h-11 min-h-11 rounded-full"
                   onClick={() => setEditingId(null)}
                 >
                   {labels.cancel}
@@ -162,7 +176,7 @@ export function MyReviewsClient({
                   type="button"
                   variant="outline"
                   size="sm"
-                  className="h-11 min-h-11 flex-1 sm:flex-none"
+                  className="h-11 min-h-11 flex-1 rounded-full sm:flex-none"
                   onClick={() => {
                     setEditingId(review.id);
                     setDraft({
@@ -178,13 +192,13 @@ export function MyReviewsClient({
                   type="button"
                   variant="ghost"
                   size="sm"
-                  className="text-destructive h-11 min-h-11 flex-1 sm:flex-none"
+                  className="text-destructive h-11 min-h-11 flex-1 rounded-full sm:flex-none"
                   disabled={isPending}
                   onClick={() => {
                     startTransition(async () => {
                       const result = await deleteOwnReviewAction(review.id);
                       if (!result.success) {
-                        toast.error(result.error || "Greška");
+                        toast.error(result.error || labels.generic_error);
                         return;
                       }
                       setReviews((prev) => prev.filter((r) => r.id !== review.id));
@@ -195,7 +209,12 @@ export function MyReviewsClient({
                 >
                   {labels.delete_review}
                 </Button>
-                <Button asChild variant="link" size="sm" className="h-11 min-h-11 w-full sm:w-auto">
+                <Button
+                  asChild
+                  variant="link"
+                  size="sm"
+                  className="h-11 min-h-11 w-full rounded-full sm:w-auto"
+                >
                   <Link href={`/${review.facility.slug}`}>{labels.view_facility}</Link>
                 </Button>
               </div>

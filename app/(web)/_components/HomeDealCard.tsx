@@ -37,6 +37,16 @@ export function HomeDealCard({
   const badgeColor = CATEGORY_COLORS[dbSlug] || "bg-primary";
   const hasDiscount = deal.discountPercent > 0 && deal.originalPrice;
   const detailLabel = "Detalji ponude";
+  const trustNote = deal.requiresIdentity
+    ? "Potrebna identifikacija"
+    : deal.minPeople > 1
+      ? `Za ${deal.minPeople}+ osobe`
+      : "Digitalna kupovina";
+  const purchaseNote =
+    deal.requiresPhoto || deal.validityType.includes("PHOTO")
+      ? "Spremno za verifikaciju"
+      : "Brza isporuka";
+  const savingsLabel = hasDiscount ? `${deal.discountPercent}% niže` : "Jasna cena";
 
   return (
     <article
@@ -57,8 +67,8 @@ export function HomeDealCard({
         aria-label={`${deal.facility.name} — ${deal.title}`}
         title={`${deal.facility.name} - ${deal.title}`}
       />
-      <Card className="border-border hover:border-primary/30 bg-card/94 flex h-full flex-col overflow-hidden rounded-[1.4rem] border-white/70 transition-all duration-300 md:hover:-translate-y-1 md:hover:shadow-[0_22px_44px_rgba(18,59,96,0.12)]">
-        <div className="flex flex-col gap-0.5 px-3 pt-3 sm:gap-1 sm:px-4 sm:pt-4">
+      <Card className="surface-card border-border hover:border-primary/30 flex h-full flex-col overflow-hidden rounded-[1.65rem] border-white/75 shadow-[0_18px_32px_rgba(15,23,42,0.08)] transition-all duration-300 md:hover:-translate-y-1 md:hover:shadow-[0_22px_44px_rgba(18,59,96,0.12)]">
+        <div className="flex flex-col gap-1 px-3 pt-3 sm:gap-1 sm:px-4 sm:pt-4">
           <h3 className="text-foreground line-clamp-1 text-[11px] leading-tight font-black tracking-[0.06em] uppercase sm:text-xs">
             {deal.facility.name}
           </h3>
@@ -70,7 +80,7 @@ export function HomeDealCard({
           ) : null}
         </div>
 
-        <div className="bg-muted relative mx-3 mt-2 aspect-[1.32/1] w-[calc(100%-1.5rem)] overflow-hidden rounded-[1rem] sm:mx-4 sm:mt-3 sm:aspect-[4/3] sm:w-[calc(100%-2rem)] sm:rounded-[1.1rem]">
+        <div className="bg-muted relative mx-3 mt-2 aspect-[1.32/1] w-[calc(100%-1.5rem)] overflow-hidden rounded-[1.1rem] sm:mx-4 sm:mt-3 sm:aspect-[4/3] sm:w-[calc(100%-2rem)] sm:rounded-[1.18rem]">
           {deal.imageUrl ? (
             <Image
               src={deal.imageUrl}
@@ -119,7 +129,18 @@ export function HomeDealCard({
           ) : null}
         </div>
 
-        <div className="flex flex-grow flex-col px-3 pt-2 pb-3 sm:px-4 sm:pt-3 sm:pb-4">
+        <div className="flex flex-grow flex-col px-3 pt-2.5 pb-3.5 sm:px-4 sm:pt-3 sm:pb-4">
+          <div className="mb-2 flex flex-wrap items-center gap-1.5">
+            <span className="surface-subtle text-foreground inline-flex min-h-7 items-center rounded-full border border-white/70 px-2.5 text-[9px] font-black tracking-[0.12em] uppercase">
+              {trustNote}
+            </span>
+            <span className="text-muted-foreground hidden min-h-7 items-center rounded-full border border-slate-200/80 bg-white/72 px-2.5 text-[9px] font-black tracking-[0.12em] uppercase sm:inline-flex">
+              {purchaseNote}
+            </span>
+            <span className="inline-flex min-h-7 items-center rounded-full bg-emerald-500/10 px-2.5 text-[9px] font-black tracking-[0.12em] text-emerald-800 uppercase">
+              {savingsLabel}
+            </span>
+          </div>
           <h4
             id={`home-deal-title-${deal.id}`}
             className="group-hover:text-primary mb-1 text-[0.95rem] leading-tight font-black tracking-[-0.03em] transition-colors sm:text-[1.12rem]"
@@ -131,13 +152,27 @@ export function HomeDealCard({
             {deal.pitch}
           </p>
 
-          <div className="relative z-30 mt-auto flex items-end justify-between gap-2 border-t border-slate-200/80 pt-2 sm:gap-3 sm:pt-3">
-            <div className="from-primary/8 min-w-0 rounded-[1.1rem] bg-gradient-to-r to-transparent px-2.5 py-2">
+          {hasDiscount ? (
+            <div className="mb-2 flex items-center justify-between rounded-[1rem] border border-emerald-200/70 bg-emerald-500/8 px-3 py-2">
+              <span className="text-[9px] font-black tracking-[0.14em] text-emerald-800 uppercase">
+                Ušteda danas
+              </span>
+              <span className="text-[11px] font-black text-emerald-900">
+                {priceFormat.format(deal.absoluteSave)} RSD
+              </span>
+            </div>
+          ) : null}
+
+          <div className="relative z-30 mt-auto flex items-end justify-between gap-2 border-t border-slate-200/80 pt-2.5 sm:gap-3 sm:pt-3">
+            <div className="from-primary/8 min-w-0 flex-1 rounded-[1.15rem] bg-gradient-to-r to-transparent px-2.5 py-2">
               {hasDiscount ? (
                 <span className="text-muted-foreground/55 text-[11px] line-through">
                   {priceFormat.format(deal.originalPrice!)}
                 </span>
               ) : null}
+              <span className="text-muted-foreground/70 block text-[9px] font-black tracking-[0.14em] uppercase">
+                Danas od
+              </span>
               <div className="flex items-baseline gap-1">
                 <data
                   value={deal.price}
@@ -153,7 +188,7 @@ export function HomeDealCard({
 
             {showAddToCart ? (
               <AddToCartButton
-                className="border-border bg-background/92 hover:bg-primary hover:text-primary-foreground min-h-11 min-w-11 rounded-[1.05rem] border shadow-sm sm:min-h-12 sm:min-w-12 sm:rounded-2xl"
+                className="border-border bg-background/92 hover:bg-primary hover:text-primary-foreground min-h-12 min-w-12 rounded-[1.15rem] border shadow-sm shadow-slate-200/70 sm:min-h-12 sm:min-w-12 sm:rounded-2xl"
                 ticket={{
                   id: deal.id,
                   title: `${deal.facility.name} - ${deal.title}`,
@@ -173,7 +208,7 @@ export function HomeDealCard({
                 }}
               />
             ) : (
-              <div className="text-muted-foreground rounded-full border border-slate-200/80 px-3 py-2 text-[9px] font-black tracking-[0.12em] uppercase sm:text-[10px]">
+              <div className="text-muted-foreground min-h-11 rounded-full border border-slate-200/80 px-3 py-2 text-[9px] font-black tracking-[0.12em] uppercase sm:text-[10px]">
                 {detailLabel}
               </div>
             )}

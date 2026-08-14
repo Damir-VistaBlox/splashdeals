@@ -59,8 +59,8 @@ function NoticeList({
       : "border-warning/20 bg-warning/10 text-warning";
   const muted = variant === "destructive" ? "text-destructive/80" : "text-warning/80";
   return (
-    <div className={`mb-4 rounded-xl border p-3 text-sm sm:p-4 ${box}`}>
-      <p className="font-bold">{title}</p>
+    <section aria-live="polite" className={`mb-4 rounded-xl border p-3 text-sm sm:p-4 ${box}`}>
+      <h3 className="font-bold">{title}</h3>
       <ul className={`mt-2 list-inside list-disc space-y-1 ${muted}`}>
         {notices.map((notice) => (
           <li key={`${notice.title}-${notice.facilitySlug || "x"}`}>
@@ -77,7 +77,7 @@ function NoticeList({
           </li>
         ))}
       </ul>
-    </div>
+    </section>
   );
 }
 
@@ -95,115 +95,153 @@ export function CartItemList({
 
   return (
     <>
+      <h2 id="cart-items-heading" className="sr-only">
+        {cartDict?.cart_items_heading || cartDict?.title || "Stavke u korpi"}
+      </h2>
       <NoticeList notices={removedItems} title={cartDict?.removed_notice} variant="destructive" />
       <NoticeList notices={changedItems} title={cartDict?.price_changed_notice} variant="warning" />
 
-      {items.map((item) => {
-        const minQty = Math.max(1, item.minPeople || 1);
-        const mutating = isMutating(mutatingItemIds, item.id);
-        const atMin = item.quantity <= minQty;
-        const currency = item.currency || "RSD";
+      <ul className="space-y-4 sm:space-y-6" aria-live="polite">
+        {items.map((item) => {
+          const minQty = Math.max(1, item.minPeople || 1);
+          const mutating = isMutating(mutatingItemIds, item.id);
+          const atMin = item.quantity <= minQty;
+          const currency = item.currency || "RSD";
+          const quantityGroupLabel = (cartDict?.quantity_label || "Količina: {title}").replace(
+            "{title}",
+            item.title,
+          );
 
-        return (
-          <Card
-            key={item.id}
-            variant="glass"
-            className="sm:surface-card relative flex flex-col gap-3 rounded-[1.5rem] p-3 sm:gap-4 sm:p-6"
-          >
-            <div className="flex min-w-0 items-start gap-3">
-              {item.imageUrl && (
-                <div className="relative h-15 w-15 flex-shrink-0 overflow-hidden rounded-[1rem] sm:h-20 sm:w-20">
-                  <Image
-                    src={item.imageUrl}
-                    alt={item.title}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 640px) 64px, 80px"
-                  />
-                </div>
-              )}
-              <div className="min-w-0 flex-1 pr-1">
-                <p className="text-muted-foreground text-[9px] font-black tracking-widest uppercase">
-                  {item.category || cartDict?.default_category}
-                </p>
-                <h3 className="text-foreground mt-0.5 text-[15px] leading-snug font-black tracking-tight sm:text-lg">
-                  {item.title}
-                </h3>
-              </div>
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  removeOneUnitOrLine(item, onQuantityChange, onRemove);
-                }}
-                disabled={mutating}
-                aria-label={cartDict?.remove || "Ukloni"}
-                className="text-muted-foreground hover:text-destructive h-10 w-10 shrink-0 rounded-xl"
+          return (
+            <li key={item.id}>
+              <Card
+                variant="glass"
+                className="sm:surface-card relative flex flex-col gap-3 rounded-[1.5rem] p-3 sm:gap-4 sm:p-6"
               >
-                <Icon name="delete" className="text-[18px]" />
-              </Button>
-            </div>
+                <article aria-busy={mutating} aria-labelledby={`cart-item-title-${item.id}`}>
+                  <div className="flex min-w-0 items-start gap-3">
+                    {item.imageUrl && (
+                      <div className="relative h-15 w-15 flex-shrink-0 overflow-hidden rounded-[1rem] sm:h-20 sm:w-20">
+                        <Image
+                          src={item.imageUrl}
+                          alt={item.title}
+                          fill
+                          className="object-cover"
+                          sizes="(max-width: 640px) 64px, 80px"
+                        />
+                      </div>
+                    )}
+                    <div className="min-w-0 flex-1 pr-1">
+                      <p className="text-muted-foreground text-[9px] font-black tracking-widest uppercase">
+                        {item.category || cartDict?.default_category}
+                      </p>
+                      <h3
+                        id={`cart-item-title-${item.id}`}
+                        className="text-foreground mt-0.5 text-[15px] leading-snug font-black tracking-tight sm:text-lg"
+                      >
+                        {item.title}
+                      </h3>
+                      <div className="mt-2 flex flex-wrap gap-1.5">
+                        {item.facilityName ? (
+                          <span className="inline-flex min-h-7 items-center rounded-full border border-white/70 bg-white/72 px-2.5 text-[9px] font-black tracking-[0.12em] uppercase">
+                            {item.facilityName}
+                          </span>
+                        ) : null}
+                        <span className="inline-flex min-h-7 items-center rounded-full bg-white/58 px-2.5 text-[9px] font-black tracking-[0.12em] uppercase">
+                          {cartDict?.unit_price || "Po karti"}: {formatPrice(item.price)} {currency}
+                        </span>
+                      </div>
+                    </div>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        removeOneUnitOrLine(item, onQuantityChange, onRemove);
+                      }}
+                      disabled={mutating}
+                      aria-label={cartDict?.remove || "Ukloni"}
+                      className="text-muted-foreground hover:text-destructive h-10 w-10 shrink-0 rounded-xl"
+                    >
+                      <Icon name="delete" className="text-[18px]" />
+                    </Button>
+                  </div>
 
-            <div className="flex items-center justify-between gap-3">
-              <div className="flex items-center overflow-hidden rounded-xl bg-white/74">
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => onQuantityChange(item.id, item.quantity - 1)}
-                  disabled={mutating}
-                  aria-label={atMin ? cartDict?.remove || "Ukloni" : cartDict?.decrease_qty}
-                  className="text-muted-foreground hover:text-foreground h-10 w-10 touch-manipulation rounded-none"
-                >
-                  <Icon name={atMin ? "delete" : "remove"} className="text-[16px]" />
-                </Button>
-                <span className="text-foreground w-9 text-center text-sm font-black tabular-nums">
-                  {item.quantity}
-                </span>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => onQuantityChange(item.id, item.quantity + 1)}
-                  disabled={
-                    mutating ||
-                    item.quantity >=
-                      Math.min(item.maxPeople ?? MAX_QUANTITY_PER_ITEM, MAX_QUANTITY_PER_ITEM)
-                  }
-                  aria-label={cartDict?.increase_qty}
-                  className="text-muted-foreground hover:text-foreground h-10 w-10 touch-manipulation rounded-none"
-                >
-                  <Icon name="add" className="text-[16px]" />
-                </Button>
-              </div>
+                  <div className="flex items-center justify-between gap-3">
+                    <div
+                      role="group"
+                      aria-label={quantityGroupLabel}
+                      className="flex items-center overflow-hidden rounded-xl bg-white/74"
+                    >
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => onQuantityChange(item.id, item.quantity - 1)}
+                        disabled={mutating}
+                        aria-label={atMin ? cartDict?.remove || "Ukloni" : cartDict?.decrease_qty}
+                        aria-controls={`cart-item-quantity-${item.id}`}
+                        className="text-muted-foreground hover:text-foreground h-10 w-10 touch-manipulation rounded-none"
+                      >
+                        <Icon name={atMin ? "delete" : "remove"} className="text-[16px]" />
+                      </Button>
+                      <output
+                        id={`cart-item-quantity-${item.id}`}
+                        aria-live="polite"
+                        className="text-foreground w-9 text-center text-sm font-black tabular-nums"
+                      >
+                        {item.quantity}
+                      </output>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => onQuantityChange(item.id, item.quantity + 1)}
+                        disabled={
+                          mutating ||
+                          item.quantity >=
+                            Math.min(item.maxPeople ?? MAX_QUANTITY_PER_ITEM, MAX_QUANTITY_PER_ITEM)
+                        }
+                        aria-label={cartDict?.increase_qty}
+                        aria-controls={`cart-item-quantity-${item.id}`}
+                        className="text-muted-foreground hover:text-foreground h-10 w-10 touch-manipulation rounded-none"
+                      >
+                        <Icon name="add" className="text-[16px]" />
+                      </Button>
+                    </div>
 
-              <div className="text-right">
-                <div className="text-foreground text-[15px] font-black tracking-tight tabular-nums sm:text-lg">
-                  {formatPrice(item.price * item.quantity)} {currency}
-                </div>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    removeOneUnitOrLine(item, onQuantityChange, onRemove);
-                  }}
-                  disabled={mutating}
-                  aria-label={cartDict?.remove || "Ukloni"}
-                  className="text-muted-foreground hover:text-destructive mt-0.5 h-9 min-h-9 touch-manipulation px-2 text-[10px] font-black tracking-widest uppercase"
-                >
-                  {cartDict?.remove || "Ukloni"}
-                </Button>
-              </div>
-            </div>
-          </Card>
-        );
-      })}
+                    <div className="text-right">
+                      <div className="text-muted-foreground mb-1 text-[9px] font-black tracking-[0.14em] uppercase">
+                        {cartDict?.line_total || "Ukupno stavka"}
+                      </div>
+                      <div className="text-foreground text-[15px] font-black tracking-tight tabular-nums sm:text-lg">
+                        {formatPrice(item.price * item.quantity)} {currency}
+                      </div>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          removeOneUnitOrLine(item, onQuantityChange, onRemove);
+                        }}
+                        disabled={mutating}
+                        aria-label={cartDict?.remove || "Ukloni"}
+                        className="text-muted-foreground hover:text-destructive mt-0.5 h-9 min-h-9 touch-manipulation px-2 text-[10px] font-black tracking-widest uppercase"
+                      >
+                        {cartDict?.remove || "Ukloni"}
+                      </Button>
+                    </div>
+                  </div>
+                </article>
+              </Card>
+            </li>
+          );
+        })}
+      </ul>
     </>
   );
 }

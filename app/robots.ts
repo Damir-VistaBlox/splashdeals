@@ -2,6 +2,15 @@ import { MetadataRoute } from "next";
 import { getAllSlugs } from "@/lib/routing/categories";
 import { resolveSiteUrl } from "@/lib/seo";
 
+const AI_DISCOVERY_ROUTES = [
+  "/how-it-works",
+  "/support",
+  "/terms",
+  "/privacy",
+  "/cookies",
+  "/blog",
+] as const;
+
 /**
  * 🌊 Robots Configuration (Next.js Best Practice)
  * This dynamic configuration ensures that:
@@ -14,6 +23,7 @@ import { resolveSiteUrl } from "@/lib/seo";
  */
 export default function robots(): MetadataRoute.Robots {
   const site = resolveSiteUrl();
+  const host = new URL(site).host;
   return {
     rules: [
       {
@@ -45,6 +55,8 @@ export default function robots(): MetadataRoute.Robots {
           "/*/account",
           "/prijava",
           "/*/prijava",
+          "/search",
+          "/*/search",
 
           // 💳 Block order confirmation pages
           "/success",
@@ -74,6 +86,8 @@ export default function robots(): MetadataRoute.Robots {
           "/*/account",
           "/prijava",
           "/*/prijava",
+          "/search",
+          "/*/search",
           "/success",
           "/*/success",
           "/cdn-cgi/",
@@ -84,7 +98,7 @@ export default function robots(): MetadataRoute.Robots {
         // 🤖 Support Generative Search (GEO)
         // Allow leading AI bots to index public deals for recommendations.
         userAgent: ["GPTBot", "ChatGPT-User", "ClaudeBot", "PerplexityBot"],
-        allow: ["/", ...getAllSlugs().map((s) => `/${s}/`), "/how-it-works"],
+        allow: ["/", ...getAllSlugs().map((s) => `/${s}/`), ...AI_DISCOVERY_ROUTES],
         disallow: [
           "/admin",
           "/api",
@@ -93,12 +107,13 @@ export default function robots(): MetadataRoute.Robots {
           "/cart",
           "/account",
           "/prijava",
+          "/search",
           "/cdn-cgi/",
           "/cdn-cgi/*",
         ],
       },
     ],
     sitemap: `${site}/sitemap.xml`,
-    host: site,
+    host,
   };
 }
