@@ -34,6 +34,45 @@ function absoluteSave(price: number, original: number | null): number {
   return Math.round(original - price);
 }
 
+function isGeneralAdmissionTitle(title: string): boolean {
+  return /odrasl|adult|regular|dnevna|celodnevn|ulaz|kupanj|entry/i.test(title);
+}
+
+function isSpecialCaseTitle(title: string): boolean {
+  return /porodi|family|grup|group|sezons|season|mesečn|mesecn|monthly|vip|ležaljk|suncobran|baldahin|cabana|parking|stanovn|resident|ručak|lunch/i.test(
+    title,
+  );
+}
+
+function isGoodGateProofDeal(deal: HomeDeal): boolean {
+  if (!deal.originalPrice || deal.originalPrice <= deal.price) return false;
+  if (!deal.imageUrl) return false;
+  if (deal.absoluteSave < 200) return false;
+  if (deal.discountPercent < 8) return false;
+  if (!isLikelyEntryTicket(deal.title)) return false;
+  if (isSpecialCaseTitle(deal.title)) return false;
+  return true;
+}
+
+function homeGateProofScore(deal: HomeDeal): number {
+  let score = 0;
+
+  score += categoryBoost(deal.facility.category);
+  score += Math.min(deal.absoluteSave, 1500) / 10;
+  score += deal.discountPercent * 8;
+
+  if (isGeneralAdmissionTitle(deal.title)) score += 180;
+  if (!deal.requiresIdentity) score += 20;
+  if (!deal.requiresPhoto) score += 20;
+  if ((deal.minPeople ?? 1) === 1) score += 30;
+  if (!deal.maxPeople || deal.maxPeople <= 2) score += 15;
+  if (deal.facility.openToday) score += 10;
+
+  if (isSpecialCaseTitle(deal.title)) score -= 220;
+
+  return score;
+}
+
 /** Shared ticket loader — React cache de-dupes within a single request. */
 export const loadActiveTicketRows = cache(async function loadActiveTicketRows() {
   const now = new Date();
@@ -184,16 +223,41 @@ export async function getHomeBiggestSavings(fallbackPitch: string, limit = 4): P
 }
 
 export async function getHomeGateProof(fallbackPitch: string): Promise<HomeDeal | null> {
-  const savings = await getHomeBiggestSavings(fallbackPitch, 16);
-  const adultish = savings.find(
-    (d) =>
-      d.originalPrice &&
-      d.originalPrice > d.price &&
-      /odrasl|adult|ulaz/i.test(d.title) &&
-      categoryBoost(d.facility.category) >= 80,
-  );
-  if (adultish) return adultish;
-  return savings.find((d) => d.originalPrice && d.originalPrice > d.price) || null;
+  const rows = await loadActiveTicketRows();
+  const ranked = rows
+    .map((r) => mapDeal(r, fallbackPitch))
+    .filter((d): d is HomeDeal => d !== null)
+    .filter(isGoodGateProofDeal)
+    .sort(
+      (a, b) =>
+        homeGateProofScore(b) - homeGateProofScore(a) ||
+        b.absoluteSave - a.absoluteSave ||
+        b.discountPercent - a.discountPercent ||
+        a.price - b.price ||
+        a.id.localeCompare(b.id),
+    );
+
+  if (ranked.length > 0) return ranked[0];
+
+  const fallbackRanked = rows
+    .map((r) => mapDeal(r, fallbackPitch))
+    .filter(
+      (d): d is HomeDeal =>
+        d !== null &&
+        Boolean(d.originalPrice && d.originalPrice > d.price) &&
+        Boolean(d.imageUrl) &&
+        isLikelyEntryTicket(d.title),
+    )
+    .sort(
+      (a, b) =>
+        homeGateProofScore(b) - homeGateProofScore(a) ||
+        b.absoluteSave - a.absoluteSave ||
+        b.discountPercent - a.discountPercent ||
+        a.price - b.price ||
+        a.id.localeCompare(b.id),
+    );
+
+  return fallbackRanked[0] || null;
 }
 
 export async function getHomeOpenToday(fallbackPitch: string, limit = 6): Promise<HomeDeal[]> {
