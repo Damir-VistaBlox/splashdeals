@@ -3,25 +3,28 @@
 import { useEffect } from "react";
 import Clarity from "@microsoft/clarity";
 
-const DEFAULT_PROJECT_ID = "wltzabiuq2";
+declare global {
+  interface Window {
+    __splashdealsClarityInitialized?: boolean;
+  }
+}
 
-let clarityStarted = false;
+const DEFAULT_CLARITY_PROJECT_ID = "wltzabiuq2";
 
 /**
- * Microsoft Clarity bootstrap for user-facing surfaces only.
- *
- * Mounted from `(web)` and `(account)` route-group layouts.
- * Intentionally NOT mounted from admin layouts.
+ * Buyer-facing Microsoft Clarity bootstrap.
+ * Mounted by `(web)` and `(account)` layouts only — never admin.
  */
-export function MicrosoftClarity() {
-  useEffect(() => {
-    const projectId = process.env.NEXT_PUBLIC_MICROSOFT_CLARITY_PROJECT_ID || DEFAULT_PROJECT_ID;
+export function ClarityScript() {
+  const projectId = process.env.NEXT_PUBLIC_CLARITY_PROJECT_ID || DEFAULT_CLARITY_PROJECT_ID;
 
-    if (!projectId || clarityStarted) return;
+  useEffect(() => {
+    if (!projectId || typeof window === "undefined") return;
+    if (window.__splashdealsClarityInitialized) return;
 
     Clarity.init(projectId);
-    clarityStarted = true;
-  }, []);
+    window.__splashdealsClarityInitialized = true;
+  }, [projectId]);
 
   return null;
 }

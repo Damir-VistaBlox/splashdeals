@@ -16,16 +16,16 @@ export function HomeHero({ dict }: { dict: HomeDict }) {
   const heroPillClassName =
     "bg-secondary text-secondary-foreground hover:bg-primary hover:text-primary-foreground inline-flex h-11 min-h-11 items-center justify-center rounded-full px-4 text-[11px] font-black tracking-[0.1em] uppercase shadow-[0_10px_24px_rgba(231,179,75,0.16)] transition-all duration-150 hover:-translate-y-0.5 sm:px-5 sm:text-[10px]";
   const mobilePillClassName =
-    "bg-secondary/92 text-secondary-foreground hover:bg-primary hover:text-primary-foreground inline-flex h-9 min-h-9 items-center justify-center rounded-full px-3.5 text-[9px] font-black tracking-[0.08em] uppercase shadow-[0_8px_18px_rgba(231,179,75,0.12)] transition-colors";
+    "bg-secondary/92 text-secondary-foreground hover:bg-primary hover:text-primary-foreground inline-flex h-8 min-h-8 items-center justify-center rounded-full px-3 text-[8px] font-black tracking-[0.06em] uppercase shadow-[0_6px_14px_rgba(231,179,75,0.1)] transition-colors";
 
   return (
     <div className="relative z-0 w-full overflow-hidden pb-6 sm:pb-20">
       <section className="mx-auto max-w-7xl px-3 pt-1 sm:hidden">
         <nav
           aria-label={dict.categories_aria || "Kategorije i brzi filteri"}
-          className="pt-[5.1rem]"
+          className="pt-[4.35rem]"
         >
-          <ul className="no-scrollbar flex items-center gap-2 overflow-x-auto overscroll-x-contain pb-1 [-webkit-overflow-scrolling:touch]">
+          <ul className="no-scrollbar -mx-1 flex items-center gap-1.5 overflow-x-auto overscroll-x-contain px-1 pb-0.5 [-webkit-overflow-scrolling:touch]">
             {HERO_CATEGORY_SLUGS.map((slug) => (
               <li key={slug} className="shrink-0">
                 <Link href={`/${slug}`} className={mobilePillClassName}>
