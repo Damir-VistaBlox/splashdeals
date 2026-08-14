@@ -25,9 +25,9 @@ export function HomeHero({ dict }: { dict: HomeDict }) {
           aria-label={dict.categories_aria || "Kategorije i brzi filteri"}
           className="pt-[5.1rem]"
         >
-          <ul className="flex flex-wrap items-center justify-center gap-2">
+          <ul className="no-scrollbar flex items-center gap-2 overflow-x-auto overscroll-x-contain pb-1 [-webkit-overflow-scrolling:touch]">
             {HERO_CATEGORY_SLUGS.map((slug) => (
-              <li key={slug}>
+              <li key={slug} className="shrink-0">
                 <Link href={`/${slug}`} className={mobilePillClassName}>
                   {CATEGORIES[slug].name}
                 </Link>
@@ -35,7 +35,7 @@ export function HomeHero({ dict }: { dict: HomeDict }) {
             ))}
 
             {heroQuickLinks.map((item) => (
-              <li key={item.href}>
+              <li key={item.href} className="shrink-0">
                 <Link href={item.href} className={mobilePillClassName}>
                   {item.label}
                 </Link>
