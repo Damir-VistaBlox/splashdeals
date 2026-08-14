@@ -35,7 +35,6 @@ interface PageProps {
 }
 
 export const revalidate = 300;
-
 const HOME_SERP_TITLE = "Ulaznice za akva parkove, bazene i spa centre | SplashDeals";
 const HOME_SERP_DESCRIPTION =
   "Uporedite cene i kupite digitalne ulaznice za akva parkove, bazene, banje i wellness centre u Srbiji. Mobile-first kupovina, jasne cene i brza isporuka na SplashDeals.";

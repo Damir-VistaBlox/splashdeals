@@ -335,7 +335,6 @@ body {
       sans-serif;
   }
 }
-
 .mobile-route-frame {
   min-height: calc(100vh - var(--safe-area-top));
   min-height: calc(100dvh - var(--safe-area-top));
