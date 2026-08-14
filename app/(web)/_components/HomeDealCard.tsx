@@ -3,9 +3,10 @@ import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Icon } from "@/components/ui/Icon";
-import { AddToCartButton } from "@/components/cart/AddToCartButton";
+import { LazyAddToCartButton } from "@/components/cart/LazyAddToCartButton";
 import { dbValueToSlug, slugToName } from "@/lib/routing/categories";
 import type { HomeDeal } from "@/lib/home/deals";
+import { absoluteUrl } from "@/lib/seo";
 import { cn } from "@/lib/utils";
 
 const CATEGORY_COLORS: Record<string, string> = {
@@ -47,6 +48,7 @@ export function HomeDealCard({
       ? "Spremno za verifikaciju"
       : "Brza isporuka";
   const savingsLabel = hasDiscount ? `${deal.discountPercent}% niže` : "Jasna cena";
+  const dealUrl = absoluteUrl(`/${deal.facility.slug}#deals`);
 
   return (
     <article
@@ -60,7 +62,7 @@ export function HomeDealCard({
       <meta itemProp="availability" content="https://schema.org/InStock" />
       <meta itemProp="name" content={`${deal.facility.name} - ${deal.title}`} />
       <meta itemProp="description" content={deal.pitch} />
-      <link itemProp="url" href={`https://www.splashdeals.rs/${deal.facility.slug}#deals`} />
+      <link itemProp="url" href={dealUrl} />
       <Link
         href={`/${deal.facility.slug}#deals`}
         className="focus-visible:ring-primary absolute inset-0 z-20 rounded-xl focus-visible:ring-2"
@@ -87,6 +89,7 @@ export function HomeDealCard({
               alt={`${deal.facility.name} - ${deal.title}`}
               fill
               priority={priority}
+              quality={62}
               sizes="(max-width: 640px) 92vw, (max-width: 1024px) 45vw, 28vw"
               className="object-cover transition-transform duration-700 md:group-hover:scale-105"
               itemProp="image"
@@ -187,7 +190,7 @@ export function HomeDealCard({
             </div>
 
             {showAddToCart ? (
-              <AddToCartButton
+              <LazyAddToCartButton
                 className="border-border bg-background/92 hover:bg-primary hover:text-primary-foreground min-h-12 min-w-12 rounded-[1.15rem] border shadow-sm shadow-slate-200/70 sm:min-h-12 sm:min-w-12 sm:rounded-2xl"
                 ticket={{
                   id: deal.id,

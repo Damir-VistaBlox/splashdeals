@@ -4,6 +4,7 @@ import { Metadata } from "next";
 import { getDictionary } from "@/lib/dictionaries";
 import { connection } from "next/server";
 import { JsonLd } from "@/components/SEO/JsonLd";
+import { absoluteUrl, buildStaticPageMetadata, canonicalUrl } from "@/lib/seo";
 
 interface PageProps {
   params: Promise<Record<string, never>>;
@@ -11,24 +12,27 @@ interface PageProps {
 
 export async function generateMetadata({}: PageProps): Promise<Metadata> {
   return {
-    title: "Politika Kolačića i Upravljanje Podacima",
-    description:
-      "Saznajte kako Splashdeals.rs koristi kolačiće za optimalan rad korpe i personalizaciju pretrage, i kako možete sami upravljati njima u pretraživaču.",
-    alternates: { canonical: "https://www.splashdeals.rs/cookies" },
-    openGraph: {
-      title: "Politika Kolačića i Upravljanje Podacima",
+    ...buildStaticPageMetadata({
+      path: "/cookies",
+      title: "Politika kolačića i privatnosti za mobilnu kupovinu | SplashDeals",
       description:
-        "Saznajte kako Splashdeals.rs koristi kolačiće za optimalan rad korpe i personalizaciju pretrage, i kako možete sami upravljati njima u pretraživaču.",
-      images: ["/og-image.png"],
+        "Proverite kako SplashDeals koristi kolačiće za korpu, prijavu i personalizaciju pretrage, uz jasna uputstva za upravljanje privatnošću na telefonu i desktopu.",
+    }),
+    openGraph: {
+      title: "Politika kolačića i privatnosti za mobilnu kupovinu | SplashDeals",
+      description:
+        "Saznajte kako SplashDeals koristi kolačiće za korpu, prijavu i personalizaciju pretrage, uz jasna uputstva za upravljanje privatnošću.",
+      images: [absoluteUrl("/og-image.png")],
+      url: canonicalUrl("/cookies"),
       locale: "sr_RS",
       type: "website",
     },
     twitter: {
       card: "summary_large_image",
-      title: "Politika Kolačića i Upravljanje Podacima",
+      title: "Politika kolačića i privatnosti za mobilnu kupovinu | SplashDeals",
       description:
-        "Saznajte kako Splashdeals.rs koristi kolačiće za optimalan rad korpe i personalizaciju pretrage, i kako možete sami upravljati njima u pretraživaču.",
-      images: ["/og-image.png"],
+        "Saznajte kako SplashDeals koristi kolačiće za korpu, prijavu i personalizaciju pretrage, uz jasna uputstva za upravljanje privatnošću.",
+      images: [absoluteUrl("/og-image.png")],
     },
   };
 }
@@ -40,11 +44,11 @@ export default async function CookiesPage({}: PageProps) {
   const webpageSchema = {
     "@context": "https://schema.org",
     "@type": "WebPage",
-    "@id": `https://www.splashdeals.rs/cookies`,
+    "@id": canonicalUrl("/cookies"),
     name: dict.cookies.title,
     description: dict.cookies.intro,
     isPartOf: {
-      "@id": "https://www.splashdeals.rs/#website",
+      "@id": `${canonicalUrl("/")}#website`,
     },
   };
 

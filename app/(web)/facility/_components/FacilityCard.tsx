@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Card } from "@/components/ui/card";
 import { FavoriteButton } from "@/components/shared/FavoriteButton";
+import { absoluteUrl } from "@/lib/seo";
 
 interface Facility {
   id: string;
@@ -96,6 +97,7 @@ export function FacilityCard({
   const speedChip = facilityDict.fast_entry || "Brza potvrda";
   const clearPriceLabel = facilityDict.clear_price || "Jasna cena";
   const openFacilityLabel = facilityDict.open_facility || "Otvori objekat";
+  const facilityUrl = absoluteUrl(`/${facility.slug}`);
 
   return (
     <article
@@ -105,7 +107,7 @@ export function FacilityCard({
       aria-labelledby={`facility-card-title-${facility.id}`}
     >
       <meta itemProp="name" content={facility.name} />
-      <meta itemProp="url" content={`https://www.splashdeals.rs/${facility.slug}`} />
+      <meta itemProp="url" content={facilityUrl} />
       {backgroundPhoto?.url ? <meta itemProp="image" content={backgroundPhoto.url} /> : null}
       <meta itemProp="description" content={descriptionText} />
       <div itemProp="address" itemScope itemType="https://schema.org/PostalAddress">
@@ -122,7 +124,7 @@ export function FacilityCard({
           <meta itemProp="priceCurrency" content="RSD" />
           <meta itemProp="price" content={String(facility.minPrice)} />
           <meta itemProp="availability" content="https://schema.org/InStock" />
-          <link itemProp="url" href={`https://www.splashdeals.rs/${facility.slug}`} />
+          <link itemProp="url" href={facilityUrl} />
         </div>
       ) : null}
 

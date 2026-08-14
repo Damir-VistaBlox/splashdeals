@@ -1,9 +1,7 @@
 import * as React from "react";
 import { getDictionary } from "@/lib/dictionaries";
+import { BuyerSignalsLoader } from "@/components/analytics/BuyerSignalsLoader";
 import { PlatformShell } from "@/components/layout/PlatformShell";
-import { GAScript } from "@/components/analytics/GoogleAnalytics";
-import { ClarityScript } from "@/components/analytics/MicrosoftClarity";
-import { WebVitals } from "./_components/WebVitals";
 import { getFacilityMap } from "@/lib/layout/facility-map";
 
 export default async function WebLayout({
@@ -15,9 +13,7 @@ export default async function WebLayout({
 }) {
   return (
     <>
-      <WebVitals />
-      <GAScript />
-      <ClarityScript />
+      <BuyerSignalsLoader />
       <WebLayoutContent modal={modal}>{children}</WebLayoutContent>
     </>
   );

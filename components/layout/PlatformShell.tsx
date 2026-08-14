@@ -2,12 +2,9 @@ import * as React from "react";
 import dynamic from "next/dynamic";
 import { Header } from "@/components/layout/Header";
 import { NavigationStructuredData } from "@/components/layout/_header/NavigationStructuredData";
-import { BreadcrumbBar } from "@/components/layout/BreadcrumbBar";
+import { BreadcrumbBarLoader } from "@/components/layout/BreadcrumbBarLoader";
 import { GlobalAmbient } from "@/components/ui/GlobalAmbient";
-import { CartLoader } from "@/components/cart/CartLoader";
-import { CartStateBootstrap } from "@/components/cart/CartStateBootstrap";
-import { FavoriteIntentBootstrap } from "@/components/account/FavoriteIntentBootstrap";
-import { BottomNav } from "@/components/layout/BottomNav";
+import { PlatformDeferredClientLoader } from "@/components/layout/PlatformDeferredClientLoader";
 import type { Dict } from "@/lib/types";
 
 const Footer = dynamic(() => import("@/components/layout/Footer").then((mod) => mod.Footer), {
@@ -59,7 +56,7 @@ export function PlatformShell({
       <GlobalAmbient />
       {showStructuredData ? <NavigationStructuredData /> : null}
       <Header dict={dict} />
-      {showBreadcrumb ? <BreadcrumbBar dict={dict} facilityMap={facilityMap} /> : null}
+      {showBreadcrumb ? <BreadcrumbBarLoader dict={dict} facilityMap={facilityMap} /> : null}
       <main
         id="main-content"
         className="relative flex-grow pt-[var(--mobile-main-offset)] pb-[var(--mobile-bottom-nav-offset)] sm:pt-20 sm:pb-0"
@@ -75,10 +72,7 @@ export function PlatformShell({
       </main>
 
       <Footer dict={dict} />
-      <CartStateBootstrap />
-      <FavoriteIntentBootstrap />
-      <CartLoader />
-      <BottomNav dict={dict} />
+      <PlatformDeferredClientLoader dict={dict} />
     </div>
   );
 }

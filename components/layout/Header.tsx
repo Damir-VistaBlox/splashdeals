@@ -1,9 +1,8 @@
 "use client";
 
 import React from "react";
-import { useUIState } from "@/hooks/use-ui-state";
-import { useHeaderScroll, DesktopTopNav, MobileTopNav } from "./_header";
-import { useServerCart } from "@/hooks/use-server-cart";
+import { useHeaderScroll, MobileTopNav } from "./_header";
+import { DeferredDesktopTopNav } from "./_header/top-nav/DeferredDesktopTopNav";
 import type { Dict } from "@/lib/types";
 
 interface HeaderProps {
@@ -16,9 +15,6 @@ interface HeaderProps {
  */
 export const Header = ({ dict }: HeaderProps) => {
   const [isHovered, setIsHovered] = React.useState(false);
-  const totalItems = useServerCart((state) => state.totalItems);
-  const openCart = useUIState((state) => state.openCart);
-
   const { scrolled, isOnline, isTabActive, isReducedMotion, mounted } = useHeaderScroll();
 
   return (
@@ -41,11 +37,9 @@ export const Header = ({ dict }: HeaderProps) => {
           setIsHovered={setIsHovered}
           dict={dict}
         />
-        <DesktopTopNav
+        <DeferredDesktopTopNav
           mounted={mounted}
-          totalItems={totalItems}
           isOnline={isOnline}
-          openCart={openCart}
           isTabActive={isTabActive}
           isReducedMotion={isReducedMotion}
           isHovered={isHovered}

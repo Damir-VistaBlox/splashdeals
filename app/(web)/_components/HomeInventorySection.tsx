@@ -58,11 +58,11 @@ export function HomeInventorySection({ dict, deals }: { dict: HomeDict; deals: H
               </p>
             </div>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 max-md:[&>*:nth-child(n+4)]:hidden">
-              {deals.map((deal, i) => (
+              {deals.map((deal) => (
                 <HomeDealCard
                   key={deal.id}
                   deal={deal}
-                  priority={i < 1}
+                  priority={false}
                   openTodayLabel={dict.open_today}
                 />
               ))}
