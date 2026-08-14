@@ -15,10 +15,37 @@ export function HomeHero({ dict }: { dict: HomeDict }) {
   ];
   const heroPillClassName =
     "bg-secondary text-secondary-foreground hover:bg-primary hover:text-primary-foreground inline-flex h-11 min-h-11 items-center justify-center rounded-full px-4 text-[11px] font-black tracking-[0.1em] uppercase shadow-[0_10px_24px_rgba(231,179,75,0.16)] transition-all duration-150 hover:-translate-y-0.5 sm:px-5 sm:text-[10px]";
+  const mobilePillClassName =
+    "bg-secondary/92 text-secondary-foreground hover:bg-primary hover:text-primary-foreground inline-flex h-9 min-h-9 items-center justify-center rounded-full px-3.5 text-[9px] font-black tracking-[0.08em] uppercase shadow-[0_8px_18px_rgba(231,179,75,0.12)] transition-colors";
 
   return (
     <div className="relative z-0 w-full overflow-hidden pb-6 sm:pb-20">
-      <section className="relative mx-auto max-w-7xl px-3 pt-1 sm:px-6 sm:pt-10 md:px-8">
+      <section className="mx-auto max-w-7xl px-3 pt-1 sm:hidden">
+        <nav
+          aria-label={dict.categories_aria || "Kategorije i brzi filteri"}
+          className="pt-[5.1rem]"
+        >
+          <ul className="flex flex-wrap items-center justify-center gap-2">
+            {HERO_CATEGORY_SLUGS.map((slug) => (
+              <li key={slug}>
+                <Link href={`/${slug}`} className={mobilePillClassName}>
+                  {CATEGORIES[slug].name}
+                </Link>
+              </li>
+            ))}
+
+            {heroQuickLinks.map((item) => (
+              <li key={item.href}>
+                <Link href={item.href} className={mobilePillClassName}>
+                  {item.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </section>
+
+      <section className="relative mx-auto hidden max-w-7xl px-3 pt-1 sm:block sm:px-6 sm:pt-10 md:px-8">
         <div className="section-shell overflow-hidden rounded-[1.75rem] px-4 py-5 sm:px-8 sm:py-14 lg:px-12 lg:py-16">
           <div className="animate-fade-up relative z-10 flex flex-col items-center text-center">
             <div className="pointer-events-none absolute top-0 left-1/2 h-36 w-36 -translate-x-1/2 rounded-full bg-sky-200/30 blur-[72px] sm:h-44 sm:w-44 sm:blur-[80px]" />
@@ -99,29 +126,6 @@ export function HomeHero({ dict }: { dict: HomeDict }) {
                   </ul>
                 </nav>
               </div>
-
-              <nav
-                aria-label={dict.categories_aria || "Kategorije i brzi filteri"}
-                className="mx-auto w-full max-w-4xl sm:hidden"
-              >
-                <ul className="flex flex-wrap items-center justify-center gap-x-2 gap-y-2.5">
-                  {HERO_CATEGORY_SLUGS.map((slug) => (
-                    <li key={slug}>
-                      <Link href={`/${slug}`} className={heroPillClassName}>
-                        {CATEGORIES[slug].name}
-                      </Link>
-                    </li>
-                  ))}
-
-                  {heroQuickLinks.map((item) => (
-                    <li key={item.href}>
-                      <Link href={item.href} className={heroPillClassName}>
-                        {item.label}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </nav>
             </div>
           </div>
         </div>
