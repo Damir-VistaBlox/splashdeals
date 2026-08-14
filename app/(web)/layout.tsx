@@ -2,6 +2,7 @@ import * as React from "react";
 import { getDictionary } from "@/lib/dictionaries";
 import { PlatformShell } from "@/components/layout/PlatformShell";
 import { GAScript } from "@/components/analytics/GoogleAnalytics";
+import { MicrosoftClarity } from "@/components/analytics/MicrosoftClarity";
 import { WebVitals } from "./_components/WebVitals";
 import { getFacilityMap } from "@/lib/layout/facility-map";
 
@@ -16,6 +17,7 @@ export default async function WebLayout({
     <>
       <WebVitals />
       <GAScript />
+      <MicrosoftClarity />
       <WebLayoutContent modal={modal}>{children}</WebLayoutContent>
     </>
   );

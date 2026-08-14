@@ -2,6 +2,7 @@ import * as React from "react";
 import { getDictionary } from "@/lib/dictionaries";
 import { PlatformShell } from "@/components/layout/PlatformShell";
 import { GAScript } from "@/components/analytics/GoogleAnalytics";
+import { MicrosoftClarity } from "@/components/analytics/MicrosoftClarity";
 import { WebVitals } from "@/app/(web)/_components/WebVitals";
 import { getFacilityMap } from "@/lib/layout/facility-map";
 
@@ -17,6 +18,7 @@ export default async function AccountRootLayout({ children }: { children: React.
     <>
       <WebVitals />
       <GAScript />
+      <MicrosoftClarity />
       <PlatformShell dict={dict} facilityMap={facilityMap} showStructuredData={false}>
         {children}
       </PlatformShell>
