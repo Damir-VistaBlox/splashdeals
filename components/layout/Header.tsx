@@ -28,7 +28,7 @@ export const Header = ({ dict }: HeaderProps) => {
       }`}
     >
       <div
-        className={`mx-auto max-w-7xl overflow-hidden rounded-[1.9rem] border transition-[background-color,border-color,box-shadow,backdrop-filter,transform] duration-500 ${
+        className={`mx-auto max-w-7xl overflow-visible rounded-[1.9rem] border transition-[background-color,border-color,box-shadow,backdrop-filter,transform] duration-500 md:overflow-hidden ${
           scrolled
             ? "public-panel border-white/70 shadow-[0_22px_64px_rgba(18,59,96,0.14)] md:translate-y-0"
             : "border-white/60 bg-white/70 shadow-[0_18px_42px_rgba(18,59,96,0.08)] backdrop-blur-2xl"
