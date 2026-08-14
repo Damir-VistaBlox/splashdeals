@@ -67,7 +67,7 @@ export function MobileTopNav({
 
   return (
     <div className="md:hidden">
-      <div className="flex items-center gap-3 px-3 pt-2 pb-3">
+      <div className="flex items-center gap-2 px-3 pt-2 pb-3">
         <Logo
           isTabActive={isTabActive}
           isReducedMotion={isReducedMotion}
