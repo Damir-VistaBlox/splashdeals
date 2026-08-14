@@ -63,13 +63,6 @@ export function MobileTopNav({
     };
   }, [canSearch, trimmedQuery]);
 
-  React.useEffect(() => {
-    if (!canSearch) {
-      setIsLoading(false);
-      setResults([]);
-    }
-  }, [canSearch]);
-
   const visibleResults = canSearch ? results : [];
 
   return (

@@ -83,10 +83,7 @@ export function HomeHero({ dict }: { dict: HomeDict }) {
                   <ul className="flex flex-wrap items-center justify-center gap-x-2 gap-y-2.5">
                     {HERO_CATEGORY_SLUGS.map((slug) => (
                       <li key={slug}>
-                        <Link
-                          href={`/${slug}`}
-                          className={heroPillClassName}
-                        >
+                        <Link href={`/${slug}`} className={heroPillClassName}>
                           {CATEGORIES[slug].name}
                         </Link>
                       </li>
@@ -94,10 +91,7 @@ export function HomeHero({ dict }: { dict: HomeDict }) {
 
                     {heroQuickLinks.map((item) => (
                       <li key={item.href}>
-                        <Link
-                          href={item.href}
-                          className={heroPillClassName}
-                        >
+                        <Link href={item.href} className={heroPillClassName}>
                           {item.label}
                         </Link>
                       </li>
@@ -113,10 +107,7 @@ export function HomeHero({ dict }: { dict: HomeDict }) {
                 <ul className="flex flex-wrap items-center justify-center gap-x-2 gap-y-2.5">
                   {HERO_CATEGORY_SLUGS.map((slug) => (
                     <li key={slug}>
-                      <Link
-                        href={`/${slug}`}
-                        className={heroPillClassName}
-                      >
+                      <Link href={`/${slug}`} className={heroPillClassName}>
                         {CATEGORIES[slug].name}
                       </Link>
                     </li>
@@ -124,10 +115,7 @@ export function HomeHero({ dict }: { dict: HomeDict }) {
 
                   {heroQuickLinks.map((item) => (
                     <li key={item.href}>
-                      <Link
-                        href={item.href}
-                        className={heroPillClassName}
-                      >
+                      <Link href={item.href} className={heroPillClassName}>
                         {item.label}
                       </Link>
                     </li>
