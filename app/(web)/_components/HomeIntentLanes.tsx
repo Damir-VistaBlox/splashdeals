@@ -53,7 +53,7 @@ export function HomeIntentLanes({ dict }: { dict: HomeDict }) {
                   <Icon name={lane.icon} className="text-[22px]" />
                 </div>
                 <span className="text-muted-foreground/80 inline-flex h-8 min-w-8 items-center justify-center rounded-full border border-white/70 bg-white/72 px-2 text-[10px] font-black tracking-[0.14em] uppercase">
-                  <Icon name="north_east" className="text-[14px]" />
+                  <Icon name="arrow_forward" className="text-[14px] -rotate-45" />
                 </span>
               </div>
               <h3 className="group-hover:text-primary mb-1.5 text-[11px] leading-tight font-black tracking-[0.12em] uppercase transition-colors sm:text-sm">

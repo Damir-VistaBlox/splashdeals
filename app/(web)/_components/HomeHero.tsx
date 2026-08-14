@@ -24,7 +24,10 @@ export function HomeHero({ dict }: { dict: HomeDict }) {
       <section className="mx-auto max-w-7xl px-3 pt-1 sm:hidden">
         <div className="hero-mobile-shell overflow-hidden rounded-[1.9rem] px-4 pt-[5rem] pb-4">
           <div className="relative z-10">
-            <nav aria-label={dict.categories_aria || "Kategorije i brzi filteri"}>
+            <nav
+              aria-label={dict.categories_aria || "Kategorije i brzi filteri"}
+              className="relative"
+            >
               <ul className="no-scrollbar -mx-1 mb-3 flex snap-x snap-mandatory items-center gap-2 overflow-x-auto overscroll-x-contain px-1 pb-1 [-webkit-overflow-scrolling:touch]">
                 {HERO_CATEGORY_SLUGS.map((slug) => (
                   <li key={slug} className="shrink-0 snap-start">
@@ -42,6 +45,10 @@ export function HomeHero({ dict }: { dict: HomeDict }) {
                   </li>
                 ))}
               </ul>
+              <div
+                className="pointer-events-none absolute top-0 right-0 bottom-1 w-10 bg-gradient-to-l from-white/95 to-transparent"
+                aria-hidden
+              />
             </nav>
 
             {dict.price_promise ? (

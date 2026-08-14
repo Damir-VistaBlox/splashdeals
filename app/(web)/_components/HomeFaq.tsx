@@ -18,7 +18,7 @@ const FAQ_KEYS = [
 
 export function HomeFaq({ dict }: { dict: HomeDict }) {
   return (
-    <section className="border-border mx-auto max-w-3xl border-t px-3 py-8 sm:px-6 sm:py-16 md:px-8">
+    <section className="border-border mx-auto max-w-3xl border-t-0 px-3 py-8 sm:border-t sm:px-6 sm:py-16 md:px-8">
       <div className="mb-5 text-center sm:mb-8">
         <h2 className="mb-2 text-[1.9rem] font-black tracking-tighter uppercase italic sm:text-4xl">
           {dict.faq_title}

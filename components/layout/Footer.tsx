@@ -121,7 +121,7 @@ export function Footer({ dict: dictProp }: { dict?: Dict | null } = {}) {
               <Link
                 key={`mobile-${item.href}`}
                 href={item.href}
-                className="surface-subtle text-foreground flex min-h-10 items-center rounded-2xl px-3 text-[10px] font-black tracking-[0.08em] uppercase transition-colors hover:bg-white/58"
+                className="surface-subtle text-foreground flex min-h-11 items-center rounded-2xl px-3 text-[10px] font-black tracking-[0.08em] uppercase transition-colors hover:bg-white/58 active:scale-[0.98]"
               >
                 {item.name}
               </Link>
@@ -147,7 +147,7 @@ export function Footer({ dict: dictProp }: { dict?: Dict | null } = {}) {
                   href={item.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="surface-subtle text-muted-foreground flex h-10 w-10 items-center justify-center rounded-2xl"
+                  className="surface-subtle text-muted-foreground flex h-11 w-11 items-center justify-center rounded-2xl transition-colors active:scale-[0.96]"
                   aria-label={footerLabel(item.labelKey, item.fallback)}
                 >
                   <div className="h-4.5 w-4.5">{item.icon}</div>
@@ -156,13 +156,24 @@ export function Footer({ dict: dictProp }: { dict?: Dict | null } = {}) {
             </div>
           </div>
 
-          <div className="flex items-center justify-between gap-3">
+          <div className="animated-border rounded-2xl border border-white/65 bg-white/58 p-4">
+            <h3 className="mb-1.5 text-[10px] font-black tracking-[0.22em] text-slate-600 uppercase">
+              {dict?.footer?.summer_alerts || "Letnja Obaveštenja"}
+            </h3>
+            <p className="text-muted-foreground mb-3 text-xs leading-relaxed font-medium">
+              {dict?.footer?.summer_alerts_desc ||
+                "Prijavite se za najnovije akcije i ekskluzivne letnje ponude akva parkova."}
+            </p>
+            <FooterNewsletterForm dict={dict ?? null} idSuffix="mobile" />
+          </div>
+
+          <div className="flex flex-wrap items-center justify-between gap-2">
             <div className="flex flex-wrap gap-2">
               {legalItems.slice(0, 2).map((item) => (
                 <Link
                   key={`mobile-legal-${item.href}`}
                   href={item.href}
-                  className="surface-chip text-muted-foreground rounded-full px-3 py-2 text-[10px] font-black tracking-[0.12em] uppercase transition-colors hover:bg-white/56 hover:text-slate-700"
+                  className="surface-chip text-muted-foreground inline-flex min-h-11 items-center rounded-full px-3.5 text-[10px] font-black tracking-[0.12em] uppercase transition-colors hover:bg-white/56 hover:text-slate-700 active:scale-[0.98]"
                 >
                   {item.name}
                 </Link>
@@ -170,7 +181,7 @@ export function Footer({ dict: dictProp }: { dict?: Dict | null } = {}) {
             </div>
             <Link
               href="/support"
-              className="text-primary text-[10px] font-black tracking-[0.14em] uppercase"
+              className="text-primary inline-flex min-h-11 items-center px-2 text-[10px] font-black tracking-[0.14em] uppercase"
             >
               Podrška
             </Link>
@@ -278,9 +289,9 @@ export function Footer({ dict: dictProp }: { dict?: Dict | null } = {}) {
 
           <div className="space-y-6">
             <div className="animated-border rounded-[1.75rem] border border-white/65 bg-white/58 p-6">
-              <h4 className="mb-3 text-xs font-black tracking-[0.28em] text-slate-600 uppercase">
+              <h3 className="mb-3 text-xs font-black tracking-[0.28em] text-slate-600 uppercase">
                 {dict?.footer?.summer_alerts || "Letnja Obaveštenja"}
-              </h4>
+              </h3>
               <p className="text-muted-foreground mb-4 text-sm leading-relaxed">
                 {dict?.footer?.summer_alerts_desc ||
                   "Prijavite se za najnovije akcije i ekskluzivne letnje ponude akva parkova."}
@@ -336,9 +347,9 @@ function FooterColumn({
 }) {
   return (
     <div>
-      <h4 className="mb-5 text-xs font-black tracking-[0.28em] text-slate-600 uppercase">
+      <h3 className="mb-5 text-xs font-black tracking-[0.28em] text-slate-600 uppercase">
         {title}
-      </h4>
+      </h3>
       <ul className="space-y-1">
         {items.map((item) => (
           <li key={`${item.href}-${item.name}`}>

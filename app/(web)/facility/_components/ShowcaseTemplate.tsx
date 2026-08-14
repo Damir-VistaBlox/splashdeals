@@ -24,15 +24,17 @@ const ShowcaseTicketGroups = dynamic(
 
 const MediaGallery = dynamic(() => import("./MediaGallery").then((mod) => mod.MediaGallery), {
   ssr: true,
+  // Mirrors MediaGallery's real DOM (2-col/160px rows on mobile, 4-col/230px on desktop)
+  // so streaming-in the island doesn't shift layout (CLS Zero).
   loading: () => (
-    <div className="space-y-12">
-      <div className="mx-auto max-w-2xl space-y-4 text-center">
+    <div className="space-y-6 md:space-y-12">
+      <div className="mx-auto max-w-2xl space-y-2.5 text-center md:space-y-4">
         <Skeleton className="bg-muted mx-auto h-4 w-24 rounded" />
         <Skeleton className="bg-muted mx-auto h-8 w-64 rounded-lg" />
       </div>
-      <div className="grid auto-rows-[250px] grid-cols-4 gap-4">
+      <div className="mx-auto grid max-w-6xl auto-rows-[160px] grid-cols-2 gap-2 sm:gap-4 md:auto-rows-[230px] md:grid-cols-4">
         {[1, 2, 3, 4].map((i) => (
-          <Skeleton key={i} className="bg-muted rounded-[2.5rem]" />
+          <Skeleton key={i} className="bg-muted rounded-2xl md:rounded-[2.5rem]" />
         ))}
       </div>
     </div>
@@ -580,12 +582,17 @@ export async function FacilityShowcaseTemplate({ params }: FacilityPageProps) {
               <PartnerBranding logoUrl={facility.logoUrl} name={facility.name} />
             </div>
 
-            {/* Operational Portal — hidden on mobile (already in MobileUnifiedControlPill) */}
-            <div className="hidden md:block">
-              <Suspense fallback={<Skeleton className="bg-muted/20 h-[600px] rounded-[3rem]" />}>
-                <OperationalPortal hours={facility.hours} />
-              </Suspense>
-            </div>
+            {/* Operational Portal — full weekly hours. MobileUnifiedControlPill in the hero
+                only surfaces *today's* status, so this is the sole place a mobile visitor
+                can check e.g. Saturday hours before buying. Collapsed accordion on mobile,
+                always-expanded card on desktop (see OperationalPortal itself). */}
+            <Suspense
+              fallback={
+                <Skeleton className="bg-muted/20 h-[220px] rounded-[1.85rem] sm:h-[600px] sm:rounded-[3rem]" />
+              }
+            >
+              <OperationalPortal hours={facility.hours} />
+            </Suspense>
           </aside>
         </section>
 

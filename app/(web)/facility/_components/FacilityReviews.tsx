@@ -196,7 +196,7 @@ export function FacilityReviews({ facilityId, initialReviews, dict }: FacilityRe
               placeholder={t.title_placeholder || "Naslov recenzije (opcionalno)"}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="h-9 text-sm"
+              className="h-11 text-sm"
               maxLength={200}
             />
           </div>
@@ -215,7 +215,7 @@ export function FacilityReviews({ facilityId, initialReviews, dict }: FacilityRe
           <Button
             type="submit"
             size="sm"
-            className="h-8 gap-1.5 text-xs"
+            className="min-h-11 h-11 gap-1.5 text-xs"
             disabled={isSubmitting || rating === 0}
           >
             {isSubmitting ? (

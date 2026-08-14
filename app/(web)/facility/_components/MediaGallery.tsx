@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/Icon";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback, type TouchEvent } from "react";
 import Image from "next/image";
 import type { FacilityMedia } from "@prisma/client";
 
@@ -13,23 +13,58 @@ interface MediaGalleryProps {
   dict?: Dict;
 }
 
+// Minimum horizontal drag (px) before a touch gesture counts as a swipe.
+const SWIPE_THRESHOLD = 45;
+
 /**
  * 📷 MediaGallery Island (Client)
  * Handles full-screen previews and high-energy interactive masonry grid.
  */
 export function MediaGallery({ media, dict }: MediaGalleryProps) {
   const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
+  const touchStartX = useRef<number | null>(null);
+  const touchDeltaX = useRef(0);
 
   const galleryMedia = media.filter((m) => m.isGalleryVisible !== false);
+  const galleryLength = galleryMedia.length;
 
-  // Keyboard: Escape closes the lightbox
+  const showPrev = useCallback(() => {
+    setSelectedIdx((idx) => (idx === null ? null : (idx - 1 + galleryLength) % galleryLength));
+  }, [galleryLength]);
+
+  const showNext = useCallback(() => {
+    setSelectedIdx((idx) => (idx === null ? null : (idx + 1) % galleryLength));
+  }, [galleryLength]);
+
+  // Keyboard: Escape closes the lightbox, arrows navigate
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") setSelectedIdx(null);
+      if (e.key === "ArrowLeft") showPrev();
+      if (e.key === "ArrowRight") showNext();
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
+  }, [showPrev, showNext]);
+
+  const handleTouchStart = (e: TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchDeltaX.current = 0;
+  };
+
+  const handleTouchMove = (e: TouchEvent) => {
+    if (touchStartX.current === null) return;
+    touchDeltaX.current = e.touches[0].clientX - touchStartX.current;
+  };
+
+  const handleTouchEnd = () => {
+    if (Math.abs(touchDeltaX.current) > SWIPE_THRESHOLD) {
+      if (touchDeltaX.current > 0) showPrev();
+      else showNext();
+    }
+    touchStartX.current = null;
+    touchDeltaX.current = 0;
+  };
 
   if (!galleryMedia.length) return null;
 
@@ -97,8 +132,7 @@ export function MediaGallery({ media, dict }: MediaGalleryProps) {
                   dict?.media_gallery?.fallback_caption ||
                   "Fotografija objekta"
                 }
-                loading={i < 2 ? "eager" : "lazy"}
-                priority={i < 2}
+                loading="lazy"
               />
             )}
             <div className="from-background/92 absolute inset-0 flex flex-col justify-end bg-gradient-to-t via-transparent to-transparent p-3 opacity-100 transition-opacity duration-500 sm:p-8 sm:opacity-0 sm:group-hover:opacity-100">
@@ -124,27 +158,44 @@ export function MediaGallery({ media, dict }: MediaGalleryProps) {
         ))}
       </div>
 
-      {/* 🎭 LIGHTBOX */}
+      {/* 🎭 LIGHTBOX — swipeable on touch, arrow-navigable, close button anchored to the
+          image card itself (not the viewport edge) so it's never occluded by the sticky
+          site header on mobile. */}
       {selectedIdx !== null && (
         <button
-          className="bg-background/95 animate-fade-in fixed inset-0 z-[2000] flex items-center justify-center p-4 backdrop-blur-2xl md:p-20"
+          type="button"
+          className="bg-background/95 animate-fade-in fixed inset-0 z-[2000] flex items-center justify-center p-3 backdrop-blur-2xl sm:p-4 md:p-20"
           onClick={() => setSelectedIdx(null)}
           aria-label={dict?.media_gallery?.close || "Zatvori galeriju"}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
         >
-          <Button
-            variant="ghost"
-            size="icon"
-            className="border-border bg-muted/20 text-muted-foreground hover:bg-muted/30 absolute top-8 right-8 z-[2010] rounded-full border"
-            onClick={() => setSelectedIdx(null)}
-            aria-label={dict?.media_gallery?.close || "Zatvori galeriju"}
-          >
-            <Icon name="close" className="text-[24px]" />
-          </Button>
+          {/* Position/count indicator */}
+          {galleryLength > 1 && (
+            <div
+              className="bg-muted/30 text-primary-foreground pointer-events-none absolute top-4 left-1/2 z-[2010] -translate-x-1/2 rounded-full px-3.5 py-1.5 text-[11px] font-black tracking-widest backdrop-blur-md sm:top-8"
+              aria-live="polite"
+            >
+              {selectedIdx + 1} / {galleryLength}
+            </div>
+          )}
 
           <div
-            className="border-border animate-scale-in bg-background relative aspect-video w-full max-w-6xl overflow-hidden rounded-[3rem] border shadow-2xl"
+            className="border-border animate-scale-in bg-background relative aspect-video w-full max-w-6xl overflow-hidden rounded-[1.75rem] border shadow-2xl sm:rounded-[3rem]"
             onClick={(e) => e.stopPropagation()}
           >
+            {/* Close — anchored to the card, always reachable regardless of page chrome */}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="border-border bg-muted/40 text-primary-foreground hover:bg-muted/60 absolute top-3 right-3 z-[2010] size-11 rounded-full border backdrop-blur-md"
+              onClick={() => setSelectedIdx(null)}
+              aria-label={dict?.media_gallery?.close || "Zatvori galeriju"}
+            >
+              <Icon name="close" className="text-[22px]" />
+            </Button>
+
             {galleryMedia[selectedIdx].type === "VIDEO" ? (
               <video
                 src={galleryMedia[selectedIdx].url}
@@ -162,13 +213,43 @@ export function MediaGallery({ media, dict }: MediaGalleryProps) {
               />
             )}
             {galleryMedia[selectedIdx].caption && (
-              <div className="from-background/80 absolute inset-x-0 bottom-0 bg-gradient-to-t to-transparent p-8">
-                <p className="text-primary-foreground text-2xl font-black tracking-tighter uppercase italic">
+              <div className="from-background/80 absolute inset-x-0 bottom-0 bg-gradient-to-t to-transparent p-5 sm:p-8">
+                <p className="text-primary-foreground text-lg font-black tracking-tighter uppercase italic sm:text-2xl">
                   {galleryMedia[selectedIdx].caption}
                 </p>
               </div>
             )}
           </div>
+
+          {/* Prev / Next — 44px+ targets, swipe also works on touch devices */}
+          {galleryLength > 1 && (
+            <>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="border-border bg-muted/30 text-primary-foreground hover:bg-muted/50 absolute top-1/2 left-2 z-[2010] size-11 -translate-y-1/2 rounded-full border backdrop-blur-md sm:left-6"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  showPrev();
+                }}
+                aria-label={dict?.media_gallery?.previous || "Prethodna fotografija"}
+              >
+                <Icon name="chevron_left" className="text-[26px]" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="border-border bg-muted/30 text-primary-foreground hover:bg-muted/50 absolute top-1/2 right-2 z-[2010] size-11 -translate-y-1/2 rounded-full border backdrop-blur-md sm:right-6"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  showNext();
+                }}
+                aria-label={dict?.media_gallery?.next || "Sledeća fotografija"}
+              >
+                <Icon name="chevron_right" className="text-[26px]" />
+              </Button>
+            </>
+          )}
         </button>
       )}
     </section>

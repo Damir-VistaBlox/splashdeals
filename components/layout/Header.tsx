@@ -19,12 +19,12 @@ export const Header = ({ dict }: HeaderProps) => {
 
   return (
     <header
-      className={`pointer-events-none fixed inset-x-0 top-0 z-[999] px-3 pt-[max(env(safe-area-inset-top,0px),0.5rem)] transition-[padding,transform] duration-500 sm:px-6 sm:pt-3 md:px-8 ${
+      className={`pointer-events-none fixed inset-x-0 top-0 z-[999] px-3 pt-[max(env(safe-area-inset-top,0px),0.5rem)] transition-[padding,transform] duration-500 motion-reduce:transition-none sm:px-6 sm:pt-3 md:px-8 ${
         scrolled ? "sm:pt-2" : "sm:pt-3"
       }`}
     >
       <div
-        className={`pointer-events-auto mx-auto max-w-7xl overflow-visible rounded-[1.9rem] border transition-[background-color,border-color,box-shadow,backdrop-filter,transform] duration-500 md:overflow-hidden ${
+        className={`pointer-events-auto mx-auto max-w-7xl overflow-visible rounded-[1.9rem] border transition-[background-color,border-color,box-shadow,backdrop-filter,transform] duration-500 motion-reduce:transition-none md:overflow-hidden ${
           scrolled
             ? "public-panel border-white/70 shadow-[0_22px_64px_rgba(18,59,96,0.14)] md:translate-y-0"
             : "border-white/60 bg-white/70 shadow-[0_18px_42px_rgba(18,59,96,0.08)] backdrop-blur-2xl"

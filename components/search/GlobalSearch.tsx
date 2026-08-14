@@ -105,11 +105,11 @@ export function GlobalSearch() {
       {/* 🌑 Backdrop */}
       <div
         onClick={handleClose}
-        className="absolute inset-0 bg-slate-950/70 backdrop-blur-xl md:bg-slate-950/80"
+        className="animate-in fade-in absolute inset-0 bg-slate-950/70 backdrop-blur-xl duration-300 motion-reduce:animate-none md:bg-slate-950/80"
       />
 
-      {/* Search surface */}
-      <section className="relative flex h-[100dvh] w-full flex-col overflow-hidden bg-[linear-gradient(180deg,rgba(248,250,252,0.98),rgba(255,255,255,0.94))] md:h-auto md:max-h-[78dvh] md:max-w-2xl md:rounded-[2rem] md:border md:border-white/20 md:bg-slate-900 md:shadow-2xl md:shadow-cyan-500/10">
+      {/* Search surface — mobile: full-screen bottom-sheet-style slide-up takeover; desktop: centered fade+zoom */}
+      <section className="animate-in slide-in-from-bottom-8 fade-in relative flex h-[100dvh] w-full flex-col overflow-hidden bg-[linear-gradient(180deg,rgba(248,250,252,0.98),rgba(255,255,255,0.94))] duration-300 ease-out motion-reduce:animate-none md:h-auto md:max-h-[78dvh] md:max-w-2xl md:slide-in-from-bottom-0 md:zoom-in-95 md:rounded-[2rem] md:border md:border-white/20 md:bg-slate-900 md:shadow-2xl md:shadow-cyan-500/10">
         <div className="border-border/40 relative border-b px-3 pt-[max(0.75rem,env(safe-area-inset-top,0px))] pb-3 md:border-white/5 md:px-6 md:py-6">
           <div className="mb-3 flex items-center justify-between gap-3 md:mb-4">
             <div className="min-w-0">

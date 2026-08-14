@@ -59,8 +59,9 @@ export function SignInButtons({ dict, callbackUrl, providers }: SignInButtonsPro
       {error ? (
         <p
           role="alert"
-          className="border-destructive/30 bg-destructive/10 text-destructive rounded-xl border px-3 py-2 text-center text-sm font-medium"
+          className="border-destructive/30 bg-destructive/10 text-destructive flex items-center justify-center gap-2 rounded-xl border px-3 py-2.5 text-center text-sm font-medium"
         >
+          <Icon name="warning" className="size-4 shrink-0" />
           {error}
         </p>
       ) : null}

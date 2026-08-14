@@ -12,13 +12,13 @@ export function HomeHowItWorks({ dict }: { dict: HomeDict }) {
   return (
     <section
       id="how-it-works"
-      className="border-border mx-auto max-w-7xl scroll-mt-28 border-t px-3 py-8 max-md:scroll-mt-36 sm:px-6 sm:py-20 md:px-8"
+      className="border-border mx-auto max-w-7xl scroll-mt-28 border-t-0 px-3 py-8 max-md:scroll-mt-36 sm:border-t sm:px-6 sm:py-20 md:px-8"
     >
       <div className="mb-6 text-center sm:mb-14">
         <p className="text-primary mb-2 text-[10px] font-black tracking-[0.2em] uppercase">
           Od telefona do ulaza
         </p>
-        <h2 className="mb-2 text-[clamp(1.65rem,6vw,3.5rem)] leading-[0.95] font-black tracking-tighter uppercase italic">
+        <h2 className="mb-2 text-[clamp(1.8rem,6vw,3.5rem)] leading-[0.95] font-black tracking-tighter uppercase italic">
           {dict.steps_title_base}
           <span className="text-primary">{dict.steps_title_highlight}</span>
         </h2>

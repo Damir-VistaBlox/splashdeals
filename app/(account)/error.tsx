@@ -33,7 +33,7 @@ export default function AccountError({
     <div className="mobile-route-frame flex items-center justify-center px-4 py-6 sm:px-6">
       <div className="bg-card/82 border-border shadow-soft flex w-full max-w-md flex-col items-center gap-5 rounded-[2rem] border px-6 py-8 text-center backdrop-blur-sm">
         <div className="bg-destructive/10 text-destructive flex h-16 w-16 items-center justify-center rounded-3xl">
-          <Icon name="error_outline" className="size-8" />
+          <Icon name="warning" className="size-8" />
         </div>
         <div className="space-y-2">
           <h2 className="text-xl font-black tracking-tight uppercase">{title}</h2>

@@ -163,7 +163,7 @@ export function CartItemList({
                       }}
                       disabled={mutating}
                       aria-label={cartDict?.remove || "Ukloni"}
-                      className="text-muted-foreground hover:text-destructive h-10 w-10 shrink-0 rounded-xl"
+                      className="text-muted-foreground hover:text-destructive h-11 w-11 shrink-0 touch-manipulation rounded-xl"
                     >
                       <Icon name="delete" className="text-[18px]" />
                     </Button>
@@ -183,7 +183,7 @@ export function CartItemList({
                         disabled={mutating}
                         aria-label={atMin ? cartDict?.remove || "Ukloni" : cartDict?.decrease_qty}
                         aria-controls={`cart-item-quantity-${item.id}`}
-                        className="text-muted-foreground hover:text-foreground h-10 w-10 touch-manipulation rounded-none"
+                        className="text-muted-foreground hover:text-foreground h-11 w-11 touch-manipulation rounded-none"
                       >
                         <Icon name={atMin ? "delete" : "remove"} className="text-[16px]" />
                       </Button>
@@ -206,7 +206,7 @@ export function CartItemList({
                         }
                         aria-label={cartDict?.increase_qty}
                         aria-controls={`cart-item-quantity-${item.id}`}
-                        className="text-muted-foreground hover:text-foreground h-10 w-10 touch-manipulation rounded-none"
+                        className="text-muted-foreground hover:text-foreground h-11 w-11 touch-manipulation rounded-none"
                       >
                         <Icon name="add" className="text-[16px]" />
                       </Button>
@@ -230,7 +230,7 @@ export function CartItemList({
                         }}
                         disabled={mutating}
                         aria-label={cartDict?.remove || "Ukloni"}
-                        className="text-muted-foreground hover:text-destructive mt-0.5 h-9 min-h-9 touch-manipulation px-2 text-[10px] font-black tracking-widest uppercase"
+                        className="text-muted-foreground hover:text-destructive mt-0.5 h-11 min-h-11 touch-manipulation px-2 text-[10px] font-black tracking-widest uppercase"
                       >
                         {cartDict?.remove || "Ukloni"}
                       </Button>

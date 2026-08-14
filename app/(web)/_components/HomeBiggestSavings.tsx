@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { Icon } from "@/components/ui/Icon";
 import { HomeDealCard } from "./HomeDealCard";
 import type { HomeDeal } from "@/lib/home/deals";
 
@@ -35,11 +36,14 @@ export function HomeBiggestSavings({ dict, deals }: { dict: HomeDict; deals: Hom
       </div>
 
       {deals.length === 0 ? (
-        <div className="border-border bg-muted/20 flex flex-col items-center gap-4 rounded-2xl border border-dashed px-6 py-12 text-center">
+        <div className="public-panel flex flex-col items-center gap-3 rounded-[1.75rem] border-white/70 px-6 py-10 text-center sm:py-16">
+          <span className="bg-primary/10 text-primary flex h-12 w-12 items-center justify-center rounded-full">
+            <Icon name="discount" className="text-[22px]" />
+          </span>
           <p className="text-muted-foreground max-w-md text-sm leading-relaxed">
             {dict.rail_empty || "Trenutno nema ponuda sa slikom za ovu sekciju."}
           </p>
-          <Button asChild className="h-12 min-h-12 rounded-full px-6">
+          <Button asChild className="h-12 min-h-12 rounded-full bg-primary-dark px-6 hover:bg-primary-dark/90">
             <Link href="/akva-parkovi">{dict.inventory_cta || "Pogledaj destinacije"}</Link>
           </Button>
         </div>
@@ -58,12 +62,18 @@ export function HomeBiggestSavings({ dict, deals }: { dict: HomeDict; deals: Hom
               Swipe
             </span>
           </div>
-          <div className="no-scrollbar -mx-3 flex snap-x snap-mandatory gap-3 overflow-x-auto px-3 pb-2 md:hidden">
-            {featuredDeals.map((deal) => (
-              <div key={deal.id} className="w-[84vw] max-w-[21rem] min-w-[84vw] snap-start">
-                <HomeDealCard deal={deal} priority={false} openTodayLabel={dict.open_today} />
-              </div>
-            ))}
+          <div className="relative md:hidden">
+            <div className="no-scrollbar -mx-3 flex snap-x snap-mandatory gap-3 overflow-x-auto px-3 pb-2">
+              {featuredDeals.map((deal) => (
+                <div key={deal.id} className="w-[84vw] max-w-[21rem] min-w-[84vw] snap-start">
+                  <HomeDealCard deal={deal} priority={false} openTodayLabel={dict.open_today} />
+                </div>
+              ))}
+            </div>
+            <div
+              className="from-background pointer-events-none absolute top-0 right-0 bottom-2 w-10 bg-gradient-to-l to-transparent"
+              aria-hidden
+            />
           </div>
           <div className="hidden gap-4 md:grid md:grid-cols-2 lg:grid-cols-4">
             {deals.map((deal) => (

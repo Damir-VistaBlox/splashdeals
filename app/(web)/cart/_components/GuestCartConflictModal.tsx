@@ -58,10 +58,15 @@ export function GuestCartConflictModal({
           </div>
         </div>
         <DialogFooter className="flex-col gap-2 sm:flex-col">
-          <Button disabled={resolving} onClick={onChooseGuest} className="w-full">
+          <Button disabled={resolving} onClick={onChooseGuest} className="min-h-11 w-full">
             {dict?.conflict_keep_guest}
           </Button>
-          <Button disabled={resolving} variant="outline" onClick={onChooseUser} className="w-full">
+          <Button
+            disabled={resolving}
+            variant="outline"
+            onClick={onChooseUser}
+            className="min-h-11 w-full"
+          >
             {dict?.conflict_keep_user}
           </Button>
           {onDismiss && (
@@ -70,7 +75,7 @@ export function GuestCartConflictModal({
               disabled={resolving}
               variant="ghost"
               onClick={onDismiss}
-              className="w-full"
+              className="min-h-11 w-full"
             >
               Kasnije
             </Button>

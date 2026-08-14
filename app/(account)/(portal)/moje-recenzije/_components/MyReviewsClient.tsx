@@ -40,6 +40,7 @@ export function MyReviewsClient({
     title_placeholder: string;
     content_placeholder: string;
     generic_error: string;
+    browse_facilities?: string;
   };
 }) {
   const [reviews, setReviews] = useState(initial);
@@ -53,6 +54,14 @@ export function MyReviewsClient({
       <Card className="border-border flex flex-col items-center gap-4 rounded-[1.75rem] p-8 text-center sm:p-12">
         <Icon name="star" className="text-muted-foreground size-10 sm:size-12" />
         <p className="text-muted-foreground text-sm font-medium">{labels.no_reviews}</p>
+        {labels.browse_facilities ? (
+          <Link
+            href="/akva-parkovi"
+            className="bg-primary text-primary-foreground inline-flex h-11 min-h-11 items-center rounded-full px-6 text-sm font-bold"
+          >
+            {labels.browse_facilities}
+          </Link>
+        ) : null}
       </Card>
     );
   }

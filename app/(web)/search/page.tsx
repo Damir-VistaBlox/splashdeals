@@ -78,14 +78,15 @@ export default async function SearchPage({
   // Search facilities
   let facilities: FacilityRow[] = [];
   try {
-    facilities = await prisma.$queryRaw<FacilityRow[]>`
+    facilities =
+      (await prisma.$queryRaw<FacilityRow[]>`
     SELECT id, name, slug, city,
            ts_rank(to_tsvector('serbian', coalesce(name,'') || ' ' || coalesce(description,'') || ' ' || coalesce(city,'')), plainto_tsquery('serbian', ${query})) as rank
     FROM partners."Facility"
     WHERE to_tsvector('serbian', coalesce(name,'') || ' ' || coalesce(description,'') || ' ' || coalesce(city,'')) @@ plainto_tsquery('serbian', ${query})
     ORDER BY rank DESC
     LIMIT 10
-  `;
+  `) ?? [];
   } catch (e) {
     console.error("[search] facility query failed:", e);
   }
@@ -93,7 +94,8 @@ export default async function SearchPage({
   // Search blog posts
   let posts: ContentRow[] = [];
   try {
-    posts = await prisma.$queryRaw<ContentRow[]>`
+    posts =
+      (await prisma.$queryRaw<ContentRow[]>`
     SELECT id, title, slug,
            substring(content, 0, 300) as excerpt,
            ts_rank(to_tsvector('serbian', coalesce(title,'') || ' ' || coalesce(content,'')), plainto_tsquery('serbian', ${query})) as rank
@@ -102,7 +104,7 @@ export default async function SearchPage({
       AND status = 'PUBLISHED'
     ORDER BY rank DESC
     LIMIT 5
-  `;
+  `) ?? [];
   } catch (e) {
     console.error("[search] blog query failed:", e);
   }
@@ -110,7 +112,8 @@ export default async function SearchPage({
   // Search pages
   let pages: ContentRow[] = [];
   try {
-    pages = await prisma.$queryRaw<ContentRow[]>`
+    pages =
+      (await prisma.$queryRaw<ContentRow[]>`
     SELECT id, title, slug,
            substring(content, 0, 300) as excerpt,
            ts_rank(to_tsvector('serbian', coalesce(title,'') || ' ' || coalesce(content,'')), plainto_tsquery('serbian', ${query})) as rank
@@ -119,7 +122,7 @@ export default async function SearchPage({
       AND status = 'PUBLISHED'
     ORDER BY rank DESC
     LIMIT 5
-  `;
+  `) ?? [];
   } catch (e) {
     console.error("[search] pages query failed:", e);
   }
@@ -244,22 +247,22 @@ export default async function SearchPage({
 
           <div className="mb-3 flex flex-wrap gap-2">
             <SearchStat
-              label={dict.search.section_facilities || "Objekti"}
+              label={searchDict.section_facilities || "Objekti"}
               count={facilities.length}
             />
-            <SearchStat label={dict.search.section_blog || "Blog"} count={posts.length} />
-            <SearchStat label={dict.search.section_pages || "Stranice"} count={pages.length} />
+            <SearchStat label={searchDict.section_blog || "Blog"} count={posts.length} />
+            <SearchStat label={searchDict.section_pages || "Stranice"} count={pages.length} />
           </div>
 
           <div
             aria-label={searchDict.quick_rail_label || "Brze teme za pretragu"}
-            className="no-scrollbar -mx-1 hidden snap-x snap-mandatory gap-2 overflow-x-auto px-1 sm:flex sm:flex-wrap sm:overflow-visible sm:px-0"
+            className="no-scrollbar -mx-1 flex snap-x snap-mandatory gap-2 overflow-x-auto px-1 sm:flex-wrap sm:overflow-visible sm:px-0"
           >
             {quickChips.map((chip) => (
               <Link
                 key={chip}
                 href={`/search?q=${encodeURIComponent(chip)}`}
-                className="shrink-0 snap-start rounded-full border border-white/70 bg-white/78 px-3 py-2.5 text-[10px] font-black tracking-[0.12em] uppercase shadow-sm"
+                className="flex min-h-11 shrink-0 snap-start items-center rounded-full border border-white/70 bg-white/78 px-3.5 py-2.5 text-[10px] font-black tracking-[0.12em] uppercase shadow-sm active:scale-95"
               >
                 {chip}
               </Link>
@@ -274,29 +277,44 @@ export default async function SearchPage({
             <Icon name="search_off" className="text-[24px]" />
           </div>
           <p className="text-lg font-black tracking-tight">
-            {dict.search.no_results_for || "Nema rezultata za"}: {query}.
+            {searchDict.no_results_for || "Nema rezultata za"}: {query}.
           </p>
           <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
-            {dict.search.try_other_keywords || "Pokušajte druge ključne reči."}
+            {searchDict.try_other_keywords || "Pokušajte druge ključne reči."}
           </p>
-          <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
+          <p className="text-muted-foreground/80 mt-6 text-[10px] font-black tracking-[0.18em] uppercase">
+            {searchDict.no_results_try_instead || "Ili probajte"}
+          </p>
+          <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
             {(searchDict.no_results_chips || ["Beograd", "Petroland", "Wellness", "Banje"]).map(
               (chip: string) => (
                 <Link
                   key={chip}
                   href={`/search?q=${encodeURIComponent(chip)}`}
-                  className="surface-subtle rounded-full px-4 py-2 text-[10px] font-black tracking-[0.14em] uppercase"
+                  className="surface-subtle flex min-h-11 items-center rounded-full px-4 py-2 text-[10px] font-black tracking-[0.14em] uppercase active:scale-95"
                 >
                   {chip}
                 </Link>
               ),
             )}
           </div>
+          <div className="mt-6 flex flex-col items-center justify-center gap-2.5 min-[420px]:flex-row">
+            <Link href="/akva-parkovi" className="block w-full min-[420px]:w-auto">
+              <span className="bg-primary text-primary-foreground shadow-primary/25 flex min-h-12 w-full items-center justify-center rounded-full px-6 text-[11px] font-black tracking-[0.14em] uppercase shadow-lg min-[420px]:w-auto">
+                {searchDict.browse_all_facilities || "Pregledaj sve akva parkove"}
+              </span>
+            </Link>
+            <Link href="/" className="block w-full min-[420px]:w-auto">
+              <span className="border-border text-foreground flex min-h-12 w-full items-center justify-center rounded-full border px-6 text-[11px] font-black tracking-[0.14em] uppercase min-[420px]:w-auto">
+                {searchDict.back_to_home || "Nazad na početnu"}
+              </span>
+            </Link>
+          </div>
         </div>
       ) : (
         <div className="space-y-10">
           <SearchSection
-            title={dict.search.section_facilities || "Objekti"}
+            title={searchDict.section_facilities || "Objekti"}
             eyebrow={searchDict.section_facilities_eyebrow || "Destinacije"}
             items={facilities.map((facility) => ({
               id: facility.id,
@@ -312,7 +330,7 @@ export default async function SearchPage({
           />
 
           <SearchSection
-            title={dict.search.section_blog || "Blog"}
+            title={searchDict.section_blog || "Blog"}
             eyebrow={searchDict.section_blog_eyebrow || "Sadržaj"}
             items={posts.map((post) => ({
               id: post.id,
@@ -325,7 +343,7 @@ export default async function SearchPage({
           />
 
           <SearchSection
-            title={dict.search.section_pages || "Stranice"}
+            title={searchDict.section_pages || "Stranice"}
             eyebrow={searchDict.section_pages_eyebrow || "Informacije"}
             items={pages.map((page) => ({
               id: page.id,
@@ -346,7 +364,7 @@ export default async function SearchPage({
 
 function EmptyState({ dict }: { dict: Record<string, any> }) {
   return (
-    <div className="mx-auto max-w-2xl px-4 py-24 text-center">
+    <div className="mx-auto max-w-2xl px-4 pt-16 pb-[calc(7rem+env(safe-area-inset-bottom,0px))] text-center sm:pt-24 sm:pb-24">
       <div className="bg-primary/10 text-primary mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-[1.2rem]">
         <Icon name="travel_explore" className="text-[24px]" />
       </div>
@@ -364,7 +382,7 @@ function EmptyState({ dict }: { dict: Record<string, any> }) {
             <Link
               key={chip}
               href={`/search?q=${encodeURIComponent(chip)}`}
-              className="surface-subtle rounded-full px-4 py-2 text-[10px] font-black tracking-[0.14em] uppercase"
+              className="surface-subtle flex min-h-11 items-center rounded-full px-4 py-2 text-[10px] font-black tracking-[0.14em] uppercase active:scale-95"
             >
               {chip}
             </Link>
@@ -417,7 +435,7 @@ function SearchSection({
       <div className={grid ? "grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3" : "space-y-3"}>
         {items.map((item) => (
           <Link key={item.id} href={item.href} className="block">
-            <Card className="surface-card hover:border-primary/30 rounded-[1.5rem] transition-all hover:-translate-y-0.5 hover:shadow-md">
+            <Card className="surface-card hover:border-primary/30 active:bg-muted/40 rounded-[1.5rem] transition-all hover:-translate-y-0.5 hover:shadow-md active:scale-[0.98]">
               <CardHeader className="flex flex-row items-start gap-3 space-y-0">
                 <span className="bg-primary/10 text-primary flex h-11 w-11 shrink-0 items-center justify-center rounded-[1rem]">
                   <Icon name={item.icon} className="text-[20px]" />

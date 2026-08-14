@@ -202,7 +202,7 @@ export default async function LandingPage({
           <p className="text-primary text-[10px] font-black tracking-[0.18em] uppercase">
             Mobilna kupovina
           </p>
-          <h2 className="mt-2 text-2xl font-black tracking-[-0.05em] text-slate-950 sm:text-3xl">
+          <h2 className="mt-1 text-[1.8rem] leading-none font-black tracking-tighter uppercase italic sm:text-3xl">
             Brže pronađite ulaznice po kategoriji i gradu
           </h2>
           <p className="text-muted-foreground mt-3 max-w-3xl text-sm leading-relaxed sm:text-base">
