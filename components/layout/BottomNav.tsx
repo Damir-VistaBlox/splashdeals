@@ -30,10 +30,10 @@ function initials(name?: string | null, email?: string | null): string {
 }
 
 /**
- * 📱 BottomNav — Mobile-only bottom navigation (4 tabs).
+ * 📱 BottomNav — Mobile-only bottom navigation.
  *
- * Početna · Istraži (/akva-parkovi, indexable hub) · Korpa · Nalog/Prijava
- * Podrška lives in footer (not a 5th tab — density + crawl graph).
+ * Početna · Korpa · Nalog/Prijava
+ * Search lives in the mobile header. Podrška lives in the footer.
  *
  * Always visible on home, cart, product pages, and whenever the cart has items.
  * Other routes: scroll-hide.
@@ -91,12 +91,6 @@ export function BottomNav({ dict }: { dict?: Dict | null }) {
       kind: "path",
     },
     {
-      label: dict?.nav?.search || "Pretraga",
-      href: "/search",
-      icon: "search",
-      kind: "path",
-    },
-    {
       label: dict?.nav?.cart_mobile || "Korpa",
       href: "/cart",
       icon: "shopping_bag",
@@ -116,9 +110,9 @@ export function BottomNav({ dict }: { dict?: Dict | null }) {
       style={{ transform: isVisible ? "translateY(0)" : "translateY(100%)" }}
       aria-label={dict?.layout?.mobile_nav_aria || "Mobilna navigacija"}
     >
-      <div className="relative mx-auto max-w-md rounded-[1.8rem] border border-white/75 bg-white/88 p-1.5 shadow-[0_-14px_34px_rgba(15,23,42,0.1)] backdrop-blur-xl">
+      <div className="relative mx-auto max-w-sm rounded-[1.65rem] border border-white/70 bg-white/86 p-1.5 shadow-[0_-12px_28px_rgba(15,23,42,0.08)] backdrop-blur-xl">
         <div className="pointer-events-none absolute inset-x-10 top-0 h-px bg-gradient-to-r from-transparent via-white/90 to-transparent" />
-        <div className="flex h-15 items-center justify-around gap-1 rounded-[1.35rem] bg-[linear-gradient(180deg,rgba(255,255,255,0.58),rgba(255,255,255,0.34))] px-1">
+        <div className="grid h-14 grid-cols-3 items-center gap-1 rounded-[1.2rem] bg-[linear-gradient(180deg,rgba(255,255,255,0.52),rgba(255,255,255,0.28))] px-1">
           {NAV_ITEMS.map((item) => {
             const active =
               item.kind === "account"
@@ -134,7 +128,7 @@ export function BottomNav({ dict }: { dict?: Dict | null }) {
               <Link
                 key={`${item.kind}-${item.href}`}
                 href={item.href}
-                className={`relative flex min-h-11 min-w-0 flex-1 flex-col items-center justify-center gap-0.5 rounded-[1rem] px-1 py-1.5 transition-all duration-200 motion-reduce:transition-none ${
+                className={`relative flex min-h-11 min-w-0 flex-col items-center justify-center gap-0.5 rounded-[1rem] px-1 py-1.5 transition-all duration-200 motion-reduce:transition-none ${
                   active
                     ? "bg-primary/[0.08] text-primary shadow-[inset_0_1px_0_rgba(255,255,255,0.72)]"
                     : "text-muted-foreground/70 hover:text-muted-foreground hover:bg-white/55"
@@ -159,8 +153,8 @@ export function BottomNav({ dict }: { dict?: Dict | null }) {
                   )}
                   {item.kind === "account" ? (
                     <div
-                      className={`flex h-9 w-9 items-center justify-center rounded-2xl border shadow-[0_10px_18px_rgba(15,23,42,0.08)] transition-colors duration-200 motion-reduce:transition-none ${
-                        active ? "border-primary/25 bg-primary/12" : "border-white/70 bg-white/74"
+                      className={`flex h-8.5 w-8.5 items-center justify-center rounded-[1rem] border transition-colors duration-200 motion-reduce:transition-none ${
+                        active ? "border-primary/20 bg-primary/10" : "border-white/60 bg-white/58"
                       }`}
                     >
                       {isLoggedIn ? (
@@ -181,30 +175,17 @@ export function BottomNav({ dict }: { dict?: Dict | null }) {
                         />
                       )}
                     </div>
-                  ) : item.href === "/search" ? (
-                    <div
-                      className={`flex h-9 w-9 items-center justify-center rounded-2xl border shadow-[0_10px_18px_rgba(15,23,42,0.08)] transition-colors duration-200 motion-reduce:transition-none ${
-                        active ? "border-primary/25 bg-primary/12" : "border-white/70 bg-white/74"
-                      }`}
-                    >
-                      <Icon
-                        name={item.icon}
-                        className={`text-[19px] transition-colors duration-200 motion-reduce:transition-none ${
-                          active ? "text-primary" : "text-slate-700"
-                        }`}
-                      />
-                    </div>
                   ) : (
                     <Icon
                       name={item.icon}
-                      className={`text-[22px] transition-colors duration-200 motion-reduce:transition-none ${
+                      className={`text-[21px] transition-colors duration-200 motion-reduce:transition-none ${
                         active ? "text-primary" : "text-slate-500"
                       }`}
                     />
                   )}
                 </div>
                 <span
-                  className={`max-w-full truncate text-[9px] leading-none font-black tracking-[0.1em] uppercase transition-colors duration-200 motion-reduce:transition-none ${
+                  className={`max-w-full truncate text-[9px] leading-none font-black tracking-[0.08em] uppercase transition-colors duration-200 motion-reduce:transition-none ${
                     active ? "text-primary" : "text-slate-500"
                   }`}
                 >

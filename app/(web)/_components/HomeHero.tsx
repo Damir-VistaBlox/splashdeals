@@ -13,6 +13,8 @@ export function HomeHero({ dict }: { dict: HomeDict }) {
     { href: "#savings", label: dict.filter_discount, tone: "subtle" as const },
     { href: "#inventory", label: dict.inventory_cta, tone: "subtle" as const },
   ];
+  const heroPillClassName =
+    "bg-secondary text-secondary-foreground hover:bg-primary hover:text-primary-foreground inline-flex h-11 min-h-11 items-center justify-center rounded-full px-4 text-[11px] font-black tracking-[0.1em] uppercase shadow-[0_10px_24px_rgba(231,179,75,0.16)] transition-all duration-150 hover:-translate-y-0.5 sm:px-5 sm:text-[10px]";
 
   return (
     <div className="relative z-0 w-full overflow-hidden pb-6 sm:pb-20">
@@ -57,14 +59,6 @@ export function HomeHero({ dict }: { dict: HomeDict }) {
                   />
                 </Link>
               </Button>
-
-              <Button
-                asChild
-                variant="outline"
-                className="text-muted-foreground sm:text-foreground h-11 min-h-11 w-full rounded-full border-white/70 bg-white/72 px-8 text-[10px] font-black tracking-[0.16em] uppercase shadow-sm sm:h-13 sm:min-h-13 sm:w-auto sm:text-[11px]"
-              >
-                <Link href="/how-it-works">{dict.how_it_works}</Link>
-              </Button>
             </div>
 
             <div className="mt-1 w-full max-w-5xl sm:mt-0">
@@ -87,38 +81,22 @@ export function HomeHero({ dict }: { dict: HomeDict }) {
                   className="mx-auto w-full max-w-4xl"
                 >
                   <ul className="flex flex-wrap items-center justify-center gap-x-2 gap-y-2.5">
-                    {HERO_CATEGORY_SLUGS.map((slug, index) => (
-                      <li
-                        key={slug}
-                        className={
-                          index % 3 === 1
-                            ? "translate-y-1"
-                            : index % 3 === 2
-                              ? "-translate-y-1"
-                              : ""
-                        }
-                      >
+                    {HERO_CATEGORY_SLUGS.map((slug) => (
+                      <li key={slug}>
                         <Link
                           href={`/${slug}`}
-                          className="bg-secondary text-secondary-foreground hover:bg-primary hover:text-primary-foreground inline-flex h-11 min-h-11 items-center justify-center rounded-full px-4 text-[11px] font-black tracking-[0.1em] uppercase shadow-[0_10px_24px_rgba(231,179,75,0.16)] transition-all duration-150 hover:-translate-y-0.5 sm:px-5 sm:text-[10px]"
+                          className={heroPillClassName}
                         >
                           {CATEGORIES[slug].name}
                         </Link>
                       </li>
                     ))}
 
-                    {heroQuickLinks.map((item, index) => (
-                      <li
-                        key={item.href}
-                        className={
-                          index % 2 === 0
-                            ? "-translate-y-0.5 sm:translate-y-0"
-                            : "translate-y-0.5 sm:translate-y-0"
-                        }
-                      >
+                    {heroQuickLinks.map((item) => (
+                      <li key={item.href}>
                         <Link
                           href={item.href}
-                          className="text-muted-foreground hover:text-foreground hover:bg-muted/55 inline-flex h-10 min-h-10 items-center justify-center rounded-full border border-white/60 bg-white/52 px-4 text-[10px] font-bold tracking-[0.1em] uppercase transition-colors"
+                          className={heroPillClassName}
                         >
                           {item.label}
                         </Link>
@@ -133,30 +111,22 @@ export function HomeHero({ dict }: { dict: HomeDict }) {
                 className="mx-auto w-full max-w-4xl sm:hidden"
               >
                 <ul className="flex flex-wrap items-center justify-center gap-x-2 gap-y-2.5">
-                  {HERO_CATEGORY_SLUGS.map((slug, index) => (
-                    <li
-                      key={slug}
-                      className={
-                        index % 3 === 1 ? "translate-y-1" : index % 3 === 2 ? "-translate-y-1" : ""
-                      }
-                    >
+                  {HERO_CATEGORY_SLUGS.map((slug) => (
+                    <li key={slug}>
                       <Link
                         href={`/${slug}`}
-                        className="bg-secondary text-secondary-foreground hover:bg-primary hover:text-primary-foreground inline-flex h-11 min-h-11 items-center justify-center rounded-full px-4 text-[11px] font-black tracking-[0.1em] uppercase shadow-[0_10px_24px_rgba(231,179,75,0.16)] transition-all duration-150 hover:-translate-y-0.5"
+                        className={heroPillClassName}
                       >
                         {CATEGORIES[slug].name}
                       </Link>
                     </li>
                   ))}
 
-                  {heroQuickLinks.map((item, index) => (
-                    <li
-                      key={item.href}
-                      className={index % 2 === 0 ? "-translate-y-0.5" : "translate-y-0.5"}
-                    >
+                  {heroQuickLinks.map((item) => (
+                    <li key={item.href}>
                       <Link
                         href={item.href}
-                        className="text-muted-foreground hover:text-foreground hover:bg-muted/55 inline-flex h-10 min-h-10 items-center justify-center rounded-full border border-white/60 bg-white/52 px-4 text-[10px] font-bold tracking-[0.1em] uppercase transition-colors"
+                        className={heroPillClassName}
                       >
                         {item.label}
                       </Link>
