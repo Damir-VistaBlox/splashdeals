@@ -67,27 +67,70 @@ export function HomeHero({ dict }: { dict: HomeDict }) {
               </Button>
             </div>
 
-            <p className="text-muted-foreground mb-3 max-w-[17rem] text-[10px] leading-relaxed font-bold tracking-[0.12em] uppercase sm:mb-12 sm:max-w-none sm:text-[11px]">
-              Brza kupovina. Jasna ponuda. Ulaznice za nekoliko sekundi.
-            </p>
-
-            <div className="surface-glass mt-1 w-full max-w-5xl rounded-[1.5rem] p-3.5 sm:mt-0 sm:p-5 lg:p-6">
-              <div className="mb-3 flex items-center justify-between gap-3 sm:mb-5">
-                <div className="text-left">
-                  <span className="text-primary text-[10px] font-black tracking-[0.18em] uppercase">
-                    Kreni odmah
-                  </span>
+            <div className="mt-1 w-full max-w-5xl sm:mt-0">
+              <div className="surface-glass hidden rounded-[1.5rem] p-5 sm:block lg:p-6">
+                <div className="mb-5 flex items-center justify-between gap-3">
+                  <div className="text-left">
+                    <span className="text-primary text-[10px] font-black tracking-[0.18em] uppercase">
+                      Kreni odmah
+                    </span>
+                  </div>
+                  <Link
+                    href="/akva-parkovi"
+                    className="bg-primary/10 text-primary shrink-0 rounded-full px-3 py-2 text-[10px] font-black tracking-[0.14em] uppercase"
+                  >
+                    Sve ponude
+                  </Link>
                 </div>
-                <Link
-                  href="/akva-parkovi"
-                  className="bg-primary/10 text-primary hidden shrink-0 rounded-full px-3 py-2 text-[10px] font-black tracking-[0.14em] uppercase sm:inline-flex"
+                <nav
+                  aria-label={dict.categories_aria || "Kategorije i brzi filteri"}
+                  className="mx-auto w-full max-w-4xl"
                 >
-                  Sve ponude
-                </Link>
+                  <ul className="flex flex-wrap items-center justify-center gap-x-2 gap-y-2.5">
+                    {HERO_CATEGORY_SLUGS.map((slug, index) => (
+                      <li
+                        key={slug}
+                        className={
+                          index % 3 === 1
+                            ? "translate-y-1"
+                            : index % 3 === 2
+                              ? "-translate-y-1"
+                              : ""
+                        }
+                      >
+                        <Link
+                          href={`/${slug}`}
+                          className="bg-secondary text-secondary-foreground hover:bg-primary hover:text-primary-foreground inline-flex h-11 min-h-11 items-center justify-center rounded-full px-4 text-[11px] font-black tracking-[0.1em] uppercase shadow-[0_10px_24px_rgba(231,179,75,0.16)] transition-all duration-150 hover:-translate-y-0.5 sm:px-5 sm:text-[10px]"
+                        >
+                          {CATEGORIES[slug].name}
+                        </Link>
+                      </li>
+                    ))}
+
+                    {heroQuickLinks.map((item, index) => (
+                      <li
+                        key={item.href}
+                        className={
+                          index % 2 === 0
+                            ? "-translate-y-0.5 sm:translate-y-0"
+                            : "translate-y-0.5 sm:translate-y-0"
+                        }
+                      >
+                        <Link
+                          href={item.href}
+                          className="text-muted-foreground hover:text-foreground hover:bg-muted/55 inline-flex h-10 min-h-10 items-center justify-center rounded-full border border-white/60 bg-white/52 px-4 text-[10px] font-bold tracking-[0.1em] uppercase transition-colors"
+                        >
+                          {item.label}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </nav>
               </div>
+
               <nav
                 aria-label={dict.categories_aria || "Kategorije i brzi filteri"}
-                className="mx-auto w-full max-w-4xl"
+                className="mx-auto w-full max-w-4xl sm:hidden"
               >
                 <ul className="flex flex-wrap items-center justify-center gap-x-2 gap-y-2.5">
                   {HERO_CATEGORY_SLUGS.map((slug, index) => (
@@ -99,7 +142,7 @@ export function HomeHero({ dict }: { dict: HomeDict }) {
                     >
                       <Link
                         href={`/${slug}`}
-                        className="bg-secondary text-secondary-foreground hover:bg-primary hover:text-primary-foreground inline-flex h-11 min-h-11 items-center justify-center rounded-full px-4 text-[11px] font-black tracking-[0.1em] uppercase shadow-[0_10px_24px_rgba(231,179,75,0.16)] transition-all duration-150 hover:-translate-y-0.5 sm:px-5 sm:text-[10px]"
+                        className="bg-secondary text-secondary-foreground hover:bg-primary hover:text-primary-foreground inline-flex h-11 min-h-11 items-center justify-center rounded-full px-4 text-[11px] font-black tracking-[0.1em] uppercase shadow-[0_10px_24px_rgba(231,179,75,0.16)] transition-all duration-150 hover:-translate-y-0.5"
                       >
                         {CATEGORIES[slug].name}
                       </Link>
@@ -109,11 +152,7 @@ export function HomeHero({ dict }: { dict: HomeDict }) {
                   {heroQuickLinks.map((item, index) => (
                     <li
                       key={item.href}
-                      className={
-                        index % 2 === 0
-                          ? "-translate-y-0.5 sm:translate-y-0"
-                          : "translate-y-0.5 sm:translate-y-0"
-                      }
+                      className={index % 2 === 0 ? "-translate-y-0.5" : "translate-y-0.5"}
                     >
                       <Link
                         href={item.href}
