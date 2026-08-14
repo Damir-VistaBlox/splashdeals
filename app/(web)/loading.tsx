@@ -13,100 +13,86 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function WebLoading() {
   return (
-    <div className="bg-background selection:bg-primary/30 flex min-h-screen flex-col items-center justify-start overflow-hidden">
-      {/* 🔮 BACKGROUND: Glassmorphism & Depth */}
-      <div className="pointer-events-none fixed inset-0">
-        {/* Animated Glows */}
-        <div className="bg-primary/10 absolute top-[-10%] left-[-10%] h-[50%] w-[50%] animate-pulse rounded-full blur-[120px]" />
-        <div className="bg-primary/5 absolute right-[-10%] bottom-[-10%] h-[50%] w-[50%] animate-pulse rounded-full blur-[120px] [animation-delay:2s]" />
+    <div className="mobile-route-frame bg-background selection:bg-primary/30 relative overflow-hidden">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-56 bg-[radial-gradient(circle_at_top,rgba(14,165,198,0.12),transparent_68%)]" />
 
-        {/* Branded Grid Pattern */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,hsl(var(--foreground)/0.03)_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--foreground)/0.03)_1px,transparent_1px)] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,hsl(var(--foreground))_70%,transparent_100%)] bg-[size:64px_64px]" />
-      </div>
-
-      {/* 🌊 CENTRAL LOADER: Pulsing Branded Icon */}
-      <div className="relative mt-32 mb-20 flex flex-col items-center">
-        <div className="bg-primary/20 absolute inset-0 animate-pulse rounded-full blur-[60px]" />
-        <div className="bg-muted/50 border-border animate-float relative z-10 rounded-3xl border p-5 shadow-2xl backdrop-blur-xl">
-          <Icon name="waves" className="text-primary animate-pulse text-[48px]" />
-        </div>
-        <div className="mt-6 flex flex-col items-center gap-2">
-          <span className="text-primary/50 animate-pulse text-[10px] font-black tracking-[0.5em] uppercase">
-            Loading Experience
-          </span>
-          <div className="flex gap-1">
-            <div className="bg-primary/40 h-1 w-1 animate-bounce rounded-full" />
-            <div className="bg-primary/40 h-1 w-1 animate-bounce rounded-full [animation-delay:0.2s]" />
-            <div className="bg-primary/40 h-1 w-1 animate-bounce rounded-full [animation-delay:0.4s]" />
+      <div className="relative mx-auto flex w-full max-w-7xl flex-col px-4 pt-8 sm:px-6 sm:pt-10 lg:px-8">
+        <div className="mb-8 flex flex-col items-center gap-3 text-center sm:mb-10">
+          <div className="bg-card/80 border-border shadow-soft flex h-16 w-16 items-center justify-center rounded-3xl border backdrop-blur-sm">
+            <Icon name="waves" className="text-primary text-[32px]" />
           </div>
-        </div>
-      </div>
-
-      {/* 🏗️ SKELETON MOCKUP: Mirroring the Layout */}
-      <main className="relative z-20 mx-auto w-full max-w-7xl space-y-24 px-6 pb-32">
-        {/* Hero Area Skeleton */}
-        <div className="flex flex-col items-center space-y-10 text-center">
-          <Skeleton className="bg-muted border-border h-10 w-56 rounded-full border shadow-inner" />
-          <div className="space-y-6">
-            <Skeleton className="bg-muted h-20 w-[320px] rounded-[2rem] sm:h-28 sm:w-[900px]" />
-            <Skeleton className="bg-muted mx-auto h-20 w-[280px] rounded-[2rem] sm:h-28 sm:w-[700px]" />
-          </div>
-          <Skeleton className="bg-muted h-6 w-[220px] rounded-xl sm:w-[450px]" />
-          <div className="flex flex-wrap justify-center gap-5 pt-4">
-            <Skeleton className="bg-muted h-16 w-48 rounded-2xl shadow-lg" />
-            <Skeleton className="bg-muted h-16 w-48 rounded-2xl shadow-lg" />
+          <div className="space-y-2">
+            <span className="text-primary/70 text-[10px] font-black tracking-[0.38em] uppercase">
+              Splashdeals
+            </span>
+            <p className="text-muted-foreground text-sm font-medium">
+              Pripremamo stranicu za mobilni prikaz.
+            </p>
           </div>
         </div>
 
-        {/* Categories/Discovery Hub Skeleton */}
-        <div className="space-y-8">
-          <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
-            <div className="space-y-4">
-              <Skeleton className="bg-muted h-12 w-80 rounded-2xl" />
-              <Skeleton className="bg-muted h-4 w-56 rounded-lg" />
+        <main className="relative z-10 space-y-8 pb-8 sm:space-y-10 sm:pb-12">
+          <div className="space-y-5 text-center">
+            <Skeleton className="bg-muted border-border mx-auto h-9 w-40 rounded-full border shadow-inner sm:h-10 sm:w-52" />
+            <div className="space-y-3">
+              <Skeleton className="bg-muted mx-auto h-12 w-full max-w-[22rem] rounded-[1.75rem] sm:h-16 sm:max-w-3xl" />
+              <Skeleton className="bg-muted mx-auto h-12 w-[88%] max-w-[18rem] rounded-[1.75rem] sm:h-16 sm:max-w-2xl" />
             </div>
-            <Skeleton className="bg-muted h-12 w-40 rounded-xl" />
+            <Skeleton className="bg-muted mx-auto h-4 w-56 rounded-lg sm:w-80" />
+            <div className="flex flex-wrap justify-center gap-3 pt-1">
+              <Skeleton className="bg-muted h-12 w-36 rounded-2xl shadow-sm sm:w-40" />
+              <Skeleton className="bg-muted h-12 w-36 rounded-2xl shadow-sm sm:w-40" />
+            </div>
           </div>
-          <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-6">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
-              <Skeleton
+
+          <div className="space-y-4">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+              <div className="space-y-3">
+                <Skeleton className="bg-muted h-8 w-44 rounded-2xl sm:h-10 sm:w-64" />
+                <Skeleton className="bg-muted h-4 w-40 rounded-lg sm:w-56" />
+              </div>
+              <Skeleton className="bg-muted h-10 w-28 rounded-xl sm:w-36" />
+            </div>
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+              {[1, 2, 3, 4, 5, 6].map((i) => (
+                <Skeleton
+                  key={i}
+                  className="bg-muted border-border h-28 rounded-3xl border sm:h-32"
+                />
+              ))}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+            {[1, 2, 3].map((i) => (
+              <div
                 key={i}
-                className="bg-muted border-border hover:border-primary/20 h-36 rounded-3xl border transition-colors"
-              />
+                className="bg-card/55 border-border space-y-5 overflow-hidden rounded-[2rem] border p-4 shadow-sm backdrop-blur-sm sm:p-5"
+              >
+                <Skeleton className="bg-muted h-52 w-full rounded-[1.5rem] sm:h-64" />
+                <div className="space-y-3">
+                  <div className="flex items-start justify-between gap-4">
+                    <Skeleton className="bg-muted h-7 w-3/5 rounded-xl sm:h-8" />
+                    <Skeleton className="bg-muted h-5 w-14 rounded-full" />
+                  </div>
+                  <div className="space-y-2">
+                    <Skeleton className="bg-muted h-4 w-full rounded-lg" />
+                    <Skeleton className="bg-muted h-4 w-5/6 rounded-lg" />
+                    <Skeleton className="bg-muted h-4 w-2/3 rounded-lg" />
+                  </div>
+                </div>
+                <div className="border-border flex items-center justify-between border-t pt-4">
+                  <div className="space-y-2">
+                    <Skeleton className="bg-muted h-3 w-16 rounded-full" />
+                    <Skeleton className="bg-muted h-7 w-24 rounded-xl" />
+                  </div>
+                  <Skeleton className="bg-muted h-12 w-12 rounded-3xl" />
+                </div>
+              </div>
             ))}
           </div>
-        </div>
-
-        {/* Main Facility Grid Skeleton */}
-        <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-3">
-          {[1, 2, 3].map((i) => (
-            <div
-              key={i}
-              className="bg-muted/10 border-border group relative space-y-8 overflow-hidden rounded-[3rem] border p-8"
-            >
-              <Skeleton className="bg-muted h-72 w-full rounded-[2rem] shadow-2xl" />
-              <div className="space-y-4">
-                <div className="flex items-start justify-between">
-                  <Skeleton className="bg-muted h-10 w-3/4 rounded-xl" />
-                  <Skeleton className="bg-muted h-6 w-16 rounded-full" />
-                </div>
-                <div className="space-y-2">
-                  <Skeleton className="bg-muted h-4 w-full rounded-lg" />
-                  <Skeleton className="bg-muted h-4 w-5/6 rounded-lg" />
-                  <Skeleton className="bg-muted h-4 w-4/6 rounded-lg" />
-                </div>
-              </div>
-              <div className="border-border flex items-center justify-between border-t pt-6">
-                <div className="space-y-2">
-                  <Skeleton className="bg-muted h-3 w-16 rounded-full" />
-                  <Skeleton className="bg-muted h-8 w-28 rounded-xl" />
-                </div>
-                <Skeleton className="bg-muted h-14 w-14 rounded-3xl shadow-xl" />
-              </div>
-            </div>
-          ))}
-        </div>
-      </main>
+        </main>
+      </div>
     </div>
   );
 }

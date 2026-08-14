@@ -2,9 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useMemo, useEffect, useState } from "react";
+import { useMemo } from "react";
 import { Icon } from "@/components/ui/Icon";
-import { getClientDictionary } from "@/lib/client-dictionaries";
 import type { Dict } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -25,13 +24,32 @@ interface FacilityMap {
  * Derives breadcrumb trail from the current URL pathname.
  * Mobile: simplified trail (home + current) with ≥44px touch targets (facility audit #658).
  */
-export function BreadcrumbBar({ facilityMap = {} }: { facilityMap?: FacilityMap }) {
+export function BreadcrumbBar({
+  dict,
+  facilityMap = {},
+}: {
+  dict: Dict;
+  facilityMap?: FacilityMap;
+}) {
   const pathname = usePathname();
-  const [dict, setDict] = useState<Dict | null>(null);
-
-  useEffect(() => {
-    getClientDictionary().then(setDict);
-  }, []);
+  const segments = useMemo(() => pathname.split("/").filter(Boolean), [pathname]);
+  const firstSegment = segments[0]?.toLowerCase();
+  const hideBreadcrumb =
+    !pathname ||
+    pathname === "/" ||
+    pathname === "/prijava" ||
+    pathname === "/moje-karte" ||
+    pathname.startsWith("/moje-karte/") ||
+    pathname === "/omiljeni" ||
+    pathname === "/nalog" ||
+    pathname === "/moje-recenzije" ||
+    pathname === "/orders" ||
+    pathname.startsWith("/orders/") ||
+    pathname === "/search" ||
+    pathname === "/cart" ||
+    pathname === "/checkout" ||
+    pathname === "/success" ||
+    Boolean(firstSegment && facilityMap[firstSegment]);
 
   const STATIC_LABELS = useMemo(() => {
     const bc = dict?.breadcrumb;
@@ -72,7 +90,6 @@ export function BreadcrumbBar({ facilityMap = {} }: { facilityMap?: FacilityMap 
   }, [dict]);
 
   const trail = useMemo<{ items: BreadcrumbItem[]; backHref?: string }>(() => {
-    const segments = pathname.split("/").filter(Boolean);
     const items: BreadcrumbItem[] = [{ label: dict?.breadcrumb?.home || "Početna", href: "/" }];
     let backHref: string | undefined;
 
@@ -129,7 +146,7 @@ export function BreadcrumbBar({ facilityMap = {} }: { facilityMap?: FacilityMap 
     }
 
     return { items, backHref };
-  }, [pathname, facilityMap, dict, STATIC_LABELS, CATEGORY_NAMES]);
+  }, [segments, facilityMap, dict, STATIC_LABELS, CATEGORY_NAMES]);
 
   const { items, backHref } = trail;
 
@@ -182,16 +199,23 @@ export function BreadcrumbBar({ facilityMap = {} }: { facilityMap?: FacilityMap 
       );
     });
 
-  // Homepage: no breadcrumb chrome — reclaim ~45px under fixed header (#667).
-  if (!pathname || pathname === "/") return null;
+  if (hideBreadcrumb) return null;
 
   return (
-    <div className="sticky top-[var(--mobile-header-offset)] z-[100] px-3 pt-2 sm:top-[5.35rem] sm:px-6 md:px-8">
-      <div className="public-panel mx-auto flex min-h-12 w-full max-w-7xl items-center gap-0 rounded-[1.4rem] px-4 shadow-[0_16px_32px_rgba(15,23,42,0.06)] md:min-h-11 md:px-6 md:shadow-none">
+    <div className="sticky top-[var(--mobile-breadcrumb-offset)] z-[100] px-3 pt-2 sm:top-[5.35rem] sm:px-6 md:px-8">
+      <div className="public-panel relative mx-auto flex min-h-12 w-full max-w-7xl items-center gap-0 overflow-hidden rounded-[1.4rem] px-3.5 shadow-[0_16px_32px_rgba(15,23,42,0.06)] md:min-h-11 md:px-6 md:shadow-none">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-y-0 left-0 w-5 bg-gradient-to-r from-white via-white/88 to-transparent md:hidden"
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-y-0 right-0 w-5 bg-gradient-to-l from-white via-white/88 to-transparent md:hidden"
+        />
         {backHref && (
           <Link
             href={backHref}
-            className="text-muted-foreground hover:text-foreground border-border/50 mr-2 flex size-11 shrink-0 items-center justify-center border-r pr-2 transition-colors md:mr-3 md:pr-3"
+            className="text-muted-foreground hover:text-foreground border-border/50 bg-background/72 mr-2 flex size-11 shrink-0 items-center justify-center rounded-full border border-r pr-0 shadow-[inset_0_1px_0_rgba(255,255,255,0.45)] transition-colors md:mr-3 md:rounded-none md:border-0 md:border-r md:bg-transparent md:pr-3 md:shadow-none"
             aria-label={dict?.breadcrumb?.back_aria || "Nazad"}
           >
             <Icon name="arrow_back" className="text-[18px]" />
@@ -201,7 +225,7 @@ export function BreadcrumbBar({ facilityMap = {} }: { facilityMap?: FacilityMap 
 
         <nav
           aria-label="Putanja"
-          className="no-scrollbar flex w-full items-center gap-0 overflow-x-auto md:hidden"
+          className="no-scrollbar flex w-full items-center gap-0 overflow-x-auto pr-2 md:hidden"
         >
           {renderTrail(mobileItems)}
         </nav>

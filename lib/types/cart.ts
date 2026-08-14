@@ -93,6 +93,24 @@ export type CartDictionary = {
   cancel_checkout?: string;
   cancel_checkout_processing?: string;
   lines_and_tickets?: string;
+  step_review?: string;
+  step_payment?: string;
+  step_delivery?: string;
+  learn_how_it_works?: string;
+  checkout_ready?: string;
+  quick_checkout_summary?: string;
+  checkout_ready_count?: string;
+  cart_items_heading?: string;
+  quantity_label?: string;
+  unit_price?: string;
+  line_total?: string;
+  ready_secure?: string;
+  ready_secure_subtitle?: string;
+  ready_promo?: string;
+  ready_promo_subtitle?: string;
+  ready_delivery?: string;
+  ready_delivery_subtitle?: string;
+  supported_cards?: string;
 };
 
 /** Typed identity dialog dictionary slice (dictionaries/rs.json → identity). */

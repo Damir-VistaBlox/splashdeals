@@ -4,48 +4,68 @@ import { connection } from "next/server";
 import { Icon } from "@/components/ui/Icon";
 import { Card } from "@/components/ui/card";
 import { JsonLd } from "@/components/SEO/JsonLd";
+import Link from "next/link";
+import {
+  buildBreadcrumbSchema,
+  buildStaticPageMetadata,
+  canonicalUrl,
+  resolveSiteUrl,
+} from "@/lib/seo";
 
 interface PageProps {
   params: Promise<Record<string, never>>;
 }
 
 export async function generateMetadata({ params: _params }: PageProps): Promise<Metadata> {
-  return {
-    title: "Uslovi Korišćenja i Pravna Pravila",
+  return buildStaticPageMetadata({
+    path: "/terms",
+    title: "Uslovi kupovine i korišćenja platforme",
     description:
-      "Pročitajte zvanične uslove korišćenja platforme Splashdeals.rs. Saznajte više o pravima korisnika, načinu plaćanja i zaštiti kupaca karata.",
-    alternates: { canonical: "https://www.splashdeals.rs/terms" },
-    openGraph: {
-      title: "Uslovi Korišćenja i Pravna Pravila",
-      description:
-        "Pročitajte zvanične uslove korišćenja platforme Splashdeals.rs. Saznajte više o pravima korisnika, načinu plaćanja i zaštiti kupaca karata.",
-      images: ["/og-image.png"],
-      locale: "sr_RS",
-      type: "website",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: "Uslovi Korišćenja i Pravna Pravila",
-      description:
-        "Pročitajte zvanične uslove korišćenja platforme Splashdeals.rs. Saznajte više o pravima korisnika, načinu plaćanja i zaštiti kupaca karata.",
-      images: ["/og-image.png"],
-    },
-  };
+      "Pročitajte pravila kupovine, korišćenja i zaštite kupaca na Splashdeals platformi pre poručivanja digitalnih ulaznica sa telefona.",
+    keywords: [
+      "uslovi kupovine ulaznica",
+      "uslovi korišćenja Splashdeals",
+      "pravila kupovine karata",
+      "zaštita kupaca ulaznica",
+    ],
+  });
 }
 
 export default async function TermsPage({ params: _params }: PageProps) {
   const dict = await getDictionary();
   await connection();
+  const site = resolveSiteUrl();
+  const termsUrl = canonicalUrl("/terms", site);
+  const relatedPages = [
+    { href: "/support", label: "Korisnička podrška" },
+    { href: "/privacy", label: "Politika privatnosti" },
+    { href: "/how-it-works", label: "Kako funkcioniše kupovina" },
+  ];
 
   const webpageSchema = {
     "@context": "https://schema.org",
-    "@type": "WebPage",
-    "@id": `https://www.splashdeals.rs/terms`,
-    name: dict.terms.title,
-    description: dict.terms.intro,
-    isPartOf: {
-      "@id": "https://www.splashdeals.rs/#website",
-    },
+    "@graph": [
+      {
+        "@type": "WebPage",
+        "@id": termsUrl,
+        url: termsUrl,
+        name: dict.terms.title,
+        description: dict.terms.intro,
+        isPartOf: {
+          "@id": `${site}/#website`,
+        },
+        breadcrumb: {
+          "@id": `${termsUrl}#breadcrumb`,
+        },
+      },
+      buildBreadcrumbSchema(
+        [
+          { name: "Početna", path: "/" },
+          { name: "Uslovi korišćenja", path: "/terms" },
+        ],
+        "/terms",
+      ),
+    ],
   };
 
   const sections = [
@@ -61,7 +81,11 @@ export default async function TermsPage({ params: _params }: PageProps) {
   return (
     <>
       <JsonLd data={webpageSchema} id="webpage-schema" />
-      <div className="mx-auto min-h-screen max-w-5xl px-3 pt-8 pb-16 sm:px-6 sm:pt-10 sm:pb-24 md:px-8">
+      <section
+        id="terms-content"
+        aria-labelledby="terms-title"
+        className="mx-auto min-h-screen max-w-5xl px-3 pt-8 pb-16 sm:px-6 sm:pt-10 sm:pb-24 md:px-8"
+      >
         <header className="section-shell mb-10 overflow-hidden rounded-[2rem] px-6 py-10 sm:px-10 sm:py-14">
           <div className="relative z-10 space-y-6">
             <div className="flex items-center gap-3">
@@ -73,7 +97,10 @@ export default async function TermsPage({ params: _params }: PageProps) {
               </span>
             </div>
 
-            <h1 className="text-foreground text-4xl leading-[0.9] font-black tracking-[-0.08em] uppercase italic sm:text-6xl">
+            <h1
+              id="terms-title"
+              className="text-foreground text-4xl leading-[0.9] font-black tracking-[-0.08em] uppercase italic sm:text-6xl"
+            >
               {dict.terms.title}
             </h1>
 
@@ -86,13 +113,22 @@ export default async function TermsPage({ params: _params }: PageProps) {
         </header>
 
         <div className="space-y-12">
-          <div className="public-panel rounded-[1.75rem] px-6 py-6 text-lg leading-relaxed font-medium text-slate-700">
+          <section
+            aria-labelledby="terms-intro-title"
+            className="public-panel rounded-[1.75rem] px-6 py-6 text-lg leading-relaxed font-medium text-slate-700"
+          >
+            <h2 id="terms-intro-title" className="sr-only">
+              Uvod
+            </h2>
             {dict.terms.intro}
-          </div>
+          </section>
 
-          <div className="grid gap-8">
+          <section aria-labelledby="terms-sections-title" className="grid gap-8">
+            <h2 id="terms-sections-title" className="sr-only">
+              Sekcije uslova korišćenja
+            </h2>
             {sections.map((section, idx) => (
-              <div key={idx} className="transition-all duration-300">
+              <article key={idx} className="transition-all duration-300">
                 <Card className="surface-card group hover:border-primary/20 rounded-[1.75rem] p-8 transition-colors">
                   <h2 className="text-foreground mb-6 flex items-center gap-3 text-xl font-black tracking-tight uppercase italic">
                     <Icon
@@ -105,19 +141,21 @@ export default async function TermsPage({ params: _params }: PageProps) {
                     {section.content}
                   </div>
                 </Card>
-              </div>
+              </article>
             ))}
-          </div>
+          </section>
 
-          {/* 📧 CONTACT SECTION */}
-          <div className="transition-all duration-500">
+          <section aria-labelledby="terms-contact-title" className="transition-all duration-500">
             <Card className="animated-border rounded-[1.75rem] border border-white/70 bg-white/60 p-8">
               <div className="flex flex-col justify-between gap-6 sm:flex-row sm:items-center">
                 <div className="space-y-2">
-                  <h3 className="text-foreground flex items-center gap-2 text-xl font-black tracking-tight uppercase italic">
+                  <h2
+                    id="terms-contact-title"
+                    className="text-foreground flex items-center gap-2 text-xl font-black tracking-tight uppercase italic"
+                  >
                     <Icon name="mail" className="text-primary text-[20px]" />
                     {dict.terms.contact_title}
-                  </h3>
+                  </h2>
                   <p
                     className="text-muted-foreground text-sm"
                     dangerouslySetInnerHTML={{ __html: dict.terms.contact_content }}
@@ -130,9 +168,29 @@ export default async function TermsPage({ params: _params }: PageProps) {
                 </div>
               </div>
             </Card>
-          </div>
+          </section>
+
+          <section aria-labelledby="terms-links-title" className="space-y-4">
+            <h2
+              id="terms-links-title"
+              className="text-foreground text-lg font-black tracking-tight uppercase italic"
+            >
+              Povezane strane
+            </h2>
+            <div className="flex flex-wrap gap-3">
+              {relatedPages.map((page) => (
+                <Link
+                  key={page.href}
+                  href={page.href}
+                  className="inline-flex min-h-11 items-center rounded-full border border-sky-200 bg-sky-50 px-4 py-2 text-sm font-semibold text-sky-900 transition hover:border-sky-300 hover:bg-white"
+                >
+                  {page.label}
+                </Link>
+              ))}
+            </div>
+          </section>
         </div>
-      </div>
+      </section>
     </>
   );
 }

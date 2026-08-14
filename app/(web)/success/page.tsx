@@ -67,9 +67,15 @@ export default async function SuccessPage(props: {
   const successDict = dict.success as SuccessDictionary;
 
   return (
-    <div className="container mx-auto min-h-screen max-w-6xl overflow-hidden px-4 py-8 sm:py-12">
+    <section
+      id="success-content"
+      className="container mx-auto min-h-screen max-w-6xl overflow-hidden px-4 py-8 sm:py-12"
+    >
       {!session_id ? (
-        <div className="flex min-h-[50vh] flex-col items-center justify-center space-y-6 pt-8 text-center sm:min-h-[60vh] sm:pt-20">
+        <section
+          aria-labelledby="success-access-denied-title"
+          className="flex min-h-[50vh] flex-col items-center justify-center space-y-6 pt-8 text-center sm:min-h-[60vh] sm:pt-20"
+        >
           <div className="border-destructive/20 bg-destructive/10 text-destructive flex h-16 w-16 items-center justify-center rounded-full border shadow-[0_0_20px_hsl(var(--destructive)/0.2)] sm:h-20 sm:w-20">
             <svg
               width="40"
@@ -86,20 +92,23 @@ export default async function SuccessPage(props: {
             </svg>
           </div>
           <div className="space-y-2">
-            <h1 className="text-foreground text-2xl font-black tracking-tighter uppercase italic sm:text-3xl">
+            <h1
+              id="success-access-denied-title"
+              className="text-foreground text-2xl font-black tracking-tighter uppercase italic sm:text-3xl"
+            >
               {successDict.access_denied.title}
             </h1>
             <p className="text-muted-foreground mx-auto max-w-xs text-sm sm:text-base">
               {successDict.access_denied.description}
             </p>
           </div>
-        </div>
+        </section>
       ) : (
         <Suspense fallback={<SuccessSkeleton />}>
           <SuccessContent session_id={session_id} userId={session.user.id} dict={successDict} />
         </Suspense>
       )}
-    </div>
+    </section>
   );
 }
 

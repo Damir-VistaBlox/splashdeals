@@ -39,24 +39,35 @@ export default async function OmiljeniPage() {
   const session = await requireAccountSession("/omiljeni");
   const dict = await getDictionary();
   const t = dict.account;
+  const labels = {
+    title: t.omiljeni ?? "Omiljeni objekti",
+    description: t.favorites_desc ?? "Sačuvani objekti spremni za brz povratak i kupovinu.",
+    noFavorites: t.no_favorites ?? "Nemate omiljenih objekata.",
+    browseFacilities: t.browse_facilities ?? "Pogledaj ponudu",
+    savedLabel: t.favorites_saved_label ?? "Sačuvano za kasnije",
+    imagePlaceholder: t.image_placeholder ?? "Vizuel uskoro",
+  };
 
   const favorites = await getUserFavorites(session.user.id);
 
   return (
     <div className="space-y-5 sm:space-y-8">
-      <h1 className="text-2xl font-black tracking-tighter uppercase italic sm:text-3xl">
-        {t.omiljeni}
-      </h1>
+      <div className="space-y-2">
+        <h1 className="text-2xl font-black tracking-tighter uppercase italic sm:text-3xl">
+          {labels.title}
+        </h1>
+        <p className="text-muted-foreground text-sm font-medium">{labels.description}</p>
+      </div>
 
       {favorites.length === 0 ? (
-        <Card className="border-border flex flex-col items-center gap-4 p-8 text-center sm:p-12">
+        <Card className="border-border flex flex-col items-center gap-4 rounded-[1.75rem] p-8 text-center sm:p-12">
           <Icon name="favorite" className="text-muted-foreground size-10 sm:size-12" />
-          <p className="text-muted-foreground text-sm font-medium">{t.no_favorites}</p>
+          <p className="text-muted-foreground text-sm font-medium">{labels.noFavorites}</p>
           <Link
             href="/akva-parkovi"
             className="bg-primary text-primary-foreground inline-flex h-11 min-h-11 items-center rounded-full px-6 text-sm font-bold"
           >
-            {t.browse_facilities}
+            {labels.browseFacilities}
           </Link>
         </Card>
       ) : (
@@ -66,7 +77,7 @@ export default async function OmiljeniPage() {
             return (
               <Card
                 key={fav.facility.id}
-                className="border-border group relative flex flex-col overflow-hidden transition-colors"
+                className="border-border group relative flex flex-col overflow-hidden rounded-[1.65rem] shadow-[0_18px_50px_-40px_rgba(15,23,42,0.35)] transition-colors"
               >
                 {/* Touch-safe unfavorite — top-right, outside link hit area stacking */}
                 <div className="absolute top-2 right-2 z-20">
@@ -79,7 +90,7 @@ export default async function OmiljeniPage() {
                   />
                 </div>
                 <Link href={`/${fav.facility.slug}`} className="block min-w-0">
-                  <div className="relative h-28 w-full overflow-hidden sm:h-32">
+                  <div className="relative h-32 w-full overflow-hidden sm:h-36">
                     {image ? (
                       <Image
                         src={image.url}
@@ -89,12 +100,18 @@ export default async function OmiljeniPage() {
                         sizes="(max-width: 640px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       />
                     ) : (
-                      <div className="bg-muted flex h-full items-center justify-center">
+                      <div className="bg-muted flex h-full flex-col items-center justify-center gap-2">
                         <Icon name="auto_awesome" className="text-muted-foreground/50 size-8" />
+                        <span className="text-muted-foreground text-[10px] font-medium">
+                          {labels.imagePlaceholder}
+                        </span>
                       </div>
                     )}
                   </div>
-                  <div className="flex flex-col gap-1 p-3 sm:p-4">
+                  <div className="flex flex-col gap-2 p-4">
+                    <span className="text-muted-foreground text-[10px] font-black tracking-[0.18em] uppercase">
+                      {labels.savedLabel}
+                    </span>
                     <h3 className="group-hover:text-primary line-clamp-2 pr-10 text-sm font-black uppercase transition-colors">
                       {fav.facility.name}
                     </h3>
@@ -104,6 +121,9 @@ export default async function OmiljeniPage() {
                         <span className="truncate">{fav.facility.city}</span>
                       </span>
                     )}
+                    <span className="text-muted-foreground text-[10px] font-medium">
+                      {fav.facility.category}
+                    </span>
                   </div>
                 </Link>
               </Card>

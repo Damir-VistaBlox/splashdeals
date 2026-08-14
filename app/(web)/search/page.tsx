@@ -1,7 +1,11 @@
 import { prisma } from "@/app/(server)/lib/prisma";
 import { getDictionary } from "@/lib/dictionaries";
 import Link from "next/link";
+import { JsonLd } from "@/components/SEO/JsonLd";
+import { Icon } from "@/components/ui/Icon";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { SearchBox } from "../_components/SearchBox";
+import { absoluteUrl, pageMetadata, resolveSiteUrl } from "@/lib/seo";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -29,10 +33,25 @@ export async function generateMetadata({
   searchParams: Promise<{ q?: string }>;
 }) {
   const { q } = await searchParams;
-  const title = q?.trim() ? `Pretraga: ${q.trim()} | Splashdeals.rs` : "Pretraga | Splashdeals.rs";
+  const query = q?.trim();
+  const title = query
+    ? `Pretraga ponuda za ${query} | SplashDeals`
+    : "Pretraga ponuda i objekata | SplashDeals";
   return {
+    ...pageMetadata("/search"),
     title,
-    robots: { index: false, follow: true } as const,
+    description: query
+      ? `Rezultati pretrage za ${query} na SplashDeals. Pregledajte objekte, sadržaj i destinacije za digitalnu kupovinu ulaznica.`
+      : "Pretražite SplashDeals objekte, gradove i sadržaj za digitalne ulaznice.",
+    robots: {
+      index: false,
+      follow: true,
+      googleBot: {
+        index: false,
+        follow: true,
+        "max-image-preview": "large",
+      },
+    } as const,
   };
 }
 
@@ -45,6 +64,7 @@ export default async function SearchPage({
 }) {
   const { q } = await searchParams;
   const dict = await getDictionary();
+  const searchDict = dict.search || {};
   if (!q || q.trim().length < 2) {
     return <EmptyState dict={dict} />;
   }
@@ -105,6 +125,76 @@ export default async function SearchPage({
   }
 
   const totalResults = facilities.length + posts.length + pages.length;
+  const quickChips = [query, facilities[0]?.city, ...(searchDict.quick_chips || [])].filter(
+    (value, index, all): value is string => Boolean(value) && all.indexOf(value) === index,
+  );
+  const site = resolveSiteUrl();
+  const resultItems = [
+    ...facilities.map((facility) => ({
+      name: facility.name,
+      url: absoluteUrl(`/${facility.slug}`, site),
+      description: (
+        searchDict.facility_result_description || "{city} • Direktan pristup ponudama"
+      ).replace("{city}", facility.city),
+    })),
+    ...posts.map((post) => ({
+      name: post.title,
+      url: absoluteUrl(`/blog/${post.slug}`, site),
+      description: post.excerpt
+        ? stripHtml(post.excerpt)
+        : searchDict.blog_result_description || "Blog sadržaj o ulaznicama i destinacijama.",
+    })),
+    ...pages.map((page) => ({
+      name: page.title,
+      url: absoluteUrl(`/${page.slug}`, site),
+      description: page.excerpt
+        ? stripHtml(page.excerpt)
+        : searchDict.page_result_description || "Informativna stranica na SplashDeals.",
+    })),
+  ].slice(0, 12);
+  const searchSchema = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "SearchResultsPage",
+        "@id": `${site}/search#webpage`,
+        url: absoluteUrl(`/search?q=${encodeURIComponent(query)}`, site),
+        name: `Rezultati pretrage za ${query}`,
+        description: `Pretraga objekata, blog sadržaja i informativnih stranica za pojam ${query}.`,
+        isPartOf: { "@id": `${site}/#website` },
+        inLanguage: "sr-Latn-RS",
+        about: query,
+        mainEntity: {
+          "@type": "ItemList",
+          numberOfItems: totalResults,
+          itemListElement: resultItems.map((item, index) => ({
+            "@type": "ListItem",
+            position: index + 1,
+            name: item.name,
+            url: item.url,
+          })),
+        },
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": `${site}/search#breadcrumb`,
+        itemListElement: [
+          {
+            "@type": "ListItem",
+            position: 1,
+            name: "Početna",
+            item: site,
+          },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: "Pretraga",
+            item: absoluteUrl("/search", site),
+          },
+        ],
+      },
+    ],
+  };
 
   // Log zero-result queries
   try {
@@ -118,110 +208,134 @@ export default async function SearchPage({
   }
 
   return (
-    <div className="mx-auto max-w-5xl px-3 py-8 sm:px-6 sm:py-10 md:px-8">
-      <div className="section-shell mb-10 overflow-hidden rounded-[2rem] px-6 py-8 sm:px-10 sm:py-12">
+    <div className="mx-auto max-w-6xl px-3 py-8 sm:px-6 sm:py-10 md:px-8">
+      <JsonLd id="search-results-schema" data={searchSchema} />
+      <div className="section-shell mb-5 overflow-hidden rounded-[2rem] px-4 py-5 sm:mb-8 sm:px-10 sm:py-12">
         <div className="relative z-10">
-          <h1 className="text-foreground text-3xl font-black tracking-[-0.06em]">
-            {dict.search.results_for || "Rezultati pretrage za"}:{" "}
-            <span className="text-primary">{query}</span>
-          </h1>
-          <p className="text-muted-foreground mt-2 text-sm">
-            {(dict.search.results_found || "Pronađeno {count} rezultata").replace(
-              "{count}",
-              String(totalResults),
-            )}
-          </p>
+          <div className="mb-4 flex flex-wrap items-start justify-between gap-4">
+            <div className="max-w-3xl">
+              <p className="text-primary text-[10px] font-black tracking-[0.24em] uppercase">
+                {searchDict.heading || "Pretraga"}
+              </p>
+              <h1 className="text-foreground mt-2 text-[2rem] leading-[0.94] font-black tracking-[-0.07em] sm:text-5xl">
+                {searchDict.results_for || "Rezultati pretrage za"}{" "}
+                <span className="splash-gradient italic">“{query}”</span>
+              </h1>
+              <p className="text-muted-foreground mt-3 max-w-2xl text-sm leading-relaxed sm:text-base">
+                {(searchDict.results_found || "Pronađeno {count} rezultata").replace(
+                  "{count}",
+                  String(totalResults),
+                )}{" "}
+                kroz objekte, blog i informativne stranice.
+              </p>
+            </div>
+            <div className="surface-glass hidden min-w-[15rem] rounded-[1.35rem] p-4 md:block">
+              <p className="text-muted-foreground text-[10px] font-black tracking-[0.14em] uppercase">
+                {searchDict.quick_tip_eyebrow || "Brzi savet"}
+              </p>
+              <p className="mt-2 text-sm leading-relaxed font-medium">
+                {searchDict.quick_tip_body ||
+                  "Ako ne vidite željenu ponudu, pokušajte sa gradom, kategorijom ili imenom objekta."}
+              </p>
+            </div>
+          </div>
+
+          <SearchBox dict={dict} initialQuery={query} className="mb-3" autoFocus />
+
+          <div className="mb-3 flex flex-wrap gap-2">
+            <SearchStat
+              label={dict.search.section_facilities || "Objekti"}
+              count={facilities.length}
+            />
+            <SearchStat label={dict.search.section_blog || "Blog"} count={posts.length} />
+            <SearchStat label={dict.search.section_pages || "Stranice"} count={pages.length} />
+          </div>
+
+          <div
+            aria-label={searchDict.quick_rail_label || "Brze teme za pretragu"}
+            className="no-scrollbar -mx-1 hidden snap-x snap-mandatory gap-2 overflow-x-auto px-1 sm:flex sm:flex-wrap sm:overflow-visible sm:px-0"
+          >
+            {quickChips.map((chip) => (
+              <Link
+                key={chip}
+                href={`/search?q=${encodeURIComponent(chip)}`}
+                className="shrink-0 snap-start rounded-full border border-white/70 bg-white/78 px-3 py-2.5 text-[10px] font-black tracking-[0.12em] uppercase shadow-sm"
+              >
+                {chip}
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
 
       {totalResults === 0 ? (
-        <div className="text-muted-foreground py-20 text-center">
-          <p className="text-lg">
+        <div className="public-panel px-6 py-16 text-center sm:px-10">
+          <div className="bg-primary/10 text-primary mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-[1.2rem]">
+            <Icon name="search_off" className="text-[24px]" />
+          </div>
+          <p className="text-lg font-black tracking-tight">
             {dict.search.no_results_for || "Nema rezultata za"}: {query}.
           </p>
-          <p className="mt-1 text-sm">
+          <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
             {dict.search.try_other_keywords || "Pokušajte druge ključne reči."}
           </p>
+          <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
+            {(searchDict.no_results_chips || ["Beograd", "Petroland", "Wellness", "Banje"]).map(
+              (chip: string) => (
+                <Link
+                  key={chip}
+                  href={`/search?q=${encodeURIComponent(chip)}`}
+                  className="surface-subtle rounded-full px-4 py-2 text-[10px] font-black tracking-[0.14em] uppercase"
+                >
+                  {chip}
+                </Link>
+              ),
+            )}
+          </div>
         </div>
       ) : (
-        <div className="space-y-12">
-          {/* Facilities */}
-          {facilities.length > 0 && (
-            <section>
-              <h2 className="mb-4 text-xl font-semibold">
-                {dict.search.section_facilities || "Objekti"}
-              </h2>
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {facilities.map((f) => (
-                  <Link key={f.id} href={`/${f.slug}`} className="block">
-                    <Card className="surface-card hover:border-primary/30 rounded-[1.5rem] transition-all hover:-translate-y-0.5 hover:shadow-md">
-                      <CardHeader>
-                        <CardTitle className="text-base">{f.name}</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <p className="text-muted-foreground flex items-center gap-1.5 text-sm">
-                          <span className="text-primary">📍</span>
-                          {f.city}
-                        </p>
-                      </CardContent>
-                    </Card>
-                  </Link>
-                ))}
-              </div>
-            </section>
-          )}
+        <div className="space-y-10">
+          <SearchSection
+            title={dict.search.section_facilities || "Objekti"}
+            eyebrow={searchDict.section_facilities_eyebrow || "Destinacije"}
+            items={facilities.map((facility) => ({
+              id: facility.id,
+              href: `/${facility.slug}`,
+              title: facility.name,
+              description: (
+                searchDict.facility_result_description || "{city} • Direktan pristup ponudama"
+              ).replace("{city}", facility.city),
+              icon: "location_on",
+            }))}
+            grid
+            dict={searchDict}
+          />
 
-          {/* Blog posts */}
-          {posts.length > 0 && (
-            <section>
-              <h2 className="mb-4 text-xl font-semibold">{dict.search.section_blog || "Blog"}</h2>
-              <div className="space-y-3">
-                {posts.map((post) => (
-                  <Link key={post.id} href={`/blog/${post.slug}`} className="block">
-                    <Card className="surface-card hover:border-primary/30 rounded-[1.5rem] transition-all hover:-translate-y-0.5 hover:shadow-md">
-                      <CardHeader>
-                        <CardTitle className="text-base">{post.title}</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        {post.excerpt && (
-                          <p className="text-muted-foreground line-clamp-2 text-sm">
-                            {stripHtml(post.excerpt)}
-                          </p>
-                        )}
-                      </CardContent>
-                    </Card>
-                  </Link>
-                ))}
-              </div>
-            </section>
-          )}
+          <SearchSection
+            title={dict.search.section_blog || "Blog"}
+            eyebrow={searchDict.section_blog_eyebrow || "Sadržaj"}
+            items={posts.map((post) => ({
+              id: post.id,
+              href: `/blog/${post.slug}`,
+              title: post.title,
+              description: post.excerpt ? stripHtml(post.excerpt) : null,
+              icon: "article",
+            }))}
+            dict={searchDict}
+          />
 
-          {/* Static pages */}
-          {pages.length > 0 && (
-            <section>
-              <h2 className="mb-4 text-xl font-semibold">
-                {dict.search.section_pages || "Stranice"}
-              </h2>
-              <div className="space-y-3">
-                {pages.map((page) => (
-                  <Link key={page.id} href={`/${page.slug}`} className="block">
-                    <Card className="surface-card hover:border-primary/30 rounded-[1.5rem] transition-all hover:-translate-y-0.5 hover:shadow-md">
-                      <CardHeader>
-                        <CardTitle className="text-base">{page.title}</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        {page.excerpt && (
-                          <p className="text-muted-foreground line-clamp-2 text-sm">
-                            {stripHtml(page.excerpt)}
-                          </p>
-                        )}
-                      </CardContent>
-                    </Card>
-                  </Link>
-                ))}
-              </div>
-            </section>
-          )}
+          <SearchSection
+            title={dict.search.section_pages || "Stranice"}
+            eyebrow={searchDict.section_pages_eyebrow || "Informacije"}
+            items={pages.map((page) => ({
+              id: page.id,
+              href: `/${page.slug}`,
+              title: page.title,
+              description: page.excerpt ? stripHtml(page.excerpt) : null,
+              icon: "menu_book",
+            }))}
+            dict={searchDict}
+          />
         </div>
       )}
     </div>
@@ -232,15 +346,108 @@ export default async function SearchPage({
 
 function EmptyState({ dict }: { dict: Record<string, any> }) {
   return (
-    <div className="mx-auto max-w-xl px-4 py-24 text-center">
-      <h1 className="text-foreground mb-3 text-3xl font-bold tracking-tight">
+    <div className="mx-auto max-w-2xl px-4 py-24 text-center">
+      <div className="bg-primary/10 text-primary mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-[1.2rem]">
+        <Icon name="travel_explore" className="text-[24px]" />
+      </div>
+      <h1 className="text-foreground mb-3 text-3xl font-black tracking-[-0.05em]">
         {dict.search.heading || "Pretraga"}
       </h1>
-      <p className="text-muted-foreground">
+      <p className="text-muted-foreground mx-auto max-w-xl leading-relaxed">
         {dict.search.min_chars ||
           "Unesite najmanje 2 karaktera da biste započeli pretragu objekata, blog postova i stranica."}
       </p>
+      <SearchBox dict={dict} className="mx-auto mt-6 max-w-xl" autoFocus />
+      <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
+        {(dict.search.empty_chips || ["Akva parkovi", "Petroland", "Vrnjačka Banja"]).map(
+          (chip: string) => (
+            <Link
+              key={chip}
+              href={`/search?q=${encodeURIComponent(chip)}`}
+              className="surface-subtle rounded-full px-4 py-2 text-[10px] font-black tracking-[0.14em] uppercase"
+            >
+              {chip}
+            </Link>
+          ),
+        )}
+      </div>
     </div>
+  );
+}
+
+function SearchStat({ label, count }: { label: string; count: number }) {
+  return (
+    <div className="surface-subtle inline-flex min-h-10 items-center gap-2 rounded-full px-4 py-2">
+      <span className="text-primary text-sm font-black">{count}</span>
+      <span className="text-[10px] font-black tracking-[0.14em] uppercase">{label}</span>
+    </div>
+  );
+}
+
+function SearchSection({
+  title,
+  eyebrow,
+  items,
+  grid = false,
+  dict,
+}: {
+  title: string;
+  eyebrow: string;
+  items: { id: string; href: string; title: string; description: string | null; icon: string }[];
+  grid?: boolean;
+  dict: Record<string, any>;
+}) {
+  if (items.length === 0) {
+    return null;
+  }
+
+  return (
+    <section>
+      <div className="mb-4 flex items-end justify-between gap-3">
+        <div>
+          <p className="text-primary text-[10px] font-black tracking-[0.18em] uppercase">
+            {eyebrow}
+          </p>
+          <h2 className="mt-1 text-2xl leading-none font-black tracking-[-0.05em]">{title}</h2>
+        </div>
+        <span className="text-muted-foreground text-[10px] font-black tracking-[0.16em] uppercase">
+          {items.length} {dict.results_suffix || "rezultata"}
+        </span>
+      </div>
+      <div className={grid ? "grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3" : "space-y-3"}>
+        {items.map((item) => (
+          <Link key={item.id} href={item.href} className="block">
+            <Card className="surface-card hover:border-primary/30 rounded-[1.5rem] transition-all hover:-translate-y-0.5 hover:shadow-md">
+              <CardHeader className="flex flex-row items-start gap-3 space-y-0">
+                <span className="bg-primary/10 text-primary flex h-11 w-11 shrink-0 items-center justify-center rounded-[1rem]">
+                  <Icon name={item.icon} className="text-[20px]" />
+                </span>
+                <div className="min-w-0">
+                  <p className="text-muted-foreground mb-1 text-[10px] font-black tracking-[0.14em] uppercase">
+                    {eyebrow}
+                  </p>
+                  <CardTitle className="text-base leading-tight font-black">{item.title}</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent>
+                {item.description ? (
+                  <p className="text-muted-foreground line-clamp-2 text-sm leading-relaxed">
+                    {item.description}
+                  </p>
+                ) : (
+                  <p className="text-muted-foreground text-sm leading-relaxed">
+                    {dict.open_result_description || "Otvorite rezultat za više detalja."}
+                  </p>
+                )}
+                <div className="mt-3 inline-flex min-h-10 items-center rounded-full border border-slate-200/80 px-3 text-[10px] font-black tracking-[0.14em] uppercase">
+                  {dict.open_result || "Otvori rezultat"}
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+        ))}
+      </div>
+    </section>
   );
 }
 

@@ -32,70 +32,63 @@ export default function GlobalWebError({
     console.error("Global Web Error:", error);
     let mounted = true;
     getClientDictionary().then((d) => {
-      if (mounted) setTimeout(() => setDict(d as Record<string, unknown>), 0);
+      if (mounted) setDict(d as Record<string, unknown>);
     });
     return () => {
       mounted = false;
     };
   }, [error]);
 
-  // Fallback while dictionary loads (matching the style)
-  if (!dict) {
-    return <div className="bg-background min-h-screen" />;
-  }
-
   return (
-    <div className="bg-background selection:bg-primary/20 text-foreground relative flex min-h-screen items-center justify-center overflow-hidden p-6 md:p-12">
-      {/* 🌊 Atmospheric Background Particles */}
-      <div className="pointer-events-none absolute inset-0 z-0 opacity-20">
-        <div className="bg-primary/10 absolute top-1/2 left-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full blur-[120px]" />
-        <div className="absolute inset-0 flex items-center justify-center">
-          <Icon name="waves" className="text-foreground/5 h-[80vw] w-[80vw] stroke-[0.1]" />
-        </div>
+    <div className="mobile-route-frame bg-background selection:bg-primary/20 text-foreground relative overflow-hidden px-4 py-6 sm:px-6 md:px-12">
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-0 h-72 bg-[radial-gradient(circle_at_top,rgba(14,165,198,0.14),transparent_68%)]" />
+
+      <div className="relative z-10 flex min-h-[calc(100dvh-var(--safe-area-top)-2rem)] items-center justify-center">
+        <Card className="bg-card/82 border-primary/10 shadow-soft w-full max-w-xl backdrop-blur-sm">
+          <CardHeader className="items-center gap-5 p-6 pb-0 text-center sm:p-8 sm:pb-0 md:p-10 md:pb-0">
+            <div className="bg-primary/10 text-primary border-primary/20 inline-flex h-20 w-20 items-center justify-center rounded-full border sm:h-24 sm:w-24">
+              <Icon name="error" className="stroke-[1.5] text-[40px] sm:text-[48px]" />
+            </div>
+            <div className="space-y-3">
+              <CardTitle className="text-foreground text-3xl leading-none font-black tracking-tight uppercase sm:text-4xl">
+                {t("errors", "title") || "Došlo je do greške"}
+              </CardTitle>
+              <p className="text-primary text-sm font-black tracking-[0.28em] uppercase">
+                {t("errors", "highlight") || "Privremeni prekid"}
+              </p>
+              <p className="text-muted-foreground mx-auto max-w-sm text-sm leading-relaxed sm:text-base">
+                {t("errors", "subtitle") ||
+                  "Nešto je pošlo po zlu pri učitavanju ove stranice. Pokušajte ponovo ili se vratite na početnu."}
+              </p>
+              {error.digest ? (
+                <p className="text-muted-foreground/80 font-mono text-[10px] tracking-[0.24em] uppercase">
+                  Digest {error.digest}
+                </p>
+              ) : null}
+            </div>
+          </CardHeader>
+
+          <CardContent className="p-6 pt-5 text-center sm:p-8 md:p-10">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <Button
+                onClick={reset}
+                variant="outline"
+                className="flex min-h-11 items-center justify-center gap-2 rounded-2xl px-6 text-xs font-black tracking-[0.22em] uppercase"
+              >
+                <Icon name="refresh" className="text-[16px]" />
+                {t("errors", "try_again") || "Pokušaj ponovo"}
+              </Button>
+              <Link
+                href="/"
+                className="bg-primary hover:bg-primary/90 text-background shadow-primary/10 flex min-h-11 items-center justify-center gap-2 rounded-2xl px-6 text-xs font-black tracking-[0.22em] uppercase shadow-lg transition-colors"
+              >
+                <Icon name="home" className="text-[16px]" />
+                {t("errors", "back_home") || "Nazad na početnu"}
+              </Link>
+            </div>
+          </CardContent>
+        </Card>
       </div>
-
-      <Card className="bg-muted/50 border-primary/10 relative z-10 w-full max-w-xl">
-        <CardHeader className="items-center gap-6 p-8 pb-0 text-center md:p-16 md:pb-0">
-          <div className="bg-primary/10 text-primary border-primary/20 relative inline-flex h-24 w-24 items-center justify-center rounded-full border">
-            <Icon name="error" className="stroke-[1.5] text-[48px]" />
-          </div>
-          <div className="space-y-4">
-            <CardTitle className="text-foreground text-4xl leading-none font-black tracking-tighter uppercase italic md:text-5xl">
-              {(dict as Record<string, unknown>)?.errors ? (
-                <>
-                  {t("errors", "title")} <br />
-                  <span className="text-primary">{t("errors", "highlight")}</span>
-                </>
-              ) : (
-                ""
-              )}
-            </CardTitle>
-            <p className="text-muted-foreground mx-auto max-w-sm text-lg leading-relaxed">
-              {t("errors", "subtitle")}
-            </p>
-          </div>
-        </CardHeader>
-
-        <CardContent className="p-8 pt-4 text-center md:p-16 md:pt-4">
-          <div className="grid grid-cols-1 gap-4 pt-4 md:grid-cols-2">
-            <Button
-              onClick={reset}
-              variant="outline"
-              className="group flex items-center justify-center gap-2 rounded-2xl px-8 py-4 text-xs font-black tracking-widest uppercase"
-            >
-              <Icon name="refresh" className="text-[16px]" />
-              {t("errors", "try_again")}
-            </Button>
-            <Link
-              href="/"
-              className="bg-primary hover:bg-primary/90 text-background shadow-primary/10 flex items-center justify-center gap-2 rounded-2xl px-8 py-4 text-xs font-black tracking-widest uppercase shadow-2xl transition-all"
-            >
-              <Icon name="home" className="text-[16px]" />
-              {t("errors", "back_home")}
-            </Link>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 }

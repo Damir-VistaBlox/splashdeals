@@ -75,6 +75,7 @@ export function FacilityCard({
   isPriority = false,
   isFavorited = false,
 }: FacilityCardProps) {
+  const facilityDict = dict?.facility || {};
   const explicitBG = facility.media?.find((m) => m.isCardBackground);
   const aerialPhoto = facility.media?.find((m) => m.purpose === "AERIAL");
   const backgroundPhoto =
@@ -86,11 +87,15 @@ export function FacilityCard({
     dict?.categories?.[facility.category.toLowerCase()] || facility.category.replaceAll("-", " ");
   const addressLine = `${facility.streetName} ${facility.streetNumber}, ${facility.postalCode} ${facility.city}`;
   const shortAddress = `${facility.streetName} ${facility.streetNumber}`;
-  const detailLabel = dict?.facility?.details_cta || "Detaljnije";
+  const detailLabel = facilityDict.details_cta || "Detaljnije";
   const fallbackDescription =
-    dict?.facility?.card_description || "Digitalne ulaznice, jasne cene i brza kupovina online.";
+    facilityDict.card_description || "Digitalne ulaznice, jasne cene i brza kupovina online.";
   const descriptionText = facility.description?.trim() || fallbackDescription;
   const accent = getCategoryAccent(facility.category);
+  const trustChip = facilityDict.trusted_checkout || "Online kupovina";
+  const speedChip = facilityDict.fast_entry || "Brza potvrda";
+  const clearPriceLabel = facilityDict.clear_price || "Jasna cena";
+  const openFacilityLabel = facilityDict.open_facility || "Otvori objekat";
 
   return (
     <article
@@ -125,7 +130,7 @@ export function FacilityCard({
         facilityId={facility.id}
         facilitySlug={facility.slug}
         isFavorited={isFavorited}
-        className="absolute top-2 left-2"
+        className="absolute top-2 left-2 z-30"
       />
 
       <Link
@@ -135,7 +140,7 @@ export function FacilityCard({
         title={`${facility.name} - ${facility.city}`}
       >
         <Card
-          className={`surface-card group animated-border hover:border-primary/30 relative flex h-[286px] flex-col justify-end overflow-hidden rounded-[1.6rem] border-white/70 transition-[transform,border-color,box-shadow] duration-500 hover:-translate-y-1 ${accent.glow} sm:h-[410px] sm:rounded-[2rem]`}
+          className={`surface-card group animated-border hover:border-primary/30 relative flex min-h-[320px] flex-col justify-end overflow-hidden rounded-[1.6rem] border-white/70 transition-[transform,border-color,box-shadow] duration-500 hover:-translate-y-1 ${accent.glow} sm:h-[410px] sm:min-h-0 sm:rounded-[2rem]`}
         >
           {facility.logoUrl && (
             <div className="absolute top-3 right-3 z-20 flex h-10 w-10 items-center justify-center overflow-hidden rounded-[1rem] border border-white/70 bg-white/78 p-2 shadow-lg backdrop-blur-md transition-transform duration-500 group-hover:scale-105 sm:top-5 sm:right-5 sm:h-13 sm:w-13 sm:rounded-2xl">
@@ -170,7 +175,7 @@ export function FacilityCard({
             <div className="absolute inset-x-0 bottom-0 h-[58%] bg-[linear-gradient(180deg,rgba(255,255,255,0),rgba(7,29,44,0.15)_24%,rgba(7,29,44,0.58)_58%,rgba(7,29,44,0.92)_100%)]" />
           </div>
 
-          <div className="relative z-10 flex w-full flex-col gap-1.5 p-3.5 sm:gap-2 sm:p-5">
+          <div className="relative z-10 flex w-full flex-col gap-2 p-3.5 sm:gap-2 sm:p-5">
             <div className="mb-0.5 flex flex-wrap items-center gap-1.5 sm:mb-1 sm:gap-2">
               <span
                 className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[9px] font-black tracking-[0.12em] uppercase backdrop-blur-md sm:gap-2 sm:px-3 sm:text-[10px] sm:tracking-[0.14em] ${accent.chip}`}
@@ -183,6 +188,9 @@ export function FacilityCard({
               >
                 {facility.city}
               </span>
+              <span className="hidden items-center rounded-full border border-white/18 bg-white/10 px-2.5 py-1 text-[9px] font-black tracking-[0.12em] text-white uppercase backdrop-blur-md sm:inline-flex">
+                {trustChip}
+              </span>
             </div>
 
             <h3
@@ -193,11 +201,21 @@ export function FacilityCard({
               {facility.name}
             </h3>
 
-            <p className="line-clamp-2 max-w-[30ch] text-[13px] leading-relaxed font-medium text-white/82 sm:max-w-[32ch] sm:text-[15px]">
+            <p className="line-clamp-3 max-w-[30ch] text-[13px] leading-relaxed font-medium text-white/82 sm:line-clamp-2 sm:max-w-[32ch] sm:text-[15px]">
               {descriptionText}
             </p>
 
             <div className="flex flex-col gap-2.5 pt-0.5 sm:gap-3 sm:pt-1">
+              <div className="flex flex-wrap gap-1.5">
+                <span className="inline-flex min-h-7 items-center rounded-full bg-white/12 px-2.5 text-[9px] font-black tracking-[0.12em] text-white uppercase backdrop-blur-sm">
+                  {speedChip}
+                </span>
+                {facility.minPrice ? (
+                  <span className="hidden min-h-7 items-center rounded-full bg-emerald-400/18 px-2.5 text-[9px] font-black tracking-[0.12em] text-white uppercase backdrop-blur-sm sm:inline-flex">
+                    {clearPriceLabel}
+                  </span>
+                ) : null}
+              </div>
               <address className="flex items-center gap-2 text-[10px] leading-tight font-semibold text-white/74 not-italic sm:text-[11px]">
                 <Icon name="location_on" className="shrink-0 text-[14px] text-white/64" />
                 <span className="truncate" title={addressLine}>
@@ -224,8 +242,8 @@ export function FacilityCard({
                   <div />
                 )}
 
-                <div className="flex items-center gap-1.5 rounded-full border border-white/18 bg-white/10 px-3.5 py-2 text-[8px] font-black tracking-[0.12em] text-white uppercase shadow-lg backdrop-blur-md transition-all duration-300 group-hover:translate-x-1 group-hover:border-white/30 group-hover:bg-white/16 sm:px-4 sm:py-2.5 sm:text-[9px] sm:tracking-[0.14em]">
-                  <span>{detailLabel}</span>
+                <div className="flex min-h-11 items-center gap-1.5 rounded-full border border-white/18 bg-white/10 px-3.5 py-2 text-[8px] font-black tracking-[0.12em] text-white uppercase shadow-lg backdrop-blur-md transition-all duration-300 group-hover:translate-x-1 group-hover:border-white/30 group-hover:bg-white/16 sm:px-4 sm:py-2.5 sm:text-[9px] sm:tracking-[0.14em]">
+                  <span>{facility.minPrice ? detailLabel : openFacilityLabel}</span>
                   <Icon
                     name="navigation"
                     className="rotate-90 text-[10px] transition-transform duration-300 group-hover:translate-x-0.5"

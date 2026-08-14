@@ -46,9 +46,14 @@ export function MobileUnifiedControlPill({
   destLng,
   surfaceless = false,
 }: MobileUnifiedControlPillProps) {
-  const [geoState, setGeoState] = useState<{ distance: number | null; failed: boolean }>({
+  const [geoState, setGeoState] = useState<{
+    distance: number | null;
+    failed: boolean;
+    loading: boolean;
+  }>({
     distance: null,
     failed: false,
+    loading: false,
   });
   const geoTimeoutRef = useRef<number | null>(null);
 
@@ -62,27 +67,32 @@ export function MobileUnifiedControlPill({
     const timer = window.setTimeout(() => {
       setTodayInfo(deriveTodayInfo(hours));
     }, 0);
-    return () => window.clearTimeout(timer);
+    return () => {
+      window.clearTimeout(timer);
+      if (geoTimeoutRef.current !== null) {
+        window.clearTimeout(geoTimeoutRef.current);
+      }
+    };
   }, [hours]);
 
   const { todayHours, isOpen } = todayInfo;
-  const { distance, failed: geoError } = geoState;
+  const { distance, failed: geoError, loading } = geoState;
   const hasDirections = Number.isFinite(destLat) && Number.isFinite(destLng);
 
   // 🧭 Geolocation (Haversine) — user-initiated, never auto-fires
   const calculateDistance = () => {
     if (!hasDirections) {
-      setGeoState({ distance: null, failed: true });
+      setGeoState({ distance: null, failed: true, loading: false });
       return;
     }
     if (typeof navigator === "undefined" || !navigator.geolocation) {
-      setGeoState({ distance: null, failed: true });
+      setGeoState({ distance: null, failed: true, loading: false });
       return;
     }
 
-    setGeoState({ distance: null, failed: false }); // show loading state
+    setGeoState({ distance: null, failed: false, loading: true });
     geoTimeoutRef.current = window.setTimeout(() => {
-      setGeoState({ distance: null, failed: true });
+      setGeoState({ distance: null, failed: true, loading: false });
     }, 8000);
 
     navigator.geolocation.getCurrentPosition(
@@ -101,11 +111,12 @@ export function MobileUnifiedControlPill({
         setGeoState({
           distance: R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)),
           failed: false,
+          loading: false,
         });
       },
       () => {
         if (geoTimeoutRef.current !== null) window.clearTimeout(geoTimeoutRef.current);
-        setGeoState({ distance: null, failed: true });
+        setGeoState({ distance: null, failed: true, loading: false });
       },
       { enableHighAccuracy: false, timeout: 5000 },
     );
@@ -132,7 +143,7 @@ export function MobileUnifiedControlPill({
   return (
     <div className="mx-auto w-full max-w-md">
       <div
-        className={`relative flex min-h-[4.25rem] w-full items-center justify-between rounded-[1.45rem] px-3 py-2 select-none ${
+        className={`relative flex min-h-[4.5rem] w-full items-center justify-between rounded-[1.45rem] px-3 py-2.5 select-none ${
           surfaceless ? "" : "surface-glass"
         }`}
       >
@@ -154,6 +165,9 @@ export function MobileUnifiedControlPill({
             )}
           </div>
           <div className="flex flex-col items-start leading-tight">
+            <span className="text-[9px] font-black tracking-[0.14em] text-white/55 uppercase">
+              Danas
+            </span>
             {todayHours ? (
               todayHours.isClosed ? (
                 <span className="text-muted-foreground text-[11px] font-bold tracking-tight">
@@ -188,14 +202,16 @@ export function MobileUnifiedControlPill({
         <Button
           variant="ghost"
           onClick={handleNavigation}
-          disabled={!hasDirections}
-          className="text-foreground hover:text-primary group flex min-h-[3rem] flex-1 origin-center items-center justify-center gap-2 rounded-[1rem] px-2 transition-colors active:scale-[0.98]"
+          disabled={!hasDirections || loading}
+          className="text-foreground hover:text-primary group flex min-h-[3.25rem] flex-1 origin-center items-center justify-center gap-2 rounded-[1rem] px-2 transition-colors active:scale-[0.98]"
           aria-label={
             !hasDirections
               ? "Lokacija nije dostupna"
-              : distance !== null
-                ? `Udaljenost ${distance.toFixed(0)} km. Dodirni za otvaranje mape.`
-                : "Prikaži rutu na mapi"
+              : loading
+                ? "Računamo udaljenost"
+                : distance !== null
+                  ? `Udaljenost ${distance.toFixed(0)} km. Dodirni za otvaranje mape.`
+                  : "Prikaži rutu na mapi"
           }
         >
           <Icon
@@ -208,7 +224,7 @@ export function MobileUnifiedControlPill({
             </span>
           ) : (
             <span className="text-muted-foreground/80 group-hover:text-primary text-[10px] font-black tracking-[0.16em] uppercase">
-              {!hasDirections ? "Bez rute" : geoError ? "? km" : "Ruta"}
+              {!hasDirections ? "Bez rute" : loading ? "Merimo" : geoError ? "? km" : "Izračunaj"}
             </span>
           )}
         </Button>

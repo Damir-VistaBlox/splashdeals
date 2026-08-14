@@ -8,6 +8,9 @@ export const metadata: Metadata = {
   title: "Stranica Nije Pronađena | Splashdeals",
   description:
     "Stranica koju tražite ne postoji ili je premeštena. Vratite se na početnu stranicu da istražite najbolje akva parkove u Srbiji.",
+  other: {
+    "theme-color": "#ffffff",
+  },
   robots: {
     index: false,
     follow: false,

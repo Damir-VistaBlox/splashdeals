@@ -23,6 +23,16 @@ export default async function PrijavaPage({
 }) {
   const dict = await getDictionary();
   const t = dict.account;
+  const labels = {
+    title: t.sign_in_title ?? "Prijava na SplashDeals",
+    description: t.sign_in_desc ?? "Prijavite se putem jednog od naloga",
+    badge: t.sign_in_badge ?? "Brza prijava",
+    error: t.sign_in_error ?? "Prijava nije uspela. Pokušajte ponovo.",
+    note: t.sign_in_note ?? "Posle prijave vraćamo vas na karte i čuvamo aktivnu kupovinu.",
+    benefitTickets: t.sign_in_benefit_tickets ?? "Karte odmah u nalogu",
+    benefitHistory: t.sign_in_benefit_history ?? "Istorija i računi na jednom mestu",
+    benefitSupport: t.sign_in_benefit_support ?? "Brža podrška za postojeće kupovine",
+  };
   const sp = await searchParams;
   const callbackUrl = isSafeCallbackPath(sp.callbackUrl) ? sp.callbackUrl : "/moje-karte";
 
@@ -31,17 +41,23 @@ export default async function PrijavaPage({
     redirect(callbackUrl);
   }
 
-  const oauthError = sp.error ? t.sign_in_error || "Prijava nije uspela. Pokušajte ponovo." : null;
+  const oauthError = sp.error ? labels.error : null;
   const providers = getEnabledBuyerSocialProviders();
 
   return (
     <div className="flex min-h-[50vh] items-center justify-center px-3 py-8 sm:min-h-[60vh] sm:px-4 sm:py-12">
-      <div className="border-border w-full max-w-sm space-y-6 rounded-xl border p-5 sm:space-y-8 sm:p-8">
-        <div className="space-y-2 text-center">
+      <div className="border-border from-background via-background to-muted/30 w-full max-w-sm space-y-6 rounded-[1.75rem] border bg-gradient-to-b p-5 shadow-[0_24px_60px_-36px_rgba(15,23,42,0.35)] sm:space-y-8 sm:p-8">
+        <div className="space-y-3 text-center">
+          <p className="text-muted-foreground text-[10px] font-black tracking-[0.22em] uppercase">
+            {labels.badge}
+          </p>
+          <div className="bg-primary/10 text-primary mx-auto flex size-14 items-center justify-center rounded-full">
+            <span className="text-lg font-black">SD</span>
+          </div>
           <h1 className="text-2xl font-black tracking-tighter uppercase italic sm:text-3xl">
-            {t.sign_in_title}
+            {labels.title}
           </h1>
-          <p className="text-muted-foreground text-sm font-medium">{t.sign_in_desc}</p>
+          <p className="text-muted-foreground text-sm font-medium">{labels.description}</p>
         </div>
 
         {oauthError ? (
@@ -54,6 +70,17 @@ export default async function PrijavaPage({
         ) : null}
 
         <SignInButtons dict={t} callbackUrl={callbackUrl} providers={providers} />
+
+        <div className="grid gap-2 rounded-[1.35rem] border border-white/70 bg-white/70 p-3 text-left">
+          <p className="text-foreground text-xs font-black tracking-[0.18em] uppercase">
+            Splashdeals account
+          </p>
+          <p className="text-muted-foreground text-sm">{labels.benefitTickets}</p>
+          <p className="text-muted-foreground text-sm">{labels.benefitHistory}</p>
+          <p className="text-muted-foreground text-sm">{labels.benefitSupport}</p>
+        </div>
+
+        <p className="text-muted-foreground text-center text-xs leading-relaxed">{labels.note}</p>
       </div>
     </div>
   );

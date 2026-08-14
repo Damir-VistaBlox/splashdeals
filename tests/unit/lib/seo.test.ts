@@ -2,10 +2,14 @@ import { afterEach, describe, expect, it } from "vitest";
 import {
   absoluteUrl,
   alternates,
+  buildBreadcrumbSchema,
+  buildStaticPageMetadata,
+  canonicalUrl,
   isBlockedSitemapPath,
   isEnglishHreflangEnabled,
   isRobotsIndexable,
   normalizeSitemapPath,
+  publicRobots,
   resolveSiteUrl,
 } from "@/lib/seo";
 
@@ -39,6 +43,12 @@ describe("lib/seo site URL", () => {
     process.env.NEXT_PUBLIC_SITE_URL = "https://www.splashdeals.rs";
     expect(absoluteUrl("/petroland")).toBe("https://www.splashdeals.rs/petroland");
     expect(absoluteUrl("https://cdn.example/x.webp")).toBe("https://cdn.example/x.webp");
+  });
+
+  it("normalizes canonical urls", () => {
+    process.env.NEXT_PUBLIC_SITE_URL = "https://www.splashdeals.rs";
+    expect(canonicalUrl("/petroland/")).toBe("https://www.splashdeals.rs/petroland");
+    expect(canonicalUrl("/")).toBe("https://www.splashdeals.rs");
   });
 });
 
@@ -83,5 +93,49 @@ describe("lib/seo sitemap path policy", () => {
     expect(isRobotsIndexable("index, follow")).toBe(true);
     expect(isRobotsIndexable("noindex, nofollow")).toBe(false);
     expect(isRobotsIndexable("NOINDEX")).toBe(false);
+  });
+});
+
+describe("lib/seo shared metadata helpers", () => {
+  it("builds public robots directives with rich previews", () => {
+    expect(publicRobots()).toMatchObject({
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-image-preview": "large",
+      },
+    });
+  });
+
+  it("builds static page metadata with canonical and og url", () => {
+    process.env.NEXT_PUBLIC_SITE_URL = "https://www.splashdeals.rs";
+    const metadata = buildStaticPageMetadata({
+      path: "/support",
+      title: "Podrška",
+      description: "Opis podrške",
+      keywords: ["podrška"],
+    });
+
+    expect(metadata.alternates?.canonical).toBe("https://www.splashdeals.rs/support");
+    expect(metadata.openGraph?.url).toBe("https://www.splashdeals.rs/support");
+    expect(metadata.twitter?.images).toEqual(["https://www.splashdeals.rs/og-image.png"]);
+    expect(metadata.keywords).toEqual(["podrška"]);
+  });
+
+  it("builds breadcrumb schema with canonical item urls", () => {
+    process.env.NEXT_PUBLIC_SITE_URL = "https://www.splashdeals.rs";
+    const schema = buildBreadcrumbSchema(
+      [
+        { name: "Početna", path: "/" },
+        { name: "Podrška", path: "/support" },
+      ],
+      "/support",
+    );
+
+    expect(schema["@id"]).toBe("https://www.splashdeals.rs/support#breadcrumb");
+    expect(schema.itemListElement[0]?.item).toBe("https://www.splashdeals.rs");
+    expect(schema.itemListElement[1]?.item).toBe("https://www.splashdeals.rs/support");
   });
 });

@@ -63,6 +63,10 @@
   --color-primary-dark: #0b7da0;
   --color-secondary: #e7b34b;
   --color-accent: #f59e0b;
+  --safe-area-top: env(safe-area-inset-top, 0px);
+  --safe-area-right: env(safe-area-inset-right, 0px);
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-left: env(safe-area-inset-left, 0px);
 }
 
 .dark {
@@ -245,12 +249,28 @@
 }
 
 @layer base {
+  html {
+    min-height: 100%;
+    background-color: var(--background);
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    overscroll-behavior-y: none;
+  }
+
   * {
     @apply border-border outline-ring/50;
   }
 
   body {
     @apply bg-background text-foreground font-sans;
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding-top: var(--safe-area-top);
+    padding-right: var(--safe-area-right);
+    padding-left: var(--safe-area-left);
+    overflow-x: clip;
+    -webkit-tap-highlight-color: transparent;
     background-image:
       radial-gradient(
         circle at top left,
@@ -270,6 +290,12 @@
       );
     background-attachment: fixed;
   }
+
+  @supports (min-height: 100svh) {
+    body {
+      min-height: 100svh;
+    }
+  }
 }
 
 body {
@@ -282,6 +308,24 @@ body {
   font-kerning: normal;
   text-rendering: optimizeLegibility;
   min-height: 100vh;
+}
+
+.app-shell {
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding-bottom: max(0px, calc(var(--safe-area-bottom) - 1px));
+}
+
+.mobile-route-frame {
+  min-height: calc(100vh - var(--safe-area-top));
+  min-height: calc(100dvh - var(--safe-area-top));
+  padding-bottom: max(1rem, var(--safe-area-bottom));
+}
+
+@supports (min-height: 100svh) {
+  .mobile-route-frame {
+    min-height: calc(100svh - var(--safe-area-top));
+  }
 }
 
 a,

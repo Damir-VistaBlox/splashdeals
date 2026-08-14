@@ -5,7 +5,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Icon } from "@/components/ui/Icon";
 import { useServerCart } from "@/hooks/use-server-cart";
-import { isAccountBottomNavActive } from "@/lib/auth/account-paths";
+import {
+  isAccountBottomNavActive,
+  isAccountProtectedPath,
+  isAccountSurfacePath,
+} from "@/lib/auth/account-paths";
 import { isBottomNavActive } from "@/lib/layout/bottom-nav-active";
 import { isBottomNavAlwaysVisible } from "@/lib/layout/bottom-nav-visibility";
 import { authClient } from "@/lib/auth-client";
@@ -46,6 +50,8 @@ export function BottomNav({ dict }: { dict?: Dict | null }) {
   const alwaysVisible = isBottomNavAlwaysVisible(pathname, totalItems);
   const { data: session } = authClient.useSession();
   const isLoggedIn = !!session?.user;
+  const isAccountSurface = isAccountSurfacePath(pathname);
+  const isAccountPortal = isAccountProtectedPath(pathname);
   const [scrollHidden, setScrollHidden] = useState(false);
   const lastScrollY = useRef(0);
   // Track path for render-time scroll-hide reset (avoids setState-in-effect)
@@ -83,11 +89,21 @@ export function BottomNav({ dict }: { dict?: Dict | null }) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [alwaysVisible, pathname]);
 
+  if (isAccountPortal) {
+    return null;
+  }
+
   const NAV_ITEMS: BottomNavItem[] = [
     {
       label: dict?.nav?.home || "Početna",
       href: "/",
       icon: "home",
+      kind: "path",
+    },
+    {
+      label: dict?.nav?.search || "Pretraga",
+      href: "/search",
+      icon: "search",
       kind: "path",
     },
     {
@@ -110,13 +126,15 @@ export function BottomNav({ dict }: { dict?: Dict | null }) {
       style={{ transform: isVisible ? "translateY(0)" : "translateY(100%)" }}
       aria-label={dict?.layout?.mobile_nav_aria || "Mobilna navigacija"}
     >
-      <div className="relative mx-auto max-w-sm rounded-[1.65rem] border border-white/70 bg-white/86 p-1.5 shadow-[0_-12px_28px_rgba(15,23,42,0.08)] backdrop-blur-xl">
+      <div className="relative mx-auto max-w-md rounded-[1.65rem] border border-white/70 bg-white/92 p-1.5 shadow-[0_-14px_32px_rgba(15,23,42,0.1)] backdrop-blur-xl supports-[backdrop-filter]:bg-white/78">
         <div className="pointer-events-none absolute inset-x-10 top-0 h-px bg-gradient-to-r from-transparent via-white/90 to-transparent" />
-        <div className="grid h-14 grid-cols-3 items-center gap-1 rounded-[1.2rem] bg-[linear-gradient(180deg,rgba(255,255,255,0.52),rgba(255,255,255,0.28))] px-1">
+        <div className="grid h-15 grid-cols-4 items-center gap-1 rounded-[1.2rem] bg-[linear-gradient(180deg,rgba(255,255,255,0.58),rgba(255,255,255,0.3))] px-1">
           {NAV_ITEMS.map((item) => {
             const active =
               item.kind === "account"
-                ? isAccountBottomNavActive(pathname)
+                ? isAccountPortal
+                  ? pathname === item.href || pathname.startsWith(`${item.href}/`)
+                  : isAccountBottomNavActive(pathname)
                 : isBottomNavActive(pathname, item.href);
 
             const cartAria =
@@ -131,9 +149,10 @@ export function BottomNav({ dict }: { dict?: Dict | null }) {
                 className={`relative flex min-h-11 min-w-0 flex-col items-center justify-center gap-0.5 rounded-[1rem] px-1 py-1.5 transition-all duration-200 motion-reduce:transition-none ${
                   active
                     ? "bg-primary/[0.08] text-primary shadow-[inset_0_1px_0_rgba(255,255,255,0.72)]"
-                    : "text-muted-foreground/70 hover:text-muted-foreground hover:bg-white/55"
+                    : "text-muted-foreground/70 hover:text-muted-foreground hover:bg-white/55 active:scale-[0.98]"
                 } `}
                 aria-label={cartAria}
+                data-surface={isAccountSurface ? "account" : "web"}
                 aria-current={active ? "page" : undefined}
               >
                 {active && (

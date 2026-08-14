@@ -1,6 +1,7 @@
 // ── Shared types & constants ───────────────────────────────────────
 
 import { slugToName, dbValueToSlug } from "@/lib/routing/categories";
+import { BRAND_NAME } from "@/lib/seo";
 import {
   absoluteUrl,
   collectPhotoUrls,
@@ -126,7 +127,7 @@ export function buildPlatformOrganizationSchema() {
   return {
     "@type": "Organization",
     "@id": `${site}/#organization`,
-    name: "SplashDeals",
+    name: BRAND_NAME,
     url: site,
     logo: absoluteUrl("/logo-splashdeals.webp", site),
     sameAs: [
@@ -152,9 +153,17 @@ export function buildWebsiteSchema() {
     "@type": "WebSite",
     "@id": `${site}/#website`,
     url: site,
-    name: "SplashDeals",
+    name: BRAND_NAME,
     publisher: { "@id": `${site}/#organization` },
     inLanguage: "sr-Latn-RS",
+    potentialAction: {
+      "@type": "SearchAction",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: `${site}/search?q={search_term_string}`,
+      },
+      "query-input": "required name=search_term_string",
+    },
   };
 }
 
@@ -180,7 +189,7 @@ export function buildWebPageSchema(params: {
     "@type": "ItemPage",
     "@id": `${pageUrl}#webpage`,
     url: pageUrl,
-    name: `${facility.name} | SplashDeals`,
+    name: `${facility.name}${facility.city ? ` ${facility.city}` : ""} | ${BRAND_NAME}`,
     description: pageDescription,
     keywords: [facility.name, categoryLabel, facility.city].filter(Boolean).join(", "),
     inLanguage: "sr-Latn-RS",
@@ -241,7 +250,12 @@ export function buildWebPageSchema(params: {
         cssSelector: "#gallery",
       },
     ],
-    significantLink: [`${pageUrl}#deals`, `${categoryUrl}`, ...(hasFaq ? [`${pageUrl}#faq`] : [])],
+    significantLink: [
+      `${pageUrl}#deals`,
+      `${categoryUrl}`,
+      `${site}/support`,
+      ...(hasFaq ? [`${pageUrl}#faq`] : []),
+    ],
   };
 }
 
@@ -299,7 +313,7 @@ export function buildProductSchema(
     "@type": "Product",
     "@id": `${site}/${facilitySlug}#product`,
     name: `${facility.name} — digitalne ulaznice`,
-    description: `Kupi regularne digitalne ulaznice za ${facility.name} na Splashdeals. Brza digitalna isporuka, podrška za Apple i Google Wallet. ${ticketCount} aktivnih ponuda ulaznica.`,
+    description: `Kupi regularne digitalne ulaznice za ${facility.name} na ${BRAND_NAME}. Brza digitalna isporuka, podrška za Apple i Google Wallet i ${ticketCount} aktivnih ponuda ulaznica.`,
     image: images,
     sku: `SD-FAC-${facility.slug.toUpperCase()}`,
     mpn: `SD-MPN-${facility.slug.toUpperCase()}`,
@@ -331,7 +345,7 @@ export function buildVideoSchema(
     "@id": `${site}/${facilitySlug}#video`,
     name: `${facility.name} — promotivni video`,
     description:
-      (heroMedia.caption as string) || `Promotivni video za ${facility.name} na Splashdeals`,
+      (heroMedia.caption as string) || `Promotivni video za ${facility.name} na ${BRAND_NAME}`,
     contentUrl: heroMedia.url,
     thumbnailUrl: absoluteUrl(videoThumbnail, site),
     ...(heroMedia.duration ? { duration: heroMedia.duration } : {}),
@@ -435,7 +449,7 @@ export function buildReviewSchema(
       },
       author: {
         "@type": "Person",
-        name: r.userName || "Gost Splashdeals",
+        name: r.userName || `Gost ${BRAND_NAME}`,
       },
       ...(r.comment ? { reviewBody: r.comment } : {}),
     })),
@@ -615,7 +629,7 @@ function buildAggregateOffer(
         seller: {
           "@type": "Organization",
           "@id": `${site}/#organization`,
-          name: "SplashDeals",
+          name: BRAND_NAME,
           url: site,
         },
         provider: {

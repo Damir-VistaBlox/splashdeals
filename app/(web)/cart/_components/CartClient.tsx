@@ -120,6 +120,9 @@ export function CartClient({
   const requiresPhoto = items.some((i) => i.requiresPhoto);
   const cartFacilityId = items[0]?.facilityId;
   const totalTickets = getCartTotalItems(items);
+  const readyCountLabel = (
+    cartDict?.checkout_ready_count || "{count} stavki spremno za naplatu"
+  ).replace("{count}", String(items.length));
 
   const headingCount =
     items.length > 0
@@ -492,15 +495,25 @@ export function CartClient({
 
   if (showSkeleton) {
     return (
-      <div className="mx-auto min-h-[50vh] max-w-7xl px-4 pt-6 pb-24 sm:px-12 sm:pt-12 sm:pb-32">
+      <section
+        id="cart-content"
+        aria-busy="true"
+        aria-labelledby="cart-page-title"
+        className="mx-auto min-h-[50vh] max-w-7xl px-4 pt-6 pb-24 sm:px-12 sm:pt-12 sm:pb-32"
+      >
         <div className="bg-muted/30 mb-4 h-7 w-36 animate-pulse rounded-lg" />
         <div className="bg-muted/20 h-24 animate-pulse rounded-[1.5rem]" />
-      </div>
+        <span className="sr-only">{cartDict?.title || "Korpa se učitava"}</span>
+      </section>
     );
   }
 
   return (
-    <div className="mx-auto min-h-[50vh] max-w-7xl px-3 pt-4 pb-[calc(9.5rem+env(safe-area-inset-bottom,0px))] sm:px-12 sm:pt-12 sm:pb-32">
+    <section
+      id="cart-content"
+      aria-labelledby="cart-page-title"
+      className="mx-auto min-h-[50vh] max-w-7xl px-3 pt-4 pb-[calc(9.5rem+env(safe-area-inset-bottom,0px))] sm:px-12 sm:pt-12 sm:pb-32"
+    >
       <GuestCartConflictModal
         open={Boolean(conflict)}
         guestFacilityName={conflict?.guestFacilityName || ""}
@@ -511,50 +524,60 @@ export function CartClient({
         onDismiss={handleDismissConflict}
         dict={cartDict}
       />
-      <div className="mb-5 sm:mb-12">
+      <header className="mb-5 sm:mb-12">
         <p className="text-muted-foreground mb-1.5 text-[10px] font-black tracking-[0.2em] uppercase sm:mb-3">
           {cartDict?.title}
         </p>
-        <h1 className="text-foreground text-[1.75rem] leading-none font-black tracking-tighter sm:text-5xl">
+        <h1
+          id="cart-page-title"
+          className="text-foreground text-[1.75rem] leading-none font-black tracking-tighter sm:text-5xl"
+        >
           {headingCount}
         </h1>
         {items.length > 0 && (
-          <div className="mt-3 grid grid-cols-3 gap-2 sm:hidden">
-            <div className="rounded-2xl border border-white/45 bg-white/42 px-3 py-2 text-center backdrop-blur-sm">
+          <ol aria-label="Koraci kupovine" className="mt-3 grid grid-cols-3 gap-2 sm:hidden">
+            <li className="rounded-2xl border border-white/45 bg-white/42 px-3 py-2 text-center backdrop-blur-sm">
               <p className="text-foreground text-[10px] font-black tracking-[0.14em] uppercase">
                 1
               </p>
-              <p className="text-muted-foreground mt-1 text-[11px] font-medium">Pregled</p>
-            </div>
-            <div className="rounded-2xl border border-white/45 bg-white/42 px-3 py-2 text-center backdrop-blur-sm">
+              <p className="text-muted-foreground mt-1 text-[11px] font-medium">
+                {cartDict?.step_review || "Pregled"}
+              </p>
+            </li>
+            <li className="rounded-2xl border border-white/45 bg-white/42 px-3 py-2 text-center backdrop-blur-sm">
               <p className="text-foreground text-[10px] font-black tracking-[0.14em] uppercase">
                 2
               </p>
-              <p className="text-muted-foreground mt-1 text-[11px] font-medium">Naplata</p>
-            </div>
-            <div className="rounded-2xl border border-white/45 bg-white/42 px-3 py-2 text-center backdrop-blur-sm">
+              <p className="text-muted-foreground mt-1 text-[11px] font-medium">
+                {cartDict?.step_payment || "Naplata"}
+              </p>
+            </li>
+            <li className="rounded-2xl border border-white/45 bg-white/42 px-3 py-2 text-center backdrop-blur-sm">
               <p className="text-foreground text-[10px] font-black tracking-[0.14em] uppercase">
                 3
               </p>
-              <p className="text-muted-foreground mt-1 text-[11px] font-medium">Karte mejlom</p>
-            </div>
-          </div>
+              <p className="text-muted-foreground mt-1 text-[11px] font-medium">
+                {cartDict?.step_delivery || "Karte mejlom"}
+              </p>
+            </li>
+          </ol>
         )}
         {items.length === 0 && cartDict?.empty_subtitle && (
           <p className="text-muted-foreground mt-2 max-w-[19rem] text-[13px] font-medium sm:max-w-none sm:text-sm">
             {cartDict.empty_subtitle}
           </p>
         )}
-      </div>
+      </header>
 
       {locked && (
-        <div
+        <section
           role="status"
+          aria-live="polite"
           className="border-warning/30 bg-warning/10 mb-5 rounded-[1.4rem] border p-3.5 sm:mb-6 sm:rounded-2xl sm:p-5"
         >
-          <p className="text-warning text-sm font-black tracking-wide uppercase">
+          <h2 className="text-warning text-sm font-black tracking-wide uppercase">
             {cartDict?.locked_title || "Plaćanje je u toku"}
-          </p>
+          </h2>
           <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
             {cartDict?.locked_description}
           </p>
@@ -569,17 +592,23 @@ export function CartClient({
               ? cartDict?.cancel_checkout_processing || "Otkazivanje..."
               : cartDict?.cancel_checkout || "Otkaži plaćanje"}
           </Button>
-        </div>
+        </section>
       )}
 
       {items.length === 0 ? (
-        <div className="flex flex-col items-center justify-center pt-8 sm:pt-20">
+        <section
+          aria-labelledby="cart-empty-title"
+          className="flex flex-col items-center justify-center pt-8 sm:pt-20"
+        >
           <div className="flex h-18 w-18 items-center justify-center rounded-full border border-white/45 bg-white/42 shadow-[0_14px_28px_rgba(15,23,42,0.06)] backdrop-blur-sm sm:h-24 sm:w-24">
             <Icon
               name="shopping_bag"
               className="text-muted-foreground/30 text-[36px] sm:text-[40px]"
             />
           </div>
+          <h2 id="cart-empty-title" className="sr-only">
+            {cartDict?.empty_title || cartDict?.empty || cartDict?.title || "Prazna korpa"}
+          </h2>
           <p className="text-muted-foreground mt-4 max-w-xs text-center text-[13px] font-medium sm:mt-6 sm:text-sm">
             {cartDict?.empty_description}
           </p>
@@ -594,14 +623,17 @@ export function CartClient({
                 variant="outline"
                 className="min-h-11 w-full rounded-full px-4 text-[11px] font-black tracking-[0.14em] uppercase"
               >
-                Kako radi
+                {cartDict?.learn_how_it_works || "Kako radi"}
               </Button>
             </Link>
           </div>
-        </div>
+        </section>
       ) : (
         <div className="grid gap-4 sm:gap-6 lg:grid-cols-3 lg:gap-8">
-          <div className="space-y-4 sm:space-y-6 lg:col-span-2">
+          <section
+            aria-labelledby="cart-items-heading"
+            className="space-y-4 sm:space-y-6 lg:col-span-2"
+          >
             <CartItemList
               items={items}
               dict={dict}
@@ -611,7 +643,7 @@ export function CartClient({
               changedItems={changedItems}
               mutatingItemIds={mutatingItemIds}
             />
-          </div>
+          </section>
           <CartSummary
             totalBeforeDiscount={totalBeforeDiscount}
             total={total}
@@ -634,18 +666,24 @@ export function CartClient({
       )}
 
       {items.length > 0 && (
-        <div className="pointer-events-auto fixed inset-x-0 bottom-[calc(4rem+env(safe-area-inset-bottom,0px))] z-[999] px-3 md:hidden">
+        <aside
+          aria-label={cartDict?.quick_checkout_summary || "Brzi pregled naplate"}
+          className="pointer-events-auto fixed inset-x-0 bottom-[calc(4rem+env(safe-area-inset-bottom,0px))] z-[999] px-3 md:hidden"
+        >
           <div className="surface-glass mx-auto flex max-w-md items-center gap-3 rounded-[1.5rem] px-3.5 py-3">
             <div className="min-w-0 flex-1">
               <p className="text-muted-foreground text-[9px] font-black tracking-[0.18em] uppercase">
                 {cartDict?.total_label || cartDict?.total}
               </p>
-              <p className="text-foreground text-[1.1rem] leading-none font-black tabular-nums">
+              <p
+                aria-live="polite"
+                className="text-foreground text-[1.1rem] leading-none font-black tabular-nums"
+              >
                 {new Intl.NumberFormat("sr-RS").format(total)}{" "}
                 <span className="text-primary text-xs">{currency}</span>
               </p>
               <p className="text-muted-foreground mt-1 text-[10px] font-medium">
-                {items.length} stavki spremno za naplatu
+                {readyCountLabel}
               </p>
             </div>
             {locked ? (
@@ -662,6 +700,7 @@ export function CartClient({
               </Button>
             ) : (
               <Button
+                type="button"
                 onClick={handleStartCheckout}
                 disabled={isCheckingOut}
                 className="h-11 min-h-11 min-w-[8.75rem] shrink-0 touch-manipulation rounded-[1.1rem] px-4 text-[12px] font-black shadow-[0_14px_28px_rgba(6,182,212,0.22)]"
@@ -672,7 +711,7 @@ export function CartClient({
               </Button>
             )}
           </div>
-        </div>
+        </aside>
       )}
 
       <IdentitySetupDialog
@@ -684,6 +723,6 @@ export function CartClient({
         initialHolderName={authSession?.user?.name}
         dict={identityDict}
       />
-    </div>
+    </section>
   );
 }
