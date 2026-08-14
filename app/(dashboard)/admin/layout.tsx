@@ -61,28 +61,55 @@ async function AuthenticatedLayout({ children }: { children: React.ReactNode }) 
   await connection();
 
   return (
-    <SidebarProvider
-      style={
-        {
-          "--sidebar-width": "19rem",
-        } as React.CSSProperties
-      }
-    >
-      <AdminSidebar variant="inset" user={session.user} />
-      <SidebarInset className="overflow-hidden">
-        <AdminLayoutShell user={session.user}>
-          <React.Suspense
-            fallback={
-              <div className="flex min-h-[50vh] flex-1 items-center justify-center">
-                <Icon name="progress_activity" className="text-primary/30 size-10 animate-spin" />
-              </div>
-            }
-          >
-            {children}
-          </React.Suspense>
-        </AdminLayoutShell>
-      </SidebarInset>
-      <CommandPalette />
-    </SidebarProvider>
+    <>
+      <div className="bg-background flex min-h-screen items-center justify-center px-6 py-10 lg:hidden">
+        <div className="border-border/60 bg-card w-full max-w-md space-y-5 rounded-[2rem] border p-6 text-center shadow-[0_24px_80px_rgba(15,23,42,0.12)]">
+          <div className="bg-primary/10 text-primary mx-auto flex size-14 items-center justify-center rounded-2xl">
+            <Icon name="desktop_windows" className="text-[28px]" />
+          </div>
+          <div className="space-y-2">
+            <p className="text-muted-foreground text-[10px] font-black tracking-[0.2em] uppercase">
+              Splashdeals admin
+            </p>
+            <h1 className="text-foreground text-2xl font-black tracking-tight uppercase italic">
+              Desktop obavezan
+            </h1>
+            <p className="text-muted-foreground text-sm leading-relaxed">
+              Administracija nije podržana na mobilnim viewportima. Otvorite admin na laptopu ili
+              desktop uređaju radi potpunog pristupa alatima.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="hidden lg:block">
+        <SidebarProvider
+          style={
+            {
+              "--sidebar-width": "19rem",
+            } as React.CSSProperties
+          }
+        >
+          <AdminSidebar variant="inset" user={session.user} />
+          <SidebarInset className="overflow-hidden">
+            <AdminLayoutShell user={session.user}>
+              <React.Suspense
+                fallback={
+                  <div className="flex min-h-[50vh] flex-1 items-center justify-center">
+                    <Icon
+                      name="progress_activity"
+                      className="text-primary/30 size-10 animate-spin"
+                    />
+                  </div>
+                }
+              >
+                {children}
+              </React.Suspense>
+            </AdminLayoutShell>
+          </SidebarInset>
+          <CommandPalette />
+        </SidebarProvider>
+      </div>
+    </>
   );
 }

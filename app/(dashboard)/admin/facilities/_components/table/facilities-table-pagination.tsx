@@ -46,7 +46,7 @@ export function FacilitiesTablePagination({
         <Button
           variant="outline"
           size="sm"
-          className="bg-background/40 border-border/50 h-8 w-8 p-0"
+          className="bg-background/40 border-border/50 h-7.5 w-7.5 p-0"
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage <= 1}
           aria-label="Prethodna strana"
@@ -67,7 +67,7 @@ export function FacilitiesTablePagination({
               key={p}
               variant={p === currentPage ? "default" : "outline"}
               size="sm"
-              className="bg-background/40 border-border/50 h-8 min-w-8 px-2 text-[10px] font-bold"
+              className="bg-background/40 border-border/50 h-7.5 min-w-7.5 px-2 text-[10px] font-bold"
               onClick={() => onPageChange(p)}
               aria-label={`Strana ${p}`}
               aria-current={p === currentPage ? "page" : undefined}
@@ -79,7 +79,7 @@ export function FacilitiesTablePagination({
         <Button
           variant="outline"
           size="sm"
-          className="bg-background/40 border-border/50 h-8 w-8 p-0"
+          className="bg-background/40 border-border/50 h-7.5 w-7.5 p-0"
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage >= totalPages}
           aria-label="Sledeća strana"

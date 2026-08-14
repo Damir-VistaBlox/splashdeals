@@ -111,11 +111,11 @@ export default async function FacilityOverviewPage({ params }: OverviewPageProps
   ];
 
   return (
-    <div className="bg-background flex w-full flex-col gap-8">
+    <div className="bg-background flex w-full flex-col gap-6">
       {/* Header */}
-      <div className="border-border/50 flex flex-col justify-between gap-4 border-b pb-8 md:flex-row md:items-center">
+      <div className="border-border/50 flex flex-col justify-between gap-4 border-b pb-6 xl:flex-row xl:items-center">
         <div className="flex flex-col gap-2">
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <span className="bg-primary/10 border-primary/20 text-primary rounded border px-2 py-0.5 text-[10px] font-black tracking-widest uppercase">
               {facility.status}
             </span>
@@ -123,17 +123,19 @@ export default async function FacilityOverviewPage({ params }: OverviewPageProps
               ID: {facility.id.split("-")[0]}
             </span>
           </div>
-          <h1 className="text-foreground text-3xl font-black tracking-tight">{facility.name}</h1>
+          <h1 className="text-foreground text-2xl font-black tracking-tight xl:text-3xl">
+            {facility.name}
+          </h1>
           <p className="text-muted-foreground text-sm font-medium">
             {facility.streetName} {facility.streetNumber}, {facility.city}
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2">
           <Button
             asChild
             variant="outline"
-            className="bg-muted/30 border-border text-foreground/80 hover:bg-muted/50 hover:text-foreground flex items-center gap-2 rounded-lg border px-4 py-2 text-xs font-bold transition-colors"
+            className="bg-muted/30 border-border text-foreground/80 hover:bg-muted/50 hover:text-foreground h-10 rounded-lg border px-4 text-[11px] font-bold transition-colors"
           >
             <Link href={`/admin/facilities/${facilityId}/profile`}>
               <Icon name="settings" className="text-[14px]" />
@@ -142,7 +144,7 @@ export default async function FacilityOverviewPage({ params }: OverviewPageProps
           </Button>
           <Button
             asChild
-            className="bg-primary text-primary-foreground flex items-center gap-2 rounded-lg px-4 py-2 text-xs font-black transition-opacity hover:opacity-90"
+            className="bg-primary text-primary-foreground h-10 rounded-lg px-4 text-[11px] font-black transition-opacity hover:opacity-90"
           >
             <Link href={buildPublicFacilityPath(facility.slug)} target="_blank">
               Prikaz na sajtu
@@ -152,12 +154,12 @@ export default async function FacilityOverviewPage({ params }: OverviewPageProps
       </div>
 
       {/* Quick Stats */}
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 xl:grid-cols-4">
         {stats.map((stat) => (
           <Link
             key={stat.label}
             href={stat.href}
-            className="group border-border/50 bg-muted/40 hover:border-border hover:bg-muted/60 flex flex-col gap-4 rounded-2xl border p-6 backdrop-blur-xl transition-colors"
+            className="group border-border/50 bg-muted/40 hover:border-border hover:bg-muted/60 flex flex-col gap-3 rounded-2xl border p-4 backdrop-blur-xl transition-colors"
           >
             <div className="flex items-center justify-between">
               <Icon name={stat.icon} className={`text-[20px] ${stat.color}`} />
@@ -167,8 +169,8 @@ export default async function FacilityOverviewPage({ params }: OverviewPageProps
               />
             </div>
             <div className="flex flex-col">
-              <span className="text-foreground text-3xl font-black">{stat.value}</span>
-              <span className="text-muted-foreground mt-1 text-[10px] font-bold tracking-[0.2em] uppercase">
+              <span className="text-foreground text-2xl font-black xl:text-3xl">{stat.value}</span>
+              <span className="text-muted-foreground mt-1 text-[9px] font-bold tracking-[0.16em] uppercase">
                 {stat.label}
               </span>
             </div>
@@ -176,7 +178,7 @@ export default async function FacilityOverviewPage({ params }: OverviewPageProps
         ))}
       </div>
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 xl:grid-cols-3">
         <div className="lg:col-span-2">
           <PublishReadinessCard
             facilityId={facilityId}
@@ -184,7 +186,7 @@ export default async function FacilityOverviewPage({ params }: OverviewPageProps
             items={readinessItems}
           />
         </div>
-        <div className="border-border/50 bg-muted/30 rounded-2xl border p-5">
+        <div className="border-border/50 bg-muted/30 rounded-2xl border p-4">
           <div className="text-muted-foreground mb-2 text-[10px] font-bold tracking-[0.2em] uppercase">
             Prihod (COMPLETED)
           </div>
@@ -197,7 +199,7 @@ export default async function FacilityOverviewPage({ params }: OverviewPageProps
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
         {/* Recent Activity */}
         <div className="flex flex-col gap-4 lg:col-span-2">
           <div className="text-muted-foreground flex items-center gap-2 text-[10px] font-bold tracking-[0.2em] uppercase">
@@ -216,7 +218,7 @@ export default async function FacilityOverviewPage({ params }: OverviewPageProps
                   }) => (
                     <div
                       key={ticket.id}
-                      className="hover:bg-muted/10 flex items-center justify-between p-4 transition-colors"
+                      className="hover:bg-muted/10 flex items-center justify-between p-3.5 transition-colors"
                     >
                       <div className="flex flex-col gap-1">
                         <span className="text-foreground/90 text-sm font-bold">
@@ -257,8 +259,8 @@ export default async function FacilityOverviewPage({ params }: OverviewPageProps
           <div className="text-muted-foreground flex items-center gap-2 text-[10px] font-bold tracking-[0.2em] uppercase">
             Detalji
           </div>
-          <div className="border-border/50 bg-muted/40 space-y-6 rounded-2xl border p-6">
-            <div className="space-y-1.5">
+          <div className="border-border/50 bg-muted/40 space-y-5 rounded-2xl border p-5">
+            <div className="space-y-1">
               <span className="text-muted-foreground text-[9px] font-bold tracking-widest uppercase">
                 Datum registracije
               </span>
@@ -270,7 +272,7 @@ export default async function FacilityOverviewPage({ params }: OverviewPageProps
                 })}
               </p>
             </div>
-            <div className="space-y-1.5">
+            <div className="space-y-1">
               <span className="text-muted-foreground text-[9px] font-bold tracking-widest uppercase">
                 Koordinate
               </span>

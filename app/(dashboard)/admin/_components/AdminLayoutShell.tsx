@@ -26,12 +26,12 @@ export function AdminLayoutShell({ children, user }: AdminLayoutShellProps) {
     <>
       <header
         className={cn(
-          "admin-global-header border-border/50 bg-background/50 sticky top-0 z-10 flex h-14 shrink-0 items-center gap-3 border-b px-4 backdrop-blur-xl transition-all duration-300 md:px-6",
+          "admin-global-header border-border/50 bg-background/65 sticky top-0 z-10 flex h-12 shrink-0 items-center gap-2.5 border-b px-4 backdrop-blur-xl transition-all duration-300 md:px-5",
           hideGlobalHeader && "pointer-events-none h-0 overflow-hidden border-none opacity-0",
         )}
       >
-        <SidebarTrigger className="hover:bg-muted/30 hover:text-primary -ml-2 h-9 w-9 rounded-xl transition-all" />
-        <Separator orientation="vertical" className="bg-muted/50 h-4" />
+        <SidebarTrigger className="hover:bg-muted/30 hover:text-primary -ml-1 h-8 w-8 rounded-lg transition-all" />
+        <Separator orientation="vertical" className="bg-muted/50 h-3.5" />
         <div className="min-w-0 flex-1 overflow-hidden">
           <Suspense fallback={<div className="bg-muted/30 h-4 w-32 animate-pulse rounded" />}>
             <div className="truncate whitespace-nowrap">
@@ -39,15 +39,15 @@ export function AdminLayoutShell({ children, user }: AdminLayoutShellProps) {
             </div>
           </Suspense>
         </div>
-        <div className="flex items-center gap-4">
-          <div className="bg-muted/30 border-border/50 hidden items-center gap-1.5 rounded-md border px-2 py-1 md:flex">
+        <div className="flex items-center gap-2.5">
+          <div className="bg-muted/30 border-border/50 hidden items-center gap-1.5 rounded-md border px-2 py-1 xl:flex">
             <div className="bg-primary h-1 w-1 rounded-full" />
             <span className="text-muted-foreground text-[9px] font-bold tracking-widest uppercase">
               Node: {nodeLabel}
             </span>
           </div>
 
-          <div className="bg-muted/30 border-border flex items-center gap-2 rounded-full border px-1.5 py-1">
+          <div className="bg-muted/30 border-border flex items-center gap-1.5 rounded-full border px-1.5 py-0.5">
             {user.image ? (
               <div className="border-border relative h-5 w-5 overflow-hidden rounded-full border">
                 <Image src={user.image} alt={user.name || ""} fill className="object-cover" />
@@ -57,7 +57,7 @@ export function AdminLayoutShell({ children, user }: AdminLayoutShellProps) {
                 {user.name?.[0] || "?"}
               </div>
             )}
-            <span className="text-foreground/80 hidden pr-1.5 text-[9px] font-bold tracking-tighter uppercase sm:inline">
+            <span className="text-foreground/80 hidden pr-1 text-[9px] font-bold tracking-tighter uppercase lg:inline">
               {user.name?.split(" ")[0]}
             </span>
           </div>

@@ -32,31 +32,31 @@ export default async function CMSHubPage() {
   ];
 
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 gap-3 lg:grid-cols-[1.5fr_0.9fr]">
-        <Card className="border-border/60 bg-muted/10 p-5">
+    <div className="space-y-5">
+      <div className="grid grid-cols-1 gap-3 xl:grid-cols-[1.7fr_1fr]">
+        <Card className="border-border/60 bg-muted/10 p-4">
           <div className="mb-3 flex items-center gap-2">
-            <div className="bg-primary/10 text-primary flex size-9 items-center justify-center rounded-xl">
-              <Icon name="space_dashboard" className="text-[18px]" />
+            <div className="bg-primary/10 text-primary flex size-8 items-center justify-center rounded-xl">
+              <Icon name="space_dashboard" className="text-[16px]" />
             </div>
             <div>
-              <h2 className="text-foreground text-lg font-black tracking-tight uppercase">
+              <h2 className="text-foreground text-base font-black tracking-tight uppercase">
                 CMS pregled
               </h2>
-              <p className="text-muted-foreground text-sm">
+              <p className="text-muted-foreground text-[13px]">
                 Brzi pristup modulima sadržaja, navigaciji i alatima za javni sloj sajta.
               </p>
             </div>
           </div>
-          <p className="text-muted-foreground text-sm leading-relaxed">
+          <p className="text-muted-foreground text-[13px] leading-relaxed">
             Kuponi i kampanje u ovom prostoru odnose se na marketplace akcije. Email kampanje i
             liste ostaju u Listmonk operativnom toku.
           </p>
         </Card>
 
-        <Card className="border-border/60 bg-background/70 p-5">
+        <Card className="border-border/60 bg-background/70 p-4">
           <div className="mb-3 flex items-center gap-2">
-            <Icon name="bolt" className="text-primary text-[18px]" />
+            <Icon name="bolt" className="text-primary text-[16px]" />
             <span className="text-muted-foreground text-[10px] font-black tracking-[0.2em] uppercase">
               Brze akcije
             </span>
@@ -64,25 +64,25 @@ export default async function CMSHubPage() {
           <div className="grid grid-cols-2 gap-2">
             <Link
               href="/admin/cms/posts/new"
-              className="hover:border-primary/30 bg-muted/30 rounded-xl border border-transparent px-3 py-3 text-xs font-bold uppercase transition-colors"
+              className="hover:border-primary/30 bg-muted/30 rounded-xl border border-transparent px-3 py-2.5 text-[11px] font-bold uppercase transition-colors"
             >
               Nova objava
             </Link>
             <Link
               href="/admin/cms/pages/new"
-              className="hover:border-primary/30 bg-muted/30 rounded-xl border border-transparent px-3 py-3 text-xs font-bold uppercase transition-colors"
+              className="hover:border-primary/30 bg-muted/30 rounded-xl border border-transparent px-3 py-2.5 text-[11px] font-bold uppercase transition-colors"
             >
               Nova strana
             </Link>
             <Link
               href="/admin/cms/navigation"
-              className="hover:border-primary/30 bg-muted/30 rounded-xl border border-transparent px-3 py-3 text-xs font-bold uppercase transition-colors"
+              className="hover:border-primary/30 bg-muted/30 rounded-xl border border-transparent px-3 py-2.5 text-[11px] font-bold uppercase transition-colors"
             >
               Navigacija
             </Link>
             <Link
               href="/admin/media"
-              className="hover:border-primary/30 bg-muted/30 rounded-xl border border-transparent px-3 py-3 text-xs font-bold uppercase transition-colors"
+              className="hover:border-primary/30 bg-muted/30 rounded-xl border border-transparent px-3 py-2.5 text-[11px] font-bold uppercase transition-colors"
             >
               Mediji
             </Link>
@@ -90,14 +90,14 @@ export default async function CMSHubPage() {
         </Card>
       </div>
 
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-5">
+      <div className="grid grid-cols-3 gap-3 xl:grid-cols-5">
         {statCards.map((stat) => {
           const body = (
-            <Card className="hover:border-primary/40 border-border/50 bg-background/70 p-4 transition-colors">
-              <p className="text-muted-foreground text-xs font-bold tracking-wide uppercase">
+            <Card className="hover:border-primary/40 border-border/50 bg-background/70 p-3.5 transition-colors">
+              <p className="text-muted-foreground text-[10px] font-bold tracking-wide uppercase">
                 {stat.label}
               </p>
-              <p className="mt-1 text-2xl font-black tracking-tight">{stat.value}</p>
+              <p className="mt-1 text-xl font-black tracking-tight xl:text-2xl">{stat.value}</p>
             </Card>
           );
           return stat.href ? (
@@ -110,15 +110,15 @@ export default async function CMSHubPage() {
         })}
       </div>
 
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-2 gap-3 xl:grid-cols-3">
         {hubLinks.map((item) => (
           <Link key={item.href} href={item.href} className="group">
-            <Card className="hover:border-primary/40 border-border/50 flex items-center gap-3 p-4 transition-colors">
-              <div className="bg-primary/10 text-primary flex h-10 w-10 items-center justify-center rounded-xl">
-                <Icon name={item.icon} className="text-[20px]" />
+            <Card className="hover:border-primary/40 border-border/50 flex items-center gap-3 p-3.5 transition-colors">
+              <div className="bg-primary/10 text-primary flex h-9 w-9 items-center justify-center rounded-xl">
+                <Icon name={item.icon} className="text-[18px]" />
               </div>
               <div className="min-w-0">
-                <div className="group-hover:text-primary text-sm font-bold tracking-wide uppercase transition-colors">
+                <div className="group-hover:text-primary text-[13px] font-bold tracking-wide uppercase transition-colors">
                   {item.label}
                 </div>
                 <div className="text-muted-foreground text-[11px] font-medium">
