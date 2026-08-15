@@ -84,16 +84,23 @@ export function Footer({ dict: dictProp }: { dict?: Dict | null } = {}) {
     { name: dict?.footer?.help_center || LEGAL_FALLBACKS[3].name, href: LEGAL_FALLBACKS[3].href },
   ];
 
+  // Mobile footer keeps only what a native-app user actually needs from a footer —
+  // brand mark, a couple of social links, the legally-relevant pages, and copyright.
+  // Quick-access nav, the contact card, and the newsletter card are desktop-only:
+  // primary navigation already lives in the bottom tab bar on mobile, so repeating
+  // it here just adds scroll depth without adding value.
+  const mobileLegalItems = [legalItems[1], legalItems[0], legalItems[3]];
+
   return (
-    <footer className="relative mt-auto overflow-hidden px-3 pt-5 pb-[calc(4.75rem+env(safe-area-inset-bottom,0px))] sm:px-6 sm:pt-16 md:px-8 md:pb-12">
-      <div className="surface-glass relative mx-auto max-w-md overflow-hidden rounded-[1.75rem] px-4 py-4 md:hidden">
+    <footer className="relative mt-auto overflow-hidden px-3 pt-3 pb-[calc(4.75rem+env(safe-area-inset-bottom,0px))] sm:px-6 sm:pt-16 md:px-8 md:pb-12">
+      <div className="surface-glass relative mx-auto max-w-md overflow-hidden rounded-[1.4rem] px-4 py-3 md:hidden">
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-sky-300/70 to-transparent" />
-        <div className="relative z-10 space-y-4">
+        <div className="relative z-10 space-y-2.5">
           <div className="flex items-center justify-between gap-3">
             <Link
               href="/"
               aria-label={dict?.brand?.logo_aria ?? "Splashdeals početna"}
-              className="rounded-full bg-white/82 px-3 py-2 shadow-sm"
+              className="rounded-full bg-white/82 px-2.5 py-1.5 shadow-sm"
             >
               <Image
                 src="/logo-splashdeals.webp"
@@ -101,90 +108,37 @@ export function Footer({ dict: dictProp }: { dict?: Dict | null } = {}) {
                   dict?.brand?.logo_alt ??
                   "SplashDeals - digitalne ulaznice za vodene parkove Srbija"
                 }
-                width={180}
-                height={60}
-                className="h-8 w-auto object-contain"
+                width={140}
+                height={46}
+                className="h-6 w-auto object-contain"
               />
             </Link>
-            <span className="rounded-full border border-sky-200/80 bg-white/75 px-3 py-1 text-[10px] font-black tracking-[0.18em] text-sky-700 uppercase">
-              Digitalne karte
-            </span>
-          </div>
-
-          <p className="text-muted-foreground text-[12px] leading-5 font-medium">
-            {dict?.footer?.desc ||
-              "Digitalne ulaznice za akva parkove u Srbiji, bez čekanja i bez traženja karata po inboxu."}
-          </p>
-
-          <div className="grid grid-cols-2 gap-2">
-            {quickAccessItems.slice(0, 4).map((item) => (
-              <Link
-                key={`mobile-${item.href}`}
-                href={item.href}
-                className="surface-subtle text-foreground flex min-h-11 items-center rounded-2xl px-3 text-[10px] font-black tracking-[0.08em] uppercase transition-colors hover:bg-white/58 active:scale-[0.98]"
-              >
-                {item.name}
-              </Link>
-            ))}
-          </div>
-
-          <div className="surface-subtle flex items-center justify-between gap-3 rounded-2xl px-4 py-3">
-            <div>
-              <p className="text-[10px] font-black tracking-[0.18em] text-slate-500 uppercase">
-                Kontakt
-              </p>
-              <span
-                className="text-sm font-bold text-slate-700"
-                dangerouslySetInnerHTML={{
-                  __html: "<!--email_off-->hq@splashdeals.rs<!--/email_off-->",
-                }}
-              />
-            </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5">
               {SOCIAL_LINKS.slice(0, 2).map((item) => (
                 <Link
                   key={`mobile-social-${item.href}`}
                   href={item.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="surface-subtle text-muted-foreground flex h-11 w-11 items-center justify-center rounded-2xl transition-colors active:scale-[0.96]"
+                  className="surface-subtle text-muted-foreground flex h-9 w-9 items-center justify-center rounded-xl transition-colors active:scale-[0.96]"
                   aria-label={footerLabel(item.labelKey, item.fallback)}
                 >
-                  <div className="h-4.5 w-4.5">{item.icon}</div>
+                  <div className="h-4 w-4">{item.icon}</div>
                 </Link>
               ))}
             </div>
           </div>
 
-          <div className="animated-border rounded-2xl border border-white/65 bg-white/58 p-4">
-            <h3 className="mb-1.5 text-[10px] font-black tracking-[0.22em] text-slate-600 uppercase">
-              {dict?.footer?.summer_alerts || "Letnja Obaveštenja"}
-            </h3>
-            <p className="text-muted-foreground mb-3 text-xs leading-relaxed font-medium">
-              {dict?.footer?.summer_alerts_desc ||
-                "Prijavite se za najnovije akcije i ekskluzivne letnje ponude akva parkova."}
-            </p>
-            <FooterNewsletterForm dict={dict ?? null} idSuffix="mobile" />
-          </div>
-
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <div className="flex flex-wrap gap-2">
-              {legalItems.slice(0, 2).map((item) => (
-                <Link
-                  key={`mobile-legal-${item.href}`}
-                  href={item.href}
-                  className="surface-chip text-muted-foreground inline-flex min-h-11 items-center rounded-full px-3.5 text-[10px] font-black tracking-[0.12em] uppercase transition-colors hover:bg-white/56 hover:text-slate-700 active:scale-[0.98]"
-                >
-                  {item.name}
-                </Link>
-              ))}
-            </div>
-            <Link
-              href="/support"
-              className="text-primary inline-flex min-h-11 items-center px-2 text-[10px] font-black tracking-[0.14em] uppercase"
-            >
-              Podrška
-            </Link>
+          <div className="flex flex-wrap items-center justify-center gap-x-1">
+            {mobileLegalItems.map((item) => (
+              <Link
+                key={`mobile-legal-${item.href}`}
+                href={item.href}
+                className="text-muted-foreground hover:text-primary inline-flex min-h-9 items-center px-2.5 text-[10px] font-black tracking-[0.1em] uppercase transition-colors active:scale-[0.98]"
+              >
+                {item.name}
+              </Link>
+            ))}
           </div>
 
           <p className="text-muted-foreground text-center text-[10px] font-bold tracking-[0.14em] uppercase">
