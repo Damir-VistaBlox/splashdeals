@@ -113,14 +113,48 @@ export function Footer({ dict: dictProp }: { dict?: Dict | null } = {}) {
                 className="h-6 w-auto object-contain"
               />
             </Link>
-            <div className="flex items-center gap-1.5">
+            <span className="rounded-full border border-sky-200/80 bg-white/75 px-3 py-1 text-[10px] font-black tracking-[0.18em] text-sky-700 uppercase">
+              Digitalne karte
+            </span>
+          </div>
+
+          <p className="text-muted-foreground text-[12px] leading-5 font-medium">
+            {dict?.footer?.desc ||
+              "Digitalne ulaznice za akva parkove u Srbiji, bez čekanja i bez traženja karata po inboxu."}
+          </p>
+
+          <div className="grid grid-cols-2 gap-2">
+            {quickAccessItems.slice(0, 4).map((item) => (
+              <Link
+                key={`mobile-${item.href}`}
+                href={item.href}
+                className="surface-subtle text-foreground flex min-h-11 items-center rounded-2xl px-3 text-[10px] font-black tracking-[0.08em] uppercase transition-colors hover:bg-white/58 active:scale-[0.98]"
+              >
+                {item.name}
+              </Link>
+            ))}
+          </div>
+
+          <div className="surface-subtle flex items-center justify-between gap-3 rounded-2xl px-4 py-3">
+            <div>
+              <p className="text-[10px] font-black tracking-[0.18em] text-slate-500 uppercase">
+                Kontakt
+              </p>
+              <span
+                className="text-sm font-bold text-slate-700"
+                dangerouslySetInnerHTML={{
+                  __html: "<!--email_off-->hq@splashdeals.rs<!--/email_off-->",
+                }}
+              />
+            </div>
+            <div className="flex items-center gap-2">
               {SOCIAL_LINKS.slice(0, 2).map((item) => (
                 <Link
                   key={`mobile-social-${item.href}`}
                   href={item.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="surface-subtle text-muted-foreground flex h-9 w-9 items-center justify-center rounded-xl transition-colors active:scale-[0.96]"
+                  className="surface-subtle text-muted-foreground flex h-11 w-11 items-center justify-center rounded-2xl transition-colors active:scale-[0.96]"
                   aria-label={footerLabel(item.labelKey, item.fallback)}
                 >
                   <div className="h-4 w-4">{item.icon}</div>
